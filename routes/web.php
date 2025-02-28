@@ -18,35 +18,44 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 // Admin routes
 require __DIR__.'/admin.php';
 
-if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
-    Route::group(
-        [
-            'prefix' => LaravelLocalization::setLocale(),
-            'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
-        ], function(){
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/about-us', 'AboutUsController@index')->name('about-us');
+Route::get('/our-services', 'ServicesController@index')->name('services');
+Route::get('/contact-us', 'ContactUsController@index')->name('contact-us');
+Route::get('/frequently-asked-questions', 'FAQController@index')->name('faq');
 
-        // home
-        Route::get('/', 'HomeController@index')->name('home');
+// if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
+//     Route::group(
+//         [
+//             'prefix' => LaravelLocalization::setLocale(),
+//             'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+//         ], function(){
 
-        if(env('DEMO_MODE') == 'On'){
-            Route::get('/theme', 'HomeController@index')->name('theme.demo.home');
-        }
+//         // home
+//         Route::get('/', 'HomeController@index')->name('home');
+//         Route::get('/about-us', 'AboutUsController@index')->name('about-us');
+//         Route::get('/our-services', 'ServicesController@index')->name('services');
+//         Route::get('/contact-us', 'ContactUsController@index')->name('contact-us');
+//         Route::get('/frequently-asked-questions', 'FAQController@index')->name('faq');
 
-        Route::get('/link-storage', function () {
-            Artisan::call('storage:link');
-        });
-    });
-    Route::mediaLibrary();
-}else{
-    // home
-    Route::get('/', 'HomeController@index')->name('home');
+//         // if(env('DEMO_MODE') == 'On'){
+//         //     Route::get('/theme', 'HomeController@index')->name('theme.demo.home');
+//         // }
 
-    if(env('DEMO_MODE') == 'On'){
-        Route::get('/theme', 'HomeController@index')->name('theme.demo.home');
-    }
+//         Route::get('/link-storage', function () {
+//             Artisan::call('storage:link');
+//         });
+//     });
+//     Route::mediaLibrary();
+// }else{
+//     // home
+//     Route::get('/', 'HomeController@index')->name('home');
+//     if(env('DEMO_MODE') == 'On'){
+//         Route::get('/theme', 'HomeController@index')->name('theme.demo.home');
+//     }
 
-    Route::get('/link-storage', function () {
-        Artisan::call('storage:link');
-    });
-    Route::mediaLibrary();
-}
+//     Route::get('/link-storage', function () {
+//         Artisan::call('storage:link');
+//     });
+//     Route::mediaLibrary();
+// }

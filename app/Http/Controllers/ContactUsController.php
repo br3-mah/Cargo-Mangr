@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ServicesController extends Controller
+class ContactUsController extends Controller
 {
+
     /**
      * Show home page
      *
@@ -13,6 +14,6 @@ class ServicesController extends Controller
      */
     public function index(Request $request)
     {
-        return view('services');
+        return view('contact-us');
     }
 }
