@@ -4,43 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
 use App\Models\Settings;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 // use Modules\Blog\Entities\Category;
 // use Modules\Blog\Entities\Post;
 // use Modules\Blog\Transformers\Front\Post\PostLiteResource;
 use Qirolab\Theme\Theme;
-use Session;
 
 class HomeController extends Controller
 {
-    
+
     /**
      * Show home page
-     * 
+     *
      * @return View
      */
     public function index(Request $request)
     {
-        $current_version = \app\Models\Settings::where('name','current_version')->first();
-        if(!$current_version){
-            // Run sql modifications
-            $sql_current_version_path = base_path('database/set_current_version.sql');
-            if (file_exists($sql_current_version_path)) {
-                DB::unprepared(file_get_contents($sql_current_version_path));
-            }
-            DB::commit();
-        }
-        
-        if(env('DEMO_MODE') == 'On'){
-            $theme  = $request->theme;
-            $themes = ['easyship','flextock','goshippo','qwintry','shipito','timeglobalshipping'];
-            if($theme != null && in_array($theme, $themes)){
-                Session::put('demo_theme', $theme);
-                Theme::set($theme);
-            }
-        }
-        $data = [];
+        return view('home');
+    }
+    // public function index(Request $request)
+    // {
+    //     $current_version = \app\Models\Settings::where('name','current_version')->first();
+    //     if(!$current_version){
+    //         // Run sql modifications
+    //         $sql_current_version_path = base_path('database/set_current_version.sql');
+    //         if (file_exists($sql_current_version_path)) {
+    //             DB::unprepared(file_get_contents($sql_current_version_path));
+    //         }
+    //         DB::commit();
+    //     }
+
+    //     if(env('DEMO_MODE') == 'On'){
+    //         $theme  = $request->theme;
+    //         $themes = ['easyship','flextock','goshippo','qwintry','shipito','timeglobalshipping'];
+    //         if($theme != null && in_array($theme, $themes)){
+    //            Session::put('demo_theme', $theme);
+    //             Theme::set($theme);
+    //         }
+    //     }
+    //     $data = [];
         // get data
 
         // // breaking_news
@@ -156,7 +160,9 @@ class HomeController extends Controller
         //     }
         // }
         // /******************************************************************************/
-        return view('theme.index')->with($data);
-    }
+
+
+    //     return view('theme.index')->with($data);
+    // }
 
 }

@@ -79,7 +79,7 @@
 }
 
 .text-primary {
-  color: #276095 !important;
+  color: #f7c600 !important;
 }
 
 .text-sm {
@@ -711,7 +711,7 @@ html {
 }
 
 #main-header .navbar .nav-list > li a.dropdown-toggle:hover {
-  border-color: #276095;
+  border-color: #f7c600;
 }
 
 #main-header .navbar .nav-list > li a.dropdown-toggle::after {
@@ -976,7 +976,7 @@ html {
 
 #business .accordion .card .header .btn {
   padding: 0;
-  color: #276095;
+  color: #f7c600;
   text-transform: capitalize;
   display: -webkit-box;
   display: -ms-flexbox;
