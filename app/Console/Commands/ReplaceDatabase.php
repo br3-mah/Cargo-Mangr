@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Schema; 
+use Illuminate\Support\Facades\Schema;
 
 
 class ReplaceDatabase extends Command
@@ -23,7 +23,6 @@ class ReplaceDatabase extends Command
                 $this->error('DEMO_MODE is not set to On. Aborting the operation.');
                 return;
             }
-            
             // Disable foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
@@ -44,7 +43,6 @@ class ReplaceDatabase extends Command
 
             // Run php artisan refresh:cache
             $this->call('refresh:cache');
-
 
             $this->info('Database replaced and storage link updated successfully.');
         } catch (\Exception $e) {

@@ -1,11 +1,4 @@
-<?php
-$currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-
-// Normalize the check to account for subdirectory installation
-$isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentPath);
-?>
-<?php if (!$isHomePage): ?>
+{{-- Only show this on home page --}}
   <div id="qodef-top-area">
     <div id="qodef-top-area-inner">
       <div class="qodef-widget-holder qodef--left">
@@ -73,21 +66,22 @@ $isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentP
       </div>
     </div>
   </div>
-<?php endif; ?>
+{{-- End show only on home page --}}
 <header id="qodef-page-header" role="banner">
   <div id="qodef-page-header-inner" class="qodef-skin--light qodef-header-cursor--light">
-    <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--image" href="index.php" rel="home">
+    <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--image" href="{{ route('home') }}" rel="home">
       <img loading="lazy" width="927" height="370" src="web/wp-content/uploads/2025/01/2-1.png"
         class="qodef-header-logo-image qodef--main" alt="logo main" itemprop="image" /><img loading="lazy" width="927"
         height="370" src="web/wp-content/uploads/2025/01/1-1.png" class="qodef-header-logo-image qodef--dark"
         alt="logo dark" itemprop="image" /><img loading="lazy" width="927" height="370"
         src="web/wp-content/uploads/2025/01/white-logo.png" class="qodef-header-logo-image qodef--light" alt="logo light"
         itemprop="image" /></a>
-    <nav class="qodef-header-navigation" role="navigation" aria-label="Top Menu">
+
+        <nav class="qodef-header-navigation" role="navigation" aria-label="Top Menu">
       <ul id="menu-main-menu-1" class="menu">
         <li
           class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-7704 qodef--hide-link qodef-menu-item--narrow">
-          <a href="index.php"><span class="qodef-menu-item-text">Home<svg
+          <a href="{{ route('home') }}"><span class="qodef-menu-item-text">Home<svg
                 class="qodef-svg--menu-arrow qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink" width="8.485" height="14.14" viewBox="0 0 8.485 14.14">
                 <path d="M0,0H10V2H0Z" transform="translate(8.485 7.069) rotate(135)" />
@@ -107,14 +101,14 @@ $isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentP
             <div class="qodef-drop-down-second-inner">
               <ul class="sub-menu">
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7772">
-                  <a href="about.php?page_id=2602"><span class="qodef-menu-item-text"><svg
+                  <a href="{{ route('about-us',['page_id'=>'2602']) }}"><span class="qodef-menu-item-text"><svg
                         class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>About Us</span></a>
                 </li>
-                <li class="menu-item menu-item-type-post_type menu-item-object-team menu-item-7781">
+                {{-- <li class="menu-item menu-item-type-post_type menu-item-object-team menu-item-7781">
                   <a href="#"><span class="qodef-menu-item-text"><svg class="qodef-svg--plus qodef-menu-item-plus"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14"
                         height="14" viewBox="0 0 14 14">
@@ -153,23 +147,23 @@ $isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentP
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>Our Clients</span></a>
-                </li>
+                </li> --}}
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7779">
-                  <a href="faq.php?page_id=3138"><span class="qodef-menu-item-text"><svg
+                  <a href="{{ route('faq') }}"><span class="qodef-menu-item-text"><svg
                         class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>FAQ Page</span></a>
                 </li>
-                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7711">
+                {{-- <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7711">
                   <a href="404.php"><span class=" qodef-menu-item-text"><svg
                         class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>404 Error Page</span></a>
-                </li>
+                </li> --}}
               </ul>
             </div>
           </div>
@@ -186,7 +180,7 @@ $isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentP
             <div class="qodef-drop-down-second-inner">
               <ul class="sub-menu">
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7773">
-                  <a href="services.php?page_id=2640"><span class="qodef-menu-item-text"><svg
+                  <a href="{{ route('services') }}"><span class="qodef-menu-item-text"><svg
                         class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
@@ -567,7 +561,7 @@ $isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentP
             <div class="qodef-drop-down-second-inner">
               <ul class="sub-menu">
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7793">
-                  <a href="contact.php?page_id=3235"><span class="qodef-menu-item-text"><svg
+                  <a href="{{ route('contact-us') }}"><span class="qodef-menu-item-text"><svg
                         class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
@@ -616,43 +610,42 @@ $isHomePage = preg_match("#^{$basePath}/?(index\.php|index\.html)?$#", $currentP
                     <p role="status" aria-live="polite" aria-atomic="true"></p>
                     <ul></ul>
                   </div>
-                  <form action="http://localhost/nwc/#wpcf7-f1991-o1" method="post" class="wpcf7-form init"
-                    aria-label="Contact form" novalidate data-status="init">
-                    <div style="display: none">
-                      <input type="hidden" name="_wpcf7" value="1991" />
-                      <input type="hidden" name="_wpcf7_version" value="6.0.3" />
-                      <input type="hidden" name="_wpcf7_locale" value="en_US" />
-                      <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1991-o1" />
-                      <input type="hidden" name="_wpcf7_container_post" value="0" />
-                      <input type="hidden" name="_wpcf7_posted_data_hash" value="" />
+                  <form action="{{url('/shipments/tracking')}}" method="GET" class="wpcf7-form init"
+                    aria-label="Contact form">
+                    <div class="">
+                        <span class="wpcf7-form-control-wrap">
+                            <input size="40" maxlength="400"
+                            class="wpcf7-form-control wpcf7-text" aria-invalid="false" placeholder="Tracking ID"
+                            type="text" name="code" />
+                        </span>
+                        <button
+                            class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
+                            type="submit">
+                            <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14"
+                                height="14" viewBox="0 0 14 14">
+                                <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
+                                <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
+                            </svg></span><span class="qodef-m-button-text">Track & Trace</span>
+                        </button>
                     </div>
-                    <div class="qodef-contact-form-7--order-tracking-widget">
-                      <span class="wpcf7-form-control-wrap" data-name="your-id"><input size="40" maxlength="400"
-                          class="wpcf7-form-control wpcf7-text" aria-invalid="false" placeholder="Tracking ID" value=""
-                          type="text" name="your-id" /></span>
-                      <button
-                        class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
-                        type="submit">
-                        <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14"
-                            height="14" viewBox="0 0 14 14">
-                            <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
-                            <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
-                          </svg></span><span class="qodef-m-button-text">Track & Trace</span>
-                      </button>
-                    </div>
-                    <p style="display: none !important" class="akismet-fields-container" data-prefix="_wpcf7_ak_">
-                      <label>&#916;<textarea name="_wpcf7_ak_hp_textarea" cols="45" rows="8"
-                          maxlength="100"></textarea></label><input type="hidden" id="ak_js_1" name="_wpcf7_ak_js"
-                        value="194" />
-                      <script>
-                        document
-                          .getElementById("ak_js_1")
-                          .setAttribute("value", new Date().getTime());
-                      </script>
-                    </p>
-                    <div class="wpcf7-response-output" aria-hidden="true"></div>
                   </form>
+                  <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const form = document.querySelector(".wpcf7-form");
+                        form.addEventListener("submit", function (event) {
+                            event.preventDefault(); // Prevent default form submission
+                
+                            const trackingID = form.querySelector("input[name='code']").value.trim();
+                
+                            if (trackingID) {
+                                window.location.href = `/shipments/tracking?code=${encodeURIComponent(trackingID)}`;
+                            } else {
+                                alert("Please enter a Tracking ID.");
+                            }
+                        });
+                    });
+                </script>
                 </div>
               </div>
               <a class="qodef-m-dropdown-link" itemprop="url" href="#" target="_blank">
