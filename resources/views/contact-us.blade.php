@@ -71,7 +71,7 @@
                                                     <div class="qodef-m-phone">
                                                         <h6 class="qodef-m-phone-tagline">
                                                             Support Center 24/7 </h6>
-                                                        <h2 class="qodef-m-phone-item"> 
+                                                        <h2 class="qodef-m-phone-item">
                                                             <a itemprop="telephone"
                                                                 href="tel:+260 763 297 287">
                                                                 +260 763 297 287 </a>

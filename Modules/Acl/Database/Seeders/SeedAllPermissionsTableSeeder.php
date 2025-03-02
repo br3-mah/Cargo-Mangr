@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class SeedAllPermissionsTableSeeder extends Seeder
 {
+    // Test this
     /**
      * Run the database seeds.
      *
@@ -22,11 +23,6 @@ class SeedAllPermissionsTableSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
-        // remove all permissions | use this for reset all permissions or roles only.
-        // Permission::query()->delete();
-        // PermissionGroup::query()->delete();
-
         // clear config, view, cache, and route;
         Artisan::call('refresh:cache');
 

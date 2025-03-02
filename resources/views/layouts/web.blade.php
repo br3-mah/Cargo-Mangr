@@ -28,7 +28,7 @@ ini_set('display_errors', 1);
     href="indexd784.html?feed=rss2" />
   <link rel="alternate" type="application/rss+xml" title="New world cargo &raquo; Comments Feed"
     href="indexa6da.html?feed=comments-rss2" />
-{{-- 
+{{--
 	<script type="text/javascript">
 		/* <![CDATA[ */
 		window._wpemojiSettings = { "baseUrl": "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/72x72\/", "ext": ".png", "svgUrl": "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/svg\/", "svgExt": ".svg", "source": { "concatemoji": "http:\/\/localhost\/nwc\/wp-includes\/js\/wp-emoji-release.min.js?ver=6.7.1" } };
@@ -279,7 +279,7 @@ ini_set('display_errors', 1);
     }
   </style>
 
-  
+
   <link href="web/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="web/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="web/assets/vendor/aos/aos.css" rel="stylesheet">
@@ -327,7 +327,7 @@ ini_set('display_errors', 1);
   <link rel="stylesheet" id="globefarer-style-css" href="web/wp-content/themes/globefarer/style9704.css?ver=6.7.1"
     type="text/css" media="all" />
 
-    
+
   <style id="globefarer-style-inline-css" type="text/css">
     #qodef-page-outer {
       margin-top: -80px;
@@ -706,10 +706,10 @@ ini_set('display_errors', 1);
             <div class="qodef-grid-item qodef-page-content-section qodef-col--12">
               <div data-elementor-type="wp-page" data-elementor-id="50" class="elementor elementor-50"
                 data-elementor-post-type="page">
-                
-                
+
+
                 @yield('content')
-                
+
 
               </div>
             </div>
@@ -720,6 +720,7 @@ ini_set('display_errors', 1);
       <!-- close #qodef-page-inner div from header.php -->
     </div>
     <!-- close #qodef-page-outer div from header.php -->
+    @include('components.footer')
     @include('components.top')
     @include('components.mouse')
     @include('components.Side')

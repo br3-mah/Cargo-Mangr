@@ -15,7 +15,6 @@ class AclDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
         $this->call(SeedAllPermissionsTableSeeder::class);
     }
 }

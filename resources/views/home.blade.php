@@ -417,16 +417,40 @@
                 </nav>
 
                 <div id="track" class="tab-content active">
-                <div class="search-container">
-                    <div class="search-input" style="margin: 0; padding: 0;">
-                    <input type="text" class="input form-control wpcf7-form-control wpcf7-text"
-                        placeholder="Enter Tracking Number" style="padding: 0; margin: 16px;">
+                    <div class="search-container">
+                        <div class="search-input" style="margin: 0; padding: 0;">
+                            <input type="text" id="trackingInput" class="input form-control wpcf7-form-control wpcf7-text"
+                                placeholder="Enter Tracking Number" style="padding: 0; margin: 16px;">
+                        </div>
+                    
+                        <button class="track-button" id="trackBtn">Track</button>
                     </div>
-
-                    <button class="track-button">Track</button>
-
-
-                </div>
+                    
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const trackButton = document.getElementById("trackBtn");
+                            const trackingInput = document.getElementById("trackingInput");
+                    
+                            trackButton.addEventListener("click", function () {
+                                const trackingNumber = trackingInput.value.trim();
+                    
+                                if (trackingNumber) {
+                                    window.location.href = `/shipments/tracking?code=${encodeURIComponent(trackingNumber)}`;
+                                } else {
+                                    alert("Please enter a valid Tracking Number.");
+                                }
+                            });
+                    
+                            // Optionally allow pressing "Enter" to trigger tracking
+                            trackingInput.addEventListener("keypress", function (event) {
+                                if (event.key === "Enter") {
+                                    event.preventDefault(); 
+                                    trackButton.click();
+                                }
+                            });
+                        });
+                    </script>
+                    
                 <p class="help-text">Need help? <a href="#">Get Support</a></p>
                 </div>
 
@@ -637,7 +661,7 @@
                     specifically for the Zambia-China market.
                 </p>
                 <a class="qodef-shortcode qodef-m qodef-m-button qodef-button qodef-layout--textual qodef-html--link"
-                    href="./our-services/" target="_self">
+                    href="{{ route('services') }}" target="_self">
                     <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                         width="14" height="14" viewBox="0 0 14 14">
