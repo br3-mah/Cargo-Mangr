@@ -1565,8 +1565,11 @@ class ShipmentController extends Controller
         return view('cargo::'.$adminTheme.'.pages.shipments.tracking-view');
     }
 
+
+    // Tracking Get results function
     public function tracking(Request $request)
     {
+        
         if(empty($request->code)){
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
         }

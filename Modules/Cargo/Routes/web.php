@@ -10,6 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
 Route::get('/paystack/payment/callback', 'PaystackController@handleGatewayCallback');
 Route::get('/instamojo/payment/pay-success', 'InstamojoController@success')->name('instamojo.success');
 
