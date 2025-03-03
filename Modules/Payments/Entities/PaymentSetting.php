@@ -6,6 +6,7 @@ use Spatie\LaravelSettings\Settings;
 
 class PaymentSetting extends Settings
 {
+    public $lenco_pay;
     public $paypal_payment;
     public $paystack;
     public $sslcommerz_payment;
@@ -36,6 +37,7 @@ class PaymentSetting extends Settings
                     $fields = array_merge($fields,$payments);
             }
         }
+        
         return $fields;
     }
 

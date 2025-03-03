@@ -50,7 +50,20 @@ class CheckoutController extends Controller
                 $payment->payment_method = $shipment->payment_method_id;
                 $payment->save();
             }
-            if ($shipment->payment_method_id == 'paypal_payment') {
+            
+            if ($shipment->payment_method_id == 'lenco_pay') {
+                // Retrieve Lenco Pay settings
+                $paymentSettings = resolve(\Modules\Payments\Entities\PaymentSetting::class)->toArray();
+                $lenco_pay_settings = json_decode($paymentSettings['lenco_pay'], true);
+
+                // Update environment variables if needed
+                update_env_value('LENCO_API_KEY', $lenco_pay_settings['LENCO_API_KEY'] ?? '');
+                update_env_value('LENCO_MERCHANT_ID', $lenco_pay_settings['LENCO_MERCHANT_ID'] ?? '');
+                
+                // Call the Lenco Pay controller to process the payment
+                // $lencoPay = new LencoPayController();
+                // return $lencoPay->pay($shipment);
+            } elseif ($shipment->payment_method_id == 'paypal_payment') {
                 Session::put('order_id', $shipment->id);
                 $paypal = new PaypalController;
                 return $paypal->getCheckout($shipment);
