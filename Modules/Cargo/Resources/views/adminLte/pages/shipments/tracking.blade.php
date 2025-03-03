@@ -3,10 +3,10 @@
 @php
     $pageTitle =  __('cargo::view.tracking_shipment') . ' #' . (isset($model) ? $model->code : __('cargo::view.error'));
 
-    use \Milon\Barcode\DNS1D;
-    $d = new DNS1D();
+    // use \Milon\Barcode\DNS1D;
+    // $d = new DNS1D();
 
-    $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
+    // $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
 @endphp
 
 @section('page-title', $pageTitle )
@@ -18,6 +18,7 @@
 @endsection
 
 @section('page-content')
+
     @if(isset($error))
 
         <div id="shipments-tracking-page">

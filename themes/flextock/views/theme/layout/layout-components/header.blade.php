@@ -14,16 +14,14 @@
                         <img src="{{ theme_setting_image('header','header_logo') != '' ? theme_setting_image('header','header_logo') : asset('assets/lte/cargo-logo-small-h38.svg') }}" alt="{{ config('app.name') }}" />
                     </a>
                 </div>
-
                 {{-- begin::nav --}}
                 @include('theme.layout.layout-components.header.nav')
                 {{-- end::nav --}}
             </div>
 
             <div class="mobile-items">
-                
-                <!-- dropdowns -->
 
+                <!-- dropdowns -->
                     <ul class="nav-components bd-components">
                         @if (array_key_exists('display_sign_in', $header_setting) && $header_setting['display_sign_in'])
                         <li class="components-item">
@@ -56,7 +54,6 @@
                         </li>
                         <!-- END:: Header Search -->
                         @endif
-
                     </ul>
 
 

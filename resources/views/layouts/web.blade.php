@@ -704,29 +704,56 @@ ini_set('display_errors', 1);
         <main id="qodef-page-content" class="qodef-grid qodef-layout--template" role="main">
           <div class="qodef-grid-inner clear">
             <div class="qodef-grid-item qodef-page-content-section qodef-col--12">
-              <div data-elementor-type="wp-page" data-elementor-id="50" class="elementor elementor-50"
-                data-elementor-post-type="page">
-
-
+              <div data-elementor-type="wp-page" data-elementor-id="50" class="elementor elementor-50" data-elementor-post-type="page">
                 @yield('content')
-
-
               </div>
             </div>
           </div>
         </main>
-
       </div>
-      <!-- close #qodef-page-inner div from header.php -->
     </div>
-    <!-- close #qodef-page-outer div from header.php -->
+    
     @include('components.footer')
     @include('components.top')
     @include('components.mouse')
     @include('components.Side')
   </div>
-  <!-- close #qodef-page-wrapper div from header.php -->
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const images = document.querySelectorAll("img");
 
+        images.forEach(img => {
+            const src = img.getAttribute("src");
+            if (!src) return;
+            const cachedImage = localStorage.getItem(`cachedImg_${src}`);
+            if (cachedImage) {
+                img.src = cachedImage;
+            } else {
+                cacheImage(img, src);
+            }
+        });
+
+        function cacheImage(img, src) {
+            fetch(src)
+            .then(response => response.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    const base64data = reader.result;
+                    try {
+                        localStorage.setItem(`cachedImg_${src}`, base64data);
+                        img.src = base64data;
+                    } catch (e) {
+                        console.warn("LocalStorage quota exceeded. Image not cached.");
+                    }
+                };
+                reader.readAsDataURL(blob);
+            })
+            .catch(err => console.error("Image fetch error:", err));
+        }
+    });
+  </script>
   <script>
     window.RS_MODULES = window.RS_MODULES || {};
     window.RS_MODULES.modules = window.RS_MODULES.modules || {};
