@@ -3,15 +3,16 @@
 if(env('INSTALLATION', false) == true){
     if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
         $paymentSettings = app(\Modules\Payments\Entities\PaymentSetting::class);
+
     }else{
         $paymentSettings = new stdClass();
         //define default values for the used properties
-        $paymentSettings->paypal_payment = $paymentSettings->paystack = $paymentSettings->sslcommerz_payment = $paymentSettings->instamojo_payment = $paymentSettings->razorpay = $paymentSettings->stripe_payment = $paymentSettings->voguepay = $paymentSettings->payhere = $paymentSettings->ngenius = $paymentSettings->iyzico = $paymentSettings->cash_payment = $paymentSettings->invoice_payment = null;
+        $paymentSettings->lenco_pay = $paymentSettings->paypal_payment = $paymentSettings->paystack = $paymentSettings->sslcommerz_payment = $paymentSettings->instamojo_payment = $paymentSettings->razorpay = $paymentSettings->stripe_payment = $paymentSettings->voguepay = $paymentSettings->payhere = $paymentSettings->ngenius = $paymentSettings->iyzico = $paymentSettings->cash_payment = $paymentSettings->invoice_payment = null;
     }
 }else{
     $paymentSettings = new stdClass();
     //define default values for the used properties
-    $paymentSettings->paypal_payment = $paymentSettings->paystack = $paymentSettings->sslcommerz_payment = $paymentSettings->instamojo_payment = $paymentSettings->razorpay = $paymentSettings->stripe_payment = $paymentSettings->voguepay = $paymentSettings->payhere = $paymentSettings->ngenius = $paymentSettings->iyzico = $paymentSettings->cash_payment = $paymentSettings->invoice_payment = null;
+    $paymentSettings->lenco_pay = $paymentSettings->paypal_payment = $paymentSettings->paystack = $paymentSettings->sslcommerz_payment = $paymentSettings->instamojo_payment = $paymentSettings->razorpay = $paymentSettings->stripe_payment = $paymentSettings->voguepay = $paymentSettings->payhere = $paymentSettings->ngenius = $paymentSettings->iyzico = $paymentSettings->cash_payment = $paymentSettings->invoice_payment = null;
 }
 
 
@@ -26,7 +27,50 @@ return [
     ],
 
     'payments' => [
-
+        'lenco_pay'   =>  array(
+            'label'         =>  'Lenco Pay',
+            'type'          =>  'array_boolen',
+            'migrate'       =>  true,
+            'value'         =>  ($paymentSettings->lenco_pay ? $paymentSettings->lenco_pay : ''),
+            'array'         =>  array(
+                'LENCO_PUBLIC_KEY'     =>   [
+                    'label'         =>  'Lenco Public Key',
+                    'type'          =>  'string',
+                    'value'         =>  ($paymentSettings->lenco_pay ? json_decode($paymentSettings->lenco_pay, true)['LENCO_PUBLIC_KEY'] ?? '' : ''),
+                    'required'      =>  true
+                ],
+                'LENCO_SECRET_KEY'     =>   [
+                    'label'         =>  'Lenco Secret Key',
+                    'type'          =>  'string',
+                    'value'         =>  ($paymentSettings->lenco_pay ? json_decode($paymentSettings->lenco_pay, true)['LENCO_SECRET_KEY'] ?? '' : ''),
+                    'required'      =>  true
+                ],
+                'LENCO_MERCHANT_ID'     =>   [
+                    'label'         =>  'Lenco Merchant ID',
+                    'type'          =>  'string',
+                    'value'         =>  ($paymentSettings->lenco_pay ? json_decode($paymentSettings->lenco_pay, true)['LENCO_MERCHANT_ID'] ?? '' : ''),
+                    'required'      =>  true
+                ],
+                'LENCO_WEBHOOK_URL'     =>   [
+                    'label'         =>  'Lenco Webhook URL',
+                    'type'          =>  'string',
+                    'value'         =>  ($paymentSettings->lenco_pay ? json_decode($paymentSettings->lenco_pay, true)['LENCO_WEBHOOK_URL'] ?? '' : ''),
+                    'required'      =>  true
+                ],
+                'NOTE_1' =>   [
+                    'label'         =>  'NOTE',
+                    'type'          =>  'note',
+                    'value'         =>  'Set the correct API keys in your Lenco account to process transactions.',
+                    'help_link'     =>  'https://lenco.ng/docs/api/authentication'
+                ],
+                'NOTE_2' =>   [
+                    'label'         =>  'NOTE',
+                    'type'          =>  'note',
+                    'value'         =>  'Configure webhook URL in your Lenco account for transaction notifications.',
+                    'help_link'     =>  'https://lenco.ng/docs/api/webhooks'
+                ],
+            )
+        ),
         'paypal_payment'   =>  array(
             'label'         =>  'cargo::view.paypal_payment_activation',
             'type'          =>  'array_boolen',

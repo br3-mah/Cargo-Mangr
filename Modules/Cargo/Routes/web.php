@@ -53,7 +53,7 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
             Route::post('shipments/get-estimation-cost','ShipmentController@ajaxGetEstimationCost')->name('shipments.get-estimation-cost');
         });
 
-        Route::post('/checkout/payment', 'CheckoutController@checkout')->name('payment.checkout');
+        Route::post('/checkout/payment', 'CheckoutController@checkout')->name('payment.checkout'); //pay now
         Route::middleware('auth')->prefix(env('PREFIX_ADMIN', 'admin'))->group(function() {
 
 
