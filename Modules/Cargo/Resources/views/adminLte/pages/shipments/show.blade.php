@@ -14,11 +14,44 @@
 
 @section('content')
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <!--begin::Card-->
     <div class="card card-custom gutter-b">
         <div class="p-0 card-body">
-            <!-- begin: Invoice-->
+         <!-- begin: Invoice -->
+            @if(session('message'))
+            <!-- Modal -->
+            <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ session('message') }}
+                            <img width="100" src="https://img.freepik.com/premium-vector/vector-drawing-hand-with-mobile-phone-phone-contains-numbers-entering-pin-code-owner-data-confirmation_531064-125.jpg?w=360">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Script to open modal -->
+            <script>
+                // Open the modal when the page loads
+                window.onload = function() {
+                    $('#messageModal').modal('show');
+                };
+            </script>
+            @endif
+
+
             <!-- begin: Invoice header-->
             <div class="px-8 py-8 row justify-content-center pt-md-27 px-md-0">
                 <div class="col-md-10">
@@ -287,14 +320,18 @@
                             $cash_payment = 'cash_payment';
                         @endphp
                         @if($shipment->paid == 0 && $shipment->payment_method_id != $cash_payment && $shipment->payment_method_id != $INVOICE_PAYMENT )
-                            <form action="{{ route('payment.checkout') }}" class="form-default" role="form" method="POST" id="checkout-form">
+                            {{-- <form action="{{ route('payment.checkout') }}" class="form-default" role="form" method="POST" id="checkout-form">
                                 @csrf
                                 <input type="hidden" name="shipment_id" value="{{$shipment->id}}">
                                 <button type="submit" class="mr-3 btn btn-success btn-md">{{ __('cargo::view.pay_now') }}<i class="ml-2 far fa-credit-card"></i></button>
                             </form>
                             <button class="btn btn-success btn-sm " onclick="copyToClipboard('#payment-link')">{{ __('cargo::view.copy_payment_link') }}<i class="ml-2 fas fa-copy"></i></button>
-                            <div id="payment-link" style="display: none">{{route('admin.shipments.pay', $shipment->id)}}</div>
-                        @endif
+                            <div id="payment-link" style="display: none">{{route('admin.shipments.pay', $shipment->id)}}</div> --}}
+
+                            <button type="button" class="mr-3 btn btn-success btn-md" onclick="openCheckoutModal()">
+                                {{ __('cargo::view.pay_now') }} <i class="ml-2 far fa-credit-card"></i>
+                            </button>
+                            @endif
 
                         <a href="{{route('shipments.print', array($shipment->id, 'label'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_label') }}<i class="ml-2 la la-box-open"></i></a>
                         <a href="{{route('shipments.print', array($shipment->id, 'invoice'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_invoice') }}<i class="ml-2 la la-file-invoice-dollar"></i></a>
@@ -305,6 +342,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Payment Wizard Modal -->
+            @include('cargo::adminLte.pages.shipments._partials.cargo-payment-modal')
             <!-- end: Invoice action-->
             <!-- end: Invoice-->
         </div>

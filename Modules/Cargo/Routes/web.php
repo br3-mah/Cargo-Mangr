@@ -16,6 +16,9 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 Route::get('/paystack/payment/callback', 'PaystackController@handleGatewayCallback');
 Route::get('/instamojo/payment/pay-success', 'InstamojoController@success')->name('instamojo.success');
+Route::get('/payment/callback', 'PaymentCallbackController@store')->name('callback.success');
+Route::post('/payment/callback', 'PaymentCallbackController@store')->name('callback.success');
+Route::post('shipment-update-payment','ShipmentController@updatePaymentMeth')->name('shipments.payment.update');
 
 if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
     Route::group(

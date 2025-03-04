@@ -472,7 +472,7 @@ class ShipmentController extends Controller
             'Shipment.shipping_cost' => 'nullable',
             'Shipment.return_cost'   => 'nullable',
         ]);
-        
+
         try {
             DB::beginTransaction();
             $model = Shipment::find($id);
@@ -480,7 +480,7 @@ class ShipmentController extends Controller
 
             $costs = $this->applyShipmentCost($model,$_POST['Package']);
             $model->fill($costs);
-             
+
             if (!$model->save()) {
                 throw new \Exception();
             }
@@ -1203,7 +1203,7 @@ class ShipmentController extends Controller
             $covered_cost = $covered_cost->where('from_area_id', $from_area_id)->where('to_area_id', $to_area_id);
             if(!$covered_cost->first()){
                 $covered_cost = Cost::where('from_country_id', $from_country_id)->where('to_country_id', $to_country_id);
-                
+
                 if (isset($request['from_state_id']) && isset($request['to_state_id'])) {
                     $covered_cost = $covered_cost->where('from_state_id', $from_state_id)->where('to_state_id', $to_state_id);
                     if(!$covered_cost->first()){
@@ -1254,7 +1254,7 @@ class ShipmentController extends Controller
 
 
 
-        
+
         if ($covered_cost != null) {
             if($weight > 1){
                 if(ShipmentSetting::getVal('is_def_mile_or_fees')=='2')
@@ -1278,10 +1278,10 @@ class ShipmentController extends Controller
                 $tax = $tax_for_first_one + $tax_for_exrea;
 
             }else{
-                
+
                 if(ShipmentSetting::getVal('is_def_mile_or_fees')=='2')
                 {
-                    
+
                     $return_cost = (float) $def_return_cost ?? $covered_cost->return_cost;
                     $shipping_cost = (float) ($def_shipping_cost != null ? $def_shipping_cost : $covered_cost->shipping_cost) + $package_extras;
                 } else if(ShipmentSetting::getVal('is_def_mile_or_fees')=='1')
@@ -1368,12 +1368,12 @@ class ShipmentController extends Controller
             $adminTheme = env('ADMIN_THEME', 'adminLte');return view('cargo::'.$adminTheme.'.pages.shipments.print-invoice', compact('shipment'));
         }
     }
-    
+
     public function printTracking($shipment)
     {
-  
+
         $shipment = Shipment::find($shipment);
-        $client = Client::where('id', $shipment->client_id)->first();    
+        $client = Client::where('id', $shipment->client_id)->first();
         $PackageShipment = PackageShipment::where('shipment_id',$shipment->id)->get();
         $ClientAddress = ClientAddress::where('client_id',$shipment->client_id)->first();
 
@@ -1569,19 +1569,19 @@ class ShipmentController extends Controller
     // Tracking Get results function
     public function tracking(Request $request)
     {
-        
+
         if(empty($request->code)){
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
         }
         $shipment = Shipment::where('code', $request->code)->orWhere('order_id', $request->code)->first();
-        
+
         if(empty($shipment)){
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.error_in_shipment_number')]);
         }
-        $client = Client::where('id', $shipment->client_id)->first();    
+        $client = Client::where('id', $shipment->client_id)->first();
         $PackageShipment = PackageShipment::where('shipment_id',$shipment->id)->get();
         $ClientAddress = ClientAddress::where('client_id',$shipment->client_id)->first();
-    
+
         $adminTheme = env('ADMIN_THEME', 'adminLte');
         if($shipment){
             return view('cargo::'.$adminTheme.'.pages.shipments.tracking')->with(['model' => $shipment,'client' => $client , 'PackageShipment' => $PackageShipment , 'ClientAddress' => $ClientAddress ]);
@@ -1697,5 +1697,24 @@ class ShipmentController extends Controller
         $adminTheme = env('ADMIN_THEME', 'adminLte');
         return $dataTable->render('cargo::'.$adminTheme.'.pages.shipments.report', $share_data);
     }
+
+    public function updatePaymentMeth(Request $request)
+    {
+        $shipment = Shipment::where('id', $request->shipment_id)->first();
+    
+        if (!$shipment) {
+            return response()->json(['success' => false, 'message' => 'Shipment not found'], 404);
+        }
+    
+        $shipment->update([
+            'payment_method_id' => $request->input('payment_method')
+        ]);
+    
+        return response()->json([
+            'success' => true,
+            'shipment' => $shipment
+        ], 200);
+    }
+    
 
 }
