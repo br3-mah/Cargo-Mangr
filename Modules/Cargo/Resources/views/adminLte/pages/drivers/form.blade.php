@@ -16,9 +16,9 @@
     <div class="col-md-12">
         <!--begin::Image input-->
         @if(isset($model))
-            <x-media-library-collection max-items="1" name="image" :model="$model" collection="avatar" rules="mimes:jpg,jpeg,png,gif,bmp,svg,webp"/>
+            <input type="file" max-items="1" name="image" :model="$model" collection="avatar" rules="mimes:jpg,jpeg,png,gif,bmp,svg,webp"/>
         @else
-            <x-media-library-attachment name="image" rules="mimes:jpg,jpeg,png,gif,bmp,svg,webp"/>
+            <input type="file" name="image" rules="mimes:jpg,jpeg,png,gif,bmp,svg,webp"/>
         @endif
         <!--end::Image input-->
 
