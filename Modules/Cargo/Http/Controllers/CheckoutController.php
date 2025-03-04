@@ -22,10 +22,12 @@ use Carbon\Carbon;
 use Modules\Cargo\Utility\PayhereUtility;
 use Modules\Cargo\Entities\Coupon;
 use Modules\Cargo\Entities\CouponUsage;
+use Modules\Cargo\Traits\PawaPay;
 
 class CheckoutController extends Controller
 {
 
+    use PawaPay;
     public function __construct()
     {
         //
@@ -34,9 +36,11 @@ class CheckoutController extends Controller
     //check the selected payment gateway and redirect to that controller accordingly
     public function checkout(Request $request)
     {
+
         $request->validate([
             'shipment_id' => 'required|exists:shipments,id',
         ]);
+
         $shipment = Shipment::find($request->shipment_id);
         // return \App\BusinessSetting::where("key","payment_gateway")->where("value","1")->get();
         if ($shipment->paid == 0 && $shipment->payment_method_id != "cash_payment") {
@@ -50,8 +54,20 @@ class CheckoutController extends Controller
                 $payment->payment_method = $shipment->payment_method_id;
                 $payment->save();
             }
-            
-            if ($shipment->payment_method_id == 'lenco_pay') {
+
+            if ($shipment->payment_method_id == 'mobile') {
+                $status = $this->deposit($request->all(), $shipment->id);
+                if ($status) {
+                    session()->flash('message', 'Payment submitted successfully. Please enter the Mobile Money PIN on your phone to complete the Transaction.');
+                    session()->flash('type', 'mobile');
+                } else {
+                    session()->flash('message', 'Failed to process payment. Please try again, or contact the Administrator.');
+                    session()->flash('type', 'mobile');
+                }
+                
+                return redirect()->back();
+                
+            }elseif ($shipment->payment_method_id == 'lenco_pay') {
                 // Retrieve Lenco Pay settings
                 $paymentSettings = resolve(\Modules\Payments\Entities\PaymentSetting::class)->toArray();
                 $lenco_pay_settings = json_decode($paymentSettings['lenco_pay'], true);
@@ -59,7 +75,7 @@ class CheckoutController extends Controller
                 // Update environment variables if needed
                 update_env_value('LENCO_API_KEY', $lenco_pay_settings['LENCO_API_KEY'] ?? '');
                 update_env_value('LENCO_MERCHANT_ID', $lenco_pay_settings['LENCO_MERCHANT_ID'] ?? '');
-                
+
                 // Call the Lenco Pay controller to process the payment
                 // $lencoPay = new LencoPayController();
                 // return $lencoPay->pay($shipment);
