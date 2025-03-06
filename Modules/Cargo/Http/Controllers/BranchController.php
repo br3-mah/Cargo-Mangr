@@ -10,6 +10,7 @@ use Modules\Cargo\Http\Requests\BranchRequest;
 use Modules\Cargo\Entities\Branch;
 use Modules\Cargo\Entities\Shipment;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Modules\Cargo\Http\Helpers\UserRegistrationHelper;
 use Modules\Users\Events\UserCreatedEvent;
 use Modules\Users\Events\UserUpdatedEvent;
@@ -109,7 +110,18 @@ class BranchController extends Controller
         if (!$branch->save()){
             throw new \Exception();
         }
-        $branch->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $branch->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($branch->avatar) {
+                Storage::disk('public')->delete($branch->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $branch->avatar = $imagePath;
+            $branch->save();
+        }
         return redirect()->route('branches.index')->with(['message_alert' => __('cargo::messages.created')]);
 
     }

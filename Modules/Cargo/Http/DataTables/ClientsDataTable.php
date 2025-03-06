@@ -153,7 +153,7 @@ class ClientsDataTable extends DataTable
     /**
      * Get filename for export.
      *
-     * @return string
+     * @return string   
      */
     protected function filename()
     {

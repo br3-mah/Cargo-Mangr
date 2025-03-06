@@ -8,7 +8,7 @@
 @include('cargo::adminLte.components.inputs.phone')
 
 <!--begin::Col Avatar -->
-<div class="row mb-6">
+{{-- <div class="row mb-6">
     <!--begin::Label-->
     <label class="col-form-label fw-bold fs-6">{{ __('cargo::view.table.avatar') }}</label>
     <!--end::Label-->
@@ -33,7 +33,93 @@
         @enderror
 
     </div>
+</div> --}}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-12">
+            <input
+                type="file"
+                id="imageUpload"
+                class="form-control d-none"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                name="image"
+            >
+            <label
+                for="imageUpload"
+                class="btn btn-primary w-100"
+            >
+                Choose Image
+            </label>
+
+            <div id="fileInfo" class="text-muted mt-2 small"></div>
+
+            <div
+                id="previewContainer"
+                class="mt-3 position-relative d-none"
+            >
+                <div class="preview-wrapper" style="width: 200px; height: 200px; overflow: hidden; position: relative;">
+                    <img
+                        id="previewImage"
+                        class="img-fluid position-absolute top-50 start-50 translate-middle"
+                        style="min-width: 100%; min-height: 100%; object-fit: cover;"
+                    >
+                    <button
+                        id="removeImageBtn"
+                        class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle"
+                    >
+                        ×
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const upload = document.getElementById('imageUpload');
+    const preview = document.getElementById('previewImage');
+    const previewContainer = document.getElementById('previewContainer');
+    const fileInfo = document.getElementById('fileInfo');
+    const removeBtn = document.getElementById('removeImageBtn');
+
+    const showError = (message) => {
+        fileInfo.textContent = message;
+        fileInfo.className = 'text-danger mt-2 small';
+        upload.value = '';
+    };
+
+    upload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            return showError('Invalid file type. Use JPEG, PNG, GIF, or WebP.');
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            return showError('File too large. Maximum 5MB.');
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            previewContainer.classList.remove('d-none');
+            fileInfo.textContent = file.name;
+            fileInfo.className = 'text-muted mt-2 small';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    removeBtn.addEventListener('click', () => {
+        upload.value = '';
+        previewContainer.classList.add('d-none');
+        fileInfo.textContent = '';
+    });
+});
+</script>
 <!--end::Col-->
 
 

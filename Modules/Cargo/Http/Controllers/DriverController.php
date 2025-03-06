@@ -11,6 +11,7 @@ use Modules\Cargo\Entities\Driver;
 use Modules\Cargo\Entities\Branch;
 use Modules\Cargo\Entities\Mission;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Modules\Cargo\Http\Helpers\UserRegistrationHelper;
 use Modules\Users\Events\UserCreatedEvent;
 use Modules\Users\Events\UserUpdatedEvent;
@@ -115,7 +116,18 @@ class DriverController extends Controller
         if (!$model->save()){
             throw new \Exception();
         }
-        $model->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $model->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($model->avatar) {
+                Storage::disk('public')->delete($model->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $model->avatar = $imagePath;
+            $model->save();
+        }
         event(new AddDriver($model));
         return redirect()->route('drivers.index')->with(['message_alert' => __('cargo::messages.created')]);
 

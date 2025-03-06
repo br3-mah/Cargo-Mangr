@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+$tabTitles = [""];
 ?>
 
 <!DOCTYPE html>
@@ -712,13 +713,13 @@ ini_set('display_errors', 1);
         </main>
       </div>
     </div>
-    
+
     @include('components.footer')
     @include('components.top')
     @include('components.mouse')
     @include('components.Side')
   </div>
-  
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
         const images = document.querySelectorAll("img");
@@ -2244,6 +2245,10 @@ ini_set('display_errors', 1);
   <script type="text/javascript"
     src="web/wp-content/plugins/elementor-pro/assets/js/elements-handlers.mindb68.js?ver=3.27.1"
     id="pro-elements-handlers-js"></script>
+    <script>
+        var tabTitles = <?php echo json_encode($tabTitles); ?>;
+    </script>
+
   <script id="rs-initialisation-scripts">
     var tpj = jQuery;
 
@@ -2318,7 +2323,7 @@ ini_set('display_errors', 1);
             },
             tabs: {
               enable: true,
-              tmp: '<div class="tp-tab-title">param1</div>',
+              tmp: tabTitles.map(title => `<div class="tp-tab-title">${title}</div>`).join(''),
               style: "globefarer_tabs",
               hide_onmobile: true,
               hide_under: "680px",

@@ -26,7 +26,7 @@
         $all_captains  = Modules\Cargo\Entities\Driver::where('is_archived', 0)->where('branch_id',$branch_id)->count();
         $all_staff     = Modules\Cargo\Entities\Staff::where('branch_id',$branch_id)->count();
     }
-    
+
 
 @endphp
 
@@ -202,7 +202,7 @@
         </div>
     </div>
     <!-- ./col -->
-    
+
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <div class="small-box bg-success">
@@ -310,15 +310,15 @@
         $delivered_client_shipments    = Modules\Cargo\Entities\Shipment::where('client_id', $client_id )->where('client_status', Modules\Cargo\Entities\Shipment::CLIENT_STATUS_DELIVERED)->count();
 
         $transactions                  = Modules\Cargo\Entities\Transaction::where('client_id', $client_id )->orderBy('created_at','desc')->sum('value');
-        $DEBIT_transactions            = Modules\Cargo\Entities\Transaction::where('client_id', $client_id )->where('value', 'like', '%-%')->orderBy('created_at','desc')->sum('value'); 
+        $DEBIT_transactions            = Modules\Cargo\Entities\Transaction::where('client_id', $client_id )->where('value', 'like', '%-%')->orderBy('created_at','desc')->sum('value');
         $CREDIT_transactions           = Modules\Cargo\Entities\Transaction::where('client_id', $client_id )->where('value', 'not like', '%-%')->orderBy('created_at','desc')->sum('value');
-        
+
         // DEBIT  -
         // CREDIT  +
     @endphp
 
-    <div class="col-lg-12">
-        <!--begin::Stats Widget 30-->
+    {{-- <div class="col-lg-12">
+        <!--begin::Stats Widget 30 Customer Wallet-->
         <div class="card card-custom bgi-no-repeat card-stretch gutter-b">
             <!--begin::Body-->
             <div class="card-body">
@@ -329,12 +329,12 @@
                     <div class="mb-3 font-weight-bold text-success mt-4">{{format_price($transactions)}}</div>
                 </a>
                 <p class="m-0 text-dark-75 font-weight-bolder font-size-h5">{{ __('cargo::view.client_wallet_dashboard') }}.</p>
-                
+
             </div>
             <!--end::Body-->
         </div>
         <!--end::Stats Widget 30-->
-    </div>
+    </div> --}}
 
     <div class="col-lg-3 col-6">
         <!-- small box -->
