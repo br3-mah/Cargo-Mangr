@@ -414,7 +414,7 @@
     
       <div class="dashboard-container">
         <header class="dashboard-header">
-          <h1 class="dashboard-title">Cargo Dashboard</h1>
+          <h1 class="dashboard-title">Welcome, {{ auth()->user()->name }}</h1>
           
           <div class="quick-actions">
             <button class="action-button primary-btn">
