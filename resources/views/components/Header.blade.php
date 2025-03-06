@@ -39,13 +39,15 @@
       <div class="qodef-widget-holder qodef--right">
         <div id="globefarer_core_icon_list_item-17"
           class="widget widget_globefarer_core_icon_list_item qodef-top-bar-widget">
-          <div
-            class="qodef-shortcode qodef-m  qodef-icon-list-item qodef-icon--custom-icon qodef-title-tag--theme-specific">
-            <span class="qodef-m-list-title"> <a itemprop="url" href="#" target="_self">
-                <span class="qodef-m-list-title-inner"> <span class="qodef-m-list-title-icon"> <img loading="lazy"
+          <div class="qodef-shortcode qodef-m  qodef-icon-list-item qodef-icon--custom-icon qodef-title-tag--theme-specific">
+            <span class="qodef-m-list-title">
+                <a itemprop="url" href="#" target="_self">
+                    <span class="qodef-m-list-title-inner"> <span class="qodef-m-list-title-icon"> <img loading="lazy"
                       width="20" height="17" src="web/wp-content/uploads/2021/08/Support-Icon-top-header-1.png"
                       class="attachment-full size-full" alt="d" decoding="async" /> </span>
-                  <span class="qodef-m-list-title-text">Support 24/7</span> </span> </a> </span>
+                    <span class="qodef-m-list-title-text">Support 24/7</span> </span>
+                </a>
+            </span>
           </div>
         </div>
         <div id="block-42" class="widget widget_block qodef-top-bar-widget">
@@ -60,6 +62,18 @@
                       height="18" src="web/wp-content/uploads/2021/08/Tracking-Icon-1.png" class="attachment-full size-full"
                       alt="d" decoding="async" /> </span>
                   <span class="qodef-m-list-title-text">Track and Trace</span> </span> </a>
+            </span>
+          </div>
+        </div>
+        <div id="globefarer_core_icon_list_item-18"
+          class="widget widget_globefarer_core_icon_list_item qodef-top-bar-widget">
+          <div
+            class="qodef-shortcode qodef-m  qodef-icon-list-item qodef-icon--custom-icon qodef-title-tag--theme-specific">
+            <span class="qodef-m-list-title"> <a itemprop="url" href="{{ route('admin.dashboard') }}" target="_self"> <span
+                  class="qodef-m-list-title-inner"> <span class="qodef-m-list-title-icon"> <img loading="lazy" width="14"
+                      height="18" src="web/wp-content/uploads/2021/08/Tracking-Icon-1.png" class="attachment-full size-full"
+                      alt="d" decoding="async" /> </span>
+                  <span class="qodef-m-list-title-text">SignIn</span> </span> </a>
             </span>
           </div>
         </div>
@@ -635,9 +649,9 @@
                         const form = document.querySelector(".wpcf7-form");
                         form.addEventListener("submit", function (event) {
                             event.preventDefault(); // Prevent default form submission
-                
+
                             const trackingID = form.querySelector("input[name='code']").value.trim();
-                
+
                             if (trackingID) {
                                 window.location.href = `/shipments/tracking?code=${encodeURIComponent(trackingID)}`;
                             } else {

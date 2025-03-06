@@ -50,13 +50,13 @@ $driver = 5;
 
                 @if ($user_role == $client)
                     <!-- shipment api -->
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="{{ fr_route('shipments.add.api') }}"
                             class="nav-link {{ areActiveRoutes(['shipments.add.api']) }}">
                             <i class="fas fa-plus fa-fw"></i>
                             <p>{{ __('cargo::view.shipment_apis') }}</p>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
 
                 <!-- shipment barcode scanner -->
@@ -160,7 +160,7 @@ $driver = 5;
                         </a>
                     </li>
                 @endif
-                
+
                 <!-- Create new Receiver -->
                 @if (auth()->user()->can('create-users') || $user_role == $admin)
                     <li class="nav-item">

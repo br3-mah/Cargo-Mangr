@@ -27,6 +27,7 @@ use Modules\Cargo\Events\AddClient;
 use Modules\Acl\Repositories\AclRepository;
 use Modules\Cargo\Http\Requests\RegisterRequest;
 use Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
@@ -190,7 +191,18 @@ class ClientController extends Controller
             }
         }
 
-        $client->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $client->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($client->avatar) {
+                Storage::disk('public')->delete($client->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $client->avatar = $imagePath;
+            $client->save();
+        }
         event(new AddClient($client));
         return redirect()->route('clients.index')->with(['message_alert' => __('cargo::messages.created')]);
 
@@ -386,6 +398,7 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, $id)
     {
+        
         if (env('DEMO_MODE') == 'On') {
             return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
         }
@@ -458,7 +471,18 @@ class ClientController extends Controller
         }
         $client_addresses->each->delete();
 
-        $client->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $client->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($client->avatar) {
+                Storage::disk('public')->delete($client->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $client->avatar = $imagePath;
+            $client->save();
+        }
         return redirect()->back()->with(['message_alert' => __('cargo::messages.saved')]);
     }
 
@@ -779,7 +803,18 @@ class ClientController extends Controller
             }
         }
 
-        $client->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $client->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($client->avatar) {
+                Storage::disk('public')->delete($client->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $client->avatar = $imagePath;
+            $client->save();
+        }
         event(new AddClient($client));
 
         return response()->json([

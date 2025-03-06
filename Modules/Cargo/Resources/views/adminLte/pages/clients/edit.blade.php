@@ -16,7 +16,7 @@
                 <h3 class="fw-bolder m-0">{{ __('cargo::view.edit_client') }}</h3>
             </div>
             <!--end::Card title-->
-
+            
         </div>
         <!--begin::Card header-->
         <!--begin::Content-->
