@@ -13,6 +13,9 @@ class CreateAlterClientsTable extends Migration
      */
     public function up()
     {
+        Schema::table('clients', function (Blueprint $table) {
+            $table->text('avatar')->nullable();
+        });
         Schema::table('drivers', function (Blueprint $table) {
             $table->text('avatar')->nullable();
         });
@@ -20,12 +23,6 @@ class CreateAlterClientsTable extends Migration
             $table->text('avatar')->nullable();
         });
         Schema::table('branches', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
-        });
-        Schema::table('users', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
-        });
-        Schema::table('clients', function (Blueprint $table) {
             $table->text('avatar')->nullable();
         });
     }
