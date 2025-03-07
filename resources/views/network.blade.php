@@ -534,6 +534,9 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             href="#" target="_self">
                                                                             United Arab Emirates (Dubai) </a>
                                                                     </h4>
+                                                                    <h6>
+                                                                        Services: Air and sea freight, supplier payments, sourcing and verifying goods, warehousing, and full container loads.
+                                                                    </h6>
                                                                 </div>
                                                             </div>
                                                             {{-- <div
@@ -546,7 +549,7 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                     </h4>
                                                                 </div>
                                                             </div> --}}
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -555,7 +558,7 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             Saudi Arabia </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                             <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
@@ -653,6 +656,9 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             href="#" target="_self">
                                                                             China </a>
                                                                     </h4>
+                                                                    <h6>Cities Served: Guangzhou, Shenzhen, Yiwu, Shanghai
+                                                                        Services: Air and sea freight, supplier payments, sourcing and verifying goods, warehousing, and full container loads.
+                                                                    </h6>
                                                                 </div>
                                                             </div>
                                                             {{-- <div
@@ -665,7 +671,7 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                     </h4>
                                                                 </div>
                                                             </div> --}}
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -674,8 +680,8 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             Japan </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
-                                                            <div
+                                                            </div> --}}
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -684,7 +690,7 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             Korea </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                             {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
@@ -695,7 +701,7 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                     </h4>
                                                                 </div>
                                                             </div> --}}
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -704,8 +710,8 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             India </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
-                                                            <div
+                                                            </div> --}}
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -714,7 +720,7 @@ Services: Full logistics management, warehousing, local delivery, and distributi
                                                                             Hong Kong </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
                                                 </div>
