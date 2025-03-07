@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ContactUsController extends Controller
 {
-        public function sendContact(Request $request): JsonResponse
+        public function sendContact(Request $request)
         {
             // Validate input
             $validator = Validator::make($request->all(), [
@@ -29,7 +29,7 @@ class ContactUsController extends Controller
             ContactUs::create($request->all());
     
             // Send email to admin
-            $adminEmail = 'admin@example.com'; // Replace with actual admin email
+            $adminEmail = 'nyeleti.bremah@gmail.com'; // Replace with actual admin email
             Mail::to($adminEmail)->send(new ContactNotification($request->all()));
     
             // Send confirmation email to the user
@@ -38,7 +38,7 @@ class ContactUsController extends Controller
                 'email' => $request->email,
                 'message' => "Thank you for contacting us. We have received your message and will respond soon."
             ]));
-    
-            return response()->json(['success' => true, 'message' => 'Message sent successfully.'], 200);
+            // Store success message in session and redirect back
+            return redirect()->back()->with('success', 'Your message has been sent successfully.');
         }
 }

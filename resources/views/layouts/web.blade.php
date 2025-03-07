@@ -29,14 +29,11 @@ $tabTitles = [""];
     href="indexd784.html?feed=rss2" />
   <link rel="alternate" type="application/rss+xml" title="New world cargo &raquo; Comments Feed"
     href="indexa6da.html?feed=comments-rss2" />
-{{--
-	<script type="text/javascript">
-		/* <![CDATA[ */
-		window._wpemojiSettings = { "baseUrl": "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/72x72\/", "ext": ".png", "svgUrl": "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/svg\/", "svgExt": ".svg", "source": { "concatemoji": "http:\/\/localhost\/nwc\/wp-includes\/js\/wp-emoji-release.min.js?ver=6.7.1" } };
-		/*! This file is auto-generated */
-		!function (i, n) { var o, s, e; function c(e) { try { var t = { supportTests: e, timestamp: (new Date).valueOf() }; sessionStorage.setItem(o, JSON.stringify(t)) } catch (e) { } } function p(e, t, n) { e.clearRect(0, 0, e.canvas.width, e.canvas.height), e.fillText(t, 0, 0); var t = new Uint32Array(e.getImageData(0, 0, e.canvas.width, e.canvas.height).data), r = (e.clearRect(0, 0, e.canvas.width, e.canvas.height), e.fillText(n, 0, 0), new Uint32Array(e.getImageData(0, 0, e.canvas.width, e.canvas.height).data)); return t.every(function (e, t) { return e === r[t] }) } function u(e, t, n) { switch (t) { case "flag": return n(e, "\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f", "\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f") ? !1 : !n(e, "\ud83c\uddfa\ud83c\uddf3", "\ud83c\uddfa\u200b\ud83c\uddf3") && !n(e, "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f", "\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f"); case "emoji": return !n(e, "\ud83d\udc26\u200d\u2b1b", "\ud83d\udc26\u200b\u2b1b") }return !1 } function f(e, t, n) { var r = "undefined" != typeof WorkerGlobalScope && self instanceof WorkerGlobalScope ? new OffscreenCanvas(300, 150) : i.createElement("canvas"), a = r.getContext("2d", { willReadFrequently: !0 }), o = (a.textBaseline = "top", a.font = "600 32px Arial", {}); return e.forEach(function (e) { o[e] = t(a, e, n) }), o } function t(e) { var t = i.createElement("script"); t.src = e, t.defer = !0, i.head.appendChild(t) } "undefined" != typeof Promise && (o = "wpEmojiSettingsSupports", s = ["flag", "emoji"], n.supports = { everything: !0, everythingExceptFlag: !0 }, e = new Promise(function (e) { i.addEventListener("DOMContentLoaded", e, { once: !0 }) }), new Promise(function (t) { var n = function () { try { var e = JSON.parse(sessionStorage.getItem(o)); if ("object" == typeof e && "number" == typeof e.timestamp && (new Date).valueOf() < e.timestamp + 604800 && "object" == typeof e.supportTests) return e.supportTests } catch (e) { } return null }(); if (!n) { if ("undefined" != typeof Worker && "undefined" != typeof OffscreenCanvas && "undefined" != typeof URL && URL.createObjectURL && "undefined" != typeof Blob) try { var e = "postMessage(" + f.toString() + "(" + [JSON.stringify(s), u.toString(), p.toString()].join(",") + "));", r = new Blob([e], { type: "text/javascript" }), a = new Worker(URL.createObjectURL(r), { name: "wpTestEmojiSupports" }); return void (a.onmessage = function (e) { c(n = e.data), a.terminate(), t(n) }) } catch (e) { } c(n = f(s, u, p)) } t(n) }).then(function (e) { for (var t in e) n.supports[t] = e[t], n.supports.everything = n.supports.everything && n.supports[t], "flag" !== t && (n.supports.everythingExceptFlag = n.supports.everythingExceptFlag && n.supports[t]); n.supports.everythingExceptFlag = n.supports.everythingExceptFlag && !n.supports.flag, n.DOMReady = !1, n.readyCallback = function () { n.DOMReady = !0 } }).then(function () { return e }).then(function () { var e; n.supports.everything || (n.readyCallback(), (e = n.source || {}).concatemoji ? t(e.concatemoji) : e.wpemoji && e.twemoji && (t(e.twemoji), t(e.wpemoji))) })) }((window, document), window._wpemojiSettings);
-		/* ]]> */
-	</script> --}}
+    @php 
+    $model = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
+@endphp
+<link rel="shortcut icon" href="{{ $model->getFirstMediaUrl('system_logo') ? $model->getFirstMediaUrl('system_logo') : asset('assets/lte/media/logos/favicon.png') }}" />
+
 
   <script type="text/javascript">
     /* <![CDATA[ */
@@ -1787,14 +1784,6 @@ $tabTitles = [""];
   <script type="text/javascript" src="web/wp-content/plugins/contact-form-7/includes/swv/js/index1eb7.js?ver=6.0.3"
     id="swv-js"></script>
   <script type="text/javascript" id="contact-form-7-js-before">
-    /* <![CDATA[ */
-    var wpcf7 = {
-      api: {
-        root: "http:\/\/localhost\/nwc\/index.php?rest_route=\/",
-        namespace: "contact-form-7\/v1",
-      },
-    };
-    /* ]]> */
   </script>
   <script type="text/javascript" src="web/wp-content/plugins/contact-form-7/includes/js/index1eb7.js?ver=6.0.3"
     id="contact-form-7-js"></script>
@@ -1863,7 +1852,7 @@ $tabTitles = [""];
         iconClose: '<svg class="qodef-svg--close" xmlns="http:\/\/www.w3.org\/2000\/svg" xmlns:xlink="http:\/\/www.w3.org\/1999\/xlink" width="19.778" height="19.778" viewBox="0 0 19.778 19.778"><g transform="translate(-30 -30)"><rect width="13" height="2" transform="translate(31.414 30) rotate(45)"\/><rect width="13" height="2" transform="translate(48.364 49.778) rotate(-135)"\/><rect width="13" height="2" transform="translate(30 48.364) rotate(-45)"\/><rect width="13" height="2" transform="translate(49.778 31.414) rotate(135)"\/><\/g><\/svg>',
         qodefStickyHeaderScrollAmount: 650,
         topAreaHeight: 0,
-        restUrl: "http:\/\/localhost\/nwc\/index.php?rest_route=\/",
+        
         restNonce: "c07de431ab",
         paginationRestRoute: "globefarer\/v1\/get-posts",
         headerHeight: 80,
@@ -2150,8 +2139,7 @@ $tabTitles = [""];
       ajaxurl: "\/\/wp-admin\/admin-ajax.php",
       nonce: "0fd65747d2",
       urls: {
-        assets: "\/wp-content\/plugins\/elementor-pro\/assets\/",
-        rest: "\/\/index.php?rest_route=\/",
+        
       },
       settings: {
         lazy_load_background_images: true

@@ -22,11 +22,13 @@ use Modules\Cargo\Entities\ClientAddress;
 use Modules\Cargo\Http\Requests\AddressRequest;
 use Modules\Cargo\Entities\BusinessSetting;
 use app\Http\Helpers\ApiHelper;
+use App\Mail\WelcomeMail;
 use DB;
 use Modules\Cargo\Events\AddClient;
 use Modules\Acl\Repositories\AclRepository;
 use Modules\Cargo\Http\Requests\RegisterRequest;
 use Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -265,6 +267,8 @@ class ClientController extends Controller
         event(new AddClient($client));
         Auth::loginUsingId($client->user_id);
 
+        // Send Welcome Email
+        Mail::to($client->email)->send(new WelcomeMail($client));
         if($calc)
         {
             return $client;

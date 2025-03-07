@@ -416,7 +416,7 @@
                     <div class="qodef-grid-item qodef-page-content-section qodef-col--12">
                         <div data-elementor-type="wp-page" data-elementor-id="3193" class="elementor elementor-3193"
                             data-elementor-post-type="page">
-                            <section
+                            <section style="padding-top:12px;"
                                 class="elementor-section elementor-top-section elementor-element elementor-element-466a360 elementor-section-full_width qodef-elementor-content-grid elementor-section-height-default elementor-section-height-default"
                                 data-id="466a360" data-element_type="section">
                                 <div class="elementor-container elementor-column-gap-no">

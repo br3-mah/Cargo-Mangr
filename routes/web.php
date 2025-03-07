@@ -27,6 +27,7 @@ Route::get('/global-network', 'GlobalNetworkController@index')->name('network');
 Route::get('/privacy-notice', 'PrivacyNoticeController@index')->name('privacy');
 Route::get('/terms-of-use', 'TermsOfUseController@index')->name('terms');
 Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
+Route::post('contact', 'Api\ContactUsController@sendContact')->name('contact.store');
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
 //     Route::group(
