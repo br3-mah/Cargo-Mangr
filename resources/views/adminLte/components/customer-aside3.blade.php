@@ -2,15 +2,11 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="
     margin-bottom: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    background-image: linear-gradient(to bottom, rgb(255, 204, 0), rgba(255, 153, 0, 0.681)), /* Deep Yellow Transparent Overlay */
-                      url('https://www.expressunload.com/wp-content/uploads/2024/02/shutterstock_426744064-scaled-1.jpg'); /* Background Image */
-    background-size: cover;
-    background-position: center;
-    /* Remove background-blend-mode: overlay; */
+    background: rgb(255, 191, 0);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border: none;
-    width: 300px; /* Make it wider */
+    width: auto; /* Increased width */
 ">
     <!-- Logo Container -->
     <div class="aside-logo flex-column-auto brand-link" id="kt_aside_logo" style="
@@ -27,7 +23,7 @@
 
     <div class="sidebar" style="padding-top: 1rem;">
         <!-- User Panel with Streamlined styling -->
-        {{-- <div class="user-panel mt-2 pb-3 mb-2 d-flex" style="
+        <div class="user-panel mt-2 pb-3 mb-2 d-flex" style="
             padding: 0.75rem 1rem;
             align-items: center;
             margin: 0 15px;
@@ -35,33 +31,33 @@
             background: rgba(0, 191, 255, 0.15);
         ">
             <div class="image">
-                <img src="{{ auth()->user()->getFirstMediaUrl('avatar')? auth()->user()->getFirstMediaUrl('avatar'): asset('assets/lte/media/avatars/blank.png') }}"
+                <img src="{{ auth()->user()->avatar ? Storage::url(auth()->user()->avatar) : asset('assets/lte/media/avatars/blank.png') }}"
                     class="img-circle elevation-2" alt="User Image" style="
                         width: 40px;
                         height: 40px;
                         border: 2px solid #00bfff;
-                        box-shadow: 0 2px 8px rgba(0, 191, 255, 0.3);
                     ">
             </div>
             <div class="info" style="margin-left: 0.75rem;">
                 <a href="#" class="d-block" style="
                     color: #343a40;
+                    font-weight: 500;
                     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
                     font-size: 0.9rem;
                 ">{{ auth()->user()->name }}
-                    <small
-                        class="badge badge-sm {{ auth()->user()->role == 1 ? 'badge-light-success' : 'badge-light-primary' }} fw-bolder fs-8 px-2 py-1 ms-2"
+                    <span
+                        class="badge {{ auth()->user()->role == 1 ? 'badge-light-success' : 'badge-light-primary' }} fw-bolder fs-8 px-2 py-1 ms-2"
                         style="
                             background: {{ auth()->user()->role == 1 ? 'rgba(0, 191, 255, 0.9)' : 'rgba(255, 255, 255, 0.9)' }};
                             color: {{ auth()->user()->role == 1 ? '#000' : '#000' }};
                             border-radius: 10px;
-                            font-size: 0.4rem;
+                            font-size: 0.7rem;
                         ">
                         {{ auth()->user()->user_role }}
-                    </small>
+                    </span>
                 </a>
             </div>
-        </div> --}}
+        </div>
 
         <!--begin::Aside menu-->
         <nav class="mt-2" style="padding-bottom: 30px !important;">
@@ -95,10 +91,7 @@
                     color: #00bfff;
                     letter-spacing: 0.5px;
                     margin-top: 1rem;
-                ">
-                MENU
-                
-            </li>
+                ">@lang('view.pages')</li>
 
                 @if (app('hook')->get('aside_menu'))
                     @foreach (aasort(app('hook')->get('aside_menu'), 'order') as $componentView)
@@ -121,7 +114,9 @@
                             @endforeach
                         @endif
                     </ul>
-                </li> {{-- <li class="nav-item {{ areActiveRoutes(['countries.index','areas.index','deliveryTime.index','packages.index','shipments.settings.fees','shipments.settings','admin.settings','admin.settings.notifications','theme-setting.edit','languages.index','currencies.index','shipments.index','fees.index','admin.settings.google','default-theme.edit','backup.database'],'menu-is-opening menu-open active') }}">
+                </li>
+                
+                 {{-- <li class="nav-item {{ areActiveRoutes(['countries.index','areas.index','deliveryTime.index','packages.index','shipments.settings.fees','shipments.settings','admin.settings','admin.settings.notifications','theme-setting.edit','languages.index','currencies.index','shipments.index','fees.index','admin.settings.google','default-theme.edit','backup.database'],'menu-is-opening menu-open active') }}">
                     <a href="#" class="nav-link {{ areActiveRoutes(['countries.index','areas.index','deliveryTime.index','packages.index','shipments.settings.fees','shipments.settings','admin.settings','admin.settings.notifications','theme-setting.edit','languages.index','currencies.index','shipments.index','fees.index','admin.settings.google','default-theme.edit','backup.database'],'menu-is-opening menu-open active') }}">
                         <i class="fas fa-cogs nav-icon" style="color: #00bfff;"></i>
                         <p>
@@ -204,24 +199,195 @@
             </ul>
         </nav>
         <!--end::Aside menu-->
-    </div>... <!-- Custom bottom decoration -->
+    </div> <!-- Custom bottom decoration -->
     <div style="position: sticky; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to top, rgba(0,0,0,0.3), transparent); pointer-events: none;"></div>
 </aside>
 <!--end::Aside-->
 
-<style>
-.main-sidebar {
-    transition: all 0.3s ease;
-    font-family: 'Arial', sans-serif;
-}
-
-/* Enhanced Glassmorphism */
-.main-sidebar {
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-}
+<style>/* Enhanced Glassmorphism with Animated Background */
+    .main-sidebar {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(0, 191, 255, 0.2));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        z-index: 10;
+        transition: all 0.4s ease;
+    }
+    
+    /* Animated background elements */
+    .main-sidebar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 20%),
+            radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 20%),
+            radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 20%),
+            radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.03) 0%, transparent 20%);
+        z-index: -1;
+        opacity: 0.8;
+        animation: backgroundShift 15s ease-in-out infinite alternate;
+    }
+    
+    .main-sidebar::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        background: linear-gradient(45deg, 
+            rgba(0, 191, 255, 0.1) 0%, 
+            rgba(255, 193, 7, 0.1) 30%, 
+            rgba(0, 191, 255, 0.1) 60%, 
+            rgba(255, 193, 7, 0.1) 100%);
+        z-index: -2;
+        filter: blur(30px);
+        animation: rotateGradient 20s linear infinite;
+        opacity: 0.5;
+    }
+    
+    /* Subtle floating particles */
+    .sidebar::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(circle at 20% 35%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 0.1%, transparent 0.2%),
+            radial-gradient(circle at 75% 44%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 0.1%, transparent 0.2%),
+            radial-gradient(circle at 46% 52%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 0.1%, transparent 0.2%),
+            radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 0.1%, transparent 0.2%),
+            radial-gradient(circle at 30% 75%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 0.1%, transparent 0.2%),
+            radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 0.1%, transparent 0.2%);
+        background-size: 120% 120%;
+        z-index: -1;
+        opacity: 0.6;
+        pointer-events: none;
+        animation: floatingParticles 10s ease infinite;
+    }
+    
+    /* Enhanced hover effects */
+    .nav-link:hover {
+        background: rgba(0, 191, 255, 0.15);
+        box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+        transform: translateX(5px);
+    }
+    
+    .nav-link.active {
+        background: rgba(0, 191, 255, 0.25);
+        box-shadow: 0 4px 20px rgba(0, 191, 255, 0.25);
+        border-left: 3px solid #00bfff;
+    }
+    
+    /* Animated nav items */
+    .nav-link {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: translateX(-100%);
+    }
+    
+    .nav-link:hover::after {
+        animation: shimmer 1.5s ease-out;
+    }
+    
+    /* User panel glow effect */
+    .user-panel {
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2);
+        background: rgba(0, 191, 255, 0.1);
+        animation: subtlePulse 3s ease-in-out infinite alternate;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .user-panel .img-circle {
+        border: 2px solid #00bfff;
+        box-shadow: 0 0 10px rgba(0, 191, 255, 0.6);
+        transition: all 0.3s ease;
+    }
+    
+    .user-panel:hover .img-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
+    }
+    
+    /* Logo animation */
+    .aside-logo img {
+        transition: all 0.5s ease;
+        animation: subtleFloat 4s ease-in-out infinite;
+    }
+    
+    .aside-logo:hover img {
+        filter: drop-shadow(0 5px 15px rgba(0, 191, 255, 0.8)) brightness(1.1);
+        transform: scale(1.05);
+    }
+    
+    /* Animations */
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    
+    @keyframes subtlePulse {
+        0% { box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2); }
+        50% { box-shadow: 0 5px 20px rgba(0, 191, 255, 0.4); }
+        100% { box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2); }
+    }
+    
+    @keyframes subtleFloat {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
+    }
+    
+    @keyframes backgroundShift {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 100% 100%; }
+    }
+    
+    @keyframes rotateGradient {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes floatingParticles {
+        0% { background-position: 0% 0%; }
+        50% { background-position: 100% 100%; }
+        100% { background-position: 0% 0%; }
+    }
+    
+    /* Bottom glow effect */
+    .main-sidebar > div:last-child {
+        background: linear-gradient(to top, rgba(0, 191, 255, 0.4), transparent);
+        height: 80px;
+        opacity: 0.7;
+        animation: glowPulse 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glowPulse {
+        0% { opacity: 0.5; height: 70px; }
+        100% { opacity: 0.8; height: 90px; }
+    }
 
 .aside-logo {
-    border-bottom: none !important;
+    border-bottom: none !important; /* Remove border */
 }
 
 /* Streamlined Menu Items */
@@ -235,13 +401,13 @@
     position: relative;
     overflow: hidden;
     display: flex;
-    align-items: center;
+    align-items: center; /* Vertical alignment */
 }
 
 .nav-link i.nav-icon {
     margin-right: 0.75rem;
     font-size: 1rem;
-    width: 20px;
+    width: 20px; /* Fixed width for icons */
     text-align: center;
 }
 
@@ -266,6 +432,9 @@
     background: rgba(0, 191, 255, 0.07);
     border-radius: 10px;
     margin: 0.5rem 0;
+    max-height: 0; /* Ensure it starts collapsed */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
 }
 
 .nav-treeview .nav-link {
@@ -318,17 +487,12 @@
 }
 
 /* Subtle Menu Expansion */
-.nav-treeview {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-}
-
 .menu-is-opening > .nav-treeview,
 .menu-open > .nav-treeview {
-    max-height: 800px;
+    max-height: 800px; /* Adjusted for smoother animation */
     transition: max-height 0.35s ease-in;
-}... /* General adjustments for a modern look */
+}
+/* General adjustments for a modern look */
 p {
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
@@ -348,8 +512,8 @@ p {
 
 /* Remove bullets from lists */
 .nav-sidebar .nav-treeview > .nav-item > .nav-link > p {
-    margin: 0;
-    display: inline-block;
+    margin: 0; /* override default margin */
+    display: inline-block; /* prevent <p> from taking full width */
 }
 
 .nav-sidebar .nav-treeview > .nav-item > .nav-link {
