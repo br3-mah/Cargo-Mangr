@@ -11,8 +11,9 @@
     <li class="nav-item  {{ areActiveRoutes(['shipments.report'], 'menu-is-opening menu-open active') }}">
         <a href="{{ fr_route('shipments.report') }}"
             class="nav-link {{ areActiveRoutes(['shipments.report'], 'menu-is-opening menu-open active') }}">
-            <i class="fas fa-box-open fa-fw"></i>
-            <p>{{ __('cargo::view.shipments_report') }}</p>
+            <i style="color:#fff" class="fas fa-box-open fa-fw"></i>
+            &nbsp;
+            <p style="color:#fff">{{ __('cargo::view.shipments_report') }}</p>
         </a>
     </li>
 @endif
@@ -21,8 +22,9 @@
     <li class="nav-item  {{ areActiveRoutes(['missions.report'], 'menu-is-opening menu-open active') }}">
         <a href="{{ fr_route('missions.report') }}"
             class="nav-link {{ areActiveRoutes(['missions.report'], 'menu-is-opening menu-open active') }}">
-            <i class="fas fa-shipping-fast fa-fw"></i>
-            <p>{{ __('cargo::view.missions_report') }}</p>
+            <i style="color:#fff" class="fas fa-shipping-fast fa-fw"></i>
+            &nbsp;
+            <p style="color:#fff">{{ __('cargo::view.missions_report') }}</p>
         </a>
     </li>
 @endif
@@ -31,8 +33,9 @@
     <li class="nav-item  {{ areActiveRoutes(['transactions.report'], 'menu-is-opening menu-open active') }}">
         <a href="{{ fr_route('transactions.report') }}"
             class="nav-link {{ areActiveRoutes(['transactions.report'], 'menu-is-opening menu-open active') }}">
-            <i class="fas fa-money-check-alt fa-fw"></i>
-            <p>{{ __('cargo::view.transactions_report') }}</p>
+            <i style="color:#fff" class="fas fa-money-check-alt fa-fw"></i>
+            &nbsp;
+            <p style="color:#fff">{{ __('cargo::view.transactions_report') }}</p>
         </a>
     </li>
 @endif
@@ -41,8 +44,8 @@
     <li class="nav-item  {{ areActiveRoutes(['branches.report'], 'menu-is-opening menu-open active') }}">
         <a href="{{ fr_route('branches.report') }}"
             class="nav-link {{ areActiveRoutes(['branches.report'], 'menu-is-opening menu-open active') }}">
-            <i class="fas fa-map-marked-alt fa-fw"></i>
-            <p>{{ __('cargo::view.branches_report') }}</p>
+            <i style="color:#fff" class="fas fa-map-marked-alt fa-fw"></i>
+            <p style="color:#fff">{{ __('cargo::view.branches_report') }}</p>
         </a>
     </li>
 @endif
@@ -51,8 +54,8 @@
     <li class="nav-item  {{ areActiveRoutes(['clients.report'], 'menu-is-opening menu-open active') }}">
         <a href="{{ fr_route('clients.report') }}"
             class="nav-link {{ areActiveRoutes(['clients.report'], 'menu-is-opening menu-open active') }}">
-            <i class="fas fa-user-friends fa-fw"></i>
-            <p>{{ __('cargo::view.clients_report') }}</p>
+            <i style="color:#fff" class="fas fa-user-friends fa-fw"></i>
+            <p style="color:#fff">{{ __('cargo::view.clients_report') }}</p>
         </a>
     </li>
 @endif
@@ -61,8 +64,8 @@
     <li class="nav-item  {{ areActiveRoutes(['drivers.report'], 'menu-is-opening menu-open active') }}">
         <a href="{{ fr_route('drivers.report') }}"
             class="nav-link {{ areActiveRoutes(['drivers.report'], 'menu-is-opening menu-open active') }}">
-            <i class="fas fa-list fa-fw"></i>
-            <p>{{ __('cargo::view.drivers_report') }}</p>
+            <i style="color:#fff" class="fas fa-list fa-fw"></i>
+            <p style="color:#fff">{{ __('cargo::view.drivers_report') }}</p>
         </a>
     </li>
 @endif

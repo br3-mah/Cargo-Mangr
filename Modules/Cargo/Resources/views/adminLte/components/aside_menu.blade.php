@@ -243,8 +243,9 @@ $driver = 5;
         class="nav-item {{ active_uri('transactions', ['class_name' => 'show']) }}  {{ areActiveRoutes(['transactions', 'transactions.create', 'transactions.index'],'menu-is-opening menu-open active') }}">
         <a href="#"
             class="nav-link {{ active_uri('transactions') }}  {{ areActiveRoutes(['transactions', 'transactions.create', 'transactions.index'],'menu-is-opening menu-open active') }}">
-            <i class="fas fa-money-check-alt"></i>
-            <p>
+            <i style="color: #fff" class="fas fa-money-check-alt"></i>
+            &nbsp;
+            <p style="color: #fff">
                 {{ __('cargo::view.transactions') }}
                 <i class="right fas fa-angle-left"></i>
             </p>
@@ -257,8 +258,9 @@ $driver = 5;
                 <li class="nav-item">
                     <a href="{{ fr_route('transactions.index') }}"
                         class="nav-link {{ areActiveRoutes(['transactions.index']) }}">
-                        <i class="fas fa-list fa-fw"></i>
-                        <p>{{ __('cargo::view.all_transactions') }}</p>
+                        <i style="color: #fff" class="fas fa-list fa-fw"></i>
+                        &nbsp;
+                        <p style="color: #fff">{{ __('cargo::view.all_transactions') }}</p>
                     </a>
                 </li>
             @endif
@@ -268,8 +270,9 @@ $driver = 5;
                 <li class="nav-item">
                     <a href="{{ fr_route('transactions.create') }}"
                         class="nav-link {{ areActiveRoutes(['transactions.create']) }}">
-                        <i class="fas fa-plus fa-fw"></i>
-                        <p>{{ __('cargo::view.create_new_transaction') }}</p>
+                        <i style="color: #fff" class="fas fa-plus fa-fw"></i>
+                        &nbsp;
+                        <p style="color: #fff">{{ __('cargo::view.create_new_transaction') }}</p>
                     </a>
                 </li>
             @endif
