@@ -719,7 +719,7 @@
 							</div>
 						</div>
 						<div class="qodef-grid-item qodef-page-sidebar-section qodef-col--3">
-							<aside id="qodef-page-sidebar" role="complementary">
+							{{-- <aside id="qodef-page-sidebar" role="complementary">
 								<div class="widget widget_block widget_search" data-area="faq-page-sidebar">
 									<form role="search" method="get"
 										class="wp-block-search__button-inside wp-block-search__icon-button qodef-search-form wp-block-search"
@@ -765,7 +765,7 @@
 									</ul>
 								</div>
 
-							</aside>
+							</aside> --}}
 						</div>
 					</div>
 				</main>

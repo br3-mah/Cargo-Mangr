@@ -201,22 +201,22 @@
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>Our Services</span></a>
                 </li>
-                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7791">
+                {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7791">
                   <a href="#"><span class="qodef-menu-item-text"><svg class="qodef-svg--plus qodef-menu-item-plus"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14"
                         height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>What We Do</span></a>
-                </li>
-                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7794">
+                </li> --}}
+                {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7794">
                   <a href="#"><span class="qodef-menu-item-text"><svg class="qodef-svg--plus qodef-menu-item-plus"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14"
                         height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                         <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                       </svg>Request a Freight</span></a>
-                </li>
+                </li> --}}
               </ul>
             </div>
           </div>
@@ -702,7 +702,7 @@
                   <path d="M0,0H10V2H0Z" transform="translate(8.485 7.069) rotate(135)" />
                   <path d="M0,0H10V2H0Z" transform="translate(7.071 8.485) rotate(-135)" />
                 </svg></span></a>
-            <div class="qodef-drop-down-second">
+            {{-- <div class="qodef-drop-down-second">
               <div class="qodef-drop-down-second-inner">
                 <ul class="sub-menu">
                   <li
@@ -716,7 +716,7 @@
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> --}}
           </li>
           <li
             class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7705 qodef--hide-link qodef-menu-item--narrow">
@@ -730,7 +730,7 @@
               <div class="qodef-drop-down-second-inner">
                 <ul class="sub-menu">
                   <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7772">
-                    <a href="about.php?page_id=2602"><span class="qodef-menu-item-text"><svg
+                    <a href="{{ route('about-us') }}"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
@@ -745,7 +745,7 @@
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>Our Team</span></a>
                   </li>
-                  <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7780">
+                  {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7780">
                     <a href="#"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
@@ -776,23 +776,23 @@
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>Our Clients</span></a>
-                  </li>
+                  </li> --}}
                   <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7779">
-                    <a href="faq.php?page_id=3138"><span class="qodef-menu-item-text"><svg
+                    <a href="{{ route('faq') }}"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>FAQ Page</span></a>
                   </li>
-                  <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7711">
+                  {{-- <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7711">
                     <a href="404.php"><span class=" qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>404 Error Page</span></a>
-                  </li>
+                  </li> --}}
                 </ul>
               </div>
             </div>
@@ -809,29 +809,29 @@
               <div class="qodef-drop-down-second-inner">
                 <ul class="sub-menu">
                   <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7773">
-                    <a href="services.php?page_id=2640"><span class="qodef-menu-item-text"><svg
+                    <a href="{{ route('services') }}"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>Our Services</span></a>
                   </li>
-                  <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7791">
+                  {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7791">
                     <a href="#"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>What We Do</span></a>
-                  </li>
-                  <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7794">
+                  </li> --}}
+                  {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7794">
                     <a href="#"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                           <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                         </svg>Request a Freight</span></a>
-                  </li>
+                  </li> --}}
                 </ul>
               </div>
             </div>
@@ -1272,7 +1272,7 @@
           <path d="M0,0H10V2H0Z" transform="translate(8.485 7.069) rotate(135)" />
           <path d="M0,0H10V2H0Z" transform="translate(7.071 8.485) rotate(-135)" />
         </svg>
-        <div class="qodef-drop-down-second">
+        {{-- <div class="qodef-drop-down-second">
           <div class="qodef-drop-down-second-inner">
             <ul class="sub-menu">
               <li
@@ -1286,7 +1286,7 @@
               </li>
             </ul>
           </div>
-        </div>
+        </div> --}}
       </li>
       <li
         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7705 qodef--hide-link qodef-menu-item--narrow">
@@ -1300,14 +1300,14 @@
           <div class="qodef-drop-down-second-inner">
             <ul class="sub-menu">
               <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7772">
-                <a href="about.php?page_id=2602"><span class="qodef-menu-item-text"><svg
+                <a href="{{route('about-us')}}"><span class="qodef-menu-item-text"><svg
                       class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                       <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                       <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                     </svg>About Us</span></a>
               </li>
-              <li class="menu-item menu-item-type-post_type menu-item-object-team menu-item-7781">
+              {{-- <li class="menu-item menu-item-type-post_type menu-item-object-team menu-item-7781">
                 <a href="#"><span class="qodef-menu-item-text"><svg
                       class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
@@ -1346,23 +1346,23 @@
                       <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                       <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                     </svg>Our Clients</span></a>
-              </li>
+              </li> --}}
               <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7779">
-                <a href="faq.php?page_id=3138"><span class="qodef-menu-item-text"><svg
+                <a href="{{route('faq')}}"><span class="qodef-menu-item-text"><svg
                       class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                       <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                       <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                     </svg>FAQ Page</span></a>
               </li>
-              <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7711">
+              {{-- <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7711">
                 <a href="404.php"><svg class=" qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                     <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
                     <path class="qodef-m-vertical" d="M0,0H2V14H0Z" transform="translate(6)" />
                   </svg>404 Error Page</span>
                 </a>
-              </li>
+              </li> --}}
             </ul>
           </div>
         </div>

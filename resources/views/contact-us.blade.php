@@ -2,14 +2,14 @@
 
 @section('content')
 
-<div id="qodef-page-outer">
+<div style="padding-bottom:8%" id="qodef-page-outer">
     <div id="qodef-page-inner" class="qodef-content-full-width">
         <main id="qodef-page-content" class="qodef-grid qodef-layout--template " role="main">
             <div class="qodef-grid-inner clear">
                 <div class="qodef-grid-item qodef-page-content-section qodef-col--12">
                     <div data-elementor-type="wp-page" data-elementor-id="3235" class="elementor elementor-3235"
                         data-elementor-post-type="page">
-                        <section
+                        <section style="padding-top:12%;"
                             class="elementor-section elementor-top-section elementor-element elementor-element-7c560f4 elementor-section-full_width elementor-section-height-default elementor-section-height-default qodef-elementor-content-no"
                             data-id="7c560f4" data-element_type="section">
                             <div class="elementor-container elementor-column-gap-no">
@@ -40,7 +40,7 @@
                         </section>
 
 
-                        <section
+                        <section style="padding-top: 5%"
                             class="elementor-section elementor-top-section elementor-element elementor-element-d3db1c5 elementor-section-full_width qodef-elementor-content-grid elementor-section-height-default elementor-section-height-default"
                             data-id="d3db1c5" data-element_type="section">
                             <div class="elementor-container elementor-column-gap-no">
@@ -75,6 +75,7 @@
                                                             <a itemprop="telephone"
                                                                 href="tel:+260 763 297 287">
                                                                 +260 763 297 287 </a>
+                                                                <br>
                                                             <a itemprop="telephone"
                                                                 href="tel: +260 763 313 193"> +260 763 313 193</a>
                                                         </h2>

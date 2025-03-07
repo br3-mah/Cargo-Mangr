@@ -461,8 +461,14 @@
                                                                             Zambia (Head Office)</a>
                                                                     </h4>
                                                                     <h6>
-                                                                        Locations: Lusaka, Kitwe
-Services: Full logistics management, warehousing, local delivery, and distribution services.
+                                                                        Lusaka Office 
+                                                                        Plot 12500, Carousel Shopping Center Shop 62/a
+                                                                    </h6>
+
+                                                                    <h6>
+                                                                        Kitwe Office  
+                                                                        Plot 50 F.G.P PLaza, Shop 23 Kabengele
+                                                                        Avenue
                                                                     </h6>
                                                                 </div>
                                                             </div>
