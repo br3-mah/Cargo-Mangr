@@ -458,8 +458,12 @@
                                                                     <h4 class="qodef-e-title">
                                                                         <a class="qodef-e-link" itemprop="url"
                                                                             href="#" target="_self">
-                                                                            Zambia </a>
+                                                                            Zambia (Head Office)</a>
                                                                     </h4>
+                                                                    <h6>
+                                                                        Locations: Lusaka, Kitwe
+Services: Full logistics management, warehousing, local delivery, and distribution services.
+                                                                    </h6>
                                                                 </div>
                                                             </div>
                                                             <div
@@ -532,7 +536,7 @@
                                                                     </h4>
                                                                 </div>
                                                             </div>
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -541,7 +545,7 @@
                                                                             Turkey </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                             <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
@@ -601,7 +605,7 @@
                                                     <div class="qodef-shortcode qodef-m  qodef-linked-titles-grid qodef-grid qodef-layout--columns  qodef-gutter--medium qodef-col-num--4  qodef-responsive--predefined"
                                                         style="border-top: 1px solid;border-bottom: 1px solid;border-color: #01264259;padding-top: 40px">
                                                         <div class="qodef-grid-inner clear">
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -610,8 +614,8 @@
                                                                             Australia </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
-                                                            <div
+                                                            </div> --}}
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -620,8 +624,8 @@
                                                                             Indonesia </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
-                                                            <div
+                                                            </div> --}}
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -630,8 +634,8 @@
                                                                             New Zealand </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
-                                                            <div
+                                                            </div> --}}
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -640,7 +644,7 @@
                                                                             Singapore </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                             <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
@@ -651,7 +655,7 @@
                                                                     </h4>
                                                                 </div>
                                                             </div>
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -660,7 +664,7 @@
                                                                             Thailand </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                             <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
@@ -681,7 +685,7 @@
                                                                     </h4>
                                                                 </div>
                                                             </div>
-                                                            <div
+                                                            {{-- <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
                                                                     <h4 class="qodef-e-title">
@@ -690,7 +694,7 @@
                                                                             Malaysia </a>
                                                                     </h4>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                             <div
                                                                 class="qodef-e qodef-linked-titles-grid-item qodef-grid-item ">
                                                                 <div class="qodef-e-inner">
