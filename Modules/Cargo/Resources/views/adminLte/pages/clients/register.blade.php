@@ -16,7 +16,7 @@
               $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
               $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
           @endphp
-          <img alt="Logo" src="{{ $model->getFirstMediaUrl('login_page_logo') ? $model->getFirstMediaUrl('login_page_logo') : ( $system_logo->getFirstMediaUrl('system_logo') ? $system_logo->getFirstMediaUrl('system_logo') : asset('assets/lte/cargo-logo.svg') ) }}" style="max-width: 88px;max-height: 52px;" />
+          <img alt="Logo" src="{{ $model->getFirstMediaUrl('login_page_logo') ? $model->getFirstMediaUrl('login_page_logo') : ( $system_logo->getFirstMediaUrl('system_logo') ? $system_logo->getFirstMediaUrl('system_logo') : asset('assets/lte/cargo-logo.svg') ) }}" style="max-width: 150px;max-height: 100px;" />
         </a>
     </div>
     <div class="card-body">
@@ -24,7 +24,7 @@
       <form method="POST" action="{{ route('register.request') }}" novalidate="novalidate" id="kt_sign_in_form">
         @csrf
         <div class="input-group mb-3">
-            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required placeholder="{{ __('cargo::view.table.full_name') }}" autocomplete="off" value="{{ old('name') }}" required autofocus>
+            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required placeholder="Your full names" autocomplete="off" value="{{ old('name') }}" required autofocus>
             @error('name')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -33,7 +33,8 @@
         </div>
 
         <div class="input-group mb-3">
-            <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" required id="email" placeholder="{{ __('cargo::view.table.email') }}" autocomplete="off" value="{{ old('email') }}" required>
+            <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" 
+            required id="email" placeholder="Your email address" autocomplete="off" value="{{ old('email') }}" required>
             @error('email')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -42,7 +43,8 @@
         </div>
 
         <div class="input-group mb-3">
-            <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required id="password" placeholder="{{ __('cargo::view.table.password') }}" autocomplete="off" required>
+            <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" 
+            required id="password" placeholder="Your new password" autocomplete="off" required>
             @error('password')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -51,7 +53,7 @@
         </div>
 
         <div class="input-group mb-3">
-            <input type="text" class="form-control @error('national_id') is-invalid @enderror" name="national_id" required placeholder="{{ __('cargo::view.table.owner_national_id') }}" autocomplete="off" value="{{ old('national_id') }}" required autofocus>
+            <input type="text" class="form-control @error('national_id') is-invalid @enderror" name="national_id" required placeholder="Your National ID" autocomplete="off" value="{{ old('national_id') }}" required autofocus>
             @error('national_id')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -116,18 +118,18 @@
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">{{ __('cargo::view.register') }}</button>
           </div>
+          <p class="forgot-password">
+            {{ __('cargo::view.already_have_an_account') }}
+            <!--begin::Link-->
+                <a href="{{ route('login') }}">
+                    {{ __('cargo::view.login') }}
+                </a>
+            <!--end::Link-->
+          </p>
           <!-- /.col -->
         </div>
       </form>
 
-      <p class="forgot-password">
-        {{ __('cargo::view.already_have_an_account') }}
-        <!--begin::Link-->
-            <a href="{{ route('login') }}">
-                {{ __('cargo::view.login') }}
-            </a>
-        <!--end::Link-->
-      </p>
     </div>
     <!-- /.card-body -->
   </div>

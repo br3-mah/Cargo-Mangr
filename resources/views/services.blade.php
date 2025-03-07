@@ -203,13 +203,12 @@
                                                         </div>
                                                         <div class="qodef-m-content">
                                                             <h4 class="qodef-m-title">
-                                                                <span class="qodef-m-title-text">More</span>
+                                                                <span class="qodef-m-title-text">Local Delivery and Distribution</span>
                                                             </h4>
-                                                            <p class="qodef-m-text" style="margin-top: 18px">We
-                                                                offer seamless efforts and assistance to our
-                                                                shipping clients with extra services such as
-                                                                E-commerce intergrations, Real-Tie traking, Flexible
-                                                                Payment options among others.</p>
+                                                            <p class="qodef-m-text" style="margin-top: 18px">
+                                                                Reliable local delivery services. Our distribution network is robust, allowing us to efficiently 
+                                                                manage the flow of goods to various locations.
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -219,7 +218,7 @@
 
                                 </div>
                             </section>
-                            <section style="padding-top: 8%"
+                            <section style="padding-top: 8%; padding-bottom:8%"
                                 class="elementor-section elementor-top-section elementor-element elementor-element-c76d311 elementor-section-full_width qodef-elementor-content-grid elementor-section-height-default elementor-section-height-default"
                                 data-id="c76d311" data-element_type="section">
                                 <div class="elementor-container elementor-column-gap-no">
@@ -240,6 +239,12 @@
                                                                 At Newworld Cargo, we take pride in our extensive global reach, ensuring your goods are delivered seamlessly across borders. 
                                                                 Whether it's by air or sea, our reliable and professional shipping services make 
                                                                 the world feel smaller for you.  </p>
+
+                                                                <p>
+                                                                    Our state-of-the-art warehousing facilities are designed to store your products safely and securely. 
+                                                                    We utilize advanced warehouse management systems to optimize storage and retrieval processes, 
+                                                                    ensuring quick access to your goods when needed.
+                                                                </p>
                                                         </div>
                                                         <div class="qodef-m-inner-right">
                                                             <div class="qodef-m-image">
@@ -252,8 +257,8 @@
                                                                 <h1 class="qodef-e-title">
                                                                     1294 </h1>
                                                                 <p class="qodef-e-text">
-                                                                    Lorem ipsum dolor sit amet, con sectetur
-                                                                    elit sed laoreet nec tel. </p>
+                                                                    We oversee the entire logistics process, coordinating all activities to ensure smooth operations. 
+                                                                    This includes everything from order processing to inventory management and dispatching. </p>
                                                                 <a class="qodef-shortcode qodef-m qodef-e-button qodef-button qodef-layout--textual  qodef-html--link"
                                                                     href="{{ route('network') }}"
                                                                     target="_self"> <span class="qodef-m-button-icon"><svg
@@ -272,8 +277,8 @@
                                                                 <h1 class="qodef-e-title">
                                                                     7951 </h1>
                                                                 <p class="qodef-e-text">
-                                                                    Lorem ipsum dolor sit amet, con sectetur
-                                                                    elit sed laoreet nec tel. </p>
+                                                                    We offer reliable local delivery services, ensuring that your products reach their destination on time. 
+                                                                    Our distribution network is robust, allowing us to efficiently manage the flow of goods to various locations. </p>
                                                                 <a class="qodef-shortcode qodef-m qodef-e-button qodef-button qodef-layout--textual  qodef-html--link"
                                                                     href="https://globefarer.qodeinteractive.com/available-positions/"
                                                                     target="_self"> <span class="qodef-m-button-icon"><svg
