@@ -20,3 +20,4 @@ use Illuminate\Support\Facades\Route;
 
 // Get Google Map Settings Api Route
 Route::get('checkGoogleMap', 'Api\GoogleSettingsController@googleMapSettings');
+Route::post('contact', 'Api\ContactUsController@sendContact');
