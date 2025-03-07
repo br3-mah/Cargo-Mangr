@@ -11,6 +11,7 @@
     -webkit-backdrop-filter: blur(30px);
     border: none;
     width: 300px; /* Make it wider */
+    border-top-right-radius: 10%;
 ">
     <!-- Logo Container -->
     <div class="aside-logo flex-column-auto brand-link" id="kt_aside_logo" style="
