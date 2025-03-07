@@ -228,7 +228,7 @@ href='web/wp-content/uploads/elementor/css/post-26028180.css?ver=1738198441' typ
                                                                 transparent shipping solutions tailored to your
                                                                 needs. </p>
                                                             <a class="qodef-shortcode qodef-m qodef-m-button qodef-button qodef-layout--textual  qodef-html--link"
-                                                                href="services.php" target="_self"> <span
+                                                                href="{{ route('services') }}" target="_self"> <span
                                                                     class="qodef-m-button-icon"><svg
                                                                         class="qodef-svg--plus"
                                                                         xmlns="http://www.w3.org/2000/svg"
