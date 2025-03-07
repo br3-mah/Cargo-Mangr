@@ -93,7 +93,7 @@
                 </div>
               </div>
             </div>
-            {{-- <div class="qodef-grid-item">
+            <div class="qodef-grid-item">
               <div id="nav_menu-5" class="widget widget_nav_menu" data-area="qodef-footer-middle-area-column-5">
                 <h5 class="qodef-widget-title">Latest News</h5>
                 <div class="menu-footer-column-5-container">
@@ -116,7 +116,7 @@
                   </ul>
                 </div>
               </div>
-            </div> --}}
+            </div>
           </div>
         </div>
       </div>
