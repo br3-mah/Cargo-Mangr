@@ -339,7 +339,7 @@
 															<div class="qodef-accordion-info-inner">
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																		1.What shipping services do you offer? </h4>
+																		1. What types of goods can Newworld Cargo ship? </h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -356,17 +356,13 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		We ship a wide variety of goods, including 
+                                                                        general goods, electronic items, furniture, clothing, and more. 
+                                                                        Please reach out for specific inquiries on any restricted items.. </p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	How does the shipping process work? </h4>
+                                                                        How long does it take to ship goods by air? </h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -383,17 +379,12 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		For air cargo, the lead time for general goods is 7 to 14 days, 
+                                                                        while electronic goods take 14 to 21 days. </p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	3. What are the benefits of groupage shipments?</h4>
+																	3. What is the lead time for sea cargo shipments?</h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -410,17 +401,13 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		Sea cargo has a lead time of 45 to 60 days, 
+                                                                        depending on the destination and whether you're 
+                                                                        shipping as part of a group shipment or a full container. </p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	4. What is the advantage of shipping a full container (FCL)?
+																	4. Do you offer door-to-door delivery services?
 																	</h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
@@ -438,17 +425,13 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		Yes, we provide door-to-door delivery services 
+                                                                        depending on your location. Contact us for details on
+                                                                        availability and rates.</p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	5. How does international air freight work, and what are its benefits?</h4>
+																	5. Can Newworld Cargo handle both groupage and full container loads?</h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -465,17 +448,35 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		Yes, we handle both groupage (smaller shipments combined with others)
+                                                                        and full container load shipments, depending on your needs.</p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	6. What payment options do you accept for shipping services?</h4>
+																	6. Do I need to pay upfront to ship my goods?</h4>
+																	<div class="qodef-m-mark">
+																		<svg class="qodef-svg--plus"
+																			xmlns="http://www.w3.org/2000/svg"
+																			xmlns:xlink="http://www.w3.org/1999/xlink"
+																			width="14" height="14" viewBox="0 0 14 14">
+																			<path class="qodef-m-horizontal"
+																				d="M0,0H14V2H0Z"
+																				transform="translate(0 6)" />
+																			<path class="qodef-m-vertical"
+																				d="M0,0H2V14H0Z"
+																				transform="translate(6)" />
+																		</svg>
+																	</div>
+																</div>
+																<div class="qodef-m-content">
+																	<p class="qodef-m-text">For many services, we offer flexible payment 
+                                                                        options. You can ship goods in advance without deposit, and payment 
+                                                                        can be made once your cargo is processed.
+                                                                    </p>
+																</div>
+																<div class="qodef-m-navigation">
+																	<h4 class="qodef-m-title">
+																	7. Can you help with sourcing and verifying goods before shipping? </h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -492,17 +493,12 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		Yes, we offer services to help you source products, and we can verify 
+                                                                        goods before they are loaded for shipping, especially in China and Dubai. </p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	7. Can you provide customs clearance assistance for international shipments? </h4>
+																	8. Do you provide warehousing services?</h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -519,17 +515,14 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		Yes, we offer warehousing services with 24/7 surveillance to 
+                                                                        ensure your goods are safe while waiting for shipment or 
+                                                                        distribution.
+ </p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	8. Are there any hidden fees or additional charges for your services?</h4>
+																	9.What is the process for tracking my shipment?</h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
 																			xmlns="http://www.w3.org/2000/svg"
@@ -546,44 +539,12 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		Once your shipment is confirmed, we provide tracking details 
+                                                                        so you can monitor your cargo at every step of the way. </p>
 																</div>
 																<div class="qodef-m-navigation">
 																	<h4 class="qodef-m-title">
-																	9. How can I track the status of my shipment?</h4>
-																	<div class="qodef-m-mark">
-																		<svg class="qodef-svg--plus"
-																			xmlns="http://www.w3.org/2000/svg"
-																			xmlns:xlink="http://www.w3.org/1999/xlink"
-																			width="14" height="14" viewBox="0 0 14 14">
-																			<path class="qodef-m-horizontal"
-																				d="M0,0H14V2H0Z"
-																				transform="translate(0 6)" />
-																			<path class="qodef-m-vertical"
-																				d="M0,0H2V14H0Z"
-																				transform="translate(6)" />
-																		</svg>
-																	</div>
-																</div>
-																<div class="qodef-m-content">
-																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
-																</div>
-																<div class="qodef-m-navigation">
-																	<h4 class="qodef-m-title">
-																	10. Do you offer insurance options for my shipments?
+																	10. How can I contact Newworld Cargo for assistance or more information?
 																	</h4>
 																	<div class="qodef-m-mark">
 																		<svg class="qodef-svg--plus"
@@ -601,13 +562,8 @@
 																</div>
 																<div class="qodef-m-content">
 																	<p class="qodef-m-text">
-																		Lorem ipsum dolor sit amet, consectetur
-																		adipiscing elit. In augue ligula, feugiat ut
-																		nulla cons quat, varius pentes que. Ut est
-																		lacus, molestie in arcu non, iaculis vehicula
-																		ipsum. Nunc fauci bus, nisl id dapibus finibus,
-																		enim diam interdum nulla, sed laoreet risus
-																		lectus feugiat nonq. </p>
+																		You can reach our team by phone, email, or visit one of our offices in 
+                                                                        Lusaka or Kitwe. We're happy to assist with any questions or shipping needs. </p>
 																</div>
 
 															</div>
