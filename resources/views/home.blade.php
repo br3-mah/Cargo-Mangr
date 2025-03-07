@@ -451,7 +451,7 @@
                         });
                     </script>
                     
-                <p class="help-text">Need help? <a href="#">Get Support</a></p>
+                <p class="help-text">Need help? <a href="{{ route('contact-us') }}">Get Support</a></p>
                 </div>
 
                 <div id="quote" class="tab-content">
@@ -821,7 +821,7 @@
                     a large corporation.
                 </p>
                 <a class="qodef-shortcode qodef-m qodef-m-button qodef-button qodef-layout--textual qodef-html--link"
-                    href="https://globefarer.qodeinteractive.com/about-us/" target="_self">
+                    href="{{ route('about-us') }}" target="_self">
                     <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                         width="14" height="14" viewBox="0 0 14 14">

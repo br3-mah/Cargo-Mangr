@@ -219,7 +219,7 @@
 
                                 </div>
                             </section>
-                            <section
+                            <section style="padding-top: 8%"
                                 class="elementor-section elementor-top-section elementor-element elementor-element-c76d311 elementor-section-full_width qodef-elementor-content-grid elementor-section-height-default elementor-section-height-default"
                                 data-id="c76d311" data-element_type="section">
                                 <div class="elementor-container elementor-column-gap-no">
@@ -237,8 +237,9 @@
                                                                 Fast &amp; secure courier for all your packages
                                                             </h2>
                                                             <p class="qodef-m-text">
-                                                                Lorem ipsum dolor sit amet, iracundia tincidunt vix
-                                                                an possim audiam liber. </p>
+                                                                At Newworld Cargo, we take pride in our extensive global reach, ensuring your goods are delivered seamlessly across borders. 
+                                                                Whether it's by air or sea, our reliable and professional shipping services make 
+                                                                the world feel smaller for you.  </p>
                                                         </div>
                                                         <div class="qodef-m-inner-right">
                                                             <div class="qodef-m-image">
