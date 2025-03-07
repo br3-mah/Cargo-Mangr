@@ -92,6 +92,7 @@
             @php 
                 $model = App\Models\Settings::where('group', 'general')->where('name','loading_logo')->first();
                 $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
+                $user_role = auth()->user()->role;
             @endphp
             <div class="preloader flex-column justify-content-center align-items-center">
                 <img class="animation__shake" src="{{ $model->getFirstMediaUrl('loading_logo') ? $model->getFirstMediaUrl('loading_logo') : ( $system_logo->getFirstMediaUrl('system_logo') ? $system_logo->getFirstMediaUrl('system_logo') : asset('assets/lte/cargo-logo-small-h38.svg') ) }}" alt="Logo" height="60" width="60">
@@ -102,16 +103,24 @@
             <!-- /.navbar -->
 
             <!--begin::Aside-->
-            @include('adminLte.components.aside')
+            @if ($user_role == 4)
+                @include('adminLte.components.customer-aside')
+            @else
+                @include('adminLte.components.aside')
+            @endif
             <!--end::Aside-->
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
 
-                @include('adminLte.components.page-title')
+                
+                @if($user_role !== 4)
+                    @include('adminLte.components.page-title')
+                @endif
+                <br>
                 
                 <!-- Main content -->
-                <section class="content">
+                <section @if($user_role == 4) style="margin-left: 2%; padding-left:5%" @endif class="content">
                     <div class="container-fluid">
                     @yield('before-page')
 
