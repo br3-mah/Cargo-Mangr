@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.web')
 
 @section('content')
 <script type="text/javascript">
@@ -106,35 +106,35 @@
     /* ]]> */
 </script>
 <link rel='stylesheet' id='animate-css'
-    href='wp-content/plugins/qi-blocks/assets/css/plugins/animate/animate.min0235.css?ver=4.1.1' type='text/css'
+    href='web/wp-content/plugins/qi-blocks/assets/css/plugins/animate/animate.min0235.css?ver=4.1.1' type='text/css'
     media='all' />
 <link rel='stylesheet' id='sbi_styles-css'
-    href='wp-content/plugins/instagram-feed/css/sbi-styles.minb6a4.css?ver=6.6.1' type='text/css' media='all' />
+    href='web/wp-content/plugins/instagram-feed/css/sbi-styles.minb6a4.css?ver=6.6.1' type='text/css' media='all' />
 <link rel='stylesheet' id='dripicons-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/dripicons/assets/css/dripicons.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/dripicons/assets/css/dripicons.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='elegant-icons-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/elegant-icons/assets/css/elegant-icons.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/elegant-icons/assets/css/elegant-icons.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='font-awesome-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/font-awesome/assets/css/all.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/font-awesome/assets/css/all.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='fontkiko-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/fontkiko/assets/css/kiko-all.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/fontkiko/assets/css/kiko-all.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='ionicons-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/ionicons/assets/css/ionicons.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/ionicons/assets/css/ionicons.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='linea-icons-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/linea-icons/assets/css/linea-icons.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/linea-icons/assets/css/linea-icons.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='linear-icons-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/linear-icons/assets/css/linear-icons.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/linear-icons/assets/css/linear-icons.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='material-icons-css'
     href='https://fonts.googleapis.com/icon?family=Material+Icons&amp;ver=6.7.1' type='text/css' media='all' />
 <link rel='stylesheet' id='simple-line-icons-css'
-    href='wp-content/plugins/globefarer-core/inc/icons/simple-line-icons/assets/css/simple-line-icons.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/icons/simple-line-icons/assets/css/simple-line-icons.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <style id='wp-emoji-styles-inline-css' type='text/css'>
     img.wp-smiley,
@@ -169,45 +169,45 @@
     }
 </style>
 <link rel='stylesheet' id='contact-form-7-css'
-    href='wp-content/plugins/contact-form-7/includes/css/styles1eb7.css?ver=6.0.3' type='text/css' media='all' />
+    href='web/wp-content/plugins/contact-form-7/includes/css/styles1eb7.css?ver=6.0.3' type='text/css' media='all' />
 <link rel='stylesheet' id='cf7msm_styles-css'
-    href='wp-content/plugins/contact-form-7-multi-step-module/resources/cf7msma94e.css?ver=4.4.1' type='text/css'
+    href='web/wp-content/plugins/contact-form-7-multi-step-module/resources/cf7msma94e.css?ver=4.4.1' type='text/css'
     media='all' />
 <link rel='stylesheet' id='ctf_styles-css'
-    href='wp-content/plugins/custom-twitter-feeds/css/ctf-styles.min5bf8.css?ver=2.2.5' type='text/css'
+    href='web/wp-content/plugins/custom-twitter-feeds/css/ctf-styles.min5bf8.css?ver=2.2.5' type='text/css'
     media='all' />
 <link rel='stylesheet' id='qi-blocks-grid-css'
-    href='wp-content/plugins/qi-blocks/assets/dist/gridc412.css?ver=1.3.4' type='text/css' media='all' />
+    href='web/wp-content/plugins/qi-blocks/assets/dist/gridc412.css?ver=1.3.4' type='text/css' media='all' />
 <link rel='stylesheet' id='qi-blocks-main-css'
-    href='wp-content/plugins/qi-blocks/assets/dist/mainc412.css?ver=1.3.4' type='text/css' media='all' />
+    href='web/wp-content/plugins/qi-blocks/assets/dist/mainc412.css?ver=1.3.4' type='text/css' media='all' />
 <link rel='stylesheet' id='qi-addons-for-elementor-grid-style-css'
-    href='wp-content/plugins/qi-addons-for-elementor/assets/css/grid.min29af.css?ver=1.8.4' type='text/css'
+    href='web/wp-content/plugins/qi-addons-for-elementor/assets/css/grid.min29af.css?ver=1.8.4' type='text/css'
     media='all' />
 <link rel='stylesheet' id='qi-addons-for-elementor-helper-parts-style-css'
-    href='wp-content/plugins/qi-addons-for-elementor/assets/css/helper-parts.min29af.css?ver=1.8.4' type='text/css'
+    href='web/wp-content/plugins/qi-addons-for-elementor/assets/css/helper-parts.min29af.css?ver=1.8.4' type='text/css'
     media='all' />
 <link rel='stylesheet' id='qi-addons-for-elementor-style-css'
-    href='wp-content/plugins/qi-addons-for-elementor/assets/css/main.min29af.css?ver=1.8.4' type='text/css'
+    href='web/wp-content/plugins/qi-addons-for-elementor/assets/css/main.min29af.css?ver=1.8.4' type='text/css'
     media='all' />
 <link rel='stylesheet' id='perfect-scrollbar-css'
-    href='wp-content/plugins/globefarer-core/assets/plugins/perfect-scrollbar/perfect-scrollbar9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/assets/plugins/perfect-scrollbar/perfect-scrollbar9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='swiper-css'
-    href='wp-content/plugins/qi-addons-for-elementor/assets/plugins/swiper/8.4.5/swiper.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/qi-addons-for-elementor/assets/plugins/swiper/8.4.5/swiper.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='globefarer-main-css'
-    href='wp-content/themes/globefarer/assets/css/main.min9704.css?ver=6.7.1' type='text/css' media='all' />
+    href='web/wp-content/themes/globefarer/assets/css/main.min9704.css?ver=6.7.1' type='text/css' media='all' />
 <link rel='stylesheet' id='globefarer-core-style-css'
-    href='wp-content/plugins/globefarer-core/assets/css/globefarer-core.min9704.css?ver=6.7.1' type='text/css'
+    href='web/wp-content/plugins/globefarer-core/assets/css/globefarer-core.min9704.css?ver=6.7.1' type='text/css'
     media='all' />
 <link rel='stylesheet' id='globefarer-child-style-css'
-    href='wp-content/themes/globefarer-child/style9704.css?ver=6.7.1' type='text/css' media='all' />
+    href='web/wp-content/themes/globefarer-child/style9704.css?ver=6.7.1' type='text/css' media='all' />
 <link rel='stylesheet' id='globefarer-google-fonts-css'
     href='https://fonts.googleapis.com/css?family=Poppins%3A200%2C400%2C500%2C700&amp;subset=latin-ext&amp;display=swap&amp;ver=1.0.0'
     type='text/css' media='all' />
 <link rel='stylesheet' id='globefarer-grid-css'
-    href='wp-content/themes/globefarer/assets/css/grid.min9704.css?ver=6.7.1' type='text/css' media='all' />
-<link rel='stylesheet' id='globefarer-style-css' href='wp-content/themes/globefarer/style9704.css?ver=6.7.1'
+    href='web/wp-content/themes/globefarer/assets/css/grid.min9704.css?ver=6.7.1' type='text/css' media='all' />
+<link rel='stylesheet' id='globefarer-style-css' href='web/wp-content/themes/globefarer/style9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <style id='globefarer-style-inline-css' type='text/css'>
     #qodef-page-footer-top-area-inner {
@@ -289,16 +289,16 @@
     }
 </style>
 <link rel='stylesheet' id='globefarer-core-elementor-css'
-    href='wp-content/plugins/globefarer-core/inc/plugins/elementor/assets/css/elementor.min9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/inc/plugins/elementor/assets/css/elementor.min9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <link rel='stylesheet' id='elementor-frontend-css'
-    href='wp-content/plugins/elementor/assets/css/frontend.mindb68.css?ver=3.27.1' type='text/css' media='all' />
+    href='web/wp-content/plugins/elementor/assets/css/frontend.mindb68.css?ver=3.27.1' type='text/css' media='all' />
 <link rel='stylesheet' id='elementor-post-7-css'
-    href='wp-content/uploads/elementor/css/post-7ad9c.css?ver=1738195901' type='text/css' media='all' />
+    href='web/wp-content/uploads/elementor/css/post-7ad9c.css?ver=1738195901' type='text/css' media='all' />
 <link rel='stylesheet' id='sbistyles-css'
-    href='wp-content/plugins/instagram-feed/css/sbi-styles.minb6a4.css?ver=6.6.1' type='text/css' media='all' />
+    href='web/wp-content/plugins/instagram-feed/css/sbi-styles.minb6a4.css?ver=6.6.1' type='text/css' media='all' />
 <link rel='stylesheet' id='elementor-post-3193-css'
-    href='wp-content/uploads/elementor/css/post-3193f693.css?ver=1738198131' type='text/css' media='all' />
+    href='web/wp-content/uploads/elementor/css/post-3193f693.css?ver=1738198131' type='text/css' media='all' />
 <link rel='stylesheet' id='google-fonts-1-css'
     href='https://fonts.googleapis.com/css?family=Roboto%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CRoboto+Slab%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic&amp;display=swap&amp;ver=6.7.1'
     type='text/css' media='all' />
@@ -913,7 +913,7 @@
     }
 </style>
 <link rel='stylesheet' id='magnific-popup-css'
-    href='wp-content/plugins/globefarer-core/assets/plugins/magnific-popup/magnific-popup9704.css?ver=6.7.1'
+    href='web/wp-content/plugins/globefarer-core/assets/plugins/magnific-popup/magnific-popup9704.css?ver=6.7.1'
     type='text/css' media='all' />
 <style id='wp-block-image-inline-css' type='text/css'>
     .wp-block-image a {
@@ -1611,7 +1611,7 @@
     }
 </style>
 <link rel='stylesheet' id='rs-plugin-settings-css'
-    href='wp-content/plugins/revslider/public/assets/css/rs6e8c6.css?ver=6.6.13' type='text/css' media='all' />
+    href='web/wp-content/plugins/revslider/public/assets/css/rs6e8c6.css?ver=6.6.13' type='text/css' media='all' />
 <style id='rs-plugin-settings-inline-css' type='text/css'>
     #rs-demo-id {}
 </style>
