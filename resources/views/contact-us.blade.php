@@ -119,11 +119,15 @@
                                                                 aria-atomic="true"></p>
                                                             <ul></ul>
                                                         </div>
-                                                        <form
-                                                            action="http://localhost/nwc/?page_id=3235#wpcf7-f2429-p3235-o2"
-                                                            method="post" class="wpcf7-form init"
-                                                            aria-label="Contact form" novalidate="novalidate"
-                                                            data-status="init">
+                                                        @if(session('success'))
+                                                            <div class="alert alert-success">
+                                                                {{ session('success') }}
+                                                            </div>
+                                                        @endif
+
+                                                        <form method="POST" action={{ route('contact.store') }} class="wpcf7-form"
+                                                            aria-label="Contact form">
+                                                            @csrf
                                                             <div style="display: none;">
                                                                 <input type="hidden" name="_wpcf7"
                                                                     value="2429" />
@@ -195,71 +199,8 @@
                                                                             Message</span></button>
                                                                 </div>
                                                             </div>
-                                                            <p style="display: none !important;"
-                                                                class="akismet-fields-container"
-                                                                data-prefix="_wpcf7_ak_"><label>&#916;<textarea
-                                                                        name="_wpcf7_ak_hp_textarea" cols="45"
-                                                                        rows="8"
-                                                                        maxlength="100"></textarea></label><input
-                                                                    type="hidden" id="ak_js_2"
-                                                                    name="_wpcf7_ak_js" value="32" />
-                                                                <script>
-                                                                    document.getElementById("ak_js_2").setAttribute("value", (new Date()).getTime());
-                                                                </script>
-                                                            </p>
-                                                            <div class="wpcf7-response-output"
-                                                                aria-hidden="true"></div>
+                                                         
                                                         </form>
-                                                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                                                        <script>
-                                                            document.addEventListener("DOMContentLoaded", function () {
-                                                                const form = document.querySelector(".wpcf7-form");
-
-                                                                form.addEventListener("submit", function (event) {
-                                                                    event.preventDefault(); // Prevent default form submission
-                                                                    
-                                                                    let formData = new FormData(form); // Collect form data
-                                                                    
-                                                                    fetch("{{ env('APP_URL') }}/api/contact", { // Update with your Laravel API URL
-                                                                        method: "POST",
-                                                                        body: formData,
-                                                                        headers: {
-                                                                            "Accept": "application/json"
-                                                                        }
-                                                                    })
-                                                                    .then(response => response.json())
-                                                                    .then(data => {
-                                                                        if (data.success) {
-                                                                            Swal.fire({
-                                                                                title: "Success!",
-                                                                                text: "Your message has been sent successfully.",
-                                                                                icon: "success",
-                                                                                confirmButtonText: "OK"
-                                                                            }).then(() => {
-                                                                                form.reset(); // Reset form after success
-                                                                            });
-                                                                        } else {
-                                                                            Swal.fire({
-                                                                                title: "Error!",
-                                                                                text: "Failed to send message. Please check your input.",
-                                                                                icon: "error",
-                                                                                confirmButtonText: "OK"
-                                                                            });
-                                                                        }
-                                                                            })
-                                                                            .catch(error => {
-                                                                                Swal.fire({
-                                                                                    title: "Error!",
-                                                                                    text: "An unexpected error occurred. Please try again later.",
-                                                                                    icon: "error",
-                                                                                    confirmButtonText: "OK"
-                                                                                });
-                                                                                console.error("Error:", error);
-                                                                            });
-                                                                        });
-                                                                    });
-                                                        </script>
-
                                                     </div>
                                                 </div>
                                             </div>
