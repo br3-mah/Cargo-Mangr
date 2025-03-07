@@ -21,10 +21,10 @@
                       <a href="{{ route('about-us') }}">About Us</a>
                     </li>
                     <li id="menu-item-938" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-938">
-                      <a href="#">Our Team</a>
+                      <a href="#our-team">Our Team</a>
                     </li>
-                    <li id="menu-item-939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-939">
-                      <a href="clients.php">Our Clients</a>
+                    {{-- <li id="menu-item-939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-939">
+                      <a href="#clients">Our Clients</a>
                     </li>
                     <li id="menu-item-940" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-940">
                       <a href="#">Meet The Crew</a>
@@ -34,7 +34,7 @@
                     </li>
                     <li id="menu-item-942" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-942">
                       <a href="#">Job Application</a>
-                    </li>
+                    </li> --}}
                   </ul>
                 </div>
               </div>
@@ -54,9 +54,9 @@
                       <a href="#">Request a Freight</a>
                     </li>
                     <li id="menu-item-946" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-946">
-                      <a href="#">Track &amp; Trace</a>
+                      <a href="{{ url('shipments/tracking') }}">Track &amp; Trace</a>
                     </li>
-                    <li id="menu-item-947" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-947">
+                    {{-- <li id="menu-item-947" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-947">
                       <a href="#">Air Freight</a>
                     </li>
                     <li id="menu-item-948" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-948">
@@ -64,7 +64,7 @@
                     </li>
                     <li id="menu-item-949" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-949">
                       <a href="#">Maritime Transport</a>
-                    </li>
+                    </li> --}}
                   </ul>
                 </div>
               </div>
@@ -75,25 +75,25 @@
                 <div class="menu-footer-column-4-container">
                   <ul id="menu-footer-column-4" class="menu">
                     <li id="menu-item-950" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-950">
-                      <a href="network.php">Find Us Here</a>
+                      <a href="{{ route('network') }}">Find Us Here</a>
                     </li>
                     <li id="menu-item-951" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-951">
                       <a href="{{ route('contact-us') }}">Get In Touch</a>
                     </li>
                     <li id="menu-item-952" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-952">
-                      <a href="faq.php">FAQ Page</a>
+                      <a href="{{ route('faq') }}">FAQ Page</a>
                     </li>
                     <li id="menu-item-953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-953">
-                      <a href="network.php">Global Network</a>
+                      <a href="{{ route('network') }}">Global Network</a>
                     </li>
                     <li id="menu-item-954" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-954">
-                      <a href="#">Support 24/7</a>
+                      <a href="#">Customer Care</a>
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
-            <div class="qodef-grid-item">
+            {{-- <div class="qodef-grid-item">
               <div id="nav_menu-5" class="widget widget_nav_menu" data-area="qodef-footer-middle-area-column-5">
                 <h5 class="qodef-widget-title">Latest News</h5>
                 <div class="menu-footer-column-5-container">
@@ -116,7 +116,7 @@
                   </ul>
                 </div>
               </div>
-            </div>
+            </div> --}}
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@
             <div class="qodef-grid-item">
               <div id="block-14" class="widget widget_block" data-area="qodef-footer-bottom-area-column-1">
                 <p style="font-size: 15px">
-                  © 2025
+                  © {{ date('Y') }}
                   <a class="qodef-custom-link" href="#" target="_blank" rel="noopener noreferrer">Newworld Cargo</a>, All
                   Rights Reserved
                 </p>

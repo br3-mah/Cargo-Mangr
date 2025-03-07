@@ -23,6 +23,10 @@ Route::get('/about-us', 'AboutUsController@index')->name('about-us');
 Route::get('/our-services', 'ServicesController@index')->name('services');
 Route::get('/contact-us', 'ContactUsController@index')->name('contact-us');
 Route::get('/frequently-asked-questions', 'FAQController@index')->name('faq');
+Route::get('/global-network', 'GlobalNetworkController@index')->name('network');
+Route::get('/privacy-notice', 'PrivacyNoticeController@index')->name('privacy');
+Route::get('/terms-of-use', 'TermsOfUseController@index')->name('terms');
+Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
 //     Route::group(

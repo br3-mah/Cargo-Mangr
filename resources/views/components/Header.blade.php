@@ -45,7 +45,7 @@
                     <span class="qodef-m-list-title-inner"> <span class="qodef-m-list-title-icon"> <img loading="lazy"
                       width="20" height="17" src="web/wp-content/uploads/2021/08/Support-Icon-top-header-1.png"
                       class="attachment-full size-full" alt="d" decoding="async" /> </span>
-                    <span class="qodef-m-list-title-text">Support 24/7</span> </span>
+                    <span class="qodef-m-list-title-text">Customer Care</span> </span>
                 </a>
             </span>
           </div>
@@ -583,7 +583,7 @@
                       </svg>Get in Touch</span></a>
                 </li>
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7792">
-                  <a href="network.php?page_id=3193"><span class="qodef-menu-item-text"><svg
+                  <a href="{{ route('network') }}"><span class="qodef-menu-item-text"><svg
                         class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                         <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
@@ -688,7 +688,7 @@
   </div>
   <div class="qodef-header-sticky qodef-custom-header-layout qodef-appearance--down">
     <div class="qodef-header-sticky-inner">
-      <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--image" href="index.php"
+      <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--image" href="{{ url('/') }}"
         rel="home">
         <img loading="lazy" width="927" height="370" src="web/wp-content/uploads/2025/01/2-1.png"
           class="qodef-header-logo-image qodef--main" alt="logo main" itemprop="image" /></a>
@@ -696,7 +696,7 @@
         <ul id="menu-main-menu-2" class="menu">
           <li
             class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-7704 qodef--hide-link qodef-menu-item--narrow">
-            <a href="index.php"><span class="qodef-menu-item-text">Home<svg
+            <a href="{{ url('/') }}"><span class="qodef-menu-item-text">Home<svg
                   class="qodef-svg--menu-arrow qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                   xmlns:xlink="http://www.w3.org/1999/xlink" width="8.485" height="14.14" viewBox="0 0 8.485 14.14">
                   <path d="M0,0H10V2H0Z" transform="translate(8.485 7.069) rotate(135)" />
@@ -707,7 +707,7 @@
                 <ul class="sub-menu">
                   <li
                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-50 current_page_item menu-item-7766">
-                    <a href="index.php"><span class="qodef-menu-item-text"><svg
+                    <a href="{{ url('/') }}"><span class="qodef-menu-item-text"><svg
                           class="qodef-svg--plus qodef-menu-item-plus" xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
                           <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />
@@ -1234,7 +1234,7 @@
 </header>
 <header id="qodef-page-mobile-header" role="banner">
   <div id="qodef-page-mobile-header-inner" class="">
-    <a itemprop="url" class="qodef-mobile-header-logo-link qodef-height--not-set qodef-source--image" href="index.php"
+    <a itemprop="url" class="qodef-mobile-header-logo-link qodef-height--not-set qodef-source--image" href="{{ url('/') }}"
       rel="home">
       <img loading="lazy" width="927" height="370" src="web/wp-content/uploads/2025/01/2-1.png"
         class="qodef-header-logo-image qodef--main" alt="logo main" itemprop="image" /></a>
@@ -1266,7 +1266,7 @@
     <ul id="menu-main-menu-4" class="">
       <li
         class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-7704 qodef--hide-link qodef-menu-item--narrow">
-        <a href="index.php"><span class="qodef-menu-item-text">Home</span></a><svg
+        <a href="{{ url('/') }}"><span class="qodef-menu-item-text">Home</span></a><svg
           class="qodef-svg--menu-arrow qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink" width="8.485" height="14.14" viewBox="0 0 8.485 14.14">
           <path d="M0,0H10V2H0Z" transform="translate(8.485 7.069) rotate(135)" />
@@ -1277,7 +1277,7 @@
             <ul class="sub-menu">
               <li
                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-50 current_page_item menu-item-7766">
-                <a href="index.php"><span class="qodef-menu-item-text"><svg class="qodef-svg--plus qodef-menu-item-plus"
+                <a href="{{ url('/') }}"><span class="qodef-menu-item-text"><svg class="qodef-svg--plus qodef-menu-item-plus"
                       xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14"
                       height="14" viewBox="0 0 14 14">
                       <path class="qodef-m-horizontal" d="M0,0H14V2H0Z" transform="translate(0 6)" />

@@ -254,7 +254,7 @@
                                                                     Lorem ipsum dolor sit amet, con sectetur
                                                                     elit sed laoreet nec tel. </p>
                                                                 <a class="qodef-shortcode qodef-m qodef-e-button qodef-button qodef-layout--textual  qodef-html--link"
-                                                                    href="https://globefarer.qodeinteractive.com/global-network/"
+                                                                    href="{{ route('network') }}"
                                                                     target="_self"> <span class="qodef-m-button-icon"><svg
                                                                             class="qodef-svg--plus"
                                                                             xmlns="http://www.w3.org/2000/svg"
