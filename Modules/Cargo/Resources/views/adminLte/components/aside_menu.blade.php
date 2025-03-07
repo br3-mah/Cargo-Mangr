@@ -9,12 +9,13 @@ $driver = 5;
 
 
 @if (auth()->user()->can('manage-shipments') || in_array($user_role, [$admin, $client, $branch]))
-    <li
+    <li style="color: #fff"
         class="nav-item {{ areActiveRoutes(['shipments','shipments.create','shipments.import','shipments.add.api','shipments.barcode.scanner','shipment-calc','shipments.index'],'menu-is-opening menu-open active') }} @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item) {{ areActiveRoutes([$item['route_name']], 'menu-is-opening menu-open active') }} @endforeach ">
         <a href="#"
             class="nav-link {{ areActiveRoutes(['shipments','shipments.create','shipments.import','shipments.add.api','shipments.barcode.scanner','shipment-calc','shipments.index'],'menu-is-opening menu-open active') }} @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item) {{ areActiveRoutes([$item['route_name']], 'menu-is-opening menu-open active') }} @endforeach  ">
-            <i class="fas fa-box-open"></i>
-            <p>
+            <i style="color: #fff" class="fas fa-box-open"></i>
+            &nbsp;
+            <p style="color: #fff">
                 {{ __('cargo::view.shipments') }}
                 <i class="right fas fa-angle-left"></i>
             </p>
@@ -29,8 +30,9 @@ $driver = 5;
                     <li class="nav-item">
                         <a href="{{ fr_route('shipments.create') }}"
                             class="nav-link {{ areActiveRoutes(['shipments.create']) }}">
-                            <i class="fas fa-plus fa-fw"></i>
-                            <p>{{ __('cargo::view.create_new_shipment') }}</p>
+                            <i style="color: #fff" class="fas fa-plus fa-fw"></i>
+                            &nbsp;
+                            <p style="color: #fff">{{ __('cargo::view.create_new_shipment') }}</p>
                         </a>
                     </li>
                 @endif
@@ -42,8 +44,8 @@ $driver = 5;
                     <li class="nav-item">
                         <a href="{{ fr_route('shipments.import') }}"
                             class="nav-link {{ areActiveRoutes(['shipments.import']) }}">
-                            <i class="fas fa-file-import fa-fw"></i>
-                            <p>{{ __('cargo::view.import_shipments') }}</p>
+                            <i style="color: #fff" class="fas fa-file-import fa-fw"></i>
+                            <p style="color: #fff">{{ __('cargo::view.import_shipments') }}</p>
                         </a>
                     </li>
                 @endif
@@ -64,8 +66,8 @@ $driver = 5;
                     <li class="nav-item">
                         <a href="{{ fr_route('shipments.barcode.scanner') }}"
                             class="nav-link {{ areActiveRoutes(['shipments.barcode.scanner']) }}">
-                            <i class="fas fa-qrcode fa-fw"></i>
-                            <p>{{ __('cargo::view.barcode_scanner') }}</p>
+                            <i style="color: #fff" class="fas fa-qrcode fa-fw"></i>
+                            <p style="color: #fff">{{ __('cargo::view.barcode_scanner') }}</p>
                         </a>
                     </li>
                 @endif
@@ -75,8 +77,8 @@ $driver = 5;
                     <li class="nav-item">
                         <a href="{{ fr_route('shipments.calculator') }}"
                             class="nav-link {{ areActiveRoutes(['shipments.calculator']) }}">
-                            <i class="fas fa-calculator fa-fw"></i>
-                            <p>{{ __('cargo::view.shipping_calculator') }}</p>
+                            <i style="color: #fff" class="fas fa-calculator fa-fw"></i>
+                            <p style="color: #fff">{{ __('cargo::view.shipping_calculator') }}</p>
                         </a>
                     </li>
                 @endif
@@ -85,8 +87,8 @@ $driver = 5;
                 <li class="nav-item">
                     <a href="{{ fr_route('shipments.index') }}"
                         class="nav-link {{ areActiveRoutes(['shipments.index']) }}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>{{ __('cargo::view.all_Shipments') }}</p>
+                        <i style="color: #fff" class="far fa-circle nav-icon"></i>
+                        <p style="color: #fff">{{ __('cargo::view.all_Shipments') }}</p>
                     </a>
                 </li>
 
@@ -98,32 +100,32 @@ $driver = 5;
                             <li class="nav-item">
                                 <a href="{{ route($item['route_name'], ['status' => $item['status'], 'type' => Modules\Cargo\Entities\Shipment::PICKUP]) }}"
                                     class="nav-link {{ active_route($item['route_name'], ['status' => $item['status'],'type' => Modules\Cargo\Entities\Shipment::PICKUP]) }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ __('cargo::view.saved_pickup') }}</p>
+                                    <i style="color: #fff" class="far fa-circle nav-icon"></i>
+                                    <p style="color: #fff">{{ __('cargo::view.saved_pickup') }}</p>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a href="{{ route($item['route_name'], ['status' => $item['status'],'type' => Modules\Cargo\Entities\Shipment::DROPOFF]) }}"
                                     class="nav-link {{ active_route($item['route_name'], ['status' => $item['status'],'type' => Modules\Cargo\Entities\Shipment::DROPOFF]) }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ __('cargo::view.saved_dropoff') }}</p>
+                                    <i style="color: #fff" class="far fa-circle nav-icon"></i>
+                                    <p style="color: #fff">{{ __('cargo::view.saved_dropoff') }}</p>
                                 </a>
                             </li>
                         @elseif($item['status'] == Modules\Cargo\Entities\Shipment::REQUESTED_STATUS)
                             <li class="nav-item">
                                 <a href="{{ route($item['route_name'], ['status' => $item['status'], 'type' => Modules\Cargo\Entities\Shipment::PICKUP]) }}"
                                     class="nav-link {{ active_route($item['route_name'], ['status' => $item['status'],'type' => Modules\Cargo\Entities\Shipment::PICKUP]) }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ __('cargo::view.requested_pickup') }}</p>
+                                    <i style="color: #fff" class="far fa-circle nav-icon"></i>
+                                    <p style="color: #fff">{{ __('cargo::view.requested_pickup') }}</p>
                                 </a>
                             </li>
                         @else
                             <li class="nav-item">
                                 <a href="{{ route($item['route_name'], ['status' => $item['status']]) }}"
                                     class="nav-link {{ active_route($item['route_name'], ['status' => $item['status']]) }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ $item['text'] }}</p>
+                                    <i style="color: #fff" class="far fa-circle nav-icon"></i>
+                                    <p style="color: #fff">{{ $item['text'] }}</p>
                                 </a>
                             </li>
                         @endif
