@@ -70,7 +70,7 @@
                                                     class="qodef-shortcode qodef-m  qodef-contact-info qodef-layout--type-2 ">
                                                     <div class="qodef-m-phone">
                                                         <h6 class="qodef-m-phone-tagline">
-                                                            Support Center 24/7 </h6>
+                                                            Customer Care </h6>
                                                         <h2 class="qodef-m-phone-item">
                                                             <a itemprop="telephone"
                                                                 href="tel:+260 763 297 287">
@@ -210,6 +210,56 @@
                                                             <div class="wpcf7-response-output"
                                                                 aria-hidden="true"></div>
                                                         </form>
+                                                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                                        <script>
+                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                                const form = document.querySelector(".wpcf7-form");
+
+                                                                form.addEventListener("submit", function (event) {
+                                                                    event.preventDefault(); // Prevent default form submission
+                                                                    
+                                                                    let formData = new FormData(form); // Collect form data
+                                                                    
+                                                                    fetch("{{ env('APP_URL') }}/api/contact", { // Update with your Laravel API URL
+                                                                        method: "POST",
+                                                                        body: formData,
+                                                                        headers: {
+                                                                            "Accept": "application/json"
+                                                                        }
+                                                                    })
+                                                                    .then(response => response.json())
+                                                                    .then(data => {
+                                                                        if (data.success) {
+                                                                            Swal.fire({
+                                                                                title: "Success!",
+                                                                                text: "Your message has been sent successfully.",
+                                                                                icon: "success",
+                                                                                confirmButtonText: "OK"
+                                                                            }).then(() => {
+                                                                                form.reset(); // Reset form after success
+                                                                            });
+                                                                        } else {
+                                                                            Swal.fire({
+                                                                                title: "Error!",
+                                                                                text: "Failed to send message. Please check your input.",
+                                                                                icon: "error",
+                                                                                confirmButtonText: "OK"
+                                                                            });
+                                                                        }
+                                                                            })
+                                                                            .catch(error => {
+                                                                                Swal.fire({
+                                                                                    title: "Error!",
+                                                                                    text: "An unexpected error occurred. Please try again later.",
+                                                                                    icon: "error",
+                                                                                    confirmButtonText: "OK"
+                                                                                });
+                                                                                console.error("Error:", error);
+                                                                            });
+                                                                        });
+                                                                    });
+                                                        </script>
+
                                                     </div>
                                                 </div>
                                             </div>

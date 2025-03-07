@@ -2245,9 +2245,7 @@ $tabTitles = [""];
   <script type="text/javascript"
     src="web/wp-content/plugins/elementor-pro/assets/js/elements-handlers.mindb68.js?ver=3.27.1"
     id="pro-elements-handlers-js"></script>
-    <script>
-        var tabTitles = <?php echo json_encode($tabTitles); ?>;
-    </script>
+ 
 
   <script id="rs-initialisation-scripts">
     var tpj = jQuery;
@@ -2356,6 +2354,5 @@ $tabTitles = [""];
   </script>
 </body>
 
-<!-- Mirrored from localhost/nwc/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 30 Jan 2025 00:56:19 GMT -->
 
 </html>

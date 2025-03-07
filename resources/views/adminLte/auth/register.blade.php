@@ -26,7 +26,7 @@
 
         <!--begin::Action-->
         <button type="button" class="btn btn-light-primary fw-bolder w-100 mb-10">
-            <img alt="Logo" src="{{ asset('media/svg/brand-logos/google-icon.svg') }}" class="h-20px me-3"/>
+            <img width="200" alt="Logo" src="{{ asset('media/svg/brand-logos/google-icon.svg') }}" class="h-50px me-3"/>
             {{ __('Sign in with Google') }}
         </button>
         <!--end::Action-->
