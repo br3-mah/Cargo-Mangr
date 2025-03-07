@@ -2,7 +2,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="
     margin-bottom: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    background-image: linear-gradient(to bottom, rgb(255, 204, 0), rgba(255, 153, 0, 0.681)), /* Deep Yellow Transparent Overlay */
+    background-image: linear-gradient(to bottom, #012642, #2c3c935d), /* Deep Yellow Transparent Overlay */
                       url('https://www.expressunload.com/wp-content/uploads/2024/02/shutterstock_426744064-scaled-1.jpg'); /* Background Image */
     background-size: cover;
     background-position: center;
@@ -26,67 +26,10 @@
     </div>
 
     <div class="sidebar" style="padding-top: 1rem;">
-        <!-- User Panel with Streamlined styling -->
-        {{-- <div class="user-panel mt-2 pb-3 mb-2 d-flex" style="
-            padding: 0.75rem 1rem;
-            align-items: center;
-            margin: 0 15px;
-            border-radius: 15px;
-            background: rgba(0, 191, 255, 0.15);
-        ">
-            <div class="image">
-                <img src="{{ auth()->user()->getFirstMediaUrl('avatar')? auth()->user()->getFirstMediaUrl('avatar'): asset('assets/lte/media/avatars/blank.png') }}"
-                    class="img-circle elevation-2" alt="User Image" style="
-                        width: 40px;
-                        height: 40px;
-                        border: 2px solid #00bfff;
-                        box-shadow: 0 2px 8px rgba(0, 191, 255, 0.3);
-                    ">
-            </div>
-            <div class="info" style="margin-left: 0.75rem;">
-                <a href="#" class="d-block" style="
-                    color: #343a40;
-                    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-                    font-size: 0.9rem;
-                ">{{ auth()->user()->name }}
-                    <small
-                        class="badge badge-sm {{ auth()->user()->role == 1 ? 'badge-light-success' : 'badge-light-primary' }} fw-bolder fs-8 px-2 py-1 ms-2"
-                        style="
-                            background: {{ auth()->user()->role == 1 ? 'rgba(0, 191, 255, 0.9)' : 'rgba(255, 255, 255, 0.9)' }};
-                            color: {{ auth()->user()->role == 1 ? '#000' : '#000' }};
-                            border-radius: 10px;
-                            font-size: 0.4rem;
-                        ">
-                        {{ auth()->user()->user_role }}
-                    </small>
-                </a>
-            </div>
-        </div> --}}
-
         <!--begin::Aside menu-->
         <nav class="mt-2" style="padding-bottom: 30px !important;">
             <!--begin::Aside Menu-->
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
-
-                <!-- Dashboard Shortcut Buttons -->
-                {{-- <li class="nav-item">
-                    <a href="#" class="nav-link dashboard-shortcut">
-                        <i class="nav-icon fas fa-plus" style="color: #00bfff;"></i>
-                        <p>New Shipment</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link dashboard-shortcut">
-                        <i class="nav-icon fas fa-users" style="color: #00bfff;"></i>
-                        <p>Manage Clients</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ fr_route('admin.dashboard') }}" class="nav-link dashboard-shortcut {{ areActiveRoutes(['admin.dashboard']) }}">
-                        <i class="nav-icon fas fa-chart-line" style="color: #00bfff;"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li> --}}
 
                 <li class="nav-header" style="
                     padding: 0.75rem 1rem;
@@ -97,8 +40,9 @@
                     margin-top: 1rem;
                 ">
                 MENU
-                
-            </li>
+
+                </li>
+
 
                 @if (app('hook')->get('aside_menu'))
                     @foreach (aasort(app('hook')->get('aside_menu'), 'order') as $componentView)
@@ -109,98 +53,19 @@
                 <li class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
                     <a href="#" class="nav-link {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
                         <i class="fas fa-book nav-icon" style="color: #00bfff;"></i>
-                        <p>
+                        <p style="color: #ffffff;">
                             {{ __('view.reports') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview" style="padding-left: 10px;">
+                    <ul class="nav nav-treeview" style="padding-left: 10px; color: #ffffff;">
                         @if (app('hook')->get('aside_menu_reports'))
                             @foreach (app('hook')->get('aside_menu_reports') as $componentView)
                                 {!! $componentView !!}
                             @endforeach
                         @endif
                     </ul>
-                </li> {{-- <li class="nav-item {{ areActiveRoutes(['countries.index','areas.index','deliveryTime.index','packages.index','shipments.settings.fees','shipments.settings','admin.settings','admin.settings.notifications','theme-setting.edit','languages.index','currencies.index','shipments.index','fees.index','admin.settings.google','default-theme.edit','backup.database'],'menu-is-opening menu-open active') }}">
-                    <a href="#" class="nav-link {{ areActiveRoutes(['countries.index','areas.index','deliveryTime.index','packages.index','shipments.settings.fees','shipments.settings','admin.settings','admin.settings.notifications','theme-setting.edit','languages.index','currencies.index','shipments.index','fees.index','admin.settings.google','default-theme.edit','backup.database'],'menu-is-opening menu-open active') }}">
-                        <i class="fas fa-cogs nav-icon" style="color: #00bfff;"></i>
-                        <p>
-                            {{ __('view.setting') }}
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview" style="padding-left: 10px;">
-                        @can('manage-setting')
-                            <li class="nav-item">
-                                <a href="{{ fr_route('admin.settings') }}" class="nav-link {{ areActiveRoutes(['admin.settings']) }}">
-                                    <i class="fas fa-cog fa-fw" style="color: #00bfff;"></i>
-                                    <p>@lang('view.general_setting')</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @if (app('hook')->get('aside_menu_settings'))
-                            @foreach (app('hook')->get('aside_menu_settings') as $componentView)
-                                {!! $componentView !!}
-                            @endforeach
-                        @endif
-                        @can('manage-notifications-setting')
-                            <li class="nav-item">
-                                <a href="{{ fr_route('admin.settings.notifications') }}" class="nav-link {{ areActiveRoutes(['admin.settings.notifications']) }}">
-                                    <i class="fa fa-bell fa-fw" style="color: #00bfff;"></i>
-                                    <p>@lang('view.notifications_settings')</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('manage-google-setting')
-                            <li class="nav-item">
-                                <a href="{{ fr_route('admin.settings.google') }}" class="nav-link {{ areActiveRoutes(['admin.settings.google']) }}">
-                                    <i class="fas fa-cog fa-fw" style="color: #00bfff;"></i>
-                                    <p>@lang('view.google_settings')</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('manage-theme-setting')
-                            <li class="nav-item">
-                                <a href="{{ fr_route('default-theme.edit') }}" class="nav-link {{ active_route('default-theme.edit') }}  {{ areActiveRoutes(['default-theme.edit']) }}">
-                                    <i class="fab fa-affiliatetheme fa-fw" style="color: #00bfff;"></i>
-                                    <p>@lang('view.themes')</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ fr_route('theme-setting.edit', ['place' => 'homepage']) }}" class="nav-link {{ active_route('theme-setting.edit', ['place' => 'homepage']) }}  {{ areActiveRoutes(['theme-setting.edit']) }}">
-                                    <i class="fab fa-affiliatetheme fa-fw" style="color: #00bfff;"></i>
-                                    <p>@lang('view.theme_setting')</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @if (auth()->user()->can('update-system') || auth()->user()->role == 1)
-                            <li class="nav-item">
-                                <a href="{{ fr_route('backup.database') }}" class="nav-link {{ active_route('backup.database') }}  {{ areActiveRoutes(['backup.database']) }}">
-                                    <i class="fa-brands fa-ubuntu fa-fw" style="color: #00bfff;"></i>
-                                    <p>@lang('view.backup_database')</p>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </li> --}}
-
-                @if (auth()->user()->can('update-system') || auth()->user()->role == 1)
-                    <li class="nav-item">
-                        <a href="{{ fr_route('system.update') }}" class="nav-link {{ areActiveRoutes(['system.update']) }}">
-                            <i class="fa-brands fa-ubuntu nav-icon" style="color: #00bfff;"></i>
-                            <p>@lang('view.system_update')</p>
-                        </a>
-                    </li>
-                @endif
-
-                @if (auth()->user()->role == 1)
-                    <li class="nav-item">
-                        <a href="{{ fr_route('system.support') }}" class="nav-link {{ areActiveRoutes(['system.support']) }}">
-                            <i class="fa-sharp fa-solid fa-circle-info nav-icon" style="color: #00bfff;"></i>
-                            <p>{{__('cargo::view.support')}}</p>
-                        </a>
-                    </li>
-                @endif
+                </li>
             </ul>
         </nav>
         <!--end::Aside menu-->

@@ -413,12 +413,12 @@
         <div class="glass-panel">
           <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: #334155;">Quick Access</h2>
           <div class="shortcut-grid">
-            <div class="shortcut-card">
+            <a target="_blank" href="{{ url('shipments/tracking') }}" class="shortcut-card">
               <div class="shortcut-icon">
                 <i class="fas fa-truck-fast"></i>
               </div>
               <div class="shortcut-title">Track Shipment</div>
-            </div>
+            </a>
             {{-- <div class="shortcut-card">
               <div class="shortcut-icon yellow-icon">
                 <i class="fas fa-user-group"></i>
@@ -453,7 +453,7 @@
                 <div class="stat-icon">
                   <i class="fas fa-boxes"></i>
                 </div>
-                <div class="stat-value">1,285</div>
+                <div class="stat-value">{{ $all_client_shipments }}</div>
                 <div class="stat-label">All Shipments</div>
               </div>
             </div>
@@ -465,7 +465,7 @@
                 <div class="stat-icon">
                   <i class="fas fa-save"></i>
                 </div>
-                <div class="stat-value">237</div>
+                <div class="stat-value">{{ $saved_client_shipments }}</div>
                 <div class="stat-label">Saved Shipments</div>
               </div>
             </div>
@@ -477,7 +477,7 @@
                 <div class="stat-icon">
                   <i class="fas fa-shipping-fast"></i>
                 </div>
-                <div class="stat-value">438</div>
+                <div class="stat-value">{{ $in_progress_client_shipments }}</div>
                 <div class="stat-label">In Progress Shipment</div>
               </div>
             </div>
@@ -489,7 +489,7 @@
                 <div class="stat-icon">
                   <i class="fas fa-truck-loading"></i>
                 </div>
-                <div class="stat-value">610</div>
+                <div class="stat-value">0</div>
                 <div class="stat-label">Canceled Shipment</div>
               </div>
             </div>
