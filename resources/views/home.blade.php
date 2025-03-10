@@ -62,20 +62,23 @@
                             covered with our global shipping!</p>
                         <div style="display: flex; gap:10px;" class="row">
                             <button class="" type="submit">
-                            <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
-                                viewBox="0 0 14 14">
-                                <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
-                                    transform="translate(0 6)"></path>
-                                <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
-                                    transform="translate(6)"></path>
-                                </svg></span><span class="qodef-m-button-text">Track &amp; Trace</span>
+                                <a href="{{ url('shipments/tracking') }}" style="display: flex; items-align:center; color:#000;">
+                                    <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
+                                        viewBox="0 0 14 14">
+                                        <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
+                                            transform="translate(0 6)"></path>
+                                        <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
+                                            transform="translate(6)"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="qodef-m-button-text">Track &amp; Trace</span>
+                                </a>
                             </button>
-                            <button style="padding: 1rem;" class="bg-white" type="submit"><span
-                                class="m-1 qodef-m-button-text">Get Quote</span>
+                            <button style="padding: 1rem;" class="bg-white" type="submit">
+                                <a href="{{ route('contact-us') }}" class="m-1 qodef-m-button-text">Get Quote</a>
                             </button>
-
                         </div>
                         </rs-layer>
                     </rs-slide>
@@ -116,20 +119,23 @@
                             with our expert courier services.</p>
                         <div style="display: flex; gap:10px;" class="row">
                             <button class="" type="submit">
-                            <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
-                                viewBox="0 0 14 14">
-                                <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
-                                    transform="translate(0 6)"></path>
-                                <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
-                                    transform="translate(6)"></path>
-                                </svg></span><span class="qodef-m-button-text">Track &amp; Trace</span>
+                                <a href="{{ url('shipments/tracking') }}" style="display: flex; items-align:center; color:#000;">
+                                    <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
+                                        viewBox="0 0 14 14">
+                                        <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
+                                            transform="translate(0 6)"></path>
+                                        <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
+                                            transform="translate(6)"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="qodef-m-button-text">Track &amp; Trace</span>
+                                </a>
                             </button>
-                            <button style="padding: 1rem;" class="bg-white" type="submit"><span
-                                class="m-1 qodef-m-button-text">Get Quote</span>
+                            <button style="padding: 1rem;" class="bg-white" type="submit">
+                                <a href="{{ route('contact-us') }}" class="m-1 qodef-m-button-text">Get Quote</a>
                             </button>
-
                         </div>
                         </rs-layer>
 
@@ -174,20 +180,23 @@
                             full refunds in case of damages.
                         <div style="display: flex; gap:10px;" class="row">
                             <button class="" type="submit">
-                            <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
-                                viewBox="0 0 14 14">
-                                <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
-                                    transform="translate(0 6)"></path>
-                                <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
-                                    transform="translate(6)"></path>
-                                </svg></span><span class="qodef-m-button-text">Track &amp; Trace</span>
+                                <a href="{{ url('shipments/tracking') }}" style="display: flex; items-align:center; color:#000;">
+                                    <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
+                                        viewBox="0 0 14 14">
+                                        <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
+                                            transform="translate(0 6)"></path>
+                                        <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
+                                            transform="translate(6)"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="qodef-m-button-text">Track &amp; Trace</span>
+                                </a>
                             </button>
-                            <button style="padding: 1rem;" class="bg-white" type="submit"><span
-                                class="m-1 qodef-m-button-text">Get Quote</span>
+                            <button style="padding: 1rem;" class="bg-white" type="submit">
+                                <a href="{{ route('contact-us') }}" class="m-1 qodef-m-button-text">Get Quote</a>
                             </button>
-
                         </div>
                         </p>
                         </rs-layer>
@@ -227,20 +236,23 @@
                             that’s our transport company moto!</p>
                         <div style="display: flex; gap:10px;" class="row">
                             <button class="" type="submit">
-                            <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
-                                viewBox="0 0 14 14">
-                                <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
-                                    transform="translate(0 6)"></path>
-                                <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
-                                    transform="translate(6)"></path>
-                                </svg></span><span class="qodef-m-button-text">Track &amp; Trace</span>
+                                <a href="{{ url('shipments/tracking') }}" style="display: flex; items-align:center; color:#000;">
+                                    <span class="qodef-m-button-icon"><svg class="qodef-svg--plus"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"
+                                        viewBox="0 0 14 14">
+                                        <path class="qodef-m-horizontal" d="M0,0H14V2H0Z"
+                                            transform="translate(0 6)"></path>
+                                        <path class="qodef-m-vertical" d="M0,0H2V14H0Z"
+                                            transform="translate(6)"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="qodef-m-button-text">Track &amp; Trace</span>
+                                </a>
                             </button>
-                            <button style="padding: 1rem;" class="bg-white" type="submit"><span
-                                class="m-1 qodef-m-button-text">Get Quote</span>
+                            <button style="padding: 1rem;" class="bg-white" type="submit">
+                                <a href="{{ route('contact-us') }}" class="m-1 qodef-m-button-text">Get Quote</a>
                             </button>
-
                         </div>
                         </rs-layer>
                     </rs-slide>
