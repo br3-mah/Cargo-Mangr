@@ -100,8 +100,7 @@ $driver = 5;
 
 
                 @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item)
-                    @if (in_array($user_role, [$admin, $client, $branch]) ||
-    auth()->user()->hasAnyDirectPermission($item['permissions']))
+                    @if (in_array($user_role, [$admin, $client, $branch]) || auth()->user()->hasAnyDirectPermission($item['permissions']))
                         @if ($item['status'] == Modules\Cargo\Entities\Shipment::SAVED_STATUS)
                             <li class="nav-item">
                                 <a href="{{ route($item['route_name'], ['status' => $item['status'], 'type' => Modules\Cargo\Entities\Shipment::PICKUP]) }}"
@@ -445,4 +444,39 @@ $driver = 5;
 
         </ul>
     </li>
+@endif
+
+
+<li class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
+    <a href="#" class="nav-link {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
+        <i class="fas fa-book nav-icon" style="color: #ffffff;"></i>
+        <p style="color: #ffffff;">
+            {{ __('view.reports') }}
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview" style="padding-left: 10px; color: #ffffff;">
+        @if (app('hook')->get('aside_menu_reports'))
+            @foreach (app('hook')->get('aside_menu_reports') as $componentView)
+                {!! $componentView !!}
+            @endforeach
+        @endif
+    </ul>
+</li>
+
+@if ($user_role == $client)
+<!-- shipment api -->
+<li class="nav-item">
+    <a href="{{ fr_route('shipments.calculator') }}" class="nav-link">
+        <i class="fas fa-headset fa-fw text-white"></i>
+        <p class="text-white">&nbsp;Shipment Calculator</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="{{ fr_route('support') }}" class="nav-link">
+        <i class="fas fa-headset fa-fw text-white"></i>
+        <p class="text-white">&nbsp;Support</p>
+    </a>
+</li>
+
 @endif
