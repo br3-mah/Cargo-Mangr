@@ -381,8 +381,15 @@
         }
 
         .yellow-icon {
-          color: var(--secondary-color);
+        color: var(--secondary-color);
         }
+
+        .danger-icon {
+        color: var(--danger-color);
+        }   
+        .success-icon {
+        color: var(--success-color);
+        }   
 
         .shortcut-title {
           font-size: 0.95rem;
@@ -401,12 +408,15 @@
           <h1 class="dashboard-title">Welcome, {{ auth()->user()->name }}</h1>
 
           <div class="quick-actions">
-            <button class="action-button primary-btn">
+            <a href="{{ aurl('shipments/shipments/create') }}" class="action-button primary-btn">
               <i class="fas fa-plus"></i> New Shipment
-            </button>
-            <button class="action-button secondary-btn">
+            </a>
+            {{-- <button class="action-button secondary-btn">
               <i class="fas fa-file-export"></i> Export Report
-            </button>
+            </button> --}}
+            {{-- <button class="action-button secondary-btn">
+              <i class="fas fa-file-export"></i> Export Report
+            </button> --}}
           </div>
         </header>
 
@@ -425,12 +435,12 @@
               </div>
               <div class="shortcut-title">Clients</div>
             </div> --}}
-            <div class="shortcut-card">
+            <a href="{{ aurl('transactions/transactions') }}" class="shortcut-card">
               <div class="shortcut-icon">
                 <i class="fas fa-wallet"></i>
               </div>
               <div class="shortcut-title">Payments</div>
-            </div>
+            </a>
             <div class="shortcut-card">
               <div class="shortcut-icon yellow-icon">
                 <i class="fas fa-chart-line"></i>
@@ -438,11 +448,17 @@
               <div class="shortcut-title">Analytics</div>
             </div>
             <div class="shortcut-card">
-              <div class="shortcut-icon">
-                <i class="fas fa-calendar"></i>
+                <div class="shortcut-icon">
+                  <i class="fas fa-calendar"></i>
+                </div>
+                <div class="shortcut-title">Schedule</div>
               </div>
-              <div class="shortcut-title">Schedule</div>
-            </div>
+              <div class="shortcut-card">
+                <div class="shortcut-icon">
+                  <i class="fas fa-headset danger-icon"></i>
+                </div>
+                <div class="shortcut-title">Support</div>
+              </div>
           </div>
         </div>
 

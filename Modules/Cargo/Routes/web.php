@@ -32,6 +32,8 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
             'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
         ], function(){
 
+        Route::get('support-center', 'SupportController@index')->name('support');
+        
         Route::get('shipments/shipment-calc', 'ShipmentController@shipmentCalc')->name('shipment-calc');
         Route::get('admin/shipments/payment/{shipment_id}','ShipmentController@pay')->name('admin.shipments.pay');
 
