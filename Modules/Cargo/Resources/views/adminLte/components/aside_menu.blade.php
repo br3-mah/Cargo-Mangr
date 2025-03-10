@@ -32,7 +32,13 @@ $driver = 5;
                             class="nav-link {{ areActiveRoutes(['shipments.create']) }}">
                             <i style="color: #fff" class="fas fa-plus fa-fw"></i>
                             &nbsp;
-                            <p style="color: #fff">{{ __('cargo::view.create_new_shipment') }}</p>
+                            <p style="color: #fff">
+                                @if ($user_role == 4)
+                                    Book new shipment
+                                @else
+                                    {{ __('cargo::view.create_new_shipment') }}
+                                @endif
+                            </p>
                         </a>
                     </li>
                 @endif

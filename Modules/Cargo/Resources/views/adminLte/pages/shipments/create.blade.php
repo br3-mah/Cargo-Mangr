@@ -9,7 +9,7 @@
     $branches = Modules\Cargo\Entities\Branch::where('is_archived', 0)->get();
     $clients = Modules\Cargo\Entities\Client::where('is_archived', 0)->get();
     $receivers = Modules\Cargo\Entities\Receiver::where('is_archived', 0)->get();
-    
+
 
     $countries = Modules\Cargo\Entities\Country::where('covered',1)->get();
     $packages = Modules\Cargo\Entities\Package::all();
@@ -27,7 +27,7 @@
 
 @section('content')
 
-    <style>      
+    <style>
         .notification {
             display: flex;
             justify-content: space-between;
@@ -35,8 +35,8 @@
             color: white;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-    </style>  
-        
+    </style>
+
     <div>
 
         @if(auth()->user()->can('shipping-rates') || $user_role == $admin )
@@ -106,7 +106,7 @@
             </div>
             @endif
         @endif
-        
+
 
         @if(auth()->user()->can('manage-clients') || $user_role == $admin )
             @if($receivers->count() == 0)
@@ -118,7 +118,7 @@
             </div>
             @endif
         @endif
-        
+
 
         @if(auth()->user()->can('payments-settings') || $user_role == $admin )
             @if(count($paymentSettings) == 0)
@@ -159,7 +159,7 @@
 
                             <div class="card-footer d-flex justify-content-end py-6 px-9">
                             {{-- <a href="{{ url()->previous() }}" class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>--}}
-                                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit_client">@lang('view.create')</button> 
+                                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit_client">@lang('view.create')</button>
                             </div>
                         </form>
                     </div>
@@ -195,7 +195,7 @@
         </div>
     </div>
     <!-- End Create a New  Receiver  Form -->
-            
+
     <br><br>
     <!--begin::Basic info-->
     <div class="card mb-5 mb-xl-10">
@@ -204,7 +204,11 @@
         <div class="card-header">
             <!--begin::Card title-->
             <div class="card-title m-0">
-                <h3 class="fw-bolder m-0">{{ __('cargo::view.create_new_shipment') }}</h3>
+                @if ($user_role == 4)
+                    <h3 class="fw-bolder m-0">Book new shipment</h3>
+                @else
+                    <h3 class="fw-bolder m-0">{{ __('cargo::view.create_new_shipment') }}</h3>
+                @endif
             </div>
             <!--end::Card title-->
         </div>
@@ -256,18 +260,18 @@
                         var clientPhone = response.client.responsible_mobile;
                         var clientCountryCode = response.client.country_code;
                         var clientAddress = response.client_address;
-                        
+
                         var option = '<option selected value="' + clientId + '" data-phone="' + clientPhone + '" data-country="' + clientCountryCode + '">' + clientName + '</option>';
-                        
+
                         // Add option to customer list
                         $('#client-id').append(option);
-                        
+
                         // Make the added option checked
-                    
-                        // get Client Addresses 
+
+                        // get Client Addresses
                         getClientAddresses(clientId);
 
-                        $("#client_phone").val(clientPhone);  
+                        $("#client_phone").val(clientPhone);
                         // change  client Country Code auto
 
                     },
@@ -305,14 +309,14 @@
                         var message = response.message ;
                         var errors = response.error ;
                         var option = '<option selected  value="' + receiverName + '" data-phone="' + receiverPhone + '" data-country="' + receiverCountryCode + '">' + receiverName + '</option>';
-                        
+
                         // Add option to customer list
                         $('#reciver-id').append(option);
-                        
+
                         // Make the added option checked
                         $('#reciver-id').val(receiverName);
 
-                        $("#reciver_phone").val(receiverPhone);  
+                        $("#reciver_phone").val(receiverPhone);
                         $("#country_code").val(receiverCountryCode);
                         $("#reciver_address").val(clientAddress);
 
