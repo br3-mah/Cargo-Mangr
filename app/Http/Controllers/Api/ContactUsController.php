@@ -20,18 +20,18 @@ class ContactUsController extends Controller
                 'email' => 'required|email|max:255',
                 'message' => 'required|string|max:2000',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 400);
             }
-    
+
             // Save to database
             ContactUs::create($request->all());
-    
+
             // Send email to admin
-            $adminEmail = 'nyeleti.bremah@gmail.com'; // Replace with actual admin email
+            $adminEmail = 'info@newworldcargo.com'; // Replace with actual admin email
             Mail::to($adminEmail)->send(new ContactNotification($request->all()));
-    
+
             // Send confirmation email to the user
             Mail::to($request->email)->send(new ContactNotification([
                 'name' => $request->name,
