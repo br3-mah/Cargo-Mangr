@@ -95,23 +95,23 @@
             </div>
             <div class="qodef-grid-item">
               <div id="nav_menu-5" class="widget widget_nav_menu" data-area="qodef-footer-middle-area-column-5">
-                <h5 class="qodef-widget-title">Latest News</h5>
+                <h5 class="qodef-widget-title">Legal</h5>
                 <div class="menu-footer-column-5-container">
                   <ul id="menu-footer-column-5" class="menu">
                     <li id="menu-item-955" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-955">
-                      <a href="#">Expert Tips</a>
+                      <a href="{{ route('fraud') }}">Fraud Awareness</a>
                     </li>
                     <li id="menu-item-956" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-956">
-                      <a href="#">A Sustainable Future</a>
+                      <a href="{{ route('terms') }}">Terms and Conditions</a>
                     </li>
                     <li id="menu-item-957" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-957">
-                      <a href="#">Fresh Start</a>
+                      <a href="{{ route('privacy') }}">Privacy Policy</a>
                     </li>
                     <li id="menu-item-958" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-958">
-                      <a href="#">Clean Spaces</a>
+                      <a href="#">Additional Information</a>
                     </li>
                     <li id="menu-item-959" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-959">
-                      <a href="#">Tips &amp; Strategies</a>
+                      <a href="#">Cookie Settings</a>
                     </li>
                   </ul>
                 </div>
@@ -152,7 +152,7 @@
                   </span>
                   <span class="qodef-shortcode qodef-m qodef-icon-holder qodef-layout--normal" data-hover-color="#f7c600"
                     style="margin: 13px 25px 0px 0px">
-                    <a itemprop="url" href="https://www.facebook.com" target="_blank">
+                    <a itemprop="url" href="https://web.facebook.com/NEWWORLDCARGO?mibextid=wwXIfr&rdid=YQlrBdI0weSYrvcm&share_url=https%3A%2F%2Fweb.facebook.com%2Fshare%2F19xL1b4qHm%2F%3Fmibextid%3DwwXIfr%26_rdc%3D1%26_rdr#" target="_blank">
                       <span class="qodef-icon-font-awesome fab fa-facebook-square qodef-icon qodef-e"
                         style="color: #e5e5e5; font-size: 20px"></span>
                     </a>

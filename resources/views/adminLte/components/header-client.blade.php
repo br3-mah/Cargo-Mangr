@@ -27,7 +27,11 @@
                   </svg>
                   &nbsp;
                 <small>
-                    {{ __('cargo::view.create_new_shipment') }}
+                    @if ($user_role == 4)
+                        Book new shipment
+                    @else
+                        {{ __('cargo::view.create_new_shipment') }}
+                    @endif
                 </small>
             </a>
         </li>
@@ -131,7 +135,8 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="{{ fr_route('clients.manage-address') }}" class="dropdown-item">
-                    @lang('cargo::view.manage_address')
+                    Manage Address Book
+                    {{-- @lang('cargo::view.manage_address') --}}
                 </a>
                 <div class="dropdown-divider"></div>
             @endif
