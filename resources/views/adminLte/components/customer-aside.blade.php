@@ -51,22 +51,8 @@
                     @endforeach
                 @endif
 
-                <li class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
-                    <a href="#" class="nav-link {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
-                        <i class="fas fa-book nav-icon" style="color: #00bfff;"></i>
-                        <p style="color: #ffffff;">
-                            {{ __('view.reports') }}
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview" style="padding-left: 10px; color: #ffffff;">
-                        @if (app('hook')->get('aside_menu_reports'))
-                            @foreach (app('hook')->get('aside_menu_reports') as $componentView)
-                                {!! $componentView !!}
-                            @endforeach
-                        @endif
-                    </ul>
-                </li>
+                
+                
             </ul>
         </nav>
         <!--end::Aside menu-->

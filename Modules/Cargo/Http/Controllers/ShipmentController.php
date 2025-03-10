@@ -436,7 +436,8 @@ class ShipmentController extends Controller
             ],
         ]);
         $item = Shipment::findOrFail($id);
-        $adminTheme = env('ADMIN_THEME', 'adminLte');return view('cargo::'.$adminTheme.'.pages.shipments.edit')->with(['model' => $item]);
+        $adminTheme = env('ADMIN_THEME', 'adminLte');
+        return view('cargo::'.$adminTheme.'.pages.shipments.edit')->with(['model' => $item]);
     }
 
     public function update(Request $request, $id)
