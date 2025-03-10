@@ -25,7 +25,8 @@
                         overflow: hidden;
                         position: absolute;
                         ">
-                    <rs-slide style="position: absolute" data-key="rs-1" data-title="Slide"
+                    <rs-slide style="position: absolute;
+                    " data-key="rs-1" data-title="Slide"
                         data-thumb="web/wp-content/uploads/revslider/main-home/home1.webp" data-in="o:0;"
                         data-out="a:false;" data-p1="Easy Shipping">
                         <img fetchpriority="high" fetchpriority="high" decoding="async"
@@ -42,7 +43,7 @@
                         data-frame_1="e:power4.inOut;st:250;sp:1000;" data-frame_999="o:0;st:w;" style="
                             z-index: 6;
                             color: white;
-
+                            padding-left:60%;
                             font-family: 'IroncladBold', sans-serif
                             ">
                         <h2>Shipping Made <br> Easy! </h2>
@@ -55,6 +56,7 @@
                         data-frame_1="e:power4.inOut;st:320;sp:1000;" data-frame_999="o:0;st:w;" style="
                             z-index: 7;
                             font-family: 'Poppins';
+                            padding-left:37%;
                             ">
                         <p>No matter the location we got you
                             covered with our global shipping!</p>
@@ -86,7 +88,7 @@
                         class="rev-slidebg tp-rs-img rs-lazyload"
                         data-lazyload="web/wp-content/uploads/revslider/main-home/main_home.webp"
                         data-bg="p:center bottom;" data-no-retina />
-                        
+
                         <rs-layer id="slider-1-slide-2-layer-1" data-type="text"
                         data-xy="x:c;xo:342px,288px,0,0;y:m;yo:-20px,-32px,75px,54px;"
                         data-text="w:normal;s:65,60,60,44;l:72,67,67,51;ls:-1px;fw:700;a:left,left,center,center;"
@@ -95,6 +97,7 @@
                         data-frame_1="e:power4.inOut;st:250;sp:1000;" data-frame_999="o:0;st:w;" style="
                             z-index: 6;
                             font-family: 'Poppins';
+                            padding-left:30%;
                             ">
                         <h2>Track and secure your cargo</h2>
                         </rs-layer>
@@ -106,6 +109,8 @@
                         data-frame_1="e:power4.inOut;st:320;sp:1000;" data-frame_999="o:0;st:w;" style="
                             z-index: 7;
                             font-family: 'Poppins';
+                            padding-top:16%;
+                            padding-left:35%;
                             ">
                         <p>Your packages will not be damaged
                             with our expert courier services.</p>
@@ -126,8 +131,8 @@
                             </button>
 
                         </div>
-                        </rs-layer> 
-                        
+                        </rs-layer>
+
                     </rs-slide>
                     <rs-slide style="position: absolute" data-key="rs-3" data-title="Slide"
                         data-thumb="web/wp-content/uploads/revslider/main-home/21.webp" data-in="o:0;"
@@ -138,7 +143,7 @@
                         class="rev-slidebg tp-rs-img rs-lazyload"
                         data-lazyload="web/wp-content/uploads/revslider/main-home/21.webp"
                         data-bg="p:center bottom;" data-no-retina />
-                        
+
                         <rs-layer id="slider-1-slide-3-layer-1" data-type="text"
                         data-xy="x:c;xo:342px,288px,0,0;y:m;yo:-20px,-32px,75px,53px;"
                         data-text="w:normal;s:65,60,60,44;l:72,67,67,51;ls:-1px;fw:700;a:left,left,center,center;"
@@ -148,8 +153,9 @@
                             z-index: 6;
                             color: white;
                             font-family: 'Poppins';
+                            padding-left:30%;
                             ">
-                        <h2>We Cover all Frieght & Logistics</h1>
+                        <h2>We Cover all Freight & Logistics</h1>
                         </rs-layer>
 
                         <rs-layer id="slider-1-slide-3-layer-2" data-type="text"
@@ -160,6 +166,8 @@
                         data-frame_1="e:power4.inOut;st:320;sp:1000;" data-frame_999="o:0;st:w;" style="
                             z-index: 7;
                             font-family: 'Poppins';
+                            padding-top:16%;
+                            padding-left:40%;
                             ">
                         <p>
                             Guarantee no complications and
@@ -202,6 +210,7 @@
                             z-index: 6;
                             color: white;
                             font-family: 'Poppins';
+                            padding-left:65%;
                             ">
                         <h2>We Procure & <br>We store!</h2>
                         </rs-layer><rs-layer id="slider-1-slide-4-layer-2" data-type="text"
@@ -212,6 +221,7 @@
                         data-frame_1="e:power4.inOut;st:320;sp:1000;" data-frame_999="o:0;st:w;" style="
                             z-index: 7;
                             font-family: 'Poppins';
+                            padding-left:35%;
                             ">
                         <p>Cost efficient & always on time,
                             that’s our transport company moto!</p>
@@ -422,35 +432,35 @@
                             <input type="text" id="trackingInput" class="input form-control wpcf7-form-control wpcf7-text"
                                 placeholder="Enter Tracking Number" style="padding: 0; margin: 16px;">
                         </div>
-                    
+
                         <button class="track-button" id="trackBtn">Track</button>
                     </div>
-                    
+
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
                             const trackButton = document.getElementById("trackBtn");
                             const trackingInput = document.getElementById("trackingInput");
-                    
+
                             trackButton.addEventListener("click", function () {
                                 const trackingNumber = trackingInput.value.trim();
-                    
+
                                 if (trackingNumber) {
                                     window.location.href = `/shipments/tracking?code=${encodeURIComponent(trackingNumber)}`;
                                 } else {
                                     alert("Please enter a valid Tracking Number.");
                                 }
                             });
-                    
+
                             // Optionally allow pressing "Enter" to trigger tracking
                             trackingInput.addEventListener("keypress", function (event) {
                                 if (event.key === "Enter") {
-                                    event.preventDefault(); 
+                                    event.preventDefault();
                                     trackButton.click();
                                 }
                             });
                         });
                     </script>
-                    
+
                 <p class="help-text">Need help? <a href="{{ route('contact-us') }}">Get Support</a></p>
                 </div>
 

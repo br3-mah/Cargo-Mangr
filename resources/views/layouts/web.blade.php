@@ -29,13 +29,14 @@ $tabTitles = [""];
     href="indexd784.html?feed=rss2" />
   <link rel="alternate" type="application/rss+xml" title="New world cargo &raquo; Comments Feed"
     href="indexa6da.html?feed=comments-rss2" />
-    @php 
+    @php
     $model = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
 @endphp
 <link rel="shortcut icon" href="{{ $model->getFirstMediaUrl('system_logo') ? $model->getFirstMediaUrl('system_logo') : asset('assets/lte/media/logos/favicon.png') }}" />
 
 
   <script type="text/javascript">
+
     /* <![CDATA[ */
     window._wpemojiSettings = {
       baseUrl: "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/72x72\/",
@@ -711,6 +712,7 @@ $tabTitles = [""];
       </div>
     </div>
 
+    {{-- @include('components.consent-cookies') --}}
     @include('components.footer')
     @include('components.top')
     @include('components.mouse')
@@ -1852,7 +1854,7 @@ $tabTitles = [""];
         iconClose: '<svg class="qodef-svg--close" xmlns="http:\/\/www.w3.org\/2000\/svg" xmlns:xlink="http:\/\/www.w3.org\/1999\/xlink" width="19.778" height="19.778" viewBox="0 0 19.778 19.778"><g transform="translate(-30 -30)"><rect width="13" height="2" transform="translate(31.414 30) rotate(45)"\/><rect width="13" height="2" transform="translate(48.364 49.778) rotate(-135)"\/><rect width="13" height="2" transform="translate(30 48.364) rotate(-45)"\/><rect width="13" height="2" transform="translate(49.778 31.414) rotate(135)"\/><\/g><\/svg>',
         qodefStickyHeaderScrollAmount: 650,
         topAreaHeight: 0,
-        
+
         restNonce: "c07de431ab",
         paginationRestRoute: "globefarer\/v1\/get-posts",
         headerHeight: 80,
@@ -2139,7 +2141,7 @@ $tabTitles = [""];
       ajaxurl: "\/\/wp-admin\/admin-ajax.php",
       nonce: "0fd65747d2",
       urls: {
-        
+
       },
       settings: {
         lazy_load_background_images: true
@@ -2233,11 +2235,12 @@ $tabTitles = [""];
   <script type="text/javascript"
     src="web/wp-content/plugins/elementor-pro/assets/js/elements-handlers.mindb68.js?ver=3.27.1"
     id="pro-elements-handlers-js"></script>
- 
+
 
   <script id="rs-initialisation-scripts">
     var tpj = jQuery;
 
+    var tabTitles = <?php echo json_encode($tabTitles) ?>;
     var revapi1;
 
     if (window.RS_MODULES === undefined) window.RS_MODULES = {};
