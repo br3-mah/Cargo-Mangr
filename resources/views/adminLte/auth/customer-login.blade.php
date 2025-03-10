@@ -9,7 +9,7 @@
     <div class="login-box">
         <div class="card card-outline">
             <div class="card-header text-center">
-                <a href="{{ aurl('/') }}" class="logo-container">
+                <a href="{{ url('/') }}" class="logo-container">
                     @php 
                         $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
                         $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="login-button">
-                            <button type="submit" class="btn text-white" style="background-color: #ffd000">{{ __('view.login') }}</button>
+                            <button type="submit" class="btn text-white" style="background-color: #ffd000;">{{ __('view.login') }}</button>
                         </div>
                     </div>
                 </form>
@@ -76,7 +76,7 @@
                     @endif
 
                     @if (check_module('cargo'))
-                        <a href="{{ route('register') }}" class="register-link">
+                        <a href="{{ route('reg') }}" class="register-link" style=" color:blue;">
                             {{ __('view.register_as_a_customer') }}
                         </a>
                     @endif
@@ -107,7 +107,7 @@
     }
 
     .login-box {
-        width: 420px;
+        width: 30%;
         margin: 0 auto;
     }
 

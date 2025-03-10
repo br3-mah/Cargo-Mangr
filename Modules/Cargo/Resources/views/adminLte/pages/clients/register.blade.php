@@ -10,7 +10,7 @@
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-        <a href="{{ aurl('/') }}" class="mb-12">
+        <a href="{{ url('/') }}" class="mb-12">
           @php
               $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
               $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
@@ -134,11 +134,11 @@
             </div>
           </div>
           <div class="col-4">
-            <button type="submit" class="btn btn-block btn-register" style="background-color: #ffd000">{{ __('cargo::view.register') }}</button>
+            <button type="submit" class="btn btn-block btn-register text-primary" style="background-color: #ffd000;">{{ __('cargo::view.register') }}</button>
           </div>
           <p class="forgot-password">
             {{ __('cargo::view.already_have_an_account') }}
-            <a href="{{ route('login') }}" class="login-link">
+            <a href="{{ route('signin') }}" class="login-link">
                 {{ __('cargo::view.login') }}
             </a>
           </p>
@@ -162,7 +162,7 @@
   }
   
   div.login-box {
-    width: 45%;
+    width: 40%;
     margin-top: 0px;
   }
   
