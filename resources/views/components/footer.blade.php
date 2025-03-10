@@ -140,12 +140,12 @@
                 <div class="qodef-social-icons-group">
                   <span class="qodef-shortcode qodef-m qodef-icon-holder qodef-layout--normal" data-hover-color="#f7c600"
                     style="margin: 13px 25px 0px 0px">
-                    <a itemprop="url" href="https://twitter.com/" target="_blank">
+                    <a itemprop="url" href="https://www.tiktok.com/@newworld.cargo?_t=ZM-8uUJlsNv2v7&_r=1" target="_blank">
                       <span class="qodef-icon-font-awesome fab fa-twitter qodef-icon qodef-e"
                         style="color: #e5e5e5; font-size: 20px"></span>
                     </a> </span><span class="qodef-shortcode qodef-m qodef-icon-holder qodef-layout--normal"
                     data-hover-color="#f7c600" style="margin: 13px 25px 0px 0px">
-                    <a itemprop="url" href="https://www.instagram.com/" target="_blank">
+                    <a itemprop="url" href="https://www.instagram.com/newworldcargo/?igsh=MWRrZnp6MHNvcDAzdQ%3D%3D&utm_source=qr#" target="_blank">
                       <span class="qodef-icon-font-awesome fab fa-instagram qodef-icon qodef-e"
                         style="color: #e5e5e5; font-size: 20px"></span>
                     </a>
