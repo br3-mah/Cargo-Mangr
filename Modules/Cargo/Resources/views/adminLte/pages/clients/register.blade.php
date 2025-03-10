@@ -134,7 +134,7 @@
             </div>
           </div>
           <div class="col-4">
-            <button type="submit" class="btn btn-block btn-register text-primary" style="background-color: #ffd000;">{{ __('cargo::view.register') }}</button>
+            <button type="submit" class="btn btn-block btn-register text-white" style="background-color: #ffd000;">{{ __('cargo::view.register') }}</button>
           </div>
           <p class="forgot-password">
             {{ __('cargo::view.already_have_an_account') }}
