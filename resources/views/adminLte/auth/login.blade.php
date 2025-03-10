@@ -8,7 +8,7 @@
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-        <a href="{{ aurl('/') }}" class="mb-12">
+        <a href="{{ url('/') }}" class="mb-12">
           @php 
               $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
               $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
@@ -20,7 +20,6 @@
       <div class="mb-10">
         <table class="kt-form">
           <tbody>
-
             <tr>
               <td colspan="3" style="
                   text-align: left;
@@ -130,6 +129,7 @@
 
       <form method="POST" action="{{ route('login.request') }}" novalidate="novalidate" id="kt_sign_in_form">
         @csrf
+        
         <div class="input-group mb-3">
           <input type="email" class="form-control" name="email" id="email" placeholder="{{ __('view.Email') }}" autocomplete="off" value="" required autofocus>
           <div class="input-group-append">
@@ -176,7 +176,7 @@
       @if (check_module('cargo'))
       <p class="forgot-password">
         <!--begin::Link-->
-          <a href="{{ route('register') }}">
+          <a href="{{ route('reg') }}">
               {{ __('view.register_as_a_customer') }}
           </a>
         <!--end::Link-->

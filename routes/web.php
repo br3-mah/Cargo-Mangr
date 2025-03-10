@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,9 @@ Route::get('/privacy-notice', 'PrivacyNoticeController@index')->name('privacy');
 Route::get('/terms-of-use', 'TermsOfUseController@index')->name('terms');
 Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
 Route::post('contact', 'Api\ContactUsController@sendContact')->name('contact.store');
-
+Route::get('/signin', [AuthenticatedSessionController::class, 'main'])
+->middleware('guest')
+->name('signin');
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
 //     Route::group(
 //         [

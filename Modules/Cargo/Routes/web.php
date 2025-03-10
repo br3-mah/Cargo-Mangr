@@ -20,6 +20,11 @@ Route::get('/payment/callback', 'PaymentCallbackController@store')->name('callba
 Route::post('/payment/callback', 'PaymentCallbackController@store')->name('callback.success');
 Route::post('shipment-update-payment','ShipmentController@updatePaymentMeth')->name('shipments.payment.update');
 
+
+Route::get('/register', 'ClientController@register')
+            ->middleware('guest')
+            ->name('reg');
+                
 if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
     Route::group(
         [
