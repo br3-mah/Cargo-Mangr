@@ -4,19 +4,19 @@
 <style>
     :root {
         --primary-color: #fc0;
-        --secondary-color: #d40511;
+        --secondary-color: #04012c;
         --text-color: #333;
         --light-gray: #f5f5f5;
         --border-color: #e0e0e0;
-        --link-color: #d40511;
+        --link-color: #05022f;
     }
-    
+
     .container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 20px;
     }
-    
+
     header {
         background-color: #fff;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -24,14 +24,14 @@
         top: 0;
         z-index: 100;
     }
-    
+
     .header-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 20px 0;
     }
-    
+
     .logo {
         font-size: 24px;
         font-weight: bold;
@@ -39,11 +39,11 @@
         display: flex;
         align-items: center;
     }
-    
+
     .logo-text {
         margin-left: 10px;
     }
-    
+
     .logo-box {
         background-color: var(--primary-color);
         padding: 5px;
@@ -51,7 +51,7 @@
         font-weight: bold;
         font-size: 18px;
     }
-    
+
     .contact-btn {
         background-color: var(--primary-color);
         color: var(--text-color);
@@ -62,27 +62,27 @@
         cursor: pointer;
         transition: background-color 0.3s;
     }
-    
+
     .contact-btn:hover {
         background-color: #e6b800;
     }
-    
+
     .banner {
         background-color: var(--light-gray);
         padding: 40px 0;
         margin-bottom: 40px;
     }
-    
+
     .banner h1 {
         font-size: 36px;
         margin-bottom: 15px;
     }
-    
+
     .privacy-intro {
         margin-bottom: 30px;
         max-width: 800px;
     }
-    
+
     .quick-links {
         background-color: #fff;
         border-radius: 8px;
@@ -90,20 +90,20 @@
         margin-bottom: 40px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
-    
+
     .quick-links h3 {
         margin-bottom: 15px;
         border-bottom: 2px solid var(--primary-color);
         padding-bottom: 8px;
         display: inline-block;
     }
-    
+
     .quick-links-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 15px;
     }
-    
+
     .quick-link {
         padding: 10px;
         border-radius: 4px;
@@ -113,15 +113,15 @@
         font-weight: 500;
         transition: background-color 0.3s;
     }
-    
+
     .quick-link:hover {
         background-color: var(--primary-color);
     }
-    
+
     .section {
         margin-bottom: 40px;
     }
-    
+
     .section h2 {
         font-size: 28px;
         margin-bottom: 20px;
@@ -130,39 +130,39 @@
         border-bottom: 3px solid var(--primary-color);
         display: inline-block;
     }
-    
+
     .subsection {
         margin-bottom: 30px;
     }
-    
+
     .subsection h3 {
         font-size: 22px;
         margin-bottom: 15px;
         color: var(--text-color);
     }
-    
+
     p {
         margin-bottom: 15px;
     }
-    
+
     ul, ol {
         margin-bottom: 15px;
         padding-left: 20px;
     }
-    
+
     li {
         margin-bottom: 8px;
     }
-    
+
     a {
         color: var(--link-color);
         text-decoration: none;
     }
-    
+
     a:hover {
         text-decoration: underline;
     }
-    
+
     .card {
         background-color: #fff;
         border-radius: 8px;
@@ -171,11 +171,11 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         transition: transform 0.3s;
     }
-    
+
     .card:hover {
         transform: translateY(-5px);
     }
-    
+
     .accordion {
         background-color: #fff;
         border: 1px solid var(--border-color);
@@ -183,7 +183,7 @@
         margin-bottom: 15px;
         overflow: hidden;
     }
-    
+
     .accordion-header {
         padding: 15px 20px;
         background-color: var(--light-gray);
@@ -193,50 +193,50 @@
         align-items: center;
         font-weight: 600;
     }
-    
+
     .accordion-content {
         padding: 0 20px;
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.3s ease-out;
     }
-    
+
     .accordion.active .accordion-content {
         max-height: 1000px;
         padding: 20px;
     }
-    
+
     .icon {
         transition: transform 0.3s;
     }
-    
+
     .accordion.active .icon {
         transform: rotate(180deg);
     }
-    
+
     footer {
         background-color: var(--light-gray);
         padding: 40px 0;
         margin-top: 60px;
     }
-    
+
     .footer-content {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
     }
-    
+
     .footer-section {
         flex: 1;
         min-width: 200px;
         margin-bottom: 20px;
     }
-    
+
     .footer-section h4 {
         margin-bottom: 15px;
         font-size: 18px;
     }
-    
+
     .cookie-settings {
         margin-top: 20px;
         background-color: var(--primary-color);
@@ -247,22 +247,22 @@
         cursor: pointer;
         font-weight: 500;
     }
-    
+
     .last-updated {
         margin-top: 20px;
         font-style: italic;
         color: #777;
     }
-    
+
     @media (max-width: 768px) {
         .quick-links-grid {
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         }
-        
+
         .footer-content {
             flex-direction: column;
         }
-        
+
         .banner h1 {
             font-size: 28px;
         }
@@ -288,7 +288,7 @@
     <div class="container">
         <h1>Privacy Notice</h1>
         <div class="privacy-intro">
-            <p>Deutsche Post AG and its subsidiaries operating under the brand Newworld Cargo (hereinafter called 'Newworld Cargo') is pleased that you have visited our website and are interested in our company, products and services. It is important to us to protect your personal data during handling throughout the entire business process.</p>
+            <p>Newworld Cargo (hereinafter called 'Newworld Cargo') is pleased that you have visited our website and are interested in our company, products and services. It is important to us to protect your personal data during handling throughout the entire business process.</p>
             <p>In the following, we explain what information Newworld Cargo collects when you visit our website and how this information is used.</p>
         </div>
     </div>
@@ -306,7 +306,7 @@
             <a href="#scope" class="quick-link">Scope of this Privacy Notice</a>
         </div>
     </div>
-    
+
     <div id="scope" class="section">
         <h2>Scope of this Privacy Notice</h2>
         <div class="card">
@@ -321,10 +321,10 @@
             <p>All the above subjects are referred to as "you" or "your".</p>
         </div>
     </div>
-    
+
     <div id="personal-data" class="section">
         <h2>Personal Data</h2>
-        
+
         <div class="subsection">
             <h3>What is Personal Data?</h3>
             <div class="card">
@@ -332,28 +332,29 @@
                 <p>This includes information such as your real name, address, telephone number and date of birth. Information which cannot be linked to your real identity - such as favorite websites or number of users of a site - is not considered personal data.</p>
             </div>
         </div>
-        
+
         <div class="subsection">
             <h3>Who is Responsible?</h3>
             <div class="card">
                 <p>This Privacy Notice applies for the data processing carried out by:</p>
                 <p>
-                    Deutsche Post AG<br>
-                    Charles-de-Gaulle-Str. 20<br>
-                    53113 Bonn<br>
-                    Germany
+                    Newworld Cargo<br>
+                    Lusaka Office<br>
+                    Plot 12500, Carousel Shopping Center Shop 62/a
+                    <br>
+                    Zambia
                 </p>
-                <p>Data Protection Officer of controller, contact details:</p>
+                {{-- <p>Data Protection Officer of controller, contact details:</p>
                 <p>
                     Deutsche Post AG<br>
                     Global Data Protection<br>
                     53250 Bonn
-                </p>
+                </p> --}}
                 <p>If you have queries with regard to the processing of your personal data, please contact the Data Protection Officer.</p>
                 <p>If you have any further queries regarding data protection in connection with our website or services offered there, please contact Newworld Cargo data protection.</p>
             </div>
         </div>
-        
+
         <div class="subsection">
             <h3>Types of Data We Process</h3>
             <div class="card">
@@ -388,10 +389,10 @@
             </div>
         </div>
     </div>
-    
+
     <div id="how-we-use" class="section">
         <h2>How We Use Your Data</h2>
-        
+
         <div class="accordion">
             <div class="accordion-header">
                 Visiting our Website
@@ -402,7 +403,7 @@
                 <p>Temporary storage of this data is necessary during your visit to the website in order to allow the website to be delivered to you. Further storage in log files is performed to ensure the functionality of the website and the security of our IT systems. The legal basis for the processing of the aforementioned data categories is therefore Art. 6 (1) (f) of the European General Data Protection Regulation (GDPR).</p>
             </div>
         </div>
-        
+
         <div class="accordion">
             <div class="accordion-header">
                 Use of Cookies
@@ -413,7 +414,7 @@
                 <p>When you access our website, a Privacy Preference Center will inform you that technically necessary cookies are set and, in addition, that your consent is required to the use of certain technologies, such as analytical cookies or similar technologies.</p>
             </div>
         </div>
-        
+
         <div class="accordion">
             <div class="accordion-header">
                 Social Media
@@ -429,7 +430,7 @@
                 </ol>
             </div>
         </div>
-        
+
         <div class="accordion">
             <div class="accordion-header">
                 Performance of a Contract
@@ -449,10 +450,10 @@
             </div>
         </div>
     </div>
-    
+
     <div id="who-processes" class="section">
         <h2>Who Processes Your Data</h2>
-        
+
         <div class="subsection">
             <h3>Processing for Advertising Purposes</h3>
             <div class="card">
@@ -465,14 +466,14 @@
                 </ol>
             </div>
         </div>
-        
+
         <div class="subsection">
             <h3>Data Retention and Third Parties</h3>
             <div class="card">
                 <h4>How Long We Keep Your Data</h4>
                 <p>We will keep your data for as long as necessary to fulfill our purposes, to execute our contracts and to comply with any legal obligation. The retention period may differ per country based on applicable country laws.</p>
                 <p>We continuously strive to minimize the retention period of data where the purpose, the law or contracts allows us to do so. The data that we collect based on your consent will be kept until you withdraw your consent.</p>
-                
+
                 <h4>Will My Data Be Passed On?</h4>
                 <p>Newworld Cargo does not share, sell, transfer or otherwise disseminate your personal data to third parties and will not do so in future, unless required by law, unless required for the purpose of the contract or unless you have given explicit consent to do so.</p>
                 <p>In the context of the data processing as described in this Privacy Notice and the respective legal basis given, Newworld Cargo will transfer your data to the following categories of recipients:</p>
@@ -485,7 +486,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="data-rights" class="section">
         <h2>What Are My Data Rights?</h2>
         <div class="card">
@@ -496,17 +497,17 @@
                 <li>You can request to receive personal data you have provided in a structured, commonly used and machine-readable format.</li>
                 <li>You may lodge a complaint with the supervisory authority</li>
             </ul>
-            
+
             <h4>Right to Obtain</h4>
             <p>You can obtain your information by contacting data protection here: <a href="#">Newworld Cargo Data Protection</a>.</p>
-            
+
             <h4>Right to Object</h4>
             <p>The right to object applies for all processing of personal data which is based on Art. 6 (1) f) GDPR.</p>
-            
+
             <h4>Right to Withdraw Your Consent</h4>
             <p>You have the right to withdraw your consent with effect for the future at any time.</p>
         </div>
-        
+
         <div class="subsection">
             <h3>How About Data Security?</h3>
             <div class="card">
@@ -524,7 +525,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="divisional" class="section">
         <h2>Divisional Privacy Notices</h2>
         <div class="card">
@@ -545,12 +546,12 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="subsection">
             <h3>Changes to Privacy Notice</h3>
             <div class="card">
                 <p>Newworld Cargo reserves the right to change its Privacy Notice at any time with or without prior notice. Please check back frequently to be informed of any changes. By using Newworld Cargo's websites you agree to this Privacy Notice.</p>
-                <p class="last-updated">This statement was last updated on: 03/06/2023</p>
+                <p class="last-updated">This statement was last updated on: 13/03/2025</p>
             </div>
         </div>
     </div>

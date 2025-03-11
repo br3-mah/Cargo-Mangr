@@ -21,7 +21,7 @@ class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, SpatieLogsActivity, FileHelper, HasRoles;
     use InteractsWithMedia;
-    
+
 
     /**
 	 * directory user images.
@@ -47,7 +47,9 @@ class User extends Authenticatable implements HasMedia
         'role',
         'national_id',
         'responsible_mobile',
-        'country_code' 
+        'country_code',
+        'provider',
+        'provider_id'
        ];
 
     /**

@@ -10,7 +10,7 @@
         <div class="card card-outline">
             <div class="card-header text-center">
                 <a href="{{ url('/') }}" class="logo-container">
-                    @php 
+                    @php
                         $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
                         $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
                     @endphp
@@ -20,7 +20,7 @@
 
             <div class="card-body">
                 <h3 class="widget-title text-muted text-['#012624']">Sigin into your account</h3>
-                
+
                 @error('email')
                     <div class="alert-message">
                         <div class="text-danger"> {{ $message }} </div>
@@ -29,7 +29,7 @@
 
                 <form method="POST" action="{{ route('login.request') }}" novalidate="novalidate" id="kt_sign_in_form">
                     @csrf
-                    
+
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-icon">
@@ -38,7 +38,7 @@
                             <input type="email" class="form-control" name="email" id="email" placeholder="{{ __('view.Email') }}" autocomplete="off" value="" required autofocus>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-icon">
@@ -47,7 +47,7 @@
                             <input type="password" class="form-control" name="password" id="password" placeholder="{{ __('view.Password') }}" autocomplete="off" required>
                         </div>
                     </div>
-                    
+
                     <div class="form-options">
                         <div class="remember-me">
                             <div class="custom-checkbox">
@@ -304,7 +304,7 @@
             width: 100%;
         }
     }
-    
+
     .social-login {
         display: flex;
         flex-direction: column;
@@ -328,42 +328,15 @@
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script type="text/javascript">
-    function autoFill(){
-        $('#email').val('admin@admin.com');
-        $('#password').val('123456');
-    }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+document.getElementById('google-login').addEventListener('click', function () {
+    window.location.href = "/auth/google";
+});
 
-    @if(env('DEMO_MODE') == 'On')
-      $(document).ready(function() {
-        autoFill();
-
-        $('body').on('click','#login_admin', function(e){
-          $('#email').val('admin@admin.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_employee', function(e){
-          $('#email').val('employee@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_driver', function(e){
-          $('#email').val('driver@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_branch', function(e){
-          $('#email').val('branch@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_client', function(e){
-          $('#email').val('client@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-      });
-    @endif
+document.getElementById('facebook-login').addEventListener('click', function () {
+    window.location.href = "/auth/facebook";
+});
 </script>
+
 @endsection

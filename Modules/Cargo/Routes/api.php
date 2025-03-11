@@ -63,3 +63,7 @@ Route::get('branchs', 'Api\ShipmentController@getBranchs');
 
 // Show Register In Driver App Api Route
 Route::get('show-register-in-driver-app', 'Api\ShipmentController@showRegisterInDriverApp');
+
+
+// Support Api Routes
+Route::post('submit-support','Api\SupportController@ajaxSubmitTicket')->name('support.ticket.submit');
