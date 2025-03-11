@@ -24,7 +24,7 @@ Route::post('shipment-update-payment','ShipmentController@updatePaymentMeth')->n
 Route::get('/register', 'ClientController@register')
             ->middleware('guest')
             ->name('reg');
-                
+
 if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
     Route::group(
         [
@@ -33,7 +33,7 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
         ], function(){
 
         Route::get('support-center', 'SupportController@index')->name('support');
-        
+
         Route::get('shipments/shipment-calc', 'ShipmentController@shipmentCalc')->name('shipment-calc');
         Route::get('admin/shipments/payment/{shipment_id}','ShipmentController@pay')->name('admin.shipments.pay');
 
