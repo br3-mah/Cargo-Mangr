@@ -13,18 +13,29 @@ class CreateAlterClientsTable extends Migration
      */
     public function up()
     {
-        Schema::table('clients', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
-        });
-        Schema::table('drivers', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
-        });
-        Schema::table('staffs', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
-        });
-        Schema::table('branches', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
-        });
+        if (Schema::hasTable('clients') && !Schema::hasColumn('clients', 'avatar')) {
+            Schema::table('clients', function (Blueprint $table) {
+                $table->text('avatar')->nullable();
+            });
+        }
+
+        if (Schema::hasTable('drivers') && !Schema::hasColumn('drivers', 'avatar')) {
+            Schema::table('drivers', function (Blueprint $table) {
+                $table->text('avatar')->nullable();
+            });
+        }
+
+        if (Schema::hasTable('staffs') && !Schema::hasColumn('staffs', 'avatar')) {
+            Schema::table('staffs', function (Blueprint $table) {
+                $table->text('avatar')->nullable();
+            });
+        }
+
+        if (Schema::hasTable('branches') && !Schema::hasColumn('branches', 'avatar')) {
+            Schema::table('branches', function (Blueprint $table) {
+                $table->text('avatar')->nullable();
+            });
+        }
     }
 
     /**

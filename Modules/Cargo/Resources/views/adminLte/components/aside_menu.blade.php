@@ -468,7 +468,7 @@ $driver = 5;
 <!-- shipment api -->
 <li class="nav-item">
     <a href="{{ fr_route('shipments.calculator') }}" class="nav-link">
-        <i class="fas fa-headset fa-fw text-white"></i>
+        <i class="fas fa-calculator fa-fw text-white"></i>
         <p class="text-white">&nbsp;Shipment Calculator</p>
     </a>
 </li>
