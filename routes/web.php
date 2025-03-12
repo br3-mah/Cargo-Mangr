@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\OTPVerificationController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -20,10 +21,23 @@ use Illuminate\Support\Facades\Response;
 
 // Admin routes
 require __DIR__.'/admin.php';
-
+// STANDARD LOGIN ROUTES
 Route::get('/signin', [AuthenticatedSessionController::class, 'main'])
 ->middleware('guest')
 ->name('signin');
+// REGISTRATION VERIFICATION ROUTES
+// Route::get('/one-time-password-verification-otp', [OTPVerificationController::class, 'index'])
+// ->name('verify.otp');
+// Route::middleware(['auth'])->group(function () {
+    Route::get('/verify-otp', [OTPVerificationController::class, 'index'])->name('verify.otp');
+    Route::post('/verify-otp', [OTPVerificationController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/resend-otp', [OTPVerificationController::class, 'resendOtp'])->name('otp.resend');
+// });
+
+// SOCIAL LOGIN ROUTES
+Route::get('/auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.login');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
+
 
 
 
@@ -38,8 +52,6 @@ Route::get('/terms-of-use', 'TermsOfUseController@index')->name('terms');
 Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
 Route::post('contact', 'Api\ContactUsController@sendContact')->name('contact.store');
 
-Route::get('/auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.login');
-Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
 
 
 
