@@ -19,7 +19,11 @@ class AuthenticatedSessionController extends Controller
     public function index()
     {
         if (Auth::guard('web')->check()) {
-            return redirect(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
+            if ($this->verifyByOtp()) {
+                return redirect(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
+            } else {
+                return redirect()->route('verify.otp');
+            }
         } else {
             return redirect()->route('login');
         }
@@ -82,7 +86,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
+        //verify otp
+
+        if ($this->verifyByOtp()) {
+            return redirect()->intended(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
+        } else {
+            return redirect()->route('verify.otp');
+        }
+
     }
 
     /**
@@ -100,6 +111,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('home');
+    }
+
+
+    public function verifyByOtp(){
+        // dd((Auth::check() && Auth::user()->verified));
+        if (Auth::check() && Auth::user()->verified) {
+            return true;
+        }else{
+            // dd('here');
+            return false;
+        }
+
     }
 }

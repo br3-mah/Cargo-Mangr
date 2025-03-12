@@ -49,7 +49,9 @@ class User extends Authenticatable implements HasMedia
         'responsible_mobile',
         'country_code',
         'provider',
-        'provider_id'
+        'provider_id',
+        'verified',
+        'otp'
        ];
 
     /**
@@ -69,6 +71,7 @@ class User extends Authenticatable implements HasMedia
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'verified' => 'boolean',
     ];
 
     /**
