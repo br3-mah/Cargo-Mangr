@@ -386,10 +386,10 @@
 
         .danger-icon {
         color: var(--danger-color);
-        }   
+        }
         .success-icon {
         color: var(--success-color);
-        }   
+        }
 
         .shortcut-title {
           font-size: 0.95rem;
@@ -447,18 +447,18 @@
               </div>
               <div class="shortcut-title">Analytics</div>
             </div>
-            <div class="shortcut-card">
+            <a href="" class="shortcut-card">
                 <div class="shortcut-icon">
                   <i class="fas fa-calendar"></i>
                 </div>
                 <div class="shortcut-title">Schedule</div>
-              </div>
-              <div class="shortcut-card">
+              </a>
+              <a href="{{ route('support') }}" class="shortcut-card">
                 <div class="shortcut-icon">
                   <i class="fas fa-headset danger-icon"></i>
                 </div>
                 <div class="shortcut-title">Support</div>
-              </div>
+              </a>
           </div>
         </div>
 

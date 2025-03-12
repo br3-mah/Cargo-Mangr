@@ -107,12 +107,12 @@
                     <li id="menu-item-957" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-957">
                       <a href="{{ route('privacy') }}">Privacy Policy</a>
                     </li>
-                    <li id="menu-item-958" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-958">
+                    {{-- <li id="menu-item-958" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-958">
                       <a href="#">Additional Information</a>
                     </li>
                     <li id="menu-item-959" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-959">
                       <a href="#">Cookie Settings</a>
-                    </li>
+                    </li> --}}
                   </ul>
                 </div>
               </div>

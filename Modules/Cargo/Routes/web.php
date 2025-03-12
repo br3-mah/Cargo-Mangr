@@ -605,6 +605,9 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
         Route::get('/sms-gateways', 'BusinessSettingsController@sms_gateways')->name('sms_gateways.index');
 
     });
+
+
+
     Route::prefix('receiver')->group(function() {
         Route::get('receiver/index','ReceiversController@index')->name('receivers.index');
         Route::get('receiver/create','ReceiversController@create')->name('receivers.create');

@@ -712,7 +712,7 @@ $tabTitles = [""];
       </div>
     </div>
 
-    {{-- @include('components.consent-cookies') --}}
+    @include('components.consent-cookies')
     @include('components.footer')
     @include('components.top')
     @include('components.mouse')
