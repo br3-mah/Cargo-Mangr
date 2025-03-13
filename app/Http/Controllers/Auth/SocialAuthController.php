@@ -46,6 +46,7 @@ class SocialAuthController extends Controller
                 'provider' => $provider,
                 'provider_id' => $socialUser->getId(),
                 'password' => bcrypt(uniqid()), // Assign a random password
+                'role'=> 4
             ]);
         } else {
             // Update provider details if user exists
