@@ -23,7 +23,9 @@ class OTPVerificationController extends Controller
             }
 
             // Auto-send OTP when showing verification page
-            $this->resendOtp();
+            if($_GET['refs']){
+                $this->resendOtp();
+            }
 
             $adminTheme = env('ADMIN_THEME', 'adminLte');
             return view($adminTheme.'.auth.otp-verification');
