@@ -91,7 +91,7 @@ class AuthenticatedSessionController extends Controller
         if ($this->verifyByOtp()) {
             return redirect()->intended(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
         } else {
-            return redirect()->route('verify.otp');
+            return redirect()->route('verify.otp',['ref'=>'true']);
         }
 
     }
