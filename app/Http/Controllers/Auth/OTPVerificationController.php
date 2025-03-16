@@ -23,12 +23,12 @@ class OTPVerificationController extends Controller
             }
 
             // Auto-send OTP when showing verification page
-            if(isset($_GET['ref'])){
+            if (isset($_GET['refs'])) {
                 $this->resendOtp();
             }
 
             $adminTheme = env('ADMIN_THEME', 'adminLte');
-            return view($adminTheme.'.auth.otp-verification');
+            return view($adminTheme . '.auth.otp-verification');
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -48,7 +48,7 @@ class OTPVerificationController extends Controller
                 // Compile from individual digits
                 $otp = '';
                 for ($i = 1; $i <= 6; $i++) {
-                    $otp .= $request->get('otp_digit'.$i, '');
+                    $otp .= $request->get('otp_digit' . $i, '');
                 }
                 $request->merge(['otp' => $otp]);
             }
@@ -81,7 +81,7 @@ class OTPVerificationController extends Controller
 
             return back()->with('error', 'The code you entered is incorrect. Please try again a new code has been resent.');
         } catch (\Throwable $th) {
-           return back()->with('error', $th->getMessage());
+            return back()->with('error', $th->getMessage());
         }
     }
 
