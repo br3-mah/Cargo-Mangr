@@ -16,6 +16,9 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Str;
+use PragmaRX\Google2FA\Google2FA;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -114,6 +117,29 @@ class User extends Authenticatable implements HasMedia
     }
 
 
+    public function createTwoFactorAuthSecret()
+    {
+        $google2fa = new Google2FA();
+        return $google2fa->generateSecretKey();
+    }
+
+    public function twoFactorQrCodeSvg()
+    {
+        if (!$this->two_factor_secret) {
+            return null;
+        }
+
+        $google2fa = new Google2FA();
+        $secret = decrypt($this->two_factor_secret);
+
+        $url = $google2fa->getQRCodeUrl(
+            config('app.name'),
+            $this->email,
+            $secret
+        );
+
+        return QrCode::format('svg')->size(200)->generate($url);
+    }
 
 
     /**

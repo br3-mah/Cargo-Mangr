@@ -23,14 +23,14 @@ class OTPVerificationController extends Controller
             }
 
             // Auto-send OTP when showing verification page
-            if($_GET['refs']){
+            if($_GET['ref']){
                 $this->resendOtp();
             }
 
             $adminTheme = env('ADMIN_THEME', 'adminLte');
             return view($adminTheme.'.auth.otp-verification');
         } catch (\Throwable $th) {
-            return redirect()->route('signin')->with('error', 'We could not identify your account.'.$th->getMessage());
+            dd($th);
         }
     }
 
@@ -90,33 +90,37 @@ class OTPVerificationController extends Controller
      */
     public function resendOtp()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        if (!$user) {
-            return redirect()->route('signin')->with('error', 'Session expired. Please login again.');
+            if (!$user) {
+                return redirect()->route('signin')->with('error', 'Session expired. Please login again.');
+            }
+
+            // Generate new OTP
+            $otp = rand(100000, 999999);
+            $user->otp = $otp;
+            $user->otp_expires_at = now()->addMinutes(10); // OTP valid for 10 minutes
+            $user->save();
+
+            // Here, send OTP via email or SMS
+            Mail::to($user->email)->send(new OTPMail($user->otp));
+
+            // Log OTP sent (for development)
+            Log::info('OTP resent to user', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'otp' => $otp // Remove in production
+            ]);
+
+            if (request()->ajax()) {
+                return response()->json(['success' => true, 'message' => 'A new verification code has been sent to your email.']);
+            }
+
+            return back()->with('success', 'A new verification code has been sent to ' . $user->email);
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
         }
-
-        // Generate new OTP
-        $otp = rand(100000, 999999);
-        $user->otp = $otp;
-        $user->otp_expires_at = now()->addMinutes(10); // OTP valid for 10 minutes
-        $user->save();
-
-        // Here, send OTP via email or SMS
-        Mail::to($user->email)->send(new OTPMail($user->otp));
-
-        // Log OTP sent (for development)
-        Log::info('OTP resent to user', [
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'otp' => $otp // Remove in production
-        ]);
-
-        if (request()->ajax()) {
-            return response()->json(['success' => true, 'message' => 'A new verification code has been sent to your email.']);
-        }
-
-        return back()->with('success', 'A new verification code has been sent to ' . $user->email);
     }
 
     /**
