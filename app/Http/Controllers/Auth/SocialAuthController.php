@@ -53,11 +53,11 @@ class SocialAuthController extends Controller
                 'provider' => $provider,
                 'provider_id' => $socialUser->getId(),
                 'password' => bcrypt(uniqid()), // Assign a random password
-                'code'=> 0,
-                'branch_id'=> 1,
-                'user_id'=> 1,
-                'role'=> 4,
-                'terms_conditions'=>true
+                'branch_id' => 1,
+                'user_id' => 1,
+                'role' => 4,
+
+                'terms_conditions' => true
             ]);
         } else {
             // Update provider details if user exists
@@ -66,21 +66,27 @@ class SocialAuthController extends Controller
                 'provider_id' => $socialUser->getId(),
             ]);
         }
- 
+
 
         $userRegistrationHelper = new UserRegistrationHelper();
-		$response = $userRegistrationHelper->NewUser($user);
-        if(!$response['success']){
+        $response = $userRegistrationHelper->NewUser($user);
+        if (!$response['success']) {
             throw new \Exception($response['error_msg']);
         }
 
+        $data = $user->toArray();
+        $data['country_code']    = 'ZM';
+        $data['code']    = 0;
+        $data['user_id'] = $response['user']['id'];
+        $data['created_by'] = auth()->check() ? auth()->id() : null;
+
         $client = new Client();
-        $client->fill($user->toArray());
-        if (!$client->save()){
+        $client->fill($data);
+        if (!$client->save()) {
             throw new \Exception();
         }
         $client->code = $client->id;
-        if (!$client->save()){
+        if (!$client->save()) {
             throw new \Exception();
         }
         event(new AddClient($client));
@@ -93,6 +99,4 @@ class SocialAuthController extends Controller
 
         return redirect('/admin')->with('success', 'Successfully logged in!');
     }
-
-
 }
