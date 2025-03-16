@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
                 // }
                 return redirect(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
             } else {
-                return redirect()->route('verify.otp');
+                return redirect()->route('verify.otp',['refs'=>'true']);
             }
         } else {
             return redirect()->route('login');
@@ -117,7 +117,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
 
         } else {
-            return redirect()->route('verify.otp',['ref'=>'true']);
+            return redirect()->route('verify.otp',['refs'=>'true']);
         }
 
     }
