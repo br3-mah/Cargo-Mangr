@@ -23,7 +23,7 @@ class OTPVerificationController extends Controller
             }
 
             // Auto-send OTP when showing verification page
-            if($_GET['ref']){
+            if(isset($_GET['ref'])){
                 $this->resendOtp();
             }
 
