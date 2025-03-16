@@ -6,6 +6,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\OTPVerificationController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Auth\TwoFactorAuthController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 /*
@@ -38,6 +39,12 @@ Route::get('/signin', [AuthenticatedSessionController::class, 'main'])
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.login');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
 
+Route::get('/2fa/verify', [TwoFactorAuthController::class, 'showVerifyForm'])->name('2fa.verify');
+Route::post('/2fa/verify', [TwoFactorAuthController::class, 'verify'])->name('2fa.verify.post');
+
+Route::post('/2fa/enable', [TwoFactorAuthController::class, 'enable'])->name('2fa.enable');
+Route::delete('/2fa/disable', [TwoFactorAuthController::class, 'disable'])->name('2fa.disable');
+Route::post('/2fa/regenerate', [TwoFactorAuthController::class, 'regenerate'])->name('2fa.regenerate');
 
 
 

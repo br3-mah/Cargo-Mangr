@@ -133,6 +133,7 @@ class UsersController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
+        
         if (env('DEMO_MODE') == 'On') {
             return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
         }

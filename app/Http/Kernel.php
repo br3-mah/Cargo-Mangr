@@ -71,6 +71,8 @@ class Kernel extends HttpKernel
         'isAdmin' => \App\Http\Middleware\isAdmin::class,
         'user_role' => \App\Http\Middleware\UserRole::class,
 
+        '2fa.verified' => \App\Http\Middleware\EnsureTwoFactorVerified::class,
+
 
         /**** OTHER MIDDLEWARE ****/
         'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,

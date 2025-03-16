@@ -327,7 +327,7 @@ class ClientController extends Controller
         $adminTheme = env('ADMIN_THEME', 'adminLte');return view('cargo::'.$adminTheme.'.pages.clients.edit')->with(['model' => $client, 'branches' => $branches, 'packages' => $packages]);
     }
 
-    public  function profile($id)
+    public function profile($id)
     {
         breadcrumb([
             [
