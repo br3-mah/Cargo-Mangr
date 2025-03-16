@@ -60,7 +60,7 @@ class OTPVerificationController extends Controller
             $user = Auth::user();
 
             if (!$user) {
-                return redirect()->route('login')->with('error', 'Session expired. Please login again.');
+                return redirect()->route('home')->with('error', 'Session expired. Please login again.');
             }
 
             // Check if OTP matches
