@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Support\Facades\Session;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,6 +21,17 @@ class AuthenticatedSessionController extends Controller
     {
         if (Auth::guard('web')->check()) {
             if ($this->verifyByOtp()) {
+
+                // if (auth()->user()->two_factor_secret) {
+                //     // Store user ID in session temporarily before full authentication
+                //     Session::put('2fa:user:id', auth()->user()->id);
+
+                //     // Log out the user temporarily
+                //     Auth::logout();
+
+                //     // Redirect to the 2FA verification page
+                //     return redirect()->route('2fa.verify');
+                // }
                 return redirect(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
             } else {
                 return redirect()->route('verify.otp');
@@ -82,14 +94,28 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        //verify otp
+        //first time verify otp
+        if ($this->alreadyVerifiedByOtp()) {
 
-        if ($this->verifyByOtp()) {
+            //place the 2fa check and redirect to 2fa page if user enabled it
+            // Check if the user has 2FA enabled
+            // if (auth()->user()->two_factor_secret) {
+            //     // Store user ID in session temporarily before full authentication
+            //     Session::put('2fa:user:id', auth()->user()->id);
+
+            //     // Log out the user temporarily
+            //     Auth::logout();
+
+            //     // Redirect to the 2FA verification page
+            //     return redirect()->route('2fa.verify');
+            // }
             return redirect()->intended(env('PREFIX_ADMIN', 'admin') . RouteServiceProvider::HOME);
+
         } else {
             return redirect()->route('verify.otp',['ref'=>'true']);
         }
@@ -115,14 +141,11 @@ class AuthenticatedSessionController extends Controller
     }
 
 
-    public function verifyByOtp(){
-        // dd((Auth::check() && Auth::user()->verified));
+    public function alreadyVerifiedByOtp(){
         if (Auth::check() && Auth::user()->verified) {
             return true;
         }else{
-            // dd('here');
             return false;
         }
-
     }
 }
