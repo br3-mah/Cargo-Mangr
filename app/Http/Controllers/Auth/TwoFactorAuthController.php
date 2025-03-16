@@ -85,13 +85,13 @@ class TwoFactorAuthController extends Controller
         ]);
 
         if (!Session::has('2fa:user:id')) {
-            return redirect()->route('login')->withErrors(['email' => 'Session expired.']);
+            return redirect()->route('home')->withErrors(['email' => 'Session expired.']);
         }
 
         $user = \App\Models\User::find(Session::get('2fa:user:id'));
 
         if (!$user) {
-            return redirect()->route('login')->withErrors(['email' => 'User not found.']);
+            return redirect()->route('home')->withErrors(['email' => 'User not found.']);
         }
 
         $google2fa = new Google2FA();

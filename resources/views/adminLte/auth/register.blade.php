@@ -17,7 +17,6 @@
                         </div>
                     </div>
                     <!--end::Heading-->
-
                     <!--begin::Signup Form-->
                     <form method="POST" action="{{ theme()->getPageUrl('register') }}" class="form w-100" novalidate="novalidate" id="kt_sign_up_form">
                         @csrf
