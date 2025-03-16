@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('verify.otp',['refs'=>'true']);
             }
         } else {
-            return redirect()->route('login');
+            return redirect()->route('home');
         }
     }
 
