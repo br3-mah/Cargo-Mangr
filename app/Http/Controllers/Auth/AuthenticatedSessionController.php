@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
     public function index()
     {
         if (Auth::guard('web')->check()) {
-            if ($this->verifyByOtp()) {
+            if ($this->alreadyVerifiedByOtp()) {
 
                 // if (auth()->user()->two_factor_secret) {
                 //     // Store user ID in session temporarily before full authentication

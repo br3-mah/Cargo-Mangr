@@ -17,3 +17,5 @@ yarn-error.log
 storage/framework/cache/data/
 .env
 /temp
+composer.lock
+package-lock.json
