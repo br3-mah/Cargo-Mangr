@@ -45,7 +45,8 @@ $driver = 5;
 
 
 
-                @if (in_array($user_role, [$admin, $client, $branch]) || auth()->user()->can('import-shipments'))
+                @if (in_array($user_role, [$admin, $branch]) || auth()->user()->can('import-shipments'))
+                {{-- @if (in_array($user_role, [$admin, $client, $branch]) || auth()->user()->can('import-shipments')) --}}
                     <!-- import shipment -->
                     <li class="nav-item">
                         <a href="{{ fr_route('shipments.import') }}"

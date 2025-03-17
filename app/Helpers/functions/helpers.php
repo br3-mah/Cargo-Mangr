@@ -26,7 +26,8 @@ if (!function_exists('is_app_installed')) {
      *
      * @return boolean
      */
-    function is_app_installed($hardcheck = false) {
+    function is_app_installed($hardcheck = false)
+    {
         $soft = 1 === abs(intval(env('INSTALLATION')));
 
         $hard = $soft
@@ -44,7 +45,8 @@ if (!function_exists('get_base_url')) {
      *
      * @return string
      */
-    function get_base_url() {
+    function get_base_url()
+    {
         $hasPort = (
             isset($_SERVER['SERVER_PORT'])
             && false === empty($_SERVER['SERVER_PORT'])
@@ -73,12 +75,13 @@ if (!function_exists('get_locale_name_by_code')) {
      * @param string $code
      * @return string
      */
-    function get_locale_name_by_code($code, $default = null) {
+    function get_locale_name_by_code($code, $default = null)
+    {
         $locales = collect(
             config('localization.languages', [])
         );
 
-        $locale = $locales->filter(function($item, $idx) use ($code) {
+        $locale = $locales->filter(function ($item, $idx) use ($code) {
             return strtolower($idx) === strtolower($code)
                 || strtolower($item['name']) === strtolower($code);
         })->first();
@@ -98,13 +101,16 @@ if (!function_exists('check_module')) {
      * Check on module is exists.
      * @return boolean.
      */
-    function check_module($module_name) {
+    function check_module($module_name)
+    {
         $module_name = strtolower($module_name);
         $modules_file = json_decode(File::get(base_path('modules_statuses.json')), true);
-        $modules = collect($modules_file)->mapWithKeys(function($value, $name) {
+        $modules = collect($modules_file)->mapWithKeys(function ($value, $name) {
             return [strtolower($name) => $value];
         });
-        return $modules->first(function ($value, $mn) use ($module_name) { return $mn == $module_name && $value === true; }) ? true : false;
+        return $modules->first(function ($value, $mn) use ($module_name) {
+            return $mn == $module_name && $value === true;
+        }) ? true : false;
     }
 }
 
@@ -114,7 +120,8 @@ if (!function_exists('get_module_settings')) {
      * Get settings.
      * @return Setting setting table.
      */
-    function get_module_settings() {
+    function get_module_settings()
+    {
         $module_settings = [];
         return $module_settings;
         $get_setting = Setting::select('id', 'parent', 'module_name', 'module_slug', 'permission_id')
@@ -123,7 +130,9 @@ if (!function_exists('get_module_settings')) {
             ->orderBy('module_slug')
             ->limit(100)
             ->get();
-        $general_settings = $get_setting->first(function ($setting) { return $setting->module_slug == 'general_settings'; });
+        $general_settings = $get_setting->first(function ($setting) {
+            return $setting->module_slug == 'general_settings';
+        });
 
         if ($general_settings) $module_settings[] = $general_settings;
 
@@ -142,10 +151,10 @@ if (!function_exists('get_general_setting')) {
      * Get column of settings.
      * @return Setting column setting table.
      */
-    function get_general_setting($key, $default = '') {
+    function get_general_setting($key, $default = '')
+    {
 
-        if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('settings'))
-        {
+        if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('settings')) {
             $settings = app(\App\Models\GeneralSettings::class);
 
             $value = null;
@@ -155,17 +164,17 @@ if (!function_exists('get_general_setting')) {
                 if (isset($get_setting_fields[$key])) {
                     if ($get_setting_fields[$key]['type'] == 'image') {
                         $uri = \Config::get('DIRECTORY_IMAGE') . '/' . $get_setting_fields[$key]['value'];
-                        $path = public_path('storage/'. $uri);
+                        $path = public_path('storage/' . $uri);
                         $value = is_file($path) && file_exists($path) ? Storage::url($uri) : null;
                     } else {
-                        $value = (is_array($get_setting_fields[$key]['value'])) ? (isset($get_setting_fields[$key]['value'][LaravelLocalization::getCurrentLocale()]) ? $get_setting_fields[$key]['value'][LaravelLocalization::getCurrentLocale()] : $get_setting_fields[$key]['value']['en'] ) : $get_setting_fields[$key]['value'];
+                        $value = (is_array($get_setting_fields[$key]['value'])) ? (isset($get_setting_fields[$key]['value'][LaravelLocalization::getCurrentLocale()]) ? $get_setting_fields[$key]['value'][LaravelLocalization::getCurrentLocale()] : $get_setting_fields[$key]['value']['en']) : $get_setting_fields[$key]['value'];
                     }
                 }
 
                 config()->set('cms.settings.general', collect($get_setting_fields)->toArray());
             }
             return $value ?? $default;
-        }else{
+        } else {
             return false;
         }
     }
@@ -177,7 +186,8 @@ if (!function_exists('theme_setting')) {
      * Get column of settings.
      * @return CustomSetting column setting table.
      */
-    function theme_setting($key, $default = '') {
+    function theme_setting($key, $default = '')
+    {
         $key_vars = explode('.', $key);
         $place = $key_vars[0];
         $section = count($key_vars) > 1 ? $key_vars[1] : false;
@@ -206,12 +216,12 @@ if (!function_exists('theme_setting_image')) {
      * Get media url of settings.
      * @return Media url from media table.
      */
-    function theme_setting_image($id,$setting_key = null) {
-        $query_settings = CustomSetting::where('id', $id)->orWhere('section',$id)->first();
-        if($query_settings){
+    function theme_setting_image($id, $setting_key = null)
+    {
+        $query_settings = CustomSetting::where('id', $id)->orWhere('section', $id)->first();
+        if ($query_settings) {
             return $query_settings->getFirstMediaUrl($setting_key) ?? $default;
-        }else{
-
+        } else {
         }
     }
 }
@@ -222,12 +232,12 @@ if (!function_exists('theme_setting_container_image')) {
      * Get media url of settings.
      * @return Media url from media table.
      */
-    function theme_setting_container_image($id,$setting_key = null) {
+    function theme_setting_container_image($id, $setting_key = null)
+    {
         $query_settings = ThemeSettingContainer::where('id', $id)->first();
-        if($query_settings){
+        if ($query_settings) {
             return $query_settings->getFirstMediaUrl($setting_key) ?? $default;
-        }else{
-
+        } else {
         }
     }
 }
@@ -239,7 +249,8 @@ if (!function_exists('theme_setting_containers')) {
      * Get column of settings.
      * @return CustomSetting column setting table.
      */
-    function theme_setting_containers($place) {
+    function theme_setting_containers($place)
+    {
         $current_theme = strtolower(Theme::active());
         $with = [
             'sections' => function ($q) {
@@ -282,7 +293,8 @@ if (!function_exists('aasort')) {
      * Sort a Multi-dimensional Array by order value.
      * @return Array sorted Ascending.
      */
-    function aasort ($array, $key) {
+    function aasort($array, $key)
+    {
         $sorter = array();
         $ret = array();
         reset($array);
@@ -337,7 +349,8 @@ if (!function_exists('breadcrumb')) {
             ],
         ]);
      */
-    function breadcrumb($breadcrumb = null, $merge = false) {
+    function breadcrumb($breadcrumb = null, $merge = false)
+    {
         if (is_null($breadcrumb)) {
             return config('cms.breadcrumb');
         } else {
@@ -358,14 +371,15 @@ if (!function_exists('breadcrumb_html')) {
      * @see resources\views\admin\components\page-title.blade.php
      * @return string breadcrumb format html.
      */
-    function breadcrumb_html() {
+    function breadcrumb_html()
+    {
         $breadcrumb = breadcrumb();
         if (is_array($breadcrumb) && !empty($breadcrumb)) {
             $resultHTML = '';
             $lastPage = $breadcrumb[count($breadcrumb) - 1];
 
             $adminTheme = env('ADMIN_THEME', 'adminLte');
-            if($adminTheme == 'admin'){
+            if ($adminTheme == 'admin') {
                 $resultHTML .= ('<h1 class="d-flex align-items-center text-dark fw-bolder fs-3 my-1">' . $lastPage['name'] . '</h1>');
                 if (count($breadcrumb) > 1) {
                     $resultHTML .= ('<span class="h-20px border-gray-200 border-start mx-4"></span> <ol class="breadcrumb text-muted fs-6 fw-bold">');
@@ -374,16 +388,16 @@ if (!function_exists('breadcrumb_html')) {
                             $path = str::startsWith($page['path'], 'http') ? $page['path'] : aurl($page['path']);
                             $resultHTML .= (
                                 '<li class="breadcrumb-item pe-3">' .
-                                    '<a href="' . $path . '" class="pe-3">' . $page['name'] . '</a>' .
+                                '<a href="' . $path . '" class="pe-3">' . $page['name'] . '</a>' .
                                 '</li>'
                             );
                         } else {
-                            $resultHTML .= ( '<li class="breadcrumb-item pe-3 text-muted">' . $page['name'] . '</li>' );
+                            $resultHTML .= ('<li class="breadcrumb-item pe-3 text-muted">' . $page['name'] . '</li>');
                         }
                     }
                     $resultHTML .= ('</ol>');
                 }
-            }elseif($adminTheme == 'adminLte'){
+            } elseif ($adminTheme == 'adminLte') {
 
                 $resultHTML .= ('<div class="content-header"> <div class="container-fluid"> <div class="row mb-2">');
                 $resultHTML .= ('<div class="col-sm-6"> <h1 class="m-0">' . $lastPage['name'] . '</h1> </div>');
@@ -394,11 +408,11 @@ if (!function_exists('breadcrumb_html')) {
                             $path = str::startsWith($page['path'], 'http') ? $page['path'] : aurl($page['path']);
                             $resultHTML .= (
                                 '<li class="breadcrumb-item">' .
-                                    '<a href="' . $path . '" class="pe-3">' . $page['name'] . '</a>' .
+                                '<a href="' . $path . '" class="pe-3">' . $page['name'] . '</a>' .
                                 '</li>'
                             );
                         } else {
-                            $resultHTML .= ( '<li class="breadcrumb-item">' . $page['name'] . '</li>' );
+                            $resultHTML .= ('<li class="breadcrumb-item">' . $page['name'] . '</li>');
                         }
                     }
                     $resultHTML .= ('</ol> </div>');
@@ -418,7 +432,8 @@ if (!function_exists('convert_base64_to_file')) {
      * @param string $base64 -> file or image.
      * @return UploadedFile.
      */
-    function convert_base64_to_file($base64) {
+    function convert_base64_to_file($base64)
+    {
         // decode the base64 file
         $str_cut = ';base64,';
         $base64_string = substr($base64, strpos($base64, $str_cut) + strlen($str_cut));
@@ -445,7 +460,8 @@ if (!function_exists('uploader')) {
      * Alternative FileHelperClass.
      * @return FileHelperClass.
      */
-    function uploader($request = null) {
+    function uploader($request = null)
+    {
         $file_helper_class = new App\Helpers\HelperClasses\FileHelperClass($request);
         return $file_helper_class;
     }
@@ -468,12 +484,13 @@ if (!function_exists('check_every_array')) {
      * $big_array = ['b', 'c', 'a', 'e', 'f', 'd'];
      * check_every_array($small_array, $big_array) // false
      */
-    function check_every_array($small_array, $big_array) {
+    function check_every_array($small_array, $big_array)
+    {
         return collect($small_array)->every(function ($value, $key) use ($big_array) {
             $big_array = is_array($big_array) ? $big_array : $big_array->toArray();
             return in_array($value, $big_array);
         });
-   }
+    }
 }
 
 /***********************************************************************************/
@@ -482,7 +499,8 @@ if (!function_exists('get_current_lang')) {
      * Get currnet langauge name
      * @return string
      */
-    function get_current_lang() {
+    function get_current_lang()
+    {
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
 
             $currentLocale = LaravelLocalization::getCurrentLocale();
@@ -505,7 +523,6 @@ if (!function_exists('get_current_lang')) {
             return false;
         }
     }
-
 }
 
 /***********************************************************************************/
@@ -514,10 +531,11 @@ if (!function_exists('get_current_lang_image')) {
      * Get currnet langauge name
      * @return string
      */
-    function get_current_lang_image() {
+    function get_current_lang_image()
+    {
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
             return \Modules\Localization\Entities\Language::where('code', LaravelLocalization::getCurrentLocale())->first()?->getFirstMediaUrl('icon');
-        }else{
+        } else {
             return false;
         }
     }
@@ -531,10 +549,11 @@ if (!function_exists('get_langauges')) {
      * Get list of langauge
      * @return array
      */
-    function get_langauges() {
+    function get_langauges()
+    {
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
             return LaravelLocalization::getSupportedLocales();
-        }else{
+        } else {
             return false;
         }
     }
@@ -548,14 +567,15 @@ if (!function_exists('get_langauges_except_current')) {
      * Get list of langauge name excepted current langauge
      * @return string
      */
-    function get_langauges_except_current() {
+    function get_langauges_except_current()
+    {
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
             $languages = array();
-            foreach(\Modules\Localization\Entities\Language::where('code', '!=', LaravelLocalization::getCurrentLocale())->get() as $lang){
+            foreach (\Modules\Localization\Entities\Language::where('code', '!=', LaravelLocalization::getCurrentLocale())->get() as $lang) {
                 $languages[$lang->code] = array('name' => $lang->name, 'code' => $lang->code, 'icon' => $lang->getFirstMediaUrl('icon'));
             }
             return $languages;
-        }else{
+        } else {
             return false;
         }
     }
@@ -569,7 +589,8 @@ if (!function_exists('get_comment_author')) {
      * Get list of langauge name excepted current langauge
      * @return object|null
      */
-    function get_comment_author() {
+    function get_comment_author()
+    {
         return isset($_COOKIE['comment_cookies_author']) ? json_decode($_COOKIE['comment_cookies_author']) : null;
     }
 }
@@ -585,7 +606,8 @@ if (!function_exists('languages')) {
      * Get list of langauge
      * @return array
      */
-    function languages() {
+    function languages()
+    {
         return Language::select('id', 'name', 'code', 'dir', 'is_default')->get();
     }
 }
@@ -596,7 +618,8 @@ if (!function_exists('get_locale')) {
      * Get current langauge
      * @return string|object
      */
-    function get_locale($key = null) {
+    function get_locale($key = null)
+    {
         $current = app('locale')->get('current_locale');
         if (!$current) return null;
         if (!is_null($key)) {
@@ -614,7 +637,8 @@ if (!function_exists('default_lang')) {
      * Get default langauge
      * @return string|object
      */
-    function default_lang($key = null) {
+    function default_lang($key = null)
+    {
         $default = app('locale')->get('default_lang');
         if (!$default) return null;
         if (!is_null($key)) {
@@ -631,7 +655,8 @@ if (!function_exists('config_theme')) {
      * get config current theme active
      * @return array
      */
-    function config_theme($key = null, $default = '') {
+    function config_theme($key = null, $default = '')
+    {
         $theme = Theme::active();
         return config("theme_{$theme}.{$key}") ?? $default;
     }
@@ -643,7 +668,8 @@ if (!function_exists('get_menu_items')) {
      * get menu items object to show in frontend
      * @return object
      */
-    function get_menu_items($place = '') {
+    function get_menu_items($place = '')
+    {
         $child_count_words = '';
         for ($i = 0; $i < 15; $i++) {
             $child_count_words .= '.child';
@@ -664,7 +690,8 @@ if (!function_exists('get_menu_header')) {
      * get menu html to show in nav in frontend
      * @return string
      */
-    function get_menu_header() {
+    function get_menu_header()
+    {
         $items = get_menu_items('header');
         return get_list_of_header_menu($items);
     }
@@ -677,7 +704,8 @@ if (!function_exists('get_list_of_header_menu')) {
      * @return string
      */
 
-    function get_list_of_header_menu($items , $SubMenuClass = null, $SubMenuArrow = null) {
+    function get_list_of_header_menu($items, $SubMenuClass = null, $SubMenuArrow = null)
+    {
         if (check_module('Localization')) {
             $current_lang = Modules\Localization\Entities\Language::where('code', LaravelLocalization::getCurrentLocale())->first();
         }
@@ -685,26 +713,26 @@ if (!function_exists('get_list_of_header_menu')) {
         $menu_items_html = '';
         $header_setting = theme_setting('header.header');
 
-        if(!$header_setting) $header_setting = array();
-            $style = (array_key_exists('header_text_color', $header_setting) && $header_setting['header_text_color']) ? "color: ".$header_setting['header_text_color'] : "";
-            $lang = $current_lang ? $current_lang->code : 'en';
-            foreach ($items as $item) {
-                $label = json_decode($item->label, true)[ $lang ] ?? '';
-                $menu_items_html .= '
+        if (!$header_setting) $header_setting = array();
+        $style = (array_key_exists('header_text_color', $header_setting) && $header_setting['header_text_color']) ? "color: " . $header_setting['header_text_color'] : "";
+        $lang = $current_lang ? $current_lang->code : 'en';
+        foreach ($items as $item) {
+            $label = json_decode($item->label, true)[$lang] ?? '';
+            $menu_items_html .= '
 
-                <li id="menu-item-' . $item->id . '" class="nav-item '.($item->child->count() ? 'menu-item-has-children dropdown' : '').' menu-item menu-item-type-custom menu-item-object-custom menu-parent-item menu-item--parent bd_menu_item">
-                    <a class="nav-link dropdown-item ' . ($item->child->count() ? 'dropdown-toggle' : '') . '" href="' . $item->url . '" style="'.$style.'" ' . ($item->child->count() ? 'data-toggle="dropdown' : '') . '">' . $label . ($item->child->count() ? $SubMenuArrow : ''). '</a>';
-                if ($item->child->count()) {
-                    $arrow = "<i data-feather='chevron-right'></i>";
-                    if(isset($current_lang) && $current_lang->dir == 'rtl'){
-                        $arrow = "<i data-feather='chevron-left'></i>";
-                    }
-                    $menu_items_html .= '<ul class="dropdown-menu '.$SubMenuClass.' ">';
-                    $menu_items_html .= get_list_of_header_menu($item->child , 'submenu', $arrow);
-                    $menu_items_html .= '</ul>';
+                <li id="menu-item-' . $item->id . '" class="nav-item ' . ($item->child->count() ? 'menu-item-has-children dropdown' : '') . ' menu-item menu-item-type-custom menu-item-object-custom menu-parent-item menu-item--parent bd_menu_item">
+                    <a class="nav-link dropdown-item ' . ($item->child->count() ? 'dropdown-toggle' : '') . '" href="' . $item->url . '" style="' . $style . '" ' . ($item->child->count() ? 'data-toggle="dropdown' : '') . '">' . $label . ($item->child->count() ? $SubMenuArrow : '') . '</a>';
+            if ($item->child->count()) {
+                $arrow = "<i data-feather='chevron-right'></i>";
+                if (isset($current_lang) && $current_lang->dir == 'rtl') {
+                    $arrow = "<i data-feather='chevron-left'></i>";
                 }
-                $menu_items_html .= '</li>';
+                $menu_items_html .= '<ul class="dropdown-menu ' . $SubMenuClass . ' ">';
+                $menu_items_html .= get_list_of_header_menu($item->child, 'submenu', $arrow);
+                $menu_items_html .= '</ul>';
             }
+            $menu_items_html .= '</li>';
+        }
         return $menu_items_html;
     }
 }
@@ -721,8 +749,8 @@ if (!function_exists('get_setting')) {
 if (!function_exists('get_settings')) {
     function get_settings($key, $default = null)
     {
-        $setting =  \app\Models\Settings::where('name',$key)->first();
-        if($setting){
+        $setting =  \app\Models\Settings::where('name', $key)->first();
+        if ($setting) {
             return $setting->payload ?? $default;
         }
 
@@ -733,13 +761,13 @@ if (!function_exists('get_settings')) {
 
 /***********************************************************************************/
 if (!function_exists('flatten')) {
-    function flatten($array) {
+    function flatten($array)
+    {
         $result = array();
-        foreach($array as $key=>$value) {
-            if(is_array($value)) {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
                 $result = $result + flatten($value, $key . '.');
-            }
-            else {
+            } else {
                 $result[$key] = $value;
             }
         }
@@ -753,19 +781,20 @@ if (!function_exists('get_admins')) {
      * get all admins (role = 1) as array [id => name]
      * @return array
      */
-    function get_admins() {
-        if(env('INSTALLATION') == true){
+    function get_admins()
+    {
+        if (env('INSTALLATION') == true) {
             if (\Illuminate\Support\Facades\Schema::hasTable('users') && check_module('users')) {
-                $items = \App\Models\User::where('role', 1)->get(['id','name'])->toArray();
+                $items = \App\Models\User::where('role', 1)->get(['id', 'name'])->toArray();
                 $array = array();
-                foreach($items as $item){
+                foreach ($items as $item) {
                     $array[] = array($item['id'] => $item['name']);
                 }
                 return flatten($array);
-            }else{
+            } else {
                 return array();
             }
-        }else{
+        } else {
             return array();
         }
     }
@@ -778,19 +807,20 @@ if (!function_exists('get_staff')) {
      * get all users (role = 0) as array [id => name]
      * @return array
      */
-    function get_staff() {
-        if(env('INSTALLATION') == true){
+    function get_staff()
+    {
+        if (env('INSTALLATION') == true) {
             if (\Illuminate\Support\Facades\Schema::hasTable('users') && check_module('users')) {
-                $items = \App\Models\User::where('role', 0)->get(['id','name'])->toArray();
+                $items = \App\Models\User::where('role', 0)->get(['id', 'name'])->toArray();
                 $array = array();
-                foreach($items as $item){
+                foreach ($items as $item) {
                     $array[] = array($item['id'] => $item['name']);
                 }
                 return flatten($array);
-            }else{
+            } else {
                 return array();
             }
-        }else{
+        } else {
             return array();
         }
     }
@@ -802,19 +832,20 @@ if (!function_exists('get_branches')) {
      * get all users (is_archived = 0) as array [user_id => name]
      * @return array
      */
-    function get_branches() {
-        if(env('INSTALLATION') == true){
+    function get_branches()
+    {
+        if (env('INSTALLATION') == true) {
             if (\Illuminate\Support\Facades\Schema::hasTable('branches') && check_module('cargo')) {
-                $items = Modules\Cargo\Entities\Branch::where('is_archived', 0)->get(['user_id','name'])->toArray();
+                $items = Modules\Cargo\Entities\Branch::where('is_archived', 0)->get(['user_id', 'name'])->toArray();
                 $array = array();
-                foreach($items as $item){
+                foreach ($items as $item) {
                     $array[] = array($item['user_id'] => $item['name']);
                 }
                 return flatten($array);
-            }else{
+            } else {
                 return array();
             }
-        }else{
+        } else {
             return array();
         }
     }
@@ -827,19 +858,20 @@ if (!function_exists('get_roles')) {
      * get all rolesas array [id => name]
      * @return array
      */
-    function get_roles() {
-        if(env('INSTALLATION') == true){
+    function get_roles()
+    {
+        if (env('INSTALLATION') == true) {
             if (\Illuminate\Support\Facades\Schema::hasTable('roles') && check_module('acl')) {
-                $items = \Spatie\Permission\Models\Role::get(['id','name'])->toArray();
+                $items = \Spatie\Permission\Models\Role::get(['id', 'name'])->toArray();
                 $array = array();
-                foreach($items as $item){
+                foreach ($items as $item) {
                     $array[] = array($item['id'] => $item['name']);
                 }
                 return flatten($array);
-            }else{
+            } else {
                 return array();
             }
-        }else{
+        } else {
             return array();
         }
     }
@@ -849,16 +881,15 @@ if (!function_exists('get_roles')) {
 if (! function_exists('currency_symbol')) {
     function currency_symbol()
     {
-        $code = Currency::where('default',1)->first();
-        if(!$code){
-            $code = Currency::where('id','!=',null)->first()->code;
-        }else{
-            $code = Currency::where('default',1)->first()->code;
+        $code = Currency::where('default', 1)->first();
+        if (!$code) {
+            $code = Currency::where('id', '!=', null)->first()->code;
+        } else {
+            $code = Currency::where('default', 1)->first()->code;
         }
-        if(request()->session()->get('currency_code')){
+        if (request()->session()->get('currency_code')) {
             $currency = Currency::where('code', request()->session()->get('currency_code', $code))->first();
-        }
-        else{
+        } else {
             $currency = Currency::where('code', $code)->first();
         }
         return $currency->symbol;
@@ -871,15 +902,14 @@ if (! function_exists('format_price')) {
     {
         if (BusinessSetting::where('type', 'decimal_separator')->first()->value == 1) {
             $fomated_price = number_format($price, BusinessSetting::where('type', 'no_of_decimals')->first()->value);
-        }
-        else {
-            $fomated_price = number_format($price, BusinessSetting::where('type', 'no_of_decimals')->first()->value , ',' , ' ');
+        } else {
+            $fomated_price = number_format($price, BusinessSetting::where('type', 'no_of_decimals')->first()->value, ',', ' ');
         }
 
-        if(BusinessSetting::where('type', 'symbol_format')->first()->value == 1){
-            return currency_symbol().$fomated_price;
+        if (BusinessSetting::where('type', 'symbol_format')->first()->value == 1) {
+            return currency_symbol() . $fomated_price;
         }
-        return $fomated_price.currency_symbol();
+        return $fomated_price . currency_symbol();
     }
 }
 
@@ -889,15 +919,16 @@ if (!function_exists('get_languages')) {
      * get all admins (role = 1) as array [id => name]
      * @return array
      */
-    function get_languages() {
+    function get_languages()
+    {
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('languages') && check_module('Localization')) {
             $languages = array();
-            foreach (Modules\Localization\Entities\Language::all() as $key => $language){
+            foreach (Modules\Localization\Entities\Language::all() as $key => $language) {
                 $languages[$language->code] = ['name' => $language->name, 'script' => $language->script, 'native' => $language->native, 'regional' => $language->regional];
             }
 
             return $languages;
-        }else{
+        } else {
             return array();
         }
     }
@@ -909,37 +940,38 @@ if (!function_exists('get_notification_users')) {
      * get all admins (role = 1) as array [id => name]
      * @return array
      */
-    function get_notification_users($name, $model = null) {
+    function get_notification_users($name, $model = null)
+    {
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('settings')) {
             $settings = app(\Modules\Cargo\Entities\CargoNotificationsSettings::class);
             $users    = array();
 
-            if(isset(json_decode($settings->{$name}, true)[$name.'_system_administrators'])) {
-                $users[]  = json_decode($settings->{$name}, true)[$name.'_system_administrators'];
+            if (isset(json_decode($settings->{$name}, true)[$name . '_system_administrators'])) {
+                $users[]  = json_decode($settings->{$name}, true)[$name . '_system_administrators'];
             }
-            if(isset(json_decode($settings->{$name}, true)[$name.'_users_roles'])) {
-                $users[]  = json_decode($settings->{$name}, true)[$name.'_users_roles'];
+            if (isset(json_decode($settings->{$name}, true)[$name . '_users_roles'])) {
+                $users[]  = json_decode($settings->{$name}, true)[$name . '_users_roles'];
             }
-            if(isset(json_decode($settings->{$name}, true)[$name.'_users'])) {
-                $users[]  = json_decode($settings->{$name}, true)[$name.'_users'];
+            if (isset(json_decode($settings->{$name}, true)[$name . '_users'])) {
+                $users[]  = json_decode($settings->{$name}, true)[$name . '_users'];
             }
-            if(isset(json_decode($settings->{$name}, true)[$name.'_branches'])) {
-                $users[]  = json_decode($settings->{$name}, true)[$name.'_branches'];
+            if (isset(json_decode($settings->{$name}, true)[$name . '_branches'])) {
+                $users[]  = json_decode($settings->{$name}, true)[$name . '_branches'];
             }
 
             $users = array_merge(...$users);
 
-            if($model){
-                if(isset(json_decode($settings->{$name}, true)[$name.'_sender']) && isset($model->client) ) {
+            if ($model) {
+                if (isset(json_decode($settings->{$name}, true)[$name . '_sender']) && isset($model->client)) {
                     $users[] = $model->client->user_id;
                 };
-                if(isset(json_decode($settings->{$name}, true)[$name.'_assigned']) && isset($model->captain) ) {
+                if (isset(json_decode($settings->{$name}, true)[$name . '_assigned']) && isset($model->captain)) {
                     $users[] = $model->captain->user_id;
                 };
             }
             $users = array_unique($users);
             return $users;
-        }else{
+        } else {
             return array();
         }
     }
@@ -950,21 +982,22 @@ if (!function_exists('get_notification_gateways')) {
      * get all admins (role = 1) as array [id => name]
      * @return array
      */
-    function get_notification_gateways() {
+    function get_notification_gateways()
+    {
         $gateways = array();
         if (env('INSTALLATION') == 'true' && \Illuminate\Support\Facades\Schema::hasTable('settings')) {
             $settings = app(App\Models\NotificationsSettings::class);
 
-            if($settings->email){
+            if ($settings->email) {
                 $gateways[] = 'mail';
             }
-            if($settings->sms){
+            if ($settings->sms) {
                 $gateways[] = 'sms';
             }
-            if($settings->fcm){
+            if ($settings->fcm) {
                 $gateways[] = 'fcm';
             }
-            if($settings->whatsapp){
+            if ($settings->whatsapp) {
                 $gateways[] = 'whatsapp';
             }
         }
@@ -978,43 +1011,43 @@ if (!function_exists('send_notification')) {
      * get all admins (role = 1) as array [id => name]
      * @return array
      */
-    function send_notification($user,$gateways,$type, $title = null, $content = null, $url = null, $model= null) {
+    function send_notification($user, $gateways, $type, $title = null, $content = null, $url = null, $model = null)
+    {
         $available_gateways = $gateways;
 
-        if($user){
-          $phone = '';
+        if ($user) {
+            $phone = '';
             $user_role = $user->role;
-            if(isset($user_role))
-            {
-                if($user_role == 3){ // User Branch
-                    $phone = Modules\Cargo\Entities\Branch::where('user_id',$user->id)->pluck('responsible_mobile')->first();
-                    $country_code = Modules\Cargo\Entities\Branch::where('user_id',$user->id)->pluck('country_code')->first();
-                }elseif($user_role == 4){ // User Client
-                    $phone = Modules\Cargo\Entities\Client::where('user_id',$user->id)->pluck('responsible_mobile')->first();
-                    $country_code = Modules\Cargo\Entities\Client::where('user_id',$user->id)->pluck('country_code')->first();
-                }elseif($user_role == 0){ // User Staff
-                    $phone = Modules\Cargo\Entities\Staff::where('user_id',$user->id)->pluck('responsible_mobile')->first();
-                    $country_code = Modules\Cargo\Entities\Staff::where('user_id',$user->id)->pluck('country_code')->first();
-                }elseif($user_role == 5){ // User Driver
-                    $phone = Modules\Cargo\Entities\Driver::where('user_id',$user->id)->pluck('responsible_mobile')->first();
-                    $country_code = Modules\Cargo\Entities\Driver::where('user_id',$user->id)->pluck('country_code')->first();
+            if (isset($user_role)) {
+                if ($user_role == 3) { // User Branch
+                    $phone = Modules\Cargo\Entities\Branch::where('user_id', $user->id)->pluck('responsible_mobile')->first();
+                    $country_code = Modules\Cargo\Entities\Branch::where('user_id', $user->id)->pluck('country_code')->first();
+                } elseif ($user_role == 4) { // User Client
+                    $phone = Modules\Cargo\Entities\Client::where('user_id', $user->id)->pluck('responsible_mobile')->first();
+                    $country_code = Modules\Cargo\Entities\Client::where('user_id', $user->id)->pluck('country_code')->first();
+                } elseif ($user_role == 0) { // User Staff
+                    $phone = Modules\Cargo\Entities\Staff::where('user_id', $user->id)->pluck('responsible_mobile')->first();
+                    $country_code = Modules\Cargo\Entities\Staff::where('user_id', $user->id)->pluck('country_code')->first();
+                } elseif ($user_role == 5) { // User Driver
+                    $phone = Modules\Cargo\Entities\Driver::where('user_id', $user->id)->pluck('responsible_mobile')->first();
+                    $country_code = Modules\Cargo\Entities\Driver::where('user_id', $user->id)->pluck('country_code')->first();
                 }
             }
 
-            if(isset($phone) && $phone == null){
+            if (isset($phone) && $phone == null) {
                 if (($key = array_search('sms', $available_gateways)) !== false) {
                     unset($available_gateways[$key]);
                 }
             }
 
 
-            if(isset($user->email) && $user->email == null){
+            if (isset($user->email) && $user->email == null) {
                 if (($key = array_search('email', $available_gateways)) !== false) {
                     unset($available_gateways[$key]);
                 }
             }
 
-            if(isset($phone) && $phone == null){
+            if (isset($phone) && $phone == null) {
                 if (($key = array_search('whatsapp', $available_gateways)) !== false) {
                     unset($available_gateways[$key]);
                 }
@@ -1026,12 +1059,12 @@ if (!function_exists('send_notification')) {
                 'phone'     =>  $phone ?? " ",
                 'country_code'     =>   $country_code ?? " ",
                 'message'   =>  array(
-                        'subject'   =>  ($title ?? " ").(' | #'.$model->code ?? " "),
-                        'content'   =>  $content ?? " ",
-                        'url'       =>  $url ?? " ",
-                        'id'        =>  $model->id ?? " ",
-                        'code'      =>  $model->code ?? " ",
-                        'type'      =>  $type ?? " ",
+                    'subject'   => ($title ?? " ") . (' | #' . $model->code ?? " "),
+                    'content'   =>  $content ?? " ",
+                    'url'       =>  $url ?? " ",
+                    'id'        =>  $model->id ?? " ",
+                    'code'      =>  $model->code ?? " ",
+                    'type'      =>  $type ?? " ",
                 ),
                 'icon'      =>  'fas fa-bell',
                 'type'      =>  $type ?? " ",
@@ -1048,7 +1081,8 @@ if (!function_exists('update_env_value')) {
      * set in .env file
      * @return array
      */
-    function update_env_value(string $key, $value) {
+    function update_env_value(string $key, $value)
+    {
         $path = app()->environmentFilePath();
         $oldValue = env($key);
 
@@ -1069,7 +1103,7 @@ if (!function_exists('update_env_value')) {
         } else {
             $fileContent = str_replace(
                 sprintf('%s=', $key),
-                sprintf('%s=%s',$key, $value),
+                sprintf('%s=%s', $key, $value),
                 $fileContent
             );
         }
@@ -1081,17 +1115,17 @@ if (!function_exists('update_env_value')) {
 
 //highlights the selected navigation on admin panel
 if (! function_exists('areActiveRoutes')) {
-    function areActiveRoutes(Array $routes, $output = "active")
+    function areActiveRoutes(array $routes, $output = "active")
     {
         foreach ($routes as $route) {
             if (Route::currentRouteName() == $route) return $output;
         }
-
     }
 }
 
 if (! function_exists('get_string_between')) {
-    function get_string_between($string, $start, $end){
+    function get_string_between($string, $start, $end)
+    {
         $string = ' ' . $string;
         $ini = strpos($string, $start);
         if ($ini == 0) return '';
@@ -1102,7 +1136,8 @@ if (! function_exists('get_string_between')) {
 }
 
 if (! function_exists('base_country_code')) {
-    function base_country_code(){
+    function base_country_code()
+    {
         $base_country_code = App\Models\Settings::where('name', 'base_country_code')->first()->payload;
         $number = str_replace('"', '', $base_country_code);
         return '+' . $number;
