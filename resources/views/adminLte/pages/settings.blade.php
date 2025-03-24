@@ -15,8 +15,8 @@
                         @method('PUT')
                         <!--begin::Card body-->
                         <div class="card-body border-top p-9">
-                        @csrf
-                        @include('adminLte.pages.fields', ['fields' => $fields])
+                            @csrf
+                            @include('adminLte.pages.fields', ['fields' => $fields])
                         </div>
                         <!--end::Card body-->
                         <!--begin::Actions-->
@@ -29,7 +29,7 @@
                     <!--end::Form-->
                 </div>
                 <!--end::Content-->
-                
+
         </div>
     </div>
     <!--end::Basic info-->
@@ -41,7 +41,7 @@
     @endsection
 
     @section('scripts')
-    
+
     <script src="{{ asset('assets/plugins/spectrum/spectrum.min.js') }}"></script>
     <script>
 
