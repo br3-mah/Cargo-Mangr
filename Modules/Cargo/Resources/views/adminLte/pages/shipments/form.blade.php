@@ -627,9 +627,9 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="col-form-label fw-bold fs-6 required">{{ __('cargo::view.payment_method') }}</label>
+                    <label class="col-form-label fw-bold fs-6">{{ __('cargo::view.payment_method') }}</label>
                     <select disabled
-                        class="form-control kt-select2 payment-method @error('Shipment.payment_method_id') is-invalid @enderror""
+                        class="form-control kt-select2 payment-method @error('Shipment.payment_method_id') is-invalid @enderror"
                         id="payment_method_id" name="Shipment[payment_method_id]"
                         data-control="select2"
                         data-placeholder="{{ __('cargo::view.payment_method') }}"
@@ -675,7 +675,7 @@
                     </div>
                 @enderror
             </div>
-            <div class="col-md-12">
+            {{-- <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-form-label fw-bold fs-6">{{ __('cargo::view.attachments') }}</label>
 
@@ -685,7 +685,7 @@
                         <x-media-library-attachment multiple name="image" rules="mimes:jpg,jpeg,png,gif,bmp,svg,webp"/>
                     @endif
                 </div>
-            </div>
+            </div> --}}
         </div>
         <hr>
 
