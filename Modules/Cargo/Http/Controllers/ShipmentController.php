@@ -137,7 +137,7 @@ class ShipmentController extends Controller
             'Shipment.from_area_id'    => 'required',
             'Shipment.to_area_id'      => 'required',
             'Shipment.payment_type'    => 'required',
-            'Shipment.payment_method_id' => 'required',
+            // 'Shipment.payment_method_id' => 'required',
             'Shipment.order_id'          => $order_id_validation,
             'Shipment.attachments_before_shipping' => 'nullable',
             'Shipment.amount_to_be_collected'      => 'required',
