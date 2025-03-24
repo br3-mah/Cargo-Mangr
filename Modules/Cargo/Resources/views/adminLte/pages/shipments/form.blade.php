@@ -65,7 +65,7 @@
             <label class="col-form-label fw-bold fs-6 required">{{ __('cargo::view.shipment_type') }}</label>
             <div class="col-9 col-form-label">
                 <div class="radio-inline">
-                    <label class="radio radio-success" style="margin-right: 20px;">
+                    {{-- <label class="radio radio-success" style="margin-right: 20px;">
                         <input @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='1' ) checked @endif type="radio" name="Shipment[type]" checked="checked" value="1"
                             {{ old('Shipment.type') == 1 ? 'checked' : '' }}
                             @if($typeForm == 'edit')
@@ -74,9 +74,9 @@
                         />
                         <span></span>
                         {{ __('cargo::view.Pickup_For_door_to_door_delivery') }}
-                    </label>
+                    </label> --}}
                     <label class="radio radio-success ">
-                        <input @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2' ) checked @endif type="radio" name="Shipment[type]" value="2"
+                        <input checked @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2' ) checked @endif type="radio" name="Shipment[type]" value="2"
                             {{ old('Shipment.type') == 2 ? 'checked' : '' }}
                             @if($typeForm == 'edit')
                                 {{ $model->type == 2 ? 'checked' : '' }}
@@ -634,7 +634,7 @@
                         data-control="select2"
                         data-placeholder="{{ __('cargo::view.payment_method') }}"
                         data-allow-clear="true"
-                        
+
                     >
                     <option value="auto">Automatic</option>
                         {{-- @foreach ($paymentSettings as $key => $gateway){
