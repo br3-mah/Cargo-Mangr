@@ -149,9 +149,10 @@ class UsersController extends Controller
     public function update(UserRequest $request, $id)
     {
 
-        if (env('DEMO_MODE') == 'On') {
-            return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
-        }
+        // dd('apa');
+        // if (env('DEMO_MODE') == 'On') {
+        //     return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
+        // }
 
         $user = User::findOrFail($id);
         if (empty($request->password)) {
@@ -162,7 +163,20 @@ class UsersController extends Controller
         }
 
         $user->update($data);
-        $user->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $user->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $user->avatar = $imagePath;
+            $user->save();
+        }
+
         event(new UserUpdatedEvent($user));
         return redirect()->route('users.index')->with(['message_alert' => __('users::messages.users.saved')]);
     }
