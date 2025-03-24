@@ -116,7 +116,6 @@
                                     @endforeach
                                 </select>
 
-
                                 @php
                                     $field_value = $field['value'];
                                     if(isset($field['value'][app()->getLocale()])){
@@ -420,7 +419,6 @@
                             @endforeach
                         </div>
                     @elseif($field['type'] == 'color')
-
                         <input
                             name="fields[{{ $field_key }}]"
                             class="form-control form-control-color w-100 color_picker_input @error('fields.' . $field_key) is-invalid @enderror"
@@ -434,6 +432,7 @@
                             </div>
                         @enderror
 
+
                     @elseif($field['type'] == 'image')
                         @php
                             $model = App\Models\Settings::where('group', $type)->where('name',$field_key)->first();
@@ -445,7 +444,7 @@
                                 <x-media-library-attachment name="fields[{{ $field_key }}]" rules="mimes:jpg,jpeg,png,gif,bmp,svg,webp"/>
                             @endif
                         </div>
-
+                    
 
                     @elseif($field['type'] == 'select')
                         <div class="input-group mb-5">
