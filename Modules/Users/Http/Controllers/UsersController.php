@@ -148,8 +148,7 @@ class UsersController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
-
-        // dd('updating user profile...');
+        // dd('updating user profile...')
         // if (env('DEMO_MODE') == 'On') {
         //     return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
         // }
@@ -164,6 +163,10 @@ class UsersController extends Controller
 
         $user->update($data);
         // $user->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+<<<<<<< HEAD
+=======
+
+>>>>>>> ad8d4eb01c9bf862cae070c8f2c54ea2bec685aa
         if ($request->hasFile('image')) {
             // Delete old avatar if exists
             if ($user->avatar) {
@@ -175,6 +178,10 @@ class UsersController extends Controller
             $user->avatar = $imagePath;
             $user->save();
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ad8d4eb01c9bf862cae070c8f2c54ea2bec685aa
         event(new UserUpdatedEvent($user));
         return redirect()->route('users.index')->with(['message_alert' => __('users::messages.users.saved')]);
     }

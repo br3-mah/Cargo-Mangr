@@ -19,7 +19,7 @@
             <!--begin::Preview existing avatar-->
 
             @if ($hasAvatar)
-                <div class="image-input-wrapper w-125px h-125px" style="background-image: url({{ $getAvatar }})"></div>
+                <div class="image-input-wrapper w-125px h-125px" style="background-image: url({{ Storage::url($getAvatar) }})"></div>
             @else
                 <div class="image-input-wrapper"></div>
             @endif

@@ -14,3 +14,4 @@ $user->save();
 
 
 //User image profile src
+<img src="{{ $model->avatar ? Storage::url($model->avatar) : asset('assets/img/blank.png') }}" />

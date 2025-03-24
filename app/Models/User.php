@@ -11,6 +11,7 @@ use App\Core\Traits\SpatieLogsActivity;
 use App\Helpers\HelperTraits\FileHelper;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Modules\Users\Events\UserDeletedEvent;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
@@ -94,7 +95,8 @@ class User extends Authenticatable implements HasMedia
 
     public function getAvatarImageAttribute()
     {
-        return $this->getFirstMediaUrl('avatar') ? $this->getFirstMediaUrl('avatar') : asset('assets/lte/media/avatars/blank.png');
+        return $this->avatar ? Storage::url($this->avatar) : asset('assets/lte/media/avatars/blank.png');
+        // $model->avatar ? Storage::url($model->avatar) : asset('assets/img/blank.png')
     }
 
     /**
