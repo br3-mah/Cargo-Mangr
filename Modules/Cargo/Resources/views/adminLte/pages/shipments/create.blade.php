@@ -196,7 +196,6 @@
     </div>
     <!-- End Create a New  Receiver  Form -->
 
-    <br><br>
     <!--begin::Basic info-->
     <div class="card mb-5 mb-xl-10">
         <!--begin::Card header-->
