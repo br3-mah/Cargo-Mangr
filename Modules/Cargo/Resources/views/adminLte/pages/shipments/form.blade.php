@@ -61,31 +61,32 @@
 <div class="row">
     <div class="col-lg-12">
 
-        <div class="form-group row align-items-center py-3 border-bottom">
-            <label class="col-form-label fw-bold fs-6 required text-primary">{{ __('cargo::view.shipment_type') }}</label>
+        <div class="form-group row">
+            <label class="col-form-label fw-bold fs-6 required">{{ __('cargo::view.shipment_type') }}</label>
             <div class="col-9 col-form-label">
-                <div class="radio-inline d-flex gap-4">
-                    {{-- <label class="radio radio-success d-flex align-items-center p-2 rounded hover-bg-light-primary transition-all">
+                <div class="radio-inline">
+                    {{-- <label class="radio radio-success" style="margin-right: 20px;">
                         <input @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='1' ) checked @endif type="radio" name="Shipment[type]" checked="checked" value="1"
                             {{ old('Shipment.type') == 1 ? 'checked' : '' }}
                             @if($typeForm == 'edit')
                                 {{ $model->type == 1 ? 'checked' : '' }}
                             @endif
                         />
-                        <span class="checkmark me-2"></span>
-                        <span class="ms-1">{{ __('cargo::view.Pickup_For_door_to_door_delivery') }}</span>
+                        <span></span>
+                        {{ __('cargo::view.Pickup_For_door_to_door_delivery') }}
                     </label> --}}
-                    <label class="radio radio-success d-flex align-items-center p-2 rounded hover-bg-light-primary transition-all">
-                        <input checked @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2' ) checked @endif type="radio" name="Shipment[type]" value="2"
+                    <label class="radio radio-success ">
+                        <input  @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2' ) checked @endif type="radio" name="Shipment[type]" value="2"
                             {{ old('Shipment.type') == 2 ? 'checked' : '' }}
                             @if($typeForm == 'edit')
                                 {{ $model->type == 2 ? 'checked' : '' }}
                             @endif
                         />
-                        <span class="checkmark me-2"></span>
-                        <span class="ms-1">{{ __('cargo::view.drop_off_For_delivery_package_from_branch_directly') }}</span>
+                        <span></span>
+                        {{ __('cargo::view.drop_off_For_delivery_package_from_branch_directly') }}
                     </label>
                 </div>
+
             </div>
         </div>
         <hr>
