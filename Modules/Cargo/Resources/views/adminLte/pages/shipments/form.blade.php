@@ -882,6 +882,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label fw-bold fs-6">{{ __('cargo::view.amount_to_be_collected') }}</label>
+                        
                         <input id="kt_touchspin_3" placeholder="{{ __('cargo::view.amount_to_be_collected') }}" type="number" min="0" class="form-control @error('Shipment.amount_to_be_collected') is-invalid @enderror" value="{{ old('Shipment.amount_to_be_collected', isset($model) ? $model->amount_to_be_collected : 0 ) }}" name="Shipment[amount_to_be_collected]" />
                         @error('Shipment.amount_to_be_collected')
                             <div class="invalid-feedback">
@@ -1642,7 +1643,7 @@
             maxboostedstep: 10000000,
             step: 0.001,
             decimals: 3,
-            prefix: '$'
+            prefix: ''
         });
         $('.kt_touchspin_weight').TouchSpin({
             buttondown_class: 'btn btn-secondary',
