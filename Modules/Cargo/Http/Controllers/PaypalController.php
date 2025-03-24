@@ -62,7 +62,6 @@ class PaypalController
             } catch (Exception $e) {
                 return $e->getMessage();
             }
-
     }
 
     public function success(Request $request)

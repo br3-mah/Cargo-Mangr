@@ -1,0 +1,16 @@
+//Stable image uploader
+if ($request->hasFile('image')) {
+// Delete old avatar if exists
+if ($user->avatar) {
+Storage::disk('public')->delete($user->avatar);
+}
+
+// Store new avatar
+$imagePath = $request->file('image')->store('avatars', 'public');
+$user->avatar = $imagePath;
+$user->save();
+}
+
+
+
+//User image profile src

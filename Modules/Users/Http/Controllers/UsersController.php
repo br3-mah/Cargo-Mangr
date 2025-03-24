@@ -14,6 +14,7 @@ use Modules\Acl\Repositories\AclRepository;
 use Modules\Users\Http\Requests\UserRequest;
 use Modules\Users\Http\Requests\AssignPermissionToUserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
@@ -75,11 +76,25 @@ class UsersController extends Controller
      */
     public function store(UserRequest $request)
     {
+
+        // dd('adding user ...');
+        // $user->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
         $data = $request->all();
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
         $data['user_id']  =   $user->id;
-        $user->addFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $user->avatar = $imagePath;
+            $user->save();
+        }
         event(new UserCreatedEvent($data));
         return redirect()->route('users.index')->with(['message_alert' => __('users::messages.users.created')]);
     }
@@ -133,7 +148,7 @@ class UsersController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
-        
+
         if (env('DEMO_MODE') == 'On') {
             return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
         }
@@ -145,7 +160,7 @@ class UsersController extends Controller
             $data = $request->only(['name', 'email', 'role' ,'password','responsible_mobile','country_code','national_id']);
             $data['password'] = bcrypt($data['password']);
         }
-            
+
         $user->update($data);
         $user->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
         event(new UserUpdatedEvent($user));
