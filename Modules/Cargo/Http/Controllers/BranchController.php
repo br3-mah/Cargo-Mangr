@@ -227,7 +227,18 @@ class BranchController extends Controller
         if (!$branch->save()){
             throw new \Exception();
         }
-        $branch->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        // $branch->syncFromMediaLibraryRequest($request->image)->toMediaCollection('avatar');
+        if ($request->hasFile('image')) {
+            // Delete old avatar if exists
+            if ($branch->avatar) {
+                Storage::disk('public')->delete($branch->avatar);
+            }
+
+            // Store new avatar
+            $imagePath = $request->file('image')->store('avatars', 'public');
+            $branch->avatar = $imagePath;
+            $branch->save();
+        }
         return redirect()->back()->with(['message_alert' => __('cargo::messages.saved')]);
     }
 
