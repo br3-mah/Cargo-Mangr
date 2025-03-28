@@ -157,5 +157,5 @@ class ShipmentController
         $branches = Branch::where('is_archived',0)->get();
         return response()->json($branches);
     }
-}
 
+}

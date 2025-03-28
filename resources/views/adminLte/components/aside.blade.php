@@ -47,12 +47,44 @@
                 <li class="nav-header">@lang('view.pages')</li>
 
 
+                <li
+                    class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
+
+                    <a href="#"
+                        class="nav-link  {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
+                        <i class="fas fa-book fa-fw"></i>
+                        <p>
+                            Consignments
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('consignment.index') }}"
+                                class="nav-link">
+                                <i class="fas fa-cog fa-fw"></i>
+                                <p>All Consignments</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('consignment.create') }}"
+                                class="nav-link">
+                                <i class="fas fa-cog fa-fw"></i>
+                                <p>New Consignment</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                </li>
 
                 @if (app('hook')->get('aside_menu'))
                     @foreach (aasort(app('hook')->get('aside_menu'), 'order') as $componentView)
                         {!! $componentView !!}
                     @endforeach
                 @endif
+
 
                 <li
                     class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">

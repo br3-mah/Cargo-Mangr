@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ConsignmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\OTPVerificationController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\TwoFactorAuthController;
+// use App\Http\Controllers\ConsignmentController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 /*
@@ -60,6 +62,13 @@ Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
 Route::post('contact', 'Api\ContactUsController@sendContact')->name('contact.store');
 
 
+
+Route::get('/consignment', 'ConsignmentController@index')->name('consignment.index');
+Route::get('/create-consignment', 'ConsignmentController@create')->name('consignment.create');
+Route::post('/consignment', 'ConsignmentController@store')->name('consignment.store');
+Route::put('/consignment', 'ConsignmentController@update')->name('consignment.update');
+Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment.edit');
+Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');
 
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
