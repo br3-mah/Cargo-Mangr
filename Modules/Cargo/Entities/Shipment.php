@@ -2,6 +2,7 @@
 
 namespace Modules\Cargo\Entities;
 
+use App\Models\Consignment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Cargo\Entities\Client;
@@ -404,6 +405,15 @@ class Shipment extends Model implements HasMedia
         }
 
         return $result;
+    }
+
+    
+    /**
+     * Get the consignment that owns the shipment.
+     */
+    public function consignment()
+    {
+        return $this->belongsTo(Consignment::class);
     }
 
 }

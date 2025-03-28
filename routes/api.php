@@ -20,3 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 // Get Google Map Settings Api Route
 Route::get('checkGoogleMap', 'Api\GoogleSettingsController@googleMapSettings');
+
+Route::get('/search-shipments', 'Api\ShipmentController@search')->name('search.shipments');
+Route::post('/submit-shipments', 'Api\ShipmentController@submit')->name('submit.shipments');
+Route::get('/consignments/{consignmentId}/shipments', 'Api\ShipmentController@getShipmentsForConsignment');
