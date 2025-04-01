@@ -28,7 +28,7 @@
                         {{ $error ?? '' }}
                     </p>
                 </div>
-                
+
                 <div class="widget-inner">
                     <form class="form" action="{{route('shipments.tracking')}}" method="GET">
                         <div class="bdaia-mc4wp-form-icon">
@@ -66,7 +66,7 @@
             .payment-wrap {
             border: 1px solid #ececec;
             padding: 0 10px 10px;
-            margin: 0 0 10px; 
+            margin: 0 0 10px;
             border-radius: 3px;}
 
             .payment-title {
@@ -81,7 +81,7 @@
             .payment-title h4 {
                 display: inline-block;
                 margin: 0; }
-                
+
             .track-title {
             border-bottom: 1px solid #ccc;
             padding: 3px 0;
@@ -106,7 +106,7 @@
                 margin: 0 8px 0 0; }
             .trackstatus-title h4 {
                 display: inline-block;
-                margin: 0; }	
+                margin: 0; }
 
             .mapstatus-title {
             border-bottom: 0px solid #ccc;
@@ -119,7 +119,7 @@
                 margin: 0 8px 0 0; }
             .mapstatus-title h4 {
                 display: inline-block;
-                margin: 0; }		
+                margin: 0; }
 
             .card-header:hover {
             text-decoration: none; }
@@ -157,7 +157,7 @@
 
             .min-height-block {
             min-height: 500px; }
-            
+
             .mintrack-height-block {
             min-height: 250px; }
 
@@ -171,7 +171,7 @@
                 line-height: 1.8; }
                 .booking-cost p span {
                 float: right; }
-                
+
             .track-cost {
             margin: 0px 0 0; }
             .track-cost span {
@@ -179,9 +179,9 @@
             .track-cost p {
                 font-size: 15px;
                 margin: 10px 0 0;
-                line-height: 1; }	  
-                
-                
+                line-height: 1; }
+
+
 
             .payment-method-collapse .card-header {
             cursor: pointer; }
@@ -217,7 +217,7 @@
             .param dd {
                 margin: 0;
                 vertical-align: baseline;
-            } 
+            }
 
             .shopping-cart-wrap .price {
                 font-size: 18px;
@@ -233,7 +233,7 @@
                 border-radius: 8px;
                 border-color: #ff6b6b;
                 border-radius: .35rem;
-                -webkit-font-smoothing: antialiased; 
+                -webkit-font-smoothing: antialiased;
                 color: #737373;
             }
 
@@ -323,7 +323,7 @@
             <div class="container">
                 <div class="checkout-form">
                     <div class="row">
-                        <div class="col-lg-7">
+                        {{-- <div class="col-lg-7">
                             <div class="user-profile-data">
 
                                 <br><br><br>
@@ -345,10 +345,8 @@
                                             <a class="btn btn-secondary btn-sm" target="blank" href="{{route('tracking.print', $model->id )}}"><i style="color:white" class="ti-printer"></i>&nbsp;{{ __('cargo::view.shipping_print') }}</a>
                                         </div>
                                     </div>
-                                    --}}
                                 </div>
 
-                                <!-- General Information -->
                                 <div class="payment-wrap">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -366,7 +364,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="track-title">
-                                                <span class="ti-location-pin align-top"style="font-size: 30px;"></span> <label>{{ __('cargo::view.City_of_origin') }}<br>   
+                                                <span class="ti-location-pin align-top"style="font-size: 30px;"></span> <label>{{ __('cargo::view.City_of_origin') }}<br>
                                                     <b>@if(isset($model->from_state)){{$model->from_state->name}} @endif </b></label>
                                             </div>
                                         </div>
@@ -408,7 +406,7 @@
                                                 <label>{{ __('cargo::view.Shipping_quantity') }}<br> <b>{{$package->qty}}</b></label>
                                             </div>
                                         </div>
-                                     
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <div class="track-title">
@@ -417,7 +415,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -493,15 +491,16 @@
                                     </div>
                                 </div>
 
-                            </div> <!-- /.user-profile-data -->
-                        </div> <!-- /.col- -->
+                            </div>
+                        </div>  --}}
 
-                        <div class="col-lg-5">
+                        {{-- <div class="col-lg-5"> --}}
+                        <div class="col-lg-12">
                             <br><br><br><br><br><br><br>
                             <div class="booking-summary_block">
                                 <div class="booking-summary-box">
                                     <h5>{{ __('cargo::view.shipping_record') }}</h5>
-                                    <div class="track-cost">
+                                    {{-- <div class="track-cost">
                                         <ul class="timeline a">
                                             <li class="event">
                                                 <div class="row">
@@ -510,33 +509,149 @@
                                                         <h6 class="text-left button4">
                                                     </div>
                                                     <div class="col-md-5">
-                                                        <p class="text-right button5">{{ __('cargo::view.created') }}</p>
-                                                        <h4></h4>
+                                                        <p class="text-right button5"><b>Parcel received and is been processed</b></p>
+                                                        <h4>Parcel received and is been processed</h4>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <!--event schedule 1 end-->
                                         </ul>
-                                    </div>
-                                    <div class="track-cost">
-
-                                        <ul class="timeline a">
-                                            @foreach($model->logs()->orderBy('id','asc')->get() as $log)
-                                            <li class="event">
-                                                <div class="row">
-                                                    <div class="col-md-7">
-                                                        <p class="text-left button5">{{$log->created_at->diffForHumans()}}</p>
+                                    </div> --}}
+                                    <div class="shipment-tracker">
+                                        <ul class="timeline-container">
+                                            @foreach($track_map as $log)
+                                                <li class="timeline-item">
+                                                    <div class="timeline-marker"></div>
+                                                    <div class="timeline-content">
+                                                        <span class="timeline-time">{{ $log[1] }}</span>
+                                                        <span class="timeline-description">{{ $log[0] }}</span>
                                                     </div>
-                                                    <div class="col-md-5">
-                                                        <p class="text-right button5">{{Modules\Cargo\Entities\Shipment::getClientStatusByStatusId($log->to)}}</p>
-                                                        <h4></h4>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <!--event schedule 1 end-->
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
+
+                                    <style>
+                                    /* Minimal Professional Timeline */
+                                    .shipment-tracker {
+                                        padding: 12px;
+                                        max-width: 100%;
+                                        background: #fff;
+                                        border-radius: 4px;
+                                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+                                    }
+
+                                    .timeline-container {
+                                        position: relative;
+                                        list-style: none;
+                                        padding: 0;
+                                        margin: 0;
+                                    }
+
+                                    .timeline-container:before {
+                                        content: '';
+                                        position: absolute;
+                                        top: 0;
+                                        left: 7px;
+                                        height: 100%;
+                                        width: 1px;
+                                        background: #e2e8f0;
+                                    }
+
+                                    .timeline-item {
+                                        position: relative;
+                                        padding-left: 24px;
+                                        padding-bottom: 16px;
+                                        margin: 0;
+                                    }
+
+                                    .timeline-item:last-child {
+                                        padding-bottom: 0;
+                                    }
+
+                                    .timeline-marker {
+                                        position: absolute;
+                                        left: 0;
+                                        top: 4px;
+                                        width: 14px;
+                                        height: 14px;
+                                        border-radius: 50%;
+                                        background: #fff;
+                                        border: 2px solid #2563eb;
+                                        z-index: 1;
+                                    }
+
+                                    .timeline-item:first-child .timeline-marker {
+                                        background: #2563eb;
+                                    }
+
+                                    .timeline-content {
+                                        display: flex;
+                                        flex-direction: column;
+                                        padding: 0;
+                                        transition: transform 0.2s ease;
+                                    }
+
+                                    .timeline-time {
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                        color: #2563eb;
+                                        margin-bottom: 2px;
+                                        letter-spacing: 0.2px;
+                                    }
+
+                                    .timeline-description {
+                                        font-size: 14px;
+                                        color: #1e293b;
+                                        line-height: 1.4;
+                                    }
+
+                                    /* Subtle hover state */
+                                    .timeline-item:hover .timeline-content {
+                                        transform: translateX(2px);
+                                    }
+
+                                    .timeline-item:first-child .timeline-time,
+                                    .timeline-item:first-child .timeline-description {
+                                        font-weight: 500;
+                                    }
+
+                                    /* Responsive adjustments - keeping it minimal */
+                                    @media (min-width: 768px) {
+                                        .timeline-container {
+                                            margin: 0 8px;
+                                        }
+
+                                        .timeline-item {
+                                            padding-bottom: 12px;
+                                        }
+
+                                        .timeline-content {
+                                            flex-direction: row;
+                                            align-items: baseline;
+                                        }
+
+                                        .timeline-time {
+                                            min-width: 120px;
+                                            margin-bottom: 0;
+                                            margin-right: 12px;
+                                        }
+                                    }
+                                    </style>
+
+
+                                            {{-- @foreach($model->logs()->orderBy('id','asc')->get() as $log)
+                                                <li class="event">
+                                                    <div class="row">
+                                                        <div class="col-md-7">
+                                                            <p class="text-left button5">{{$log->created_at->diffForHumans()}}</p>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <p class="text-right button5">{{Modules\Cargo\Entities\Shipment::getClientStatusByStatusId($log->to)}}</p>
+                                                            <h4></h4>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endforeach --}}
                                 </div>
                             </div>
                         </div>

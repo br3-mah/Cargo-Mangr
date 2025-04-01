@@ -1,11 +1,11 @@
 @php
     use \Milon\Barcode\DNS1D;
     $d = new DNS1D();
-     
+
     $admin  = 1;
     $code = filter_var($model->code, FILTER_SANITIZE_NUMBER_INT);
 @endphp
- 
+
 @extends('cargo::adminLte.layouts.master')
 
 @section('pageTitle')
@@ -24,7 +24,7 @@
                     .payment-wrap {
                     border: 1px solid #ececec;
                     padding: 0 10px 10px;
-                    margin: 0 0 10px; 
+                    margin: 0 0 10px;
                     border-radius: 3px;}
 
                     .payment-title {
@@ -39,7 +39,7 @@
                     .payment-title h4 {
                         display: inline-block;
                         margin: 0; }
-                        
+
                     .track-title {
                     border-bottom: 1px solid #ccc;
                     padding: 3px 0;
@@ -64,7 +64,7 @@
                         margin: 0 8px 0 0; }
                     .trackstatus-title h4 {
                         display: inline-block;
-                        margin: 0; }	
+                        margin: 0; }
 
                     .mapstatus-title {
                     border-bottom: 0px solid #ccc;
@@ -77,7 +77,7 @@
                         margin: 0 8px 0 0; }
                     .mapstatus-title h4 {
                         display: inline-block;
-                        margin: 0; }		
+                        margin: 0; }
 
                     .card-header:hover {
                     text-decoration: none; }
@@ -115,7 +115,7 @@
 
                     .min-height-block {
                     min-height: 500px; }
-                    
+
                     .mintrack-height-block {
                     min-height: 250px; }
 
@@ -129,7 +129,7 @@
                         line-height: 1.8; }
                         .booking-cost p span {
                         float: right; }
-                        
+
                     .track-cost {
                     margin: 0px 0 0; }
                     .track-cost span {
@@ -137,9 +137,9 @@
                     .track-cost p {
                         font-size: 15px;
                         margin: 10px 0 0;
-                        line-height: 1; }	  
-                        
-                        
+                        line-height: 1; }
+
+
 
                     .payment-method-collapse .card-header {
                     cursor: pointer; }
@@ -175,7 +175,7 @@
                     .param dd {
                         margin: 0;
                         vertical-align: baseline;
-                    } 
+                    }
 
                     .shopping-cart-wrap .price {
                         font-size: 18px;
@@ -191,7 +191,7 @@
                         border-radius: 8px;
                         border-color: #ff6b6b;
                         border-radius: .35rem;
-                        -webkit-font-smoothing: antialiased; 
+                        -webkit-font-smoothing: antialiased;
                         color: #737373;
                     }
 
@@ -318,7 +318,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="track-title">
-                                                                <span class="ti-location-pin align-top"style="font-size: 30px;"></span> <label>مدينة المنشأ<br>   
+                                                                <span class="ti-location-pin align-top"style="font-size: 30px;"></span> <label>مدينة المنشأ<br>
                                                                     <b>@if(isset($model->from_state)){{$model->from_state->name}} @endif </b></label>
                                                             </div>
                                                         </div>
@@ -360,7 +360,7 @@
                                                                 <label>كمية الشحن<br> <b>{{$package->qty}}</b></label>
                                                             </div>
                                                         </div>
-                                                    
+
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <div class="track-title">
@@ -369,7 +369,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                
+
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
@@ -452,7 +452,7 @@
                                             <br><br><br><br><br><br><br>
                                             <div class="booking-summary_block">
                                                 <div class="booking-summary-box">
-                                                    <h5>سجل الشحن</h5>
+                                                    <h5>Booking Summary</h5>
                                                     <div class="track-cost">
                                                         <ul class="timeline a">
                                                             <li class="event">

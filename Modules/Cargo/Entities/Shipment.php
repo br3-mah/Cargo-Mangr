@@ -407,7 +407,7 @@ class Shipment extends Model implements HasMedia
         return $result;
     }
 
-    
+
     /**
      * Get the consignment that owns the shipment.
      */

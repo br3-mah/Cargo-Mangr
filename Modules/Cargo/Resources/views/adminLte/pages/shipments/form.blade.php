@@ -64,30 +64,68 @@
         <div class="form-group row">
             <label class="col-form-label fw-bold fs-6 required">{{ __('cargo::view.shipment_type') }}</label>
             <div class="col-9 col-form-label">
+                {{-- <div class="form-group">
+                    <label for="consignmentCode">Consignment Code/ID</label>
+                    <input type="text" id="consignmentCode" name="consignment_id" class="form-control" placeholder="Search by consignment code">
+                    <div id="consignmentResults" class="dropdown-menu w-100" style="display: none;"></div>
+                </div> --}}
+                <div class="form-group">
+                    <label for="consignmentCode">Consignment Code</label>
+                    <input type="text" id="consignmentCode" class="form-control" placeholder="Search by consignment code" autocomplete="off">
+                    <input type="hidden" id="consignmentId" name="consignment_id">
+                    <div id="consignmentResults" class="dropdown-menu w-100" style="display: none;"></div>
+                </div>
+
                 <div class="radio-inline">
-                    {{-- <label class="radio radio-success" style="margin-right: 20px;">
-                        <input @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='1' ) checked @endif type="radio" name="Shipment[type]" checked="checked" value="1"
-                            {{ old('Shipment.type') == 1 ? 'checked' : '' }}
-                            @if($typeForm == 'edit')
-                                {{ $model->type == 1 ? 'checked' : '' }}
-                            @endif
-                        />
-                        <span></span>
-                        {{ __('cargo::view.Pickup_For_door_to_door_delivery') }}
-                    </label> --}}
-                    <label class="radio radio-success ">
-                        <input  @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2' ) checked @endif type="radio" name="Shipment[type]" value="2"
-                            {{ old('Shipment.type') == 2 ? 'checked' : '' }}
-                            @if($typeForm == 'edit')
-                                {{ $model->type == 2 ? 'checked' : '' }}
-                            @endif
+                    <label class="radio radio-success">
+                        <input checked @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2') checked @endif
+                               type="radio" name="Shipment[type]" value="2"
+                               {{ old('Shipment.type') == 1 ? 'checked' : '' }}
+                               @if($typeForm == 'edit') {{ $model->type == 1 ? 'checked' : '' }} @endif
                         />
                         <span></span>
                         {{ __('cargo::view.drop_off_For_delivery_package_from_branch_directly') }}
                     </label>
                 </div>
-
             </div>
+
+            <script>
+            document.getElementById('consignmentCode').addEventListener('keyup', function () {
+                let query = this.value;
+                let resultsDropdown = document.getElementById('consignmentResults');
+
+                if (query.length < 2) {
+                    resultsDropdown.style.display = 'none';
+                    return;
+                }
+
+                fetch(`/api/search-consignments?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsDropdown.innerHTML = '';
+                        if (data.length > 0) {
+                            data.forEach(consignment => {
+                                let option = document.createElement('a');
+                                option.classList.add('dropdown-item');
+                                option.textContent = `${consignment.code} - ${consignment.name}`;
+                                option.href = '#';
+                                option.style.cursor = 'pointer';
+                                option.onclick = function (event) {
+                                    event.preventDefault();
+                                    document.getElementById('consignmentCode').value = consignment.code; // Display code
+                                    document.getElementById('consignmentId').value = consignment.id; // Store ID in hidden input
+                                    resultsDropdown.style.display = 'none';
+                                };
+                                resultsDropdown.appendChild(option);
+                            });
+                            resultsDropdown.style.display = 'block';
+                        } else {
+                            resultsDropdown.style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            </script>
         </div>
         <hr>
         <div class="row">
@@ -634,7 +672,6 @@
                         data-control="select2"
                         data-placeholder="{{ __('cargo::view.payment_method') }}"
                         data-allow-clear="true"
-
                     >
                     <option value="auto">Automatic</option>
                         {{-- @foreach ($paymentSettings as $key => $gateway){
@@ -882,7 +919,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label fw-bold fs-6">{{ __('cargo::view.amount_to_be_collected') }}</label>
-                        
+
                         <input id="kt_touchspin_3" placeholder="{{ __('cargo::view.amount_to_be_collected') }}" type="number" min="0" class="form-control @error('Shipment.amount_to_be_collected') is-invalid @enderror" value="{{ old('Shipment.amount_to_be_collected', isset($model) ? $model->amount_to_be_collected : 0 ) }}" name="Shipment[amount_to_be_collected]" />
                         @error('Shipment.amount_to_be_collected')
                             <div class="invalid-feedback">

@@ -22,5 +22,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('checkGoogleMap', 'Api\GoogleSettingsController@googleMapSettings');
 
 Route::get('/search-shipments', 'Api\ShipmentController@search')->name('search.shipments');
-Route::post('/submit-shipments', 'Api\ShipmentController@submit')->name('submit.shipments');
-Route::get('/consignments/{consignmentId}/shipments', 'Api\ShipmentController@getShipmentsForConsignment');
+Route::post('/submit-shipments', 'Api\ConsignmentController@addShipmentsToConsignment')->name('submit.shipments');
+Route::get('/search-consignments', 'Api\ConsignmentController@searchConsignments');
+Route::post('consignments/{consignmentId}/remove-shipment/{shipmentId}', 'Api\ConsignmentController@removeShipmentFromConsignment')->name('consignments.remove-shipment');

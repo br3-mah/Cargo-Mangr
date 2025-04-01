@@ -59,10 +59,11 @@ class ConsignmentController extends Controller
      * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function show(Consignment $consignment)
+    public function show(Consignment $cons, $id)
     {
         $adminTheme = env('ADMIN_THEME', 'adminLte');
-        // dd('here');
+        $consignment = $cons::with('shipments')->where('id',$id)->first();
+        // dd($consignment->shipments);
         return view('cargo::'.$adminTheme.'.pages.consignments.show', compact('consignment'));
     }
 
