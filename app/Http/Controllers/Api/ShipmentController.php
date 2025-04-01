@@ -18,32 +18,25 @@ class ShipmentController extends Controller
         return response()->json($shipments);
     }
 
-    public function submit(Request $request)
-    {;
-        $shipmentIds = json_decode($request->input('shipment_id')[0], true);
-        // dd($shipmentIds);
-
-        if (!$shipmentIds || !is_array($shipmentIds)) {
-            return back()->with('error', 'No shipments selected.');
-        }
     
-        // Update each shipment's consignment_id
-        foreach ($shipmentIds as $shipmentId) {
-            $shipment = Shipment::find($shipmentId);
-            if ($shipment) {
-                $shipment->consignment_id = $request->input('consignment_id'); // Ensure this is sent from the form
-                $shipment->save();
-            }
-        }
-        // Handle the selected shipments (e.g., save to DB, process further)
-        return back()->with('success', 'Shipments successfully submitted!');
-    }
 
     public function getShipmentsForConsignment($consignmentId)
     {
         // API endpoint to get shipments for a specific consignment
         $consignment = Consignment::with('shipments')->findOrFail($consignmentId);
         return response()->json($consignment->shipments);
+    }
+
+    public function removeShipment($id)
+    {
+        $shipment = Shipment::where('id',$id)->first();
+        if (!$shipment) {
+            return response()->json(['success' => false, 'message' => 'Shipment not found'], 404);
+        }
+
+        $shipment->delete();
+
+        return response()->json(['success' => true, 'message' => 'Shipment removed successfully']);
     }
 
 //     public function getShipmentsForConsignment($consignmentId)
