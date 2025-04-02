@@ -113,7 +113,7 @@
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-2 font-weight-bolder">{{ __('cargo::view.current_branch') }}</span>
                             @if($user_role == $admin || auth()->user()->can('show-branches') )
-                                <a class="opacity-70" href="{{route('branches.show',$shipment->branch_id)}}">{{$shipment->branch->name ?? 'Null'}}</a>
+                                <a class="opacity-70" href="{{route('branches.show', $shipment->branch_id ?? 1)}}">{{$shipment->branch->name ?? 'Null'}}</a>
                             @else
                                 <span class="text-danger font-weight-boldest font-size-lg">{{$shipment->branch->name ?? 'Null'}}</span>
                             @endif
@@ -333,7 +333,7 @@
                             </button>
                             @endif
 
-                        <a href="{{route('shipments.print', array($shipment->id, 'label'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_label') }}<i class="ml-2 la la-box-open"></i></a>
+                        <!-- <a href="{{route('shipments.print', array($shipment->id, 'label'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_label') }}<i class="ml-2 la la-box-open"></i></a> -->
                         <a href="{{route('shipments.print', array($shipment->id, 'invoice'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_invoice') }}<i class="ml-2 la la-file-invoice-dollar"></i></a>
 
                         @if($user_role == $admin || auth()->user()->can('edit-shipments'))

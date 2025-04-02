@@ -58,25 +58,20 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('consignment.index') }}"
-                                class="nav-link">
-                                <i class="fas fa-cog fa-fw"></i>
-                                <p>All Consignments</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('consignment.create') }}"
-                                class="nav-link">
-                                <i class="fas fa-cog fa-fw"></i>
-                                <p>New Consignment</p>
-                            </a>
-                        </li>
-                    </ul>
-
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('consignment.index') }}" class="nav-link">
+                                    <i class="fas fa-boxes fa-fw"></i>
+                                    <p>All Consignments</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('consignment.create') }}" class="nav-link">
+                                    <i class="fas fa-plus-square fa-fw"></i>
+                                    <p>New Consignment</p>
+                                </a>
+                            </li>
+                        </ul>
                 </li>
 
                 @if (app('hook')->get('aside_menu'))

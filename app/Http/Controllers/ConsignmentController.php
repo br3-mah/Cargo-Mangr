@@ -4,7 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consignment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Modules\Cargo\Entities\Shipment;
+use Modules\Cargo\Entities\PackageShipment;
+use Modules\Cargo\Entities\Client;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ConsignmentController extends Controller
 {
@@ -20,6 +27,119 @@ class ConsignmentController extends Controller
         $adminTheme = env('ADMIN_THEME', 'adminLte');
         return view('cargo::'.$adminTheme.'.pages.consignments.index', compact('consignments'));
     }
+
+
+    public function import(Request $request)
+    {
+        try {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $file = $request->file('excel_file');
+        $spreadsheet = IOFactory::load($file->getPathname());
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray();
+
+        DB::beginTransaction();
+            $jobNum = $rows[0][7]; // Job No.
+            $mawbNum = $rows[1][1]; // Mawb No.
+            $consignmentCode = $jobNum; // First shipment consignment code
+
+            // Check if consignment already exists
+            $consignment = Consignment::firstOrCreate(
+                [
+                    'job_num' => $jobNum,
+                    'mawb_num' => $mawbNum,
+                    'consignment_code' => $consignmentCode,
+                ],
+                [
+                    'name' => 'NWC',
+                    'desc' => 'Consignment shipments',
+                    'consignee' => 'Nwc',
+                ]
+            );
+
+            // Process shipments (from row 3 onwards)
+            for ($i = 4; $i < count($rows); $i++) {
+                $data = $rows[$i];
+                if (!empty($data[0])) {
+                    // Extract user and client-related information
+                    $userName = $data[1]; // Assuming Mark column represents user/client name
+                    $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com'; // Generate a placeholder email
+                    $clientCode = rand(10000, 99999); // Random client code
+                    $clientAddress = $data[6]; // Assuming consignee_info column represents address
+                    // Create or find User
+                    $user = User::where('email', $userEmail)->first();
+
+                    if (!$user) {
+                        $user = new User();
+                        $user->email = $userEmail;
+                        $user->name = $userName;
+                        $user->password = bcrypt('password123');
+                        $user->role = 4;
+                        $user->verified = 1;
+                        $user->save();
+                    }
+
+                    $client = Client::where('user_id', $user->id)->first();
+                    if (!$client) {
+                        $client = new Client();
+                        $client->user_id = $user->id;
+                        $client->code = $clientCode;
+                        $client->name = $userName;
+                        $client->email = $userEmail;
+                        $client->address = preg_replace('/[0-9\+\s]+/', '', $clientAddress);
+                        $client->save();
+                    }
+
+
+                    // Create Shipment
+
+                    $shipmt = Shipment::create([
+                        'consignment_id' => $consignment->id,
+                        'code' => $data[0],
+                        'client_id' => $client->id, 
+                        'type' => 1,
+                        'status_id' => 1,
+                        'client_status' => 1,
+
+                        'from_country_id' => 1,
+                        'from_state_id' => 1,
+                        'to_country_id' => 1,
+                        'to_state_id' => 1,
+
+                        'shipping_date'=> Carbon::now(),
+                        // 'packing' => $data[4],
+                        'total_weight' => $data[5],
+                        'client_address' =>preg_replace('/[0-9\+\s]+/', '', $clientAddress),
+                        'client_phone'=> preg_replace('/\D+/', '', $clientAddress),
+                        // 'salesman' => $data[7],
+                        // 'remark' => $data[8], 
+                    ]);
+
+                    $package['qty'] = $data[3] ?? (int)$data[4];
+                    $package['weight'] = $data[5];
+                    $package['length'] = 1;
+                    $package['width'] = 1;
+                    $package['height'] = 1;
+                    $total_weight = $package['weight'];
+
+                    $package_shipment = new PackageShipment();
+                    $package_shipment->fill($package);
+                    $package_shipment->shipment_id = $shipmt->id;
+                    DB::commit();
+                }
+            }
+
+            return redirect()->back()->with('success', 'Excel data imported successfully!');
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -41,17 +161,26 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'consignment_code' => 'required|unique:consignments',
-            'name' => 'required|string|max:255',
-            'source' => 'required|string',
-            'destination' => 'required|string',
-            'status' => 'required|in:pending,in_transit,delivered,canceled',
-        ]);
-        Consignment::create($request->all());
-        return redirect()->route('consignment.index')->with('success', 'Consignment created successfully.');
-    }
+        try {
 
+            $request->validate([
+                'consignment_code' => 'required|unique:consignments',
+                'name' => 'required|string|max:255',
+                'source' => 'required|string',
+                'destination' => 'required|string',
+                'status' => 'required|in:pending,in_transit,delivered,canceled',
+                'consignee' => 'nullable|string|max:255',
+                'job_num' => 'nullable|string|max:255',
+                'mawb_num' => 'nullable|string|max:255',
+            ]);
+    
+            Consignment::create($request->all());
+            return redirect()->route('consignment.index')->with('success', 'Consignment created successfully.');
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->back()->with('error', 'An error occurred while creating the consignment: ' . $e->getMessage());
+        }
+    }
 
     /**
      * Display the specified resource.
