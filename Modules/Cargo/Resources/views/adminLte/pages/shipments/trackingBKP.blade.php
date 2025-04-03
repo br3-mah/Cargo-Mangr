@@ -495,294 +495,153 @@
                         </div>  --}}
 
                         {{-- <div class="col-lg-5"> --}}
-                            <div class="col-lg-12">
-                                <div class="booking-summary_block">
-                                    <div class="booking-summary-box">
-                                        <div class="shipment-tracker-card">
-                                            <div class="card-header">
-                                                <div class="card-title">
-                                                    <div class="card-title-icon">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-                                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                                                        </svg>
+                        <div class="col-lg-12">
+                            <br><br><br><br><br><br><br>
+                            <div class="booking-summary_block">
+                                <div class="booking-summary-box">
+                                    <h5 class="fw-bold">Shipment Tracking Status</h5>
+                                    <div class="shipment-tracker">
+                                        <ul class="timeline-container">
+                                            @foreach($track_map as $log)
+                                                <li class="timeline-item">
+                                                    <div class="timeline-marker"></div>
+                                                    <div class="timeline-content">
+                                                        <span class="timeline-time">{{ $log[1] }}</span>
+                                                        <span class="timeline-description"><b>{{ $log[0] }}</b></span>
                                                     </div>
-                                                    <h5 class="fw-bold m-0">Shipment Tracking Status</h5>
-                                                </div>
-                                                <div class="shipment-progress">
-                                                    <div class="status-indicator"></div>
-                                                    <span>In Transit</span>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="shipment-tracker">
-                                                <ul class="timeline-container">
-                                                    @foreach($track_map as $log)
-                                                        <li class="timeline-item" data-index="{{ $loop->index }}">
-                                                            <div class="timeline-marker"></div>
-                                                            <div class="timeline-content">
-                                                                <span class="timeline-time">{{ $log[1] }}</span>
-                                                                <span class="timeline-description"><b>{{ $log[0] }}</b></span>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
+
+                                    <style>
+                                    /* Minimal Professional Timeline */
+                                    .shipment-tracker {
+                                        padding: 12px;
+                                        max-width: 100%;
+                                        background: #fff;
+                                        border-radius: 4px;
+                                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+                                    }
+
+                                    .timeline-container {
+                                        position: relative;
+                                        list-style: none;
+                                        padding: 0;
+                                        margin: 0;
+                                    }
+
+                                    .timeline-container:before {
+                                        content: '';
+                                        position: absolute;
+                                        top: 0;
+                                        left: 7px;
+                                        height: 100%;
+                                        width: 1px;
+                                        background: #e2e8f0;
+                                    }
+
+                                    .timeline-item {
+                                        position: relative;
+                                        padding-left: 24px;
+                                        padding-bottom: 16px;
+                                        margin: 0;
+                                    }
+
+                                    .timeline-item:last-child {
+                                        padding-bottom: 0;
+                                    }
+
+                                    .timeline-marker {
+                                        position: absolute;
+                                        left: 0;
+                                        top: 4px;
+                                        width: 14px;
+                                        height: 14px;
+                                        border-radius: 50%;
+                                        background: #fff;
+                                        border: 2px solid #2563eb;
+                                        z-index: 1;
+                                    }
+
+                                    .timeline-item:first-child .timeline-marker {
+                                        background: #2563eb;
+                                    }
+
+                                    .timeline-content {
+                                        display: flex;
+                                        flex-direction: column;
+                                        padding: 0;
+                                        transition: transform 0.2s ease;
+                                    }
+
+                                    .timeline-time {
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                        color: #2563eb;
+                                        margin-bottom: 2px;
+                                        letter-spacing: 0.2px;
+                                    }
+
+                                    .timeline-description {
+                                        font-size: 14px;
+                                        color: #1e293b;
+                                        line-height: 1.4;
+                                    }
+
+                                    /* Subtle hover state */
+                                    .timeline-item:hover .timeline-content {
+                                        transform: translateX(2px);
+                                    }
+
+                                    .timeline-item:first-child .timeline-time,
+                                    .timeline-item:first-child .timeline-description {
+                                        font-weight: 500;
+                                    }
+
+                                    /* Responsive adjustments - keeping it minimal */
+                                    @media (min-width: 768px) {
+                                        .timeline-container {
+                                            margin: 0 8px;
+                                        }
+
+                                        .timeline-item {
+                                            padding-bottom: 12px;
+                                        }
+
+                                        .timeline-content {
+                                            flex-direction: row;
+                                            align-items: baseline;
+                                        }
+
+                                        .timeline-time {
+                                            min-width: 120px;
+                                            margin-bottom: 0;
+                                            margin-right: 12px;
+                                        }
+                                    }
+                                    </style>
+
+
+                                            {{-- @foreach($model->logs()->orderBy('id','asc')->get() as $log)
+                                                <li class="event">
+                                                    <div class="row">
+                                                        <div class="col-md-7">
+                                                            <p class="text-left button5">{{$log->created_at->diffForHumans()}}</p>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <p class="text-right button5">{{Modules\Cargo\Entities\Shipment::getClientStatusByStatusId($log->to)}}</p>
+                                                            <h4></h4>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endforeach --}}
                                 </div>
                             </div>
-                            
-                            <style>
-                            /* Modern Professional Shipment Tracking Timeline */
-                            :root {
-                                --primary: #2563eb;
-                                --primary-light: #3b82f6;
-                                --primary-dark: #1d4ed8;
-                                --success: #10b981;
-                                --gray-100: #f3f4f6;
-                                --gray-200: #e5e7eb;
-                                --gray-300: #d1d5db;
-                                --gray-600: #4b5563;
-                                --gray-800: #1f2937;
-                                --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-                                --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                                --radius: 8px;
-                                --transition: all 0.3s ease;
-                            }
-                            
-                            .shipment-tracker-card {
-                                background: white;
-                                border-radius: var(--radius);
-                                box-shadow: var(--shadow-lg);
-                                overflow: hidden;
-                                margin-top: 2rem;
-                                margin-bottom: 2rem;
-                            }
-                            
-                            .card-header {
-                                padding: 1.5rem;
-                                border-bottom: 1px solid var(--gray-200);
-                                background: white;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                flex-wrap: wrap;
-                                gap: 1rem;
-                            }
-                            
-                            .card-title {
-                                display: flex;
-                                align-items: center;
-                                gap: 0.75rem;
-                            }
-                            
-                            .card-title-icon {
-                                background: var(--primary);
-                                color: white;
-                                width: 36px;
-                                height: 36px;
-                                border-radius: 50%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                animation: bounce 2s ease infinite;
-                            }
-                            
-                            @keyframes bounce {
-                                0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-                                40% {transform: translateY(-6px);}
-                                60% {transform: translateY(-3px);}
-                            }
-                            
-                            .shipment-progress {
-                                display: flex;
-                                align-items: center;
-                                gap: 0.5rem;
-                                font-weight: 600;
-                                color: var(--primary);
-                            }
-                            
-                            .status-indicator {
-                                width: 10px;
-                                height: 10px;
-                                border-radius: 50%;
-                                background-color: var(--success);
-                                animation: pulse 2s infinite;
-                            }
-                            
-                            @keyframes pulse {
-                                0% {
-                                    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-                                }
-                                70% {
-                                    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-                                }
-                                100% {
-                                    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-                                }
-                            }
-                            
-                            .shipment-tracker {
-                                padding: 1.5rem;
-                                max-width: 100%;
-                                background: white;
-                            }
-                            
-                            .timeline-container {
-                                position: relative;
-                                list-style: none;
-                                padding: 0;
-                                margin: 0;
-                            }
-                            
-                            .timeline-container:before {
-                                content: '';
-                                position: absolute;
-                                top: 0;
-                                left: 9px;
-                                height: 100%;
-                                width: 2px;
-                                background: linear-gradient(to bottom, var(--primary), var(--gray-300));
-                                border-radius: 2px;
-                            }
-                            
-                            .timeline-item {
-                                position: relative;
-                                padding-left: 32px;
-                                padding-bottom: 1.5rem;
-                                margin: 0;
-                                opacity: 0;
-                                transform: translateY(10px);
-                                animation: fadeIn 0.5s forwards;
-                                animation-delay: calc(var(--data-index) * 0.15s);
-                            }
-                            
-                            @keyframes fadeIn {
-                                to {
-                                    opacity: 1;
-                                    transform: translateY(0);
-                                }
-                            }
-                            
-                            .timeline-item:last-child {
-                                padding-bottom: 0;
-                            }
-                            
-                            .timeline-marker {
-                                position: absolute;
-                                left: 0;
-                                top: 4px;
-                                width: 20px;
-                                height: 20px;
-                                border-radius: 50%;
-                                background: white;
-                                border: 2px solid var(--primary);
-                                z-index: 1;
-                                transition: var(--transition);
-                            }
-                            
-                            .timeline-item:first-child .timeline-marker {
-                                background: var(--primary);
-                                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
-                            }
-                            
-                            .timeline-item:hover .timeline-marker {
-                                transform: scale(1.2);
-                            }
-                            
-                            .timeline-content {
-                                background: white;
-                                border-radius: var(--radius);
-                                padding: 1rem;
-                                box-shadow: var(--shadow-sm);
-                                transition: var(--transition);
-                                display: flex;
-                                flex-direction: column;
-                            }
-                            
-                            .timeline-item:hover .timeline-content {
-                                box-shadow: var(--shadow-md);
-                                transform: translateX(5px);
-                                background: linear-gradient(to right, white, var(--gray-100));
-                            }
-                            
-                            .timeline-time {
-                                font-size: 0.875rem;
-                                font-weight: 600;
-                                color: var(--primary);
-                                margin-bottom: 0.25rem;
-                                letter-spacing: 0.5px;
-                            }
-                            
-                            .timeline-description {
-                                font-size: 0.9375rem;
-                                color: var(--gray-800);
-                                line-height: 1.5;
-                            }
-                            
-                            /* Responsive adjustments */
-                            @media (min-width: 768px) {
-                                .timeline-container {
-                                    margin: 0;
-                                }
-                            
-                                .timeline-container:before {
-                                    left: 11px;
-                                }
-                            
-                                .timeline-item {
-                                    padding-bottom: 1.75rem;
-                                }
-                            
-                                .timeline-content {
-                                    flex-direction: row;
-                                    align-items: baseline;
-                                    gap: 1rem;
-                                }
-                            
-                                .timeline-time {
-                                    min-width: 150px;
-                                    margin-bottom: 0;
-                                }
-                            }
-                            
-                            @media (min-width: 992px) {
-                                .shipment-tracker-card {
-                                    margin-left: 1rem;
-                                    margin-right: 1rem;
-                                }
-                                
-                                .timeline-container:before {
-                                    left: 12px;
-                                }
-                                
-                                .timeline-item {
-                                    padding-left: 38px;
-                                }
-                                
-                                .timeline-marker {
-                                    left: 3px;
-                                    width: 22px;
-                                    height: 22px;
-                                }
-                            }
-                            
-                            /* Apply animation delay based on index */
-                            .timeline-item[data-index="0"] { animation-delay: 0.1s; }
-                            .timeline-item[data-index="1"] { animation-delay: 0.25s; }
-                            .timeline-item[data-index="2"] { animation-delay: 0.4s; }
-                            .timeline-item[data-index="3"] { animation-delay: 0.55s; }
-                            .timeline-item[data-index="4"] { animation-delay: 0.7s; }
-                            .timeline-item[data-index="5"] { animation-delay: 0.85s; }
-                            .timeline-item[data-index="6"] { animation-delay: 1s; }
-                            </style>
-                    </div> 
-                </div> 
-            </div> 
+                        </div>
+                    </div> <!-- /.row -->
+                </div> <!-- /.checkout-form -->
+            </div> <!-- /.container -->
         </div>
     </div>
     <br><br>

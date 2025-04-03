@@ -69,12 +69,12 @@
                     <input type="text" id="consignmentCode" name="consignment_id" class="form-control" placeholder="Search by consignment code">
                     <div id="consignmentResults" class="dropdown-menu w-100" style="display: none;"></div>
                 </div> --}}
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label for="consignmentCode">Consignment Code</label>
                     <input type="text" id="consignmentCode" class="form-control" placeholder="Search by consignment code" autocomplete="off">
                     <input type="hidden" id="consignmentId" name="consignment_id">
                     <div id="consignmentResults" class="dropdown-menu w-100" style="display: none;"></div>
-                </div>
+                </div> --}}
 
                 <div class="radio-inline">
                     <label class="radio radio-success">

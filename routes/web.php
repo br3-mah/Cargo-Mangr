@@ -23,18 +23,18 @@ use Illuminate\Support\Facades\Response;
 */
 
 // Admin routes
-require __DIR__.'/admin.php';
+require __DIR__ . '/admin.php';
 // STANDARD LOGIN ROUTES
 Route::get('/signin', [AuthenticatedSessionController::class, 'main'])
-->middleware('guest')
-->name('signin');
+    ->middleware('guest')
+    ->name('signin');
 // REGISTRATION VERIFICATION ROUTES
 // Route::get('/one-time-password-verification-otp', [OTPVerificationController::class, 'index'])
 // ->name('verify.otp');
 // Route::middleware(['auth'])->group(function () {
-    Route::get('/verify-otp', [OTPVerificationController::class, 'index'])->name('verify.otp');
-    Route::post('/verify-otp', [OTPVerificationController::class, 'verifyOtp'])->name('otp.verify');
-    Route::post('/resend-otp', [OTPVerificationController::class, 'resendOtp'])->name('otp.resend');
+Route::get('/verify-otp', [OTPVerificationController::class, 'index'])->name('verify.otp');
+Route::post('/verify-otp', [OTPVerificationController::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/resend-otp', [OTPVerificationController::class, 'resendOtp'])->name('otp.resend');
 // });
 
 // SOCIAL LOGIN ROUTES
@@ -62,7 +62,6 @@ Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
 Route::post('contact', 'Api\ContactUsController@sendContact')->name('contact.store');
 
 
-
 Route::get('/consignment', 'ConsignmentController@index')->name('consignment.index');
 Route::get('/create-consignment', 'ConsignmentController@create')->name('consignment.create');
 Route::post('/consignment', 'ConsignmentController@store')->name('consignment.store');
@@ -72,6 +71,8 @@ Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment
 Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');
 Route::post('/consignments/import', 'ConsignmentController@import')->name('consignment.import');
 
+Route::get('/consignment/{id}/tracker', 'ConsignmentController@editTracker')->name('consignment.tracker.edit');
+Route::patch('consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
 //     Route::group(
