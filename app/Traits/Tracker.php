@@ -6,10 +6,11 @@ namespace App\Traits;
 trait Tracker
 {
 
-    public function getTrackMapArray($id)
+    public function getTrackMapArray($cons)
     {
+
         try {
-            switch ($id) {
+            switch ($cons->checkpoint) {
 
                 case 1:
                     return $this->initalChinaMapArr();
@@ -28,14 +29,14 @@ trait Tracker
                     break;
 
                 case 5:
-                    return $this->arrivalLocalPortMapArr();
+                    return $this->arrivalLocalPortMapArr($cons);
                     break;
 
                 case 6:
                     return $this->finalMapArr();
                     break;
                 default:
-                    return $this->initalChinaMapArr();
+                    return [];
                     break;
             }
         } catch (\Throwable $th) {
@@ -77,14 +78,15 @@ trait Tracker
         ];
     }
 
-    public function arrivalLocalPortMapArr()
+    public function arrivalLocalPortMapArr($cons)
     {
+        $data = json_decode($cons->checkpoint_date);
         return [
-            ['Parcel received and is being processed', '2025-05-25'],
-            ['Parcel dispatched from China', '2025-05-25'],
-            ['Parcel has arrived at the transit Airport', '2025-05-25'],
-            ['Parcel has departed from the Transit Airport to Lusaka Airport', '2025-05-25'],
-            ['Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress', '2025-05-25'],
+            ['Parcel received and is being processed', $cons->created_at->toFormattedDateString() ??''],
+            ['Parcel dispatched from China', $data[0]??''],
+            ['Parcel has arrived at the transit Airport', $data[1]??''],
+            ['Parcel has departed from the Transit Airport to Lusaka Airport', $data[2]??'' ],
+            ['Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress', $data[3]??''],
         ];
     }
 

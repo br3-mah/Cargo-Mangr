@@ -33,6 +33,7 @@ use Modules\Cargo\Utility\CSVUtility;
 use DB;
 use Modules\Cargo\Http\Helpers\UserRegistrationHelper;
 use app\Http\Helpers\ApiHelper;
+use App\Models\Consignment;
 use App\Models\User;
 use App\Traits\Tracker;
 use Modules\Cargo\Events\AddShipment;
@@ -197,7 +198,7 @@ class ShipmentController extends Controller
         //     SET consignment_id = ?
         //     WHERE id = ?
         // ", [$request->input('consignment_id'), (int)$request->input('consignment_id')]);
-        
+
         $date = date_create();
         $today = date("Y-m-d");
 
@@ -1563,9 +1564,8 @@ class ShipmentController extends Controller
 
         $adminTheme = env('ADMIN_THEME', 'adminLte');
         if ($shipment) {
-
-
-            $track_map = $this->getTrackMapArray($shipment->checkpoint);
+            $checkpoint = Consignment::where('id', $shipment->consignment_id)->first();
+            $track_map = $this->getTrackMapArray($checkpoint);
             return view('cargo::' . $adminTheme . '.pages.shipments.tracking')->with(['model' => $shipment, 'track_map' => $track_map, 'client' => $client, 'PackageShipment' => $PackageShipment, 'ClientAddress' => $ClientAddress]);
         } else {
             $error = __('cargo::messages.invalid_code');

@@ -1,8 +1,8 @@
 @php
-    $user_role = auth()->user()->role;
-    $admin  = 1;
-    $branch = 3;
-    $client = 4;
+$user_role = auth()->user()->role;
+$admin = 1;
+$branch = 3;
+$client = 4;
 @endphp
 
 @extends('cargo::adminLte.layouts.master')
@@ -23,7 +23,8 @@
                     <img src="http://localhost:8000/assets/lte/cargo-logo.svg" width="60" alt="">
                 </div>
                 <div class="modal-header-actions">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addShipmentModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addShipmentModal">
                         Add Shipment
                     </button>
                 </div>
@@ -31,16 +32,16 @@
             <div class="modal-body">
                 <div class="row">
                     <div id="column3" class="col-md-12">
-                        <p class="text-muted text-sm">Current Saved Shipments</p>
+                        <p class="text-muted text-sm">Mawb Number: {{ $consignment->Mawb_num }}</p>
                         <table id="shipmentTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
+                                    <th>Hawb No.</th>
                                     <th>Type</th>
-                                    <th>Branch ID</th>
+                                    <th>Branch</th>
                                     <th>Shipping Date</th>
                                     <th>Client Status</th>
-                                    <th>Client ID</th>
+                                    <th>Client</th>
                                     <th>Client Phone</th>
                                     <!-- <th>Receiver Phone</th> -->
                                     <!-- <th>Receiver Name</th> -->
@@ -54,18 +55,20 @@
                                 <tr id="shipment_row_{{ $shipment->id }}">
                                     <td>{{ $shipment->code }}</td>
                                     <td>{{ $shipment->type }}</td>
-                                    <td>{{ $shipment->branch_id }}</td>
+                                    <td>{{ $shipment->branch_id ?? 'Lusaka' }}</td>
                                     <td>{{ $shipment->shipping_date }}</td>
                                     <td>{{ $shipment->client_status }}</td>
-                                    <td>{{ $shipment->client_id }}</td>
+                                    <td>{{ $shipment->client->name }}</td>
                                     <td>{{ $shipment->client_phone }}</td>
                                     <!-- <td>{{ $shipment->reciver_phone }}</td> -->
                                     <!-- <td>{{ $shipment->reciver_name }}</td> -->
                                     <!-- <td>{{ $shipment->reciver_address }}</td> -->
                                     <td>{{ $shipment->created_at->toFormattedDateString() }}</td>
                                     <td>
-                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}" class="btn btn-info btn-sm">View</a>
-                                        <button class="btn btn-danger btn-sm" data-shipment-id="{{ $shipment->id }}">Remove</button>
+                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}"
+                                            class="btn btn-info btn-sm">View</a>
+                                        <button class="btn btn-danger btn-sm"
+                                            data-shipment-id="{{ $shipment->id }}">Remove</button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -78,38 +81,38 @@
     </div>
 </div>
 
-<!-- Add Shipment Modal -->
-<div class="modal fade" id="addShipmentModal" tabindex="-1" aria-labelledby="addShipmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+
+<div class="modal fade" id="updateTrackerModal{{ $consignment->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="updateTrackerModalLabel{{ $consignment->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addShipmentModalLabel">Add Shipments to Consignment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="updateTrackerModalLabel{{ $consignment->id }}">Update Consignment Tracker</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <input type="hidden" id="consignmentId" value="{{ $consignment->id }}" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <h6 class="text-muted"><b>Search Shipments:</b></h6>
-                            <input type="text" id="searchShipment" class="form-control"
-                                placeholder="Search shipment by code..."
-                                onkeyup="searchShipment()">
-                        </div>
-
-                        <div id="shipmentResults" class="search-results mt-3">
-                            <p class="text-muted">Type at least 2 characters to search for shipments...</p>
-                        </div>
+                <form action="{{ route('consignment.tracker.update', $consignment->id) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <div class="form-group">
+                        <label for="tracker_status">Status</label>
+                        <select class="form-control" name="status" required>
+                            <option value="Parcel received and is being processed" {{ $consignment->checkpoint == 1 ? 'selected' : '' }}>Parcel received and is being processed</option>
+                            <option value="Parcel dispatched from China" {{ $consignment->checkpoint == 2 ? 'selected' : '' }}>Parcel dispatched from China</option>
+                            <option value="Parcel has arrived at the transit Airport" {{ $consignment->checkpoint == 3 ? 'selected' : '' }}>Parcel has arrived at the transit Airport</option>
+                            <option value="Parcel has departed from the Transit Airport to Lusaka Airport" {{ $consignment->checkpoint == 4 ? 'selected' : '' }}>Parcel has departed from the Transit Airport to Lusaka Airport</option>
+                            <option value="Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress" {{ $consignment->checkpoint == 5 ? 'selected' : '' }}>Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress</option>
+                            <option value="Parcel is now ready for collection in Lusaka at the Main Branch" {{ $consignment->checkpoint == 6 ? 'selected' : '' }}>Parcel is now ready for collection in Lusaka at the Main Branch</option>
+                        </select>
                     </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" onclick="addSelectedShipmentsToConsignment({{ $consignment->id }})">
-                    Add Selected Shipments
-                </button>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Tracker</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -120,7 +123,7 @@
 <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-        // Initialize DataTable
+    // Initialize DataTable
         $('.table').DataTable({
             "paging": true,
             "searching": true,

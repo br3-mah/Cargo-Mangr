@@ -329,6 +329,7 @@ class Shipment extends Model implements HasMedia
     public function deliveryTime(){
         return $this->hasOne('Modules\Cargo\Entities\DeliveryTime', 'id' , 'delivery_time');
     }
+
     static public function client_status_info()
     {
         $array = [

@@ -103,7 +103,7 @@
                 <select name="status" class="form-control">
                     <option value="pending">Pending</option>
                     <option value="in_transit">In Transit</option>
-                    <option value="delivered">Delivered</option>
+                    <option value="delivered">Delivered to Main Branch</option>
                     <option value="canceled">Canceled</option>
                 </select>
             </div>

@@ -21,6 +21,7 @@ class Consignment extends Model
         'consignee',
         'job_num',
         'mawb_num',
+        'handler',
     ];
 
 
