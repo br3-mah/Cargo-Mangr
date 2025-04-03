@@ -70,6 +70,7 @@ Route::put('/consignment', 'ConsignmentController@update')->name('consignment.up
 Route::get('/consignment-details/{id}', 'ConsignmentController@show')->name('consignment.show');
 Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment.edit');
 Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');
+Route::post('/consignments/import', 'ConsignmentController@import')->name('consignment.import');
 
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

@@ -17,10 +17,13 @@ class Consignment extends Model
         'source',
         'destination',
         'status',
-        'tracker'
+        'tracker',
+        'consignee',
+        'job_num',
+        'mawb_num',
     ];
 
-    
+
 
     /**
      * Get the shipments for the consignment.

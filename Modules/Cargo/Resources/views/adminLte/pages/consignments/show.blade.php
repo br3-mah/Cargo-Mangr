@@ -10,7 +10,7 @@
 @section('pageTitle', 'Consignments')
 
 @section('content')
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <div class="col-lg-12" id="consignmentModal">
     <div class="col-12">
         <div class="content">
@@ -32,7 +32,6 @@
                 <div class="row">
                     <div id="column3" class="col-md-12">
                         <p class="text-muted text-sm">Current Saved Shipments</p>
-                        {{-- integrate js datatable here --}}
                         <table id="shipmentTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -43,9 +42,9 @@
                                     <th>Client Status</th>
                                     <th>Client ID</th>
                                     <th>Client Phone</th>
-                                    <th>Receiver Phone</th>
-                                    <th>Receiver Name</th>
-                                    <th>Receiver Address</th>
+                                    <!-- <th>Receiver Phone</th> -->
+                                    <!-- <th>Receiver Name</th> -->
+                                    <!-- <th>Receiver Address</th> -->
                                     <th>Created On</th>
                                     <th>Actions</th>
                                 </tr>
@@ -60,13 +59,12 @@
                                     <td>{{ $shipment->client_status }}</td>
                                     <td>{{ $shipment->client_id }}</td>
                                     <td>{{ $shipment->client_phone }}</td>
-                                    <td>{{ $shipment->reciver_phone }}</td>
-                                    <td>{{ $shipment->reciver_name }}</td>
-                                    <td>{{ $shipment->reciver_address }}</td>
+                                    <!-- <td>{{ $shipment->reciver_phone }}</td> -->
+                                    <!-- <td>{{ $shipment->reciver_name }}</td> -->
+                                    <!-- <td>{{ $shipment->reciver_address }}</td> -->
                                     <td>{{ $shipment->created_at->toFormattedDateString() }}</td>
                                     <td>
                                         <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}" class="btn btn-info btn-sm">View</a>
-                                        {{-- This button will now remove this shipment from the consignment --}}
                                         <button class="btn btn-danger btn-sm" data-shipment-id="{{ $shipment->id }}">Remove</button>
                                     </td>
                                 </tr>
@@ -118,7 +116,72 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
+        // Initialize DataTable
+        $('.table').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "lengthMenu": [10, 25, 50, 100],
+            "columnDefs": [
+                { "orderable": false, "targets": 7 }
+            ]
+        });
+        
+    function searchShipment() {
+        let query = document.getElementById('searchShipment').value;
+
+        if (query.length < 2) {
+            document.getElementById('shipmentResults').innerHTML = "<p class='text-muted'>Type at least 2 characters to search for shipments...</p>";
+            return;
+        }
+
+        // Show loading indicator
+        document.getElementById('shipmentResults').innerHTML = "<p class='text-center'><i class='fas fa-spinner fa-spin'></i> Searching...</p>";
+
+        // This is a working query route for live searching through shipments
+        fetch("{{ route('search.shipments') }}?query=" + query)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                document.getElementById('shipmentResults').innerHTML = "<p class='text-center'>No shipments found matching your search.</p>";
+                return;
+            }
+
+            // Custom styled results container
+            let resultsHtml = `...`; // Same content as previous for search results.
+            document.getElementById('shipmentResults').innerHTML = resultsHtml;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('shipmentResults').innerHTML = "<p class='text-danger'>Error searching for shipments. Please try again.</p>";
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize DataTable for better table presentation
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#shipmentTable').DataTable({
+                responsive: true,
+                "pageLength": 10
+            });
+        }
+
+        // Add event listeners to all Remove buttons
+        document.querySelectorAll('.btn-danger').forEach(button => {
+            button.addEventListener('click', function() {
+                const shipmentId = this.getAttribute('data-shipment-id');
+                const consignmentId = {{ $consignment->id }};
+
+                removeShipmentFromConsignment(shipmentId, consignmentId);
+            });
+        });
+    });
+
     function searchShipment() {
         let query = document.getElementById('searchShipment').value;
 
