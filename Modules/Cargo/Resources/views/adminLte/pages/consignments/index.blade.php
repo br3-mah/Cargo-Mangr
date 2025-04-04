@@ -226,8 +226,8 @@
                     <p class="text-muted small">Supported formats: .xlsx, .xls, .csv</p>
                 </div>
 
-                <form id="importForm" action="{{ route('consignment.import') }}" method="POST"
-                    enctype="multipart/form-data" class="dropzone">
+                <form id="importForm2" action="{{ route('consignment.import') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="fallback">
                         <input name="excel_file" type="file" />
