@@ -28,7 +28,6 @@ class ConsignmentController extends Controller
         return view('cargo::' . $adminTheme . '.pages.consignments.index', compact('consignments'));
     }
 
-
     public function import(Request $request)
     {
         try {
@@ -65,13 +64,12 @@ class ConsignmentController extends Controller
                 $data = $rows[$i];
                 if (!empty($data[0])) {
                     // Extract user and client-related information
-                    $userName = $data[1]; // Assuming Mark column represents user/client name
+                    $userName = $data[1] ?? 'customer'.rand(100000, 999999); // Assuming Mark column represents user/client name
                     $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com'; // Generate a placeholder email
-                    $clientCode = rand(10000, 99999); // Random client code
+                    $clientCode = rand(100000, 999999); // Random client code
                     $clientAddress = $data[6]; // Assuming consignee_info column represents address
                     // Create or find User
                     $user = User::where('email', $userEmail)->first();
-
                     if (!$user) {
                         $user = new User();
                         $user->email = $userEmail;
@@ -81,7 +79,6 @@ class ConsignmentController extends Controller
                         $user->verified = 1;
                         $user->save();
                     }
-
                     $client = Client::where('user_id', $user->id)->first();
                     if (!$client) {
                         $client = new Client();
@@ -112,11 +109,11 @@ class ConsignmentController extends Controller
 
                         'shipping_date' => Carbon::now(),
                         // 'packing' => $data[4],
-                        'total_weight' => $data[5],
+                        'total_weight' => $data[5] ?? 0,
                         'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
                         'client_phone' => preg_replace('/\D+/', '', $clientAddress),
                         // 'salesman' => $data[7],
-                        // 'remark' => $data[8], 
+                        // 'remark' => $data[8],
                     ]);
 
                     $package['qty'] = $data[3] ?? (int)$data[4];
@@ -242,19 +239,19 @@ class ConsignmentController extends Controller
                 'consignment_id' => 'required|integer|exists:consignments,id',
                 'status' => 'required|integer|min:1|max:6',
             ]);
-    
+
             $consignment = Consignment::findOrFail($id);
             $consignment->checkpoint = $request->status;
-    
+
             // Decode existing JSON or initialize an empty array
             $checkpointDates = json_decode($consignment->checkpoint_date, true) ?? [];
-    
+
             // Append the new timestamp
             $checkpointDates[] = Carbon::now()->toDateTimeString();
-    
+
             // Save the updated JSON data
             $consignment->checkpoint_date = json_encode($checkpointDates);
-    
+
             // Update consignment status
             if ($request->status > 1) {
                 $consignment->status = 'in_transit';
@@ -262,12 +259,13 @@ class ConsignmentController extends Controller
             if ($request->status > 5) {
                 $consignment->status = 'delivered';
             }
-    
+
             $consignment->save();
-    
+
             return redirect()->back()->with('success', 'Tracker updated successfully.');
         } catch (\Throwable $th) {
-            dd($th);
+
+            return redirect()->back()->with('error', 'Failed to update shipment tracker.');
         }
     }
 
@@ -277,11 +275,17 @@ class ConsignmentController extends Controller
      * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Consignment $consignment)
+    public function destroy(Consignment $consignment, $id)
     {
-        $consignment->delete();
-        $adminTheme = env('ADMIN_THEME', 'adminLte');
-        // dd('here');
-        return view('cargo::' . $adminTheme . '.pages.consignments.index')->with('success', 'Consignment deleted successfully.');
+        try {
+            $c = $consignment->where('id', $id)->first();
+            $c->delete();
+            $adminTheme = env('ADMIN_THEME', 'adminLte');
+            $consignments = Consignment::get();
+            return redirect()->route('consignment.index', compact('consignments'))->with('success', 'Consignment deleted successfully.');
+            // return view('cargo::' . $adminTheme . '.pages.consignments.index',)->with('success', 'Consignment deleted successfully.');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 }
