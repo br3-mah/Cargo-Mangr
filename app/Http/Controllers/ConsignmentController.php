@@ -30,6 +30,7 @@ class ConsignmentController extends Controller
 
     public function import(Request $request)
     {
+
         try {
             $request->validate([
                 'excel_file' => 'required|mimes:xlsx,xls'
@@ -40,9 +41,10 @@ class ConsignmentController extends Controller
             $worksheet = $spreadsheet->getActiveSheet();
             $rows = $worksheet->toArray();
 
-            DB::beginTransaction();
-            $jobNum = $rows[0][7]; // Job No.
-            $mawbNum = $rows[1][1]; // Mawb No.
+            // DB::beginTransaction();
+            $jobNum = $rows[3][9];
+            // Job No.
+            $mawbNum = $rows[4][3]; // Mawb No.
             $consignmentCode = $jobNum; // First shipment consignment code
 
             // Check if consignment already exists
@@ -60,14 +62,14 @@ class ConsignmentController extends Controller
             );
 
             // Process shipments (from row 3 onwards)
-            for ($i = 4; $i < count($rows); $i++) {
+            for ($i = 7; $i < count($rows); $i++) {
                 $data = $rows[$i];
-                if (!empty($data[0])) {
+                if (!empty($data[2])) {
                     // Extract user and client-related information
-                    $userName = $data[1] ?? 'customer'.rand(100000, 999999); // Assuming Mark column represents user/client name
+                    $userName = $data[3] ?? 'customer' . rand(100000, 999999); // Assuming Mark column represents user/client name
                     $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com'; // Generate a placeholder email
                     $clientCode = rand(100000, 999999); // Random client code
-                    $clientAddress = $data[6]; // Assuming consignee_info column represents address
+                    $clientAddress = $data[8]; // Assuming consignee_info column represents address
                     // Create or find User
                     $user = User::where('email', $userEmail)->first();
                     if (!$user) {
@@ -95,7 +97,7 @@ class ConsignmentController extends Controller
 
                     $shipmt = Shipment::create([
                         'consignment_id' => $consignment->id,
-                        'code' => $data[0],
+                        'code' => $data[2],
                         'client_id' => $client->id,
                         'branch_id' => 1,
                         'type' => 1,
@@ -109,15 +111,15 @@ class ConsignmentController extends Controller
 
                         'shipping_date' => Carbon::now(),
                         // 'packing' => $data[4],
-                        'total_weight' => $data[5] ?? 0,
+                        'total_weight' => (float)$data[7] ?? 0,
                         'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
                         'client_phone' => preg_replace('/\D+/', '', $clientAddress),
                         // 'salesman' => $data[7],
                         // 'remark' => $data[8],
                     ]);
 
-                    $package['qty'] = $data[3] ?? (int)$data[4];
-                    $package['weight'] = $data[5];
+                    $package['qty'] = $data[6] ?? (int)$data[4];
+                    $package['weight'] = $data[7];
                     $package['length'] = 1;
                     $package['width'] = 1;
                     $package['height'] = 1;
