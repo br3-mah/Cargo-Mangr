@@ -29,6 +29,8 @@ $client = 4;
                     </button>
                 </div>
             </div>
+            <form method="POST" action="{{ route('consignment.export') }}"> @csrf <div class="row"> <div class="col-md-4"> <label for="from_date">From Date</label> <input type="date" name="from_date" class="form-control" required> </div> <div class="col-md-4"> <label for="to_date">To Date</label> <input type="date" name="to_date" class="form-control" required> </div> <div class="col-md-4 d-flex align-items-end"> <button type="submit" class="btn btn-success">Export Shipments</button> </div> </div> </form>
+
             <div class="modal-body">
                 <div class="row">
                     <div id="column3" class="col-md-12">
@@ -55,7 +57,7 @@ $client = 4;
                                 <tr id="shipment_row_{{ $shipment->id }}">
                                     <td>{{ $shipment->code }}</td>
                                     <td>{{ $shipment->type }}</td>
-                                    <td>{{ $shipment->branch_id ?? 'Lusaka' }}</td>
+                                    <td>{{ 'Lusaka' }}</td>
                                     <td>{{ $shipment->shipping_date }}</td>
                                     <td>{{ $shipment->client_status }}</td>
                                     <td>{{ $shipment->client->name }}</td>
@@ -64,11 +66,20 @@ $client = 4;
                                     <!-- <td>{{ $shipment->reciver_name }}</td> -->
                                     <!-- <td>{{ $shipment->reciver_address }}</td> -->
                                     <td>{{ $shipment->created_at->toFormattedDateString() }}</td>
-                                    <td>
-                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}"
-                                            class="btn btn-info btn-sm">View</a>
-                                        <button class="btn btn-danger btn-sm"
-                                            data-shipment-id="{{ $shipment->id }}">Remove</button>
+                                    <td class="action-buttons">
+                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}" 
+                                           class="btn btn-icon btn-info btn-sm rounded-circle me-2" 
+                                           data-bs-toggle="tooltip" 
+                                           title="View Shipment">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
+                                        <button class="btn btn-icon btn-danger btn-sm rounded-circle" 
+                                                data-shipment-id="{{ $shipment->id }}" 
+                                                data-bs-toggle="tooltip" 
+                                                title="Remove Shipment">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
