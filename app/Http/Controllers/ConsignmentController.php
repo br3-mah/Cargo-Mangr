@@ -72,7 +72,7 @@ class ConsignmentController extends Controller
                 ]
             );
 
-            dd($consignment);
+            // dd($consignment);
             // Process shipments (from row 7 onwards)
             for ($i = 7; $i < count($rows); $i++) {
                 $data = $rows[$i];
@@ -139,10 +139,10 @@ class ConsignmentController extends Controller
                     $package_shipment->shipment_id = $sh->id;
                     $package_shipment->save();
 
-                    DB::commit();
                 }
             }
 
+            DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
 
