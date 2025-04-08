@@ -47,6 +47,7 @@ class ConsignmentController extends Controller
                 }
             }
 
+            dd($mawbNum);
             if (!$mawbNum) {
                 throw new \Exception("Mawb No. not found in the Excel file.");
             }
