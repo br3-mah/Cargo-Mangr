@@ -46,8 +46,7 @@ class ConsignmentController extends Controller
                     break;
                 }
             }
-
-            dd($mawbNum);
+            
             if (!$mawbNum) {
                 throw new \Exception("Mawb No. not found in the Excel file.");
             }
@@ -73,6 +72,7 @@ class ConsignmentController extends Controller
                 ]
             );
 
+            dd($consignment);
             // Process shipments (from row 7 onwards)
             for ($i = 7; $i < count($rows); $i++) {
                 $data = $rows[$i];
