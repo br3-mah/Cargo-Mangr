@@ -45,6 +45,7 @@ class ConsignmentController extends Controller
             $jobNum = $rows[3][9];
             // Job No.
             $mawbNum = $rows[4][3]; // Mawb No.
+            dd($rows);
             $consignmentCode = $jobNum; // First shipment consignment code
 
             // Check if consignment already exists
