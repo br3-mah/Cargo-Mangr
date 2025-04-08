@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ShipmentExport;
 use App\Http\Controllers\Controller;
 use App\Models\Consignment;
 use App\Models\User;
@@ -12,6 +13,7 @@ use Modules\Cargo\Entities\PackageShipment;
 use Modules\Cargo\Entities\Client;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ConsignmentController extends Controller
 {
@@ -29,6 +31,128 @@ class ConsignmentController extends Controller
     }
 
     public function import(Request $request)
+    {
+        try {
+            $file = $request->file('excel_file');
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            // Dynamically locate Mawb No.
+            $mawbNum = null;
+            foreach ($rows as $row) {
+                if (isset($row[2]) && trim($row[2]) === 'Mawb No.:') {
+                    $mawbNum = $row[3] ?? null;
+                    break;
+                }
+            }
+
+            if (!$mawbNum) {
+                throw new \Exception("Mawb No. not found in the Excel file.");
+            }
+
+            // Job No. is still expected at row 3, column 9
+            $jobNum = $rows[3][9] ?? null;
+            if (!$jobNum) {
+                throw new \Exception("Job No. not found in the Excel file.");
+            }
+
+            $consignmentCode = $jobNum;
+
+            $consignment = Consignment::firstOrCreate(
+                [
+                    'job_num' => $jobNum,
+                    'mawb_num' => $mawbNum,
+                    'consignment_code' => $consignmentCode,
+                ],
+                [
+                    'name' => 'NWC',
+                    'desc' => 'Consignment shipments',
+                    'consignee' => 'Nwc',
+                ]
+            );
+
+            // Process shipments (from row 7 onwards)
+            for ($i = 7; $i < count($rows); $i++) {
+                $data = $rows[$i];
+                if (!empty($data[2])) {
+                    $userName = $data[3] ?? 'customer' . rand(100000, 999999);
+                    $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
+                    $clientCode = rand(100000, 999999);
+                    $clientAddress = $data[8];
+
+                    $user = User::where('email', $userEmail)->first();
+                    if (!$user) {
+                        $user = new User();
+                        $user->email = $userEmail;
+                        $user->name = $userName;
+                        $user->password = bcrypt('password123');
+                        $user->role = 4;
+                        $user->verified = 1;
+                        $user->save();
+                    }
+
+                    $client = Client::where('user_id', $user->id)->first();
+                    if (!$client) {
+                        $client = new Client();
+                        $client->user_id = $user->id;
+                        $client->code = $clientCode;
+                        $client->name = $userName;
+                        $client->email = $userEmail;
+                        $client->address = preg_replace('/[0-9\+\s]+/', '', $clientAddress);
+                        $client->save();
+                    }
+
+                    DB::beginTransaction();
+
+                    $sh = Shipment::create([
+                        'consignment_id' => $consignment->id,
+                        'code' => $data[2],
+                        'client_id' => $client->id,
+                        'branch_id' => 1,
+                        'type' => 1,
+                        'status_id' => 1,
+                        'client_status' => 1,
+                        'from_country_id' => 1,
+                        'from_state_id' => 1,
+                        'to_country_id' => 1,
+                        'to_state_id' => 1,
+                        'shipping_date' => Carbon::now(),
+                        'total_weight' => (float)$data[7] ?? 0,
+                        'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
+                        'client_phone' => preg_replace('/\D+/', '', $clientAddress),
+                    ]);
+
+                    $package = [
+                        'package_id' => 1,
+                        'shipment_id' => $sh->id,
+                        'qty' => $data[6] ?? (int)$data[4],
+                        'weight' => $data[7],
+                        'length' => 1,
+                        'width' => 1,
+                        'height' => 1,
+                    ];
+
+                    $package_shipment = new PackageShipment();
+                    $package_shipment->fill($package);
+                    $package_shipment->shipment_id = $sh->id;
+                    $package_shipment->save();
+
+                    DB::commit();
+                }
+            }
+
+            return redirect()->back()->with('success', 'Excel data imported successfully!');
+        } catch (\Exception $e) {
+
+            dd($e->getMessage());
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
+        }
+    }
+
+
+    public function importBKP(Request $request)
     {
 
         try {
@@ -140,7 +264,16 @@ class ConsignmentController extends Controller
         }
     }
 
-
+    public function export(Request $request) { 
+        $request->validate([ 
+            'from_date' => 'required|date', 
+            'to_date' => 'required|date|after_or_equal:from_date',
+        ]);
+        return Excel::download(
+            new ShipmentExport($request->from_date, $request->to_date),
+            'shipments_export_' . now()->format('Ymd_His') . '.xlsx'
+        );
+    }
     /**
      * Show the form for creating a new resource.
      *

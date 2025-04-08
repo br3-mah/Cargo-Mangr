@@ -70,7 +70,7 @@ Route::get('/consignment-details/{id}', 'ConsignmentController@show')->name('con
 Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment.edit');
 Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');
 Route::post('/consignments/import', 'ConsignmentController@import')->name('consignment.import');
-
+Route::post('/consignments/export', 'ConsignmentController@export')->name('consignment.export');
 Route::get('/consignment/{id}/tracker', 'ConsignmentController@editTracker')->name('consignment.tracker.edit');
 Route::patch('consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
 
