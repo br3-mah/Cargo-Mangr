@@ -76,6 +76,7 @@ class ConsignmentController extends Controller
             // Process shipments (from row 7 onwards)
             for ($i = 7; $i < count($rows); $i++) {
                 $data = $rows[$i];
+                
                 if (!empty($data[2])) {
                     $userName = $data[3] ?? 'customer' . rand(100000, 999999);
                     $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
@@ -83,6 +84,8 @@ class ConsignmentController extends Controller
                     $clientAddress = $data[8];
 
                     $user = User::where('email', $userEmail)->first();
+                    
+
                     if (!$user) {
                         $user = new User();
                         $user->email = $userEmail;
@@ -103,8 +106,9 @@ class ConsignmentController extends Controller
                         $client->address = preg_replace('/[0-9\+\s]+/', '', $clientAddress);
                         $client->save();
                     }
-
-                    DB::beginTransaction();
+                    // dd($user);
+                    // dd($client);
+                    
 
                     $sh = Shipment::create([
                         'consignment_id' => $consignment->id,

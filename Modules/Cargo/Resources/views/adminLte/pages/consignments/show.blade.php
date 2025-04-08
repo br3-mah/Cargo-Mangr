@@ -34,9 +34,8 @@ $client = 4;
             <div class="modal-body">
                 <div class="row">
                     <div id="column3" class="col-md-12">
-                        <p class="text-muted text-sm">Mawb Number: {{ $consignment->mawb_num }}</p>
+                        <p class="text-muted text-sm">Mawb Number: {{ $consignment->Mawb_num }}</p>
 
-                        @dd($consignment)
                         <table id="shipmentTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
