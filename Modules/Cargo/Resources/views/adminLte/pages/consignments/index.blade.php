@@ -110,9 +110,9 @@
                     <tbody>
                         @forelse($consignments as $consignment)
                         <tr>
-                            <td>{{ $consignment->consignment_code }}</td>
-                            <td>{{ $consignment->Job_num }}</td>
-                            <td>{{ $consignment->Mawb_num ?? 'Unspecified' }}</td>
+                            <td>{{ $consignment->consignment_code ?? 'Unspecified' }}</td>
+                            <td>{{ $consignment->job_num ?? 'Unspecified' }}</td>
+                            <td>{{ $consignment->mawb_num ?? 'Unspecified' }}</td>
                             <td>{{ $consignment->name }}</td>
                             <td>{{ $consignment->source ?? 'China' }}</td>
                             <td>{{ $consignment->destination ?? 'Zambia' }}</td>
