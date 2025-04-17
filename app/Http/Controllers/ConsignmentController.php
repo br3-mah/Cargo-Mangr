@@ -30,31 +30,203 @@ class ConsignmentController extends Controller
         return view('cargo::' . $adminTheme . '.pages.consignments.index', compact('consignments'));
     }
 
+    // public function import(Request $request)
+    // {
+    //     try {
+    //         $file = $request->file('excel_file');
+    //         $spreadsheet = IOFactory::load($file->getPathname());
+    //         $worksheet = $spreadsheet->getActiveSheet();
+    //         $rows = $worksheet->toArray();
+
+    //         // Dynamically locate Mawb No.
+    //         $mawbNum = null;
+    //         foreach ($rows as $row) {
+    //             if (isset($row[2]) && trim($row[2]) === 'Mawb No.:') {
+    //                 $mawbNum = $row[3] ?? null;
+    //                 break;
+    //             }
+    //         }
+
+    //         if (!$mawbNum) {
+    //             throw new \Exception("Mawb No. not found in the Excel file.");
+    //         }
+
+    //         // Job No. is still expected at row 3, column 9
+    //         $jobNum = $rows[3][9] ?? null;
+    //         if (!$jobNum) {
+    //             throw new \Exception("Job No. not found in the Excel file.");
+    //         }
+
+    //         $consignmentCode = $jobNum;
+
+    //         $consignment = Consignment::firstOrCreate(
+    //             [
+    //                 'job_num' => $jobNum,
+    //                 'mawb_num' => $mawbNum,
+    //                 'consignment_code' => $consignmentCode,
+    //             ],
+    //             [
+    //                 'name' => 'NWC',
+    //                 'desc' => 'Consignment shipments',
+    //                 'consignee' => 'Nwc',
+    //             ]
+    //         );
+
+    //         // dd($consignment);
+    //         // Process shipments (from row 7 onwards)
+    //         for ($i = 7; $i < count($rows); $i++) {
+    //             $data = $rows[$i];
+
+    //             if (!empty($data[2])) {
+    //                 $userName = $data[3] ?? 'customer' . rand(100000, 999999);
+    //                 $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
+    //                 $clientCode = rand(100000, 999999);
+    //                 $clientAddress = $data[8];
+
+    //                 $user = User::where('email', $userEmail)->first();
+
+
+    //                 if (!$user) {
+    //                     $user = new User();
+    //                     $user->email = $userEmail;
+    //                     $user->name = $userName;
+    //                     $user->password = bcrypt('password123');
+    //                     $user->role = 4;
+    //                     $user->verified = 1;
+    //                     $user->save();
+    //                 }
+
+    //                 $client = Client::where('user_id', $user->id)->first();
+    //                 if (!$client) {
+    //                     $client = new Client();
+    //                     $client->user_id = $user->id;
+    //                     $client->code = $clientCode;
+    //                     $client->name = $userName;
+    //                     $client->email = $userEmail;
+    //                     $client->address = preg_replace('/[0-9\+\s]+/', '', $clientAddress);
+    //                     $client->save();
+    //                 }
+    //                 // dd($user);
+    //                 // dd($client);
+
+
+    //                 $sh = Shipment::create([
+    //                     'consignment_id' => $consignment->id,
+    //                     'code' => $data[2],
+    //                     'client_id' => $client->id,
+    //                     'branch_id' => 1,
+    //                     'type' => 1,
+    //                     'status_id' => 1,
+    //                     'client_status' => 1,
+    //                     'from_country_id' => 1,
+    //                     'from_state_id' => 1,
+    //                     'to_country_id' => 1,
+    //                     'to_state_id' => 1,
+    //                     'shipping_date' => Carbon::now(),
+    //                     'total_weight' => (float)$data[7] ?? 0,
+    //                     'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
+    //                     'client_phone' => preg_replace('/\D+/', '', $clientAddress),
+    //                 ]);
+
+    //                 $package = [
+    //                     'package_id' => 1,
+    //                     'shipment_id' => $sh->id,
+    //                     'qty' => $data[6] ?? (int)$data[4],
+    //                     'weight' => $data[7],
+    //                     'length' => 1,
+    //                     'width' => 1,
+    //                     'height' => 1,
+    //                 ];
+
+    //                 $package_shipment = new PackageShipment();
+    //                 $package_shipment->fill($package);
+    //                 $package_shipment->shipment_id = $sh->id;
+    //                 $package_shipment->save();
+
+    //             }
+    //         }
+
+    //         DB::commit();
+    //         return redirect()->back()->with('success', 'Excel data imported successfully!');
+    //     } catch (\Exception $e) {
+
+    //         dd($e->getMessage());
+    //         DB::rollback();
+    //         return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
+    //     }
+    // }
+
     public function import(Request $request)
     {
+        DB::beginTransaction();
+
         try {
             $file = $request->file('excel_file');
             $spreadsheet = IOFactory::load($file->getPathname());
             $worksheet = $spreadsheet->getActiveSheet();
             $rows = $worksheet->toArray();
 
-            // Dynamically locate Mawb No.
-            $mawbNum = null;
-            foreach ($rows as $row) {
-                if (isset($row[2]) && trim($row[2]) === 'Mawb No.:') {
-                    $mawbNum = $row[3] ?? null;
+            $consigneeRow = null;
+            $mawbRow = null;
+            $headerRow = null;
+
+            // Step 1: Find the row containing both "Consignee" and "Job No"
+            foreach ($rows as $rowIndex => $row) {
+                $rowText = implode(' ', array_map('trim', $row));
+                if (stripos($rowText, 'consignee') !== false && stripos($rowText, 'job no') !== false) {
+                    $consigneeRow = $rowIndex;
                     break;
                 }
             }
-            
-            if (!$mawbNum) {
-                throw new \Exception("Mawb No. not found in the Excel file.");
+
+            if (is_null($consigneeRow)) {
+                throw new \Exception("Row with both 'Consignee' and 'Job No' not found.");
             }
 
-            // Job No. is still expected at row 3, column 9
-            $jobNum = $rows[3][9] ?? null;
+            // Step 2: Find Mawb No in the next few rows
+            $mawbKeywords = ['Mawb No', 'Mawb No.', 'Mawb No :', 'Mawb No.:'];
+            $mawbNum = null;
+
+            for ($i = $consigneeRow + 1; $i <= $consigneeRow + 5 && $i < count($rows); $i++) {
+                foreach ($rows[$i] as $k => $cell) {
+                    if (!$cell) continue;
+                    foreach ($mawbKeywords as $keyword) {
+                        if (stripos($cell, $keyword) !== false) {
+                            $mawbNum = $rows[$i][$k + 1] ?? null;
+                            break 3;
+                        }
+                    }
+                }
+            }
+
+            if (!$mawbNum) {
+                throw new \Exception("Mawb No. not found below 'Consignee' row.");
+            }
+
+            // Step 3: Find Job No from same row as Consignee
+            $jobNum = null;
+            $jobKeywords = ['Job No', 'Job No.', 'Job No :', 'Job No.:'];
+
+            foreach ($rows[$consigneeRow] as $k => $cell) {
+                $cleanedCell = preg_replace('/\s+/', ' ', trim($cell)); // Normalize all whitespace to single space
+
+                foreach ($jobKeywords as $keyword) {
+                    if (stripos($cleanedCell, $keyword) !== false) {
+                        // Check next non-empty cell for actual Job No value
+                        for ($j = $k + 1; $j < count($rows[$consigneeRow]); $j++) {
+                            $nextCell = trim($rows[$consigneeRow][$j]);
+                            if (!empty($nextCell)) {
+                                $jobNum = $nextCell;
+                                break 2; // Break out of both loops
+                            }
+                        }
+                    }
+                }
+            }
+
+
             if (!$jobNum) {
-                throw new \Exception("Job No. not found in the Excel file.");
+                throw new \Exception("Job No. not found in the same row as 'Consignee'.");
             }
 
             $consignmentCode = $jobNum;
@@ -72,47 +244,59 @@ class ConsignmentController extends Controller
                 ]
             );
 
-            // dd($consignment);
-            // Process shipments (from row 7 onwards)
-            for ($i = 7; $i < count($rows); $i++) {
+            // Step 4: Find the row with "Hawb No"
+            foreach ($rows as $i => $row) {
+                foreach ($row as $cell) {
+                    if (stripos($cell, 'hawb no') !== false) {
+                        $headerRow = $i;
+                        break 2;
+                    }
+                }
+            }
+
+            // dd($headerRow);
+            if (is_null($headerRow)) {
+                throw new \Exception("Header row containing 'Hawb No' not found.");
+            }
+
+            // Step 5: Loop through data starting after headerRow
+            for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
+                $rowText = implode(' ', array_map('trim', $rows[$i]));
+                if (stripos($rowText, 'total') !== false) {
+                    break;
+                }
+
                 $data = $rows[$i];
-                
+
                 if (!empty($data[2])) {
                     $userName = $data[3] ?? 'customer' . rand(100000, 999999);
                     $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
                     $clientCode = rand(100000, 999999);
-                    $clientAddress = $data[8];
+                    $clientAddress = $data[6] ?? '';
 
-                    $user = User::where('email', $userEmail)->first();
-                    
+                    $user = User::firstOrCreate(
+                        ['email' => $userEmail],
+                        [
+                            'name' => $userName,
+                            'password' => bcrypt('password123'),
+                            'role' => 4,
+                            'verified' => 1
+                        ]
+                    );
 
-                    if (!$user) {
-                        $user = new User();
-                        $user->email = $userEmail;
-                        $user->name = $userName;
-                        $user->password = bcrypt('password123');
-                        $user->role = 4;
-                        $user->verified = 1;
-                        $user->save();
-                    }
+                    $client = Client::firstOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'code' => $clientCode,
+                            'name' => $userName,
+                            'email' => $userEmail,
+                            'address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress)
+                        ]
+                    );
 
-                    $client = Client::where('user_id', $user->id)->first();
-                    if (!$client) {
-                        $client = new Client();
-                        $client->user_id = $user->id;
-                        $client->code = $clientCode;
-                        $client->name = $userName;
-                        $client->email = $userEmail;
-                        $client->address = preg_replace('/[0-9\+\s]+/', '', $clientAddress);
-                        $client->save();
-                    }
-                    // dd($user);
-                    // dd($client);
-                    
-
-                    $sh = Shipment::create([
+                    $shipment = Shipment::create([
                         'consignment_id' => $consignment->id,
-                        'code' => $data[2],
+                        'code' => $data[0], // Hawb No
                         'client_id' => $client->id,
                         'branch_id' => 1,
                         'type' => 1,
@@ -123,39 +307,30 @@ class ConsignmentController extends Controller
                         'to_country_id' => 1,
                         'to_state_id' => 1,
                         'shipping_date' => Carbon::now(),
-                        'total_weight' => (float)$data[7] ?? 0,
+                        'total_weight' => (float)($data[5] ?? 0),
                         'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
                         'client_phone' => preg_replace('/\D+/', '', $clientAddress),
                     ]);
 
-                    $package = [
+                    PackageShipment::create([
                         'package_id' => 1,
-                        'shipment_id' => $sh->id,
-                        'qty' => $data[6] ?? (int)$data[4],
-                        'weight' => $data[7],
+                        'shipment_id' => $shipment->id,
+                        'qty' => $data[3] ?? 1,
+                        'weight' => $data[4] ?? 0,
                         'length' => 1,
                         'width' => 1,
                         'height' => 1,
-                    ];
-
-                    $package_shipment = new PackageShipment();
-                    $package_shipment->fill($package);
-                    $package_shipment->shipment_id = $sh->id;
-                    $package_shipment->save();
-
+                    ]);
                 }
             }
 
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-
-            dd($e->getMessage());
             DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
     }
-
 
     public function importBKP(Request $request)
     {
@@ -269,9 +444,10 @@ class ConsignmentController extends Controller
         }
     }
 
-    public function export(Request $request) { 
-        $request->validate([ 
-            'from_date' => 'required|date', 
+    public function export(Request $request)
+    {
+        $request->validate([
+            'from_date' => 'required|date',
             'to_date' => 'required|date|after_or_equal:from_date',
         ]);
         return Excel::download(
