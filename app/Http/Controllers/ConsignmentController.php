@@ -260,40 +260,60 @@ class ConsignmentController extends Controller
             }
 
             // Step 5: Loop through data starting after headerRow
-            for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
-                $rowText = implode(' ', array_map('trim', $rows[$i]));
-                if (stripos($rowText, 'total') !== false) {
-                    break;
-                }
+            $this->loopCreateShipment($headerRow, $rows, $consignment);
 
-                $data = $rows[$i];
+            DB::commit();
+            return redirect()->back()->with('success', 'Excel data imported successfully!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
+        }
+    }
 
-                if (!empty($data[2])) {
-                    $userName = $data[3] ?? 'customer' . rand(100000, 999999);
-                    $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
-                    $clientCode = rand(100000, 999999);
-                    $clientAddress = $data[6] ?? '';
+    public function loopCreateShipment($headerRow, $rows, $consignment)
+    {
+        for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
+            $rowText = implode(' ', array_map('trim', $rows[$i]));
+            if (stripos($rowText, 'total') !== false) {
+                break;
+            }
 
-                    $user = User::firstOrCreate(
-                        ['email' => $userEmail],
-                        [
-                            'name' => $userName,
-                            'password' => bcrypt('password123'),
-                            'role' => 4,
-                            'verified' => 1
-                        ]
-                    );
+            $data = $rows[$i];
 
-                    $client = Client::firstOrCreate(
-                        ['user_id' => $user->id],
-                        [
-                            'code' => $clientCode,
-                            'name' => $userName,
-                            'email' => $userEmail,
-                            'address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress)
-                        ]
-                    );
+            if (!empty($data[2])) {
+                $userName = $data[1] ?? 'customer' . rand(100000, 999999);
+                $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
+                $clientCode = rand(100000, 999999);
+                $clientAddress = $data[5] ?? '';
 
+                // Avoid duplicate User by email
+                $user = User::firstOrCreate(
+                    ['email' => $userEmail],
+                    [
+                        'name' => $userName,
+                        'password' => bcrypt('password123'),
+                        'role' => 4,
+                        'verified' => 1
+                    ]
+                );
+
+                // Avoid duplicate Client by user_id (or use another unique key if better)
+                $client = Client::firstOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'code' => $clientCode,
+                        'name' => $userName,
+                        'email' => $userEmail,
+                        'address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress)
+                    ]
+                );
+
+                // Avoid duplicate Shipment by code + consignment
+                $existingShipment = Shipment::where('code', $data[0])
+                    ->where('consignment_id', $consignment->id)
+                    ->first();
+
+                if (!$existingShipment) {
                     $shipment = Shipment::create([
                         'consignment_id' => $consignment->id,
                         'code' => $data[0], // Hawb No
@@ -306,8 +326,13 @@ class ConsignmentController extends Controller
                         'from_state_id' => 1,
                         'to_country_id' => 1,
                         'to_state_id' => 1,
+
+                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
+                        'return_cost' => 0,
+                        'amount_to_be_collected' => (float)preg_replace('/\D+/', '', ($data[8])),
+
                         'shipping_date' => Carbon::now(),
-                        'total_weight' => (float)($data[5] ?? 0),
+                        'total_weight' => (float)($data[4] ?? 0),
                         'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
                         'client_phone' => preg_replace('/\D+/', '', $clientAddress),
                     ]);
@@ -323,14 +348,9 @@ class ConsignmentController extends Controller
                     ]);
                 }
             }
-
-            DB::commit();
-            return redirect()->back()->with('success', 'Excel data imported successfully!');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
     }
+
 
     public function importBKP(Request $request)
     {
@@ -503,7 +523,10 @@ class ConsignmentController extends Controller
     public function show(Consignment $cons, $id)
     {
         $adminTheme = env('ADMIN_THEME', 'adminLte');
-        $consignment = $cons::with('shipments.client')->where('id', $id)->first();
+        $consignment = $cons::with([
+            'shipments.client',
+            'shipments.consignment' // optional, only if needed
+        ])->first();
         return view('cargo::' . $adminTheme . '.pages.consignments.show', compact('consignment'));
     }
 
@@ -529,17 +552,16 @@ class ConsignmentController extends Controller
      */
     public function update(Request $request, Consignment $consignment)
     {
+
         $request->validate([
             'name' => 'required|string|max:255',
             'source' => 'required|string',
             'destination' => 'required|string',
-            'status' => 'required|in:pending,in_transit,delivered,canceled',
+            'status' => 'required',
         ]);
 
-        $consignment->update($request->all());
-        $adminTheme = env('ADMIN_THEME', 'adminLte');
-        // dd('here');
-        return view('cargo::' . $adminTheme . '.pages.consignments.index')->with('success', 'Consignment updated successfully.');
+        $consignment->first()->update($request->all());
+        return redirect()->back();
     }
 
     public function editTracker($id)
