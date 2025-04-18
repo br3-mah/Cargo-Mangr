@@ -69,8 +69,10 @@
                                 @if($shipment->barcode != null)
                                     <span class="mb-5 font-weight-bolder"><?=$d->getBarcodeHTML($shipment->code, "C128");?></span>
                                 @endif
-                                <span><span class="font-weight-bolder">{{ __('cargo::view.from') }}:</span> {{$shipment->from_address ? $shipment->from_address->address : ''}}</span>
-                                <span><span class="font-weight-bolder">{{ __('cargo::view.to') }}:</span> {{$shipment->reciver_address}}</span>
+                                <span><span class="font-weight-bolder">{{ __('cargo::view.from') }}:</span> {{$shipment->consignment->source}}</span>
+                                <span><span class="font-weight-bolder">{{ __('cargo::view.to') }}:</span> {{$shipment->consignment->destination}}</span>
+                                {{-- <span><span class="font-weight-bolder">{{ __('cargo::view.from') }}:</span> {{$shipment->from_address ? $shipment->from_address->address : ''}}</span>
+                                <span><span class="font-weight-bolder">{{ __('cargo::view.to') }}:</span> {{$shipment->reciver_address}}</span> --}}
                             </span>
                         </div>
                     </div>
@@ -86,12 +88,12 @@
                             <span class="text-muted font-size-md">{{$shipment->client_phone}}</span>
                             <span class="text-muted font-size-md">{{$shipment->from_address ? $shipment->from_address->address : ''}}</span>
                         </div>
-                        <div class="d-flex flex-column flex-root">
+                        {{-- <div class="d-flex flex-column flex-root">
                             <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.receiver') }}</span>
                             <span class="text-danger font-weight-boldest font-size-lg">{{$shipment->reciver_name}}</span>
                             <span class="text-muted font-size-md">{{$shipment->reciver_phone}}</span>
                             <span class="text-muted font-size-md">{{$shipment->reciver_address}}</span>
-                        </div>
+                        </div> --}}
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.status') }}</span>
                             <span class="opacity-70 d-block">{{$shipment->getStatus()}}</span>
@@ -164,7 +166,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-6 d-flex justify-content-between">
+                    {{-- <div class="pt-6 d-flex justify-content-between">
                         <div class="d-flex flex-column flex-root">
                                 <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.from_country') }}</span>
                                 <span class="text-muted font-weight-bolder font-size-lg">@if(isset($shipment->from_country)){{$shipment->from_country->name ?? 'Null'}} @endif </span>
@@ -195,10 +197,10 @@
                                     <span class="text-muted font-weight-bolder font-size-lg">{{json_decode($shipment->to_area->name, true)[app()->getLocale()]}}</span>
                             </div>
                         @endif
-                    </div>
+                    </div> --}}
 
 
-                    <div class="pt-6 d-flex justify-content-between">
+                    {{-- <div class="pt-6 d-flex justify-content-between">
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.max_delivery_days') }}</span>
                             <span class="text-muted font-weight-bolder font-size-lg">{{ $shipment->deliveryTime ? json_decode($shipment->deliveryTime->name, true)[app()->getLocale()] : ''}}</span>
@@ -230,7 +232,7 @@
                                 @endif
                             </div>
                         @endif
-                    </div>
+                    </div> --}}
                     @if(count($shipment->getMedia('attachments')) > 0)
                         <div class="pt-6 d-flex justify-content-between">
                             <div class="d-flex flex-column flex-root">

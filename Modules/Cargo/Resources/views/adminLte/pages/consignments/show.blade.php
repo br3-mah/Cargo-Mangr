@@ -43,9 +43,10 @@ $client = 4;
                                     <th>Type</th>
                                     <th>Branch</th>
                                     <th>Shipping Date</th>
-                                    <th>Client Status</th>
+                                    {{-- <th>Client Status</th> --}}
                                     <th>Client</th>
                                     <th>Client Phone</th>
+                                    <th>Shipment Cost</th>
                                     <!-- <th>Receiver Phone</th> -->
                                     <!-- <th>Receiver Name</th> -->
                                     <!-- <th>Receiver Address</th> -->
@@ -60,24 +61,25 @@ $client = 4;
                                     <td>{{ $shipment->type }}</td>
                                     <td>{{ 'Lusaka' }}</td>
                                     <td>{{ $shipment->shipping_date }}</td>
-                                    <td>{{ $shipment->client_status }}</td>
+                                    {{-- <td>{{ $shipment->client_status }}</td> --}}
                                     <td>{{ $shipment->client->name }}</td>
                                     <td>{{ $shipment->client_phone }}</td>
+                                    <td>{{ $shipment->shipping_cost }}</td>
                                     <!-- <td>{{ $shipment->reciver_phone }}</td> -->
                                     <!-- <td>{{ $shipment->reciver_name }}</td> -->
                                     <!-- <td>{{ $shipment->reciver_address }}</td> -->
                                     <td>{{ $shipment->created_at->toFormattedDateString() }}</td>
                                     <td class="action-buttons">
-                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}" 
-                                           class="btn btn-icon btn-info btn-sm rounded-circle me-2" 
-                                           data-bs-toggle="tooltip" 
+                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}"
+                                           class="btn btn-icon btn-info btn-sm rounded-circle me-2"
+                                           data-bs-toggle="tooltip"
                                            title="View Shipment">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        
-                                        <button class="btn btn-icon btn-danger btn-sm rounded-circle" 
-                                                data-shipment-id="{{ $shipment->id }}" 
-                                                data-bs-toggle="tooltip" 
+
+                                        <button class="btn btn-icon btn-danger btn-sm rounded-circle"
+                                                data-shipment-id="{{ $shipment->id }}"
+                                                data-bs-toggle="tooltip"
                                                 title="Remove Shipment">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
@@ -119,7 +121,7 @@ $client = 4;
                             <option value="Parcel is now ready for collection in Lusaka at the Main Branch" {{ $consignment->checkpoint == 6 ? 'selected' : '' }}>Parcel is now ready for collection in Lusaka at the Main Branch</option>
                         </select>
                     </div>
-                    
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Update Tracker</button>
@@ -146,7 +148,7 @@ $client = 4;
                 { "orderable": false, "targets": 7 }
             ]
         });
-        
+
     function searchShipment() {
         let query = document.getElementById('searchShipment').value;
 
