@@ -71,6 +71,8 @@
                                 @endif
                                 <span><span class="font-weight-bolder">{{ __('cargo::view.from') }}:</span> {{$shipment->consignment->source}}</span>
                                 <span><span class="font-weight-bolder">{{ __('cargo::view.to') }}:</span> {{$shipment->consignment->destination}}</span>
+                                {{-- <span><span class="font-weight-bolder">{{ __('cargo::view.from') }}:</span> {{$shipment->from_address ? $shipment->from_address->address : ''}}</span>
+                                <span><span class="font-weight-bolder">{{ __('cargo::view.to') }}:</span> {{$shipment->reciver_address}}</span> --}}
                             </span>
                         </div>
                     </div>
@@ -86,6 +88,12 @@
                             <span class="text-muted font-size-md">{{$shipment->client_phone}}</span>
                             <span class="text-muted font-size-md">{{$shipment->from_address ? $shipment->from_address->address : ''}}</span>
                         </div>
+                        {{-- <div class="d-flex flex-column flex-root">
+                            <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.receiver') }}</span>
+                            <span class="text-danger font-weight-boldest font-size-lg">{{$shipment->reciver_name}}</span>
+                            <span class="text-muted font-size-md">{{$shipment->reciver_phone}}</span>
+                            <span class="text-muted font-size-md">{{$shipment->reciver_address}}</span>
+                        </div> --}}
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.status') }}</span>
                             <span class="opacity-70 d-block">{{$shipment->getStatus()}}</span>
@@ -114,17 +122,17 @@
                         </div>
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-2 font-weight-bolder">{{ __('cargo::view.created_date') }}</span>
-                            <span class="opacity-70">{{$shipment->created_at->toFormattedDateString()}}</span>
+                            <span class="opacity-70">{{$shipment->created_at->format('d-m-Y h:i:s')}}</span>
                         </div>
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-2 font-weight-bolder">{{ __('cargo::view.shipping_date') }}</span>
                             <span class="opacity-70">
                                 @if(strpos($shipment->shipping_date, '/' ))
-                                    {{ Carbon\Carbon::createFromFormat('d/m/Y', $shipment->shipping_date)->format('F j, Y') }}
+                                    {{ Carbon\Carbon::createFromFormat('d/m/Y', $shipment->shipping_date)->format('d-m-Y') }}
                                 @else
-                                    {{ \Carbon\Carbon::parse($shipment->shipping_date)->format('F j, Y') }}
+                                     {{\Carbon\Carbon::parse($shipment->shipping_date)->format('d-m-Y')}}
                                 @endif
-                            </span>
+                                 </span>
                         </div>
                     </div>
 
@@ -158,6 +166,73 @@
                         </div>
                     </div>
 
+                    {{-- <div class="pt-6 d-flex justify-content-between">
+                        <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.from_country') }}</span>
+                                <span class="text-muted font-weight-bolder font-size-lg">@if(isset($shipment->from_country)){{$shipment->from_country->name ?? 'Null'}} @endif </span>
+                        </div>
+                        <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.to_country') }}</span>
+                                <span class="text-muted font-weight-bolder font-size-lg">@if(isset($shipment->to_country)){{$shipment->to_country->name ?? 'Null'}} @endif </span>
+                        </div>
+                        <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.from_region') }}</span>
+                                <span class="text-muted font-weight-bolder font-size-lg">@if(isset($shipment->from_state)){{$shipment->from_state->name ?? 'Null'}} @endif </span>
+                        </div>
+                        <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.to_region') }}</span>
+                                <span class="text-muted font-weight-bolder font-size-lg">@if(isset($shipment->to_state)){{$shipment->to_state->name ?? 'Null'}} @endif </span>
+                        </div>
+
+                        @if(isset($shipment->from_area))
+                            <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.from_area') }}</span>
+                                <span class="text-muted font-weight-bolder font-size-lg">{{json_decode($shipment->from_area->name, true)[app()->getLocale()]}}</span>
+                            </div>
+                        @endif
+
+                        @if(isset($shipment->to_area))
+                            <div class="d-flex flex-column flex-root">
+                                    <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.to_area') }}</span>
+                                    <span class="text-muted font-weight-bolder font-size-lg">{{json_decode($shipment->to_area->name, true)[app()->getLocale()]}}</span>
+                            </div>
+                        @endif
+                    </div> --}}
+
+
+                    {{-- <div class="pt-6 d-flex justify-content-between">
+                        <div class="d-flex flex-column flex-root">
+                            <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.max_delivery_days') }}</span>
+                            <span class="text-muted font-weight-bolder font-size-lg">{{ $shipment->deliveryTime ? json_decode($shipment->deliveryTime->name, true)[app()->getLocale()] : ''}}</span>
+                        </div>
+                        @if($shipment->collection_time != null)
+                            <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.collection_time') }}</span>
+                                <span class="text-muted font-weight-bolder font-size-lg">{{$shipment->collection_time}}</span>
+                            </div>
+                        @endif
+                        @if($shipment->captain_id != null)
+                            <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.driver') }}</span>
+                                @if($user_role == $admin || auth()->user()->can('show-drivers'))
+                                    <a class="text-danger font-weight-boldest font-size-lg" href="{{route('drivers.show',$shipment->captain_id)}}">{{$shipment->captain->name ?? 'Null'}} </a>
+                                @else
+                                    <span class="text-muted font-weight-boldest font-size-lg">{{$shipment->captain->name ?? 'Null'}}</span>
+                                @endif
+
+                            </div>
+                        @endif
+                        @if ($shipment->current_mission != null)
+                            <div class="d-flex flex-column flex-root">
+                                <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.mission') }}</span>
+                                @if($user_role == $admin || auth()->user()->can('show-missions'))
+                                    <a class="text-danger font-weight-bolder font-size-lg" href="{{route('missions.show',$shipment->current_mission)}}">{{$shipment->current_mission->code}}</a>
+                                @else
+                                    <span class="text-muted font-weight-bolder font-size-lg">{{$shipment->current_mission->code}}</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div> --}}
                     @if(count($shipment->getMedia('attachments')) > 0)
                         <div class="pt-6 d-flex justify-content-between">
                             <div class="d-flex flex-column flex-root">
@@ -178,7 +253,8 @@
 
                 </div>
             </div>
-
+            <!-- end: Invoice header-->
+            <!-- begin: Invoice body-->
             <div class="px-8 py-8 row justify-content-center py-md-10 px-md-0">
                 <div class="col-md-10">
                     <div class="table-responsive">
@@ -186,9 +262,9 @@
                             <thead>
                                 <tr>
                                     <th class="pl-0 font-weight-bold text-muted text-uppercase">{{ __('cargo::view.package_items') }}</th>
-                                    <th class="text-right font-weight-bold text-muted text-uppercase">Packing (CTN)</th>
+                                    <th class="text-right font-weight-bold text-muted text-uppercase">{{ __('cargo::view.qty') }}</th>
                                     <th class="text-right font-weight-bold text-muted text-uppercase">{{ __('cargo::view.type') }}</th>
-                                    {{-- <th class="pr-0 text-right font-weight-bold text-muted text-uppercase">{{ __('cargo::view.weigh_length_width_height') }}</th> --}}
+                                    <th class="pr-0 text-right font-weight-bold text-muted text-uppercase">{{ __('cargo::view.weigh_length_width_height') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,7 +275,7 @@
                                         <td class="pl-0 border-0 pt-7 d-flex align-items-center">{{$package->description}}</td>
                                         <td class="text-right align-middle pt-7">{{$package->qty}}</td>
                                         <td class="text-right align-middle pt-7">@if(isset($package->package->name)){{json_decode($package->package->name, true)[app()->getLocale()]}} @else - @endif</td>
-                                        {{-- <td class="pr-0 text-right align-middle text-primary pt-7">{{$package->weight." ". __('cargo::view.KG')." x ".$package->length." ". __('cargo::view.CM') ." x ".$package->width." ".__('cargo::view.CM')." x ".$package->height." ".__('cargo::view.CM')}}</td> --}}
+                                        <td class="pr-0 text-right align-middle text-primary pt-7">{{$package->weight." ". __('cargo::view.KG')." x ".$package->length." ". __('cargo::view.CM') ." x ".$package->width." ".__('cargo::view.CM')." x ".$package->height." ".__('cargo::view.CM')}}</td>
                                     </tr>
                                 @endforeach
 
@@ -208,18 +284,27 @@
                     </div>
                 </div>
             </div>
-
+            <!-- end: Invoice body-->
+            <!-- begin: Invoice footer-->
             <div class="px-8 py-8 mx-0 bg-gray-100 row justify-content-center py-md-10 px-md-0">
                 <div class="col-md-10">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th class="font-weight-bold text-muted text-uppercase">{{ __('cargo::view.PAYMENT_TYPE') }}</th>
+                                    <th class="font-weight-bold text-muted text-uppercase"> {{ __('cargo::view.table.package_access_options') }}</th>
+                                    <th class="font-weight-bold text-muted text-uppercase">{{ __('cargo::view.PAYMENT_STATUS') }}</th>
+                                    <th class="font-weight-bold text-muted text-uppercase">{{ __('cargo::view.PAYMENT_DATE') }}</th>
                                     <th class="text-right font-weight-bold text-muted text-uppercase">{{ __('cargo::view.total_cost') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="font-weight-bolder">
+                                    <td>{{$shipment->payment_method_id}} ({{$shipment->getPaymentType()}})</td>
+                                    <td>{{ $shipment->package_access_options == 1 ? __('cargo::view.table.allowed_to_open_package') : __('cargo::view.table.not_allowed_to_open_package') }}</td>
+                                    <td>@if($shipment->paid == 1) {{ __('cargo::view.paid') }}@else {{ __('cargo::view.pending') }} @endif</td>
+                                    <td>@if($shipment->paid == 1) {{\Carbon\Carbon::parse($shipment->payment->payment_date)->format('d-m-Y') ?? ""}} @else - @endif</td>
                                     <td class="text-right text-primary font-size-h3 font-weight-boldest">{{format_price($shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}<br /><span class="text-muted font-weight-bolder font-size-lg">{{ __('cargo::view.included_tax_insurance') }}</span></td>
                                 </tr>
                             </tbody>
@@ -227,7 +312,8 @@
                     </div>
                 </div>
             </div>
-
+            <!-- end: Invoice footer-->
+            <!-- begin: Invoice action-->
             <div class="px-8 py-8 row justify-content-center py-md-10 px-md-0">
                 <div class="col-md-10">
                     <div class="d-flex justify-content-between">
@@ -235,15 +321,22 @@
                             $INVOICE_PAYMENT = 'invoice_payment';
                             $cash_payment = 'cash_payment';
                         @endphp
-                        {{-- @if($shipment->paid == 0 && $shipment->payment_method_id != $cash_payment && $shipment->payment_method_id != $INVOICE_PAYMENT )
+                        @if($shipment->paid == 0 && $shipment->payment_method_id != $cash_payment && $shipment->payment_method_id != $INVOICE_PAYMENT )
+                            {{-- <form action="{{ route('payment.checkout') }}" class="form-default" role="form" method="POST" id="checkout-form">
+                                @csrf
+                                <input type="hidden" name="shipment_id" value="{{$shipment->id}}">
+                                <button type="submit" class="mr-3 btn btn-success btn-md">{{ __('cargo::view.pay_now') }}<i class="ml-2 far fa-credit-card"></i></button>
+                            </form>
+                            <button class="btn btn-success btn-sm " onclick="copyToClipboard('#payment-link')">{{ __('cargo::view.copy_payment_link') }}<i class="ml-2 fas fa-copy"></i></button>
+                            <div id="payment-link" style="display: none">{{route('admin.shipments.pay', $shipment->id)}}</div> --}}
+
                             <button type="button" class="mr-3 btn btn-success btn-md" onclick="openCheckoutModal()">
                                 {{ __('cargo::view.pay_now') }} <i class="ml-2 far fa-credit-card"></i>
                             </button>
-                        @endif
+                            @endif
 
-                        <a href="{{route('shipments.print', array($shipment->id, 'label'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_label') }}<i class="ml-2 la la-box-open"></i></a>
-                        <a href="{{route('shipments.print', array($shipment->id, 'invoice'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_invoice') }}<i class="ml-2 la la-file-invoice-dollar"></i></a> --}}
-                        <button onclick="printCardContent()" class="btn btn-primary">Print Card</button>
+                        <!-- <a href="{{route('shipments.print', array($shipment->id, 'label'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_label') }}<i class="ml-2 la la-box-open"></i></a> -->
+                        <a href="{{route('shipments.print', array($shipment->id, 'invoice'))}}" class="btn btn-light-primary font-weight-bold" target="_blank">{{ __('cargo::view.print_invoice') }}<i class="ml-2 la la-file-invoice-dollar"></i></a>
 
                         @if($user_role == $admin || auth()->user()->can('edit-shipments'))
                         <a href="{{route('shipments.edit', $shipment->id)}}" class="px-6 py-3 btn btn-light-info btn-sm font-weight-bolder font-size-sm">{{ __('cargo::view.edit_shipment') }}</a>
@@ -252,10 +345,13 @@
                 </div>
             </div>
 
+            <!-- Payment Wizard Modal -->
             @include('cargo::adminLte.pages.shipments._partials.cargo-payment-modal')
-
+            <!-- end: Invoice action-->
+            <!-- end: Invoice-->
         </div>
     </div>
+    <!--end::Card-->
 
     @if(!empty($shipment->shipmentReasons->toArray()))
         <div class="card card-custom card-stretch-half gutter-b">
@@ -388,88 +484,4 @@
             AIZ.plugins.notify('success', "{{ __('cargo::view.payment_link_copied') }}");
         }
     </script>
-<script>
-    function printCardContent() {
-        const card = document.querySelector('.card.card-custom.gutter-b');
-        if (!card) return;
-
-        // Clone the card to avoid modifying the original
-        const clone = card.cloneNode(true);
-
-        // Remove buttons inside elements with class 'd-flex justify-content-between'
-        const buttonContainers = clone.querySelectorAll('.d-flex.justify-content-between');
-        buttonContainers.forEach(container => {
-            const buttons = container.querySelectorAll('button');
-            const anchors = container.querySelectorAll('a');
-            buttons.forEach(btn => btn.remove());
-            anchors.forEach(a => a.remove());
-        });
-
-        // Open a new window for printing
-        const printWindow = window.open('', '_blank');
-        printWindow.document.open();
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Print</title>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 20px;
-                        }
-                        img {
-                            max-width: 100%;
-                        }
-                        .footer {
-                            margin-top: 30px;
-                            padding-top: 20px;
-                            border-top: 1px solid #ddd;
-                            text-align: center;
-                            font-size: 14px;
-                            color: #555;
-                        }
-                        .footer-title {
-                            font-weight: bold;
-                            margin-bottom: 10px;
-                            color: #333;
-                        }
-                        .contact-item {
-                            margin-bottom: 8px;
-                        }
-                        .contact-value {
-                            font-weight: bold;
-                            color: #222;
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${clone.innerHTML}
-
-                    <div class="footer">
-                        <div class="footer-title">New World Cargo</div>
-                        <div class="contact-item">
-                            Phone: <span class="contact-value">+260 763 297 287</span>
-                        </div>
-                        <div class="contact-item">
-                            Address: <span class="contact-value">Shop 62/A Carousel Shopping Centre, Lusaka, Zambia</span>
-                        </div>
-                        <div class="contact-item">
-                            Email: <span class="contact-value">info@newworldcargo.com</span>
-                        </div>
-                    </div>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-
-        // Wait for content to load before printing
-        printWindow.onload = function() {
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-        };
-    }
-</script>
-
 @endsection

@@ -147,7 +147,7 @@
 }
 
 .addon .button {
-  background-color: #009ef7;
+  background-color: #012642;
   border: none;
   color: #eee !important;
   padding: 15px 32px;

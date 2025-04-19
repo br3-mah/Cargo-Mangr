@@ -339,6 +339,7 @@ class ConsignmentController extends Controller
 
                     PackageShipment::create([
                         'package_id' => 1,
+                        'description' => $data[2],
                         'shipment_id' => $shipment->id,
                         'qty' => $data[3] ?? 1,
                         'weight' => $data[4] ?? 0,
