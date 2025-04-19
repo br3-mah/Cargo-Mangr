@@ -1,4 +1,4 @@
-@php 
+@php
     $current_theme = strtolower(Qirolab\Theme\Theme::active());
 @endphp
 
@@ -645,7 +645,7 @@
         }
 
         input[type="radio"]:checked + label {
-            border: solid 2px #009ef7  !important;
+            border: solid 2px #012642  !important;
         }
     </style>
     <link rel="stylesheet" href="{{ asset('assets/plugins/spectrum/spectrum.min.css') }}">
