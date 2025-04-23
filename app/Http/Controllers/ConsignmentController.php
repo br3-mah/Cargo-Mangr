@@ -701,13 +701,32 @@ class ConsignmentController extends Controller
     {
         try {
             $c = $consignment->where('id', $id)->first();
+    
+            if (!$c) {
+                return redirect()->back()->with('error', 'Consignment not found.');
+            }
+    
+            // Delete all shipments with this consignment_id
+            $shipments = Shipment::where('consignment_id', $c->id)->get();
+    
+            foreach ($shipments as $shipment) {
+                // Delete related PackageShipment records
+                PackageShipment::where('shipment_id', $shipment->id)->delete();
+    
+                // Delete the shipment itself
+                $shipment->delete();
+            }
+    
+            // Delete the consignment
             $c->delete();
-            $adminTheme = env('ADMIN_THEME', 'adminLte');
+    
             $consignments = Consignment::get();
-            return redirect()->route('consignment.index', compact('consignments'))->with('success', 'Consignment deleted successfully.');
-            // return view('cargo::' . $adminTheme . '.pages.consignments.index',)->with('success', 'Consignment deleted successfully.');
+    
+            return redirect()->route('consignment.index', compact('consignments'))
+                ->with('success', 'Consignment and related data deleted successfully.');
         } catch (\Throwable $th) {
             dd($th);
         }
     }
+    
 }
