@@ -159,7 +159,6 @@ class ConsignmentController extends Controller
     public function import(Request $request)
     {
         DB::beginTransaction();
-
         try {
             $file = $request->file('excel_file');
             $spreadsheet = IOFactory::load($file->getPathname());
@@ -260,94 +259,176 @@ class ConsignmentController extends Controller
             }
 
             // Step 5: Loop through data starting after headerRow
-            $this->loopCreateShipment($headerRow, $rows, $consignment);
+            $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
+            if (!$res) {
+                $this->loopCreateShipmentII($headerRow, $rows, $consignment);
+            } else {
 
+            }
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
             DB::rollback();
+            $this->loopCreateShipmentII($headerRow, $rows, $consignment);
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
     }
 
     public function loopCreateShipment($headerRow, $rows, $consignment)
     {
-        for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
-            $rowText = implode(' ', array_map('trim', $rows[$i]));
-            if (stripos($rowText, 'total') !== false) {
-                break;
-            }
-
-            $data = $rows[$i];
-
-            if (!empty($data[2])) {
-                $userName = $data[1] ?? 'customer' . rand(100000, 999999);
-                $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
-                $clientCode = rand(100000, 999999);
-                $clientAddress = $data[5] ?? '';
-
-                // Avoid duplicate User by email
-                $user = User::firstOrCreate(
-                    ['email' => $userEmail],
-                    [
-                        'name' => $userName,
-                        'password' => bcrypt('password123'),
-                        'role' => 4,
-                        'verified' => 1
-                    ]
-                );
-
-                // Avoid duplicate Client by user_id (or use another unique key if better)
-                $client = Client::firstOrCreate(
-                    ['user_id' => $user->id],
-                    [
-                        'code' => $clientCode,
-                        'name' => $userName,
-                        'email' => $userEmail,
-                        'address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress)
-                    ]
-                );
-
-                // Avoid duplicate Shipment by code + consignment
-                $existingShipment = Shipment::where('code', $data[0])
-                    ->where('consignment_id', $consignment->id)
-                    ->first();
-
-                if (!$existingShipment) {
-                    $shipment = Shipment::create([
-                        'consignment_id' => $consignment->id,
-                        'code' => $data[0], // Hawb No
-                        'client_id' => $client->id,
-                        'branch_id' => 1,
-                        'type' => 1,
-                        'status_id' => 1,
-                        'client_status' => 1,
-                        'from_country_id' => 1,
-                        'from_state_id' => 1,
-                        'to_country_id' => 1,
-                        'to_state_id' => 1,
-
-                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
-                        'return_cost' => 0,
-                        'amount_to_be_collected' => (float)preg_replace('/\D+/', '', ($data[8])),
-
-                        'shipping_date' => Carbon::now(),
-                        'total_weight' => (float)($data[4] ?? 0),
-                        'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
-                        'client_phone' => preg_replace('/\D+/', '', $clientAddress),
-                    ]);
-
-                    PackageShipment::create([
-                        'package_id' => 1,
-                        'description' => $data[2],
-                        'shipment_id' => $shipment->id,
-                        'qty' => $data[3] ?? 1,
-                        'weight' => $data[4] ?? 0,
-                        'length' => 1,
-                        'width' => 1,
-                        'height' => 1,
-                    ]);
+        try {
+            for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
+                $rowText = implode(' ', array_map('trim', $rows[$i]));
+                if (stripos($rowText, 'total') !== false) {
+                    break;
                 }
+
+                $data = $rows[$i];
+
+                if (!empty($data[2])) {
+                    $userName = $data[1] ?? 'customer' . rand(100000, 999999);
+                    $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
+                    $clientCode = rand(100000, 999999);
+                    $clientAddress = $data[5] ?? '';
+
+                    // Avoid duplicate User by email
+                    $user = User::firstOrCreate(
+                        ['email' => $userEmail],
+                        [
+                            'name' => $userName,
+                            'password' => bcrypt('password123'),
+                            'role' => 4,
+                            'verified' => 1
+                        ]
+                    );
+
+                    // Avoid duplicate Client by user_id (or use another unique key if better)
+                    $client = Client::firstOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'code' => $clientCode,
+                            'name' => $userName,
+                            'email' => $userEmail,
+                            'address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress)
+                        ]
+                    );
+
+                    // Avoid duplicate Shipment by code + consignment
+                    $existingShipment = Shipment::where('code', $data[0])
+                        ->where('consignment_id', $consignment->id)
+                        ->first();
+
+                    if (!$existingShipment) {
+                        $shipment = Shipment::create([
+                            'consignment_id' => $consignment->id,
+                            'code' => $data[0], // Hawb No
+                            'client_id' => $client->id,
+                            'branch_id' => 1,
+                            'type' => 1,
+                            'status_id' => 1,
+                            'client_status' => 1,
+                            'from_country_id' => 1,
+                            'from_state_id' => 1,
+                            'to_country_id' => 1,
+                            'to_state_id' => 1,
+
+                            'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
+                            'return_cost' => 0,
+                            'amount_to_be_collected' => (float)preg_replace('/\D+/', '', ($data[8])),
+
+                            'shipping_date' => Carbon::now(),
+                            'total_weight' => (float)($data[4] ?? 0),
+                            'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
+                            'client_phone' => preg_replace('/\D+/', '', $clientAddress),
+                        ]);
+
+                        PackageShipment::create([
+                            'package_id' => 1,
+                            'description' => $data[2],
+                            'shipment_id' => $shipment->id,
+                            'qty' => $data[3] ?? 1,
+                            'weight' => $data[4] ?? 0,
+                            'length' => 1,
+                            'width' => 1,
+                            'height' => 1,
+                        ]);
+                    }
+                }
+            }
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
+    public function loopCreateShipmentII($headerRow, $rows, $consignment){
+        // dd($rows);
+        for ($i = 7 + 1; $i < count($rows) - 1; $i++) {
+            $data = $rows[$i];
+            if (!empty($data[2])) {
+                // Extract user and client-related information
+                $userName = $data[3] ?? 'customer' . rand(100000, 999999); // Assuming Mark column represents user/client name
+                $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com'; // Generate a placeholder email
+                $clientCode = rand(100000, 999999); // Random client code
+                $clientContact = $data[8]; // Assuming consignee_info column represents address
+                // Create or find User
+                $user = User::where('email', $userEmail)->first();
+                if (!$user) {
+                    $user = new User();
+                    $user->email = $userEmail;
+                    $user->name = $userName;
+                    $user->password = bcrypt('password123');
+                    $user->role = 4;
+                    $user->verified = 1;
+                    $user->save();
+                }
+                $client = Client::where('user_id', $user->id)->first();
+                if (!$client) {
+                    $client = new Client();
+                    $client->user_id = $user->id;
+                    $client->code = $clientCode;
+                    $client->name = $userName;
+                    $client->email = $userEmail;
+                    $client->save();
+                }
+
+                // Create Shipment
+                $shipment = Shipment::create([
+                    'consignment_id' => $consignment->id,
+                    'code' => $data[2],
+                    'client_id' => $client->id,
+                    'branch_id' => 1,
+                    'type' => 1,
+                    'status_id' => 1,
+                    'client_status' => 1,
+                    ...(!empty($data[10]) ? [
+                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[10])),
+                        'return_cost' => 0,
+                        'amount_to_be_collected' => (float)preg_replace('/\D+/', '', $data[10]),
+                    ] : []),
+                    'from_country_id' => 1,
+                    'from_state_id' => 1,
+                    'to_country_id' => 1,
+                    'to_state_id' => 1,
+                    'shipping_date' => Carbon::now(),
+                    'total_weight' => (float)($data[6] ?? 0),
+                    // 'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
+                    'client_phone' => preg_replace('/\D+/', '', $clientContact),
+                ]);
+                
+
+                $package['description'] = $data[4].'. Parcel items including: ('.preg_replace('/[0-9\+\s]+/', '', $data[5]) .')';
+                $package['qty'] = $data[6] ?? sum(preg_replace('/\D+/', '', $data[3])) ?? sum(preg_replace('/\D+/', '', $data[5]));
+                $package['weight'] = $data[7];
+                $package['length'] = 1;
+                $package['width'] = 1;
+                $package['height'] = 1;
+                $total_weight = $package['weight'];
+
+                $package_shipment = new PackageShipment();
+                $package_shipment->fill($package);
+                $package_shipment->shipment_id = $shipment->id;
+                DB::commit();
             }
         }
     }
@@ -523,8 +604,9 @@ class ConsignmentController extends Controller
      */
     public function show(Consignment $cons, $id)
     {
+
         $adminTheme = env('ADMIN_THEME', 'adminLte');
-        $consignment = $cons::with([
+        $consignment = $cons::where('id',$id)->with([
             'shipments.client',
             'shipments.consignment' // optional, only if needed
         ])->first();
