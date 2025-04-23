@@ -61,18 +61,19 @@ Route::get('/terms-of-use', 'TermsOfUseController@index')->name('terms');
 Route::get('/fraud-awareness', 'FraudAwarenessController@index')->name('fraud');
 Route::post('contact', 'Api\ContactUsController@sendContact')->name('contact.store');
 
-
-Route::get('/consignment', 'ConsignmentController@index')->name('consignment.index');
-Route::get('/create-consignment', 'ConsignmentController@create')->name('consignment.create');
-Route::post('/consignment', 'ConsignmentController@store')->name('consignment.store');
-Route::put('/consignment', 'ConsignmentController@update')->name('consignment.update');
-Route::get('/consignment-details/{id}', 'ConsignmentController@show')->name('consignment.show');
-Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment.edit');
-Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');
-Route::post('/consignments/import', 'ConsignmentController@import')->name('consignment.import');
-Route::post('/consignments/export', 'ConsignmentController@export')->name('consignment.export');
-Route::get('/consignment/{id}/tracker', 'ConsignmentController@editTracker')->name('consignment.tracker.edit');
-Route::patch('consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/consignment', 'ConsignmentController@index')->name('consignment.index');
+    Route::get('/create-consignment', 'ConsignmentController@create')->name('consignment.create');
+    Route::post('/consignment', 'ConsignmentController@store')->name('consignment.store');
+    Route::put('/consignment', 'ConsignmentController@update')->name('consignment.update');
+    Route::get('/consignment-details/{id}', 'ConsignmentController@show')->name('consignment.show');
+    Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment.edit');
+    Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');
+    Route::post('/consignments/import', 'ConsignmentController@import')->name('consignment.import');
+    Route::post('/consignments/export', 'ConsignmentController@export')->name('consignment.export');
+    Route::get('/consignment/{id}/tracker', 'ConsignmentController@editTracker')->name('consignment.tracker.edit');
+    Route::patch('/consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
+});
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {
 //     Route::group(
