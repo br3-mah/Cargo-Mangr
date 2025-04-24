@@ -511,30 +511,47 @@
                                                     </div>
                                                     <h5 class="fw-bold m-0">Shipment Tracking Status</h5>
                                                 </div>
+
+                                                @if($track_map)
                                                 <div class="shipment-progress">
                                                     <div class="status-indicator"></div>
                                                     <span>In Transit</span>
                                                 </div>
+                                                @else
+                                                <div class="shipment-progress">
+                                                    {{-- <div class="status-indicator/"></div> --}}
+                                                    <span>Consignment Not Found</span>
+                                                </div>
+                                                @endif
                                             </div>
-                                            
+
                                             <div class="shipment-tracker">
                                                 <ul class="timeline-container">
-                                                    @foreach($track_map as $log)
-                                                        <li class="timeline-item" data-index="{{ $loop->index }}">
-                                                            <div class="timeline-marker"></div>
-                                                            <div class="timeline-content">
-                                                                <span class="timeline-time">{{ $log[1] }}</span>
-                                                                <span class="timeline-description"><b>{{ $log[0] }}</b></span>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
+                                                    @if($track_map)
+                                                        @foreach($track_map as $log)
+                                                            <li class="timeline-item" data-index="{{ $loop->index }}">
+                                                                <div class="timeline-marker"></div>
+                                                                <div class="timeline-content">
+                                                                    {{-- <span class="timeline-time">{{ $log[1] }}</span> --}}
+                                                                    <span class="timeline-description"><b>{{ $log[0] }}</b></span>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+
                             </div>
-                            
+
                             <style>
                             /* Modern Professional Shipment Tracking Timeline */
                             :root {
@@ -553,7 +570,7 @@
                                 --radius: 8px;
                                 --transition: all 0.3s ease;
                             }
-                            
+
                             .shipment-tracker-card {
                                 background: white;
                                 border-radius: var(--radius);
@@ -562,7 +579,7 @@
                                 margin-top: 2rem;
                                 margin-bottom: 2rem;
                             }
-                            
+
                             .card-header {
                                 padding: 1.5rem;
                                 border-bottom: 1px solid var(--gray-200);
@@ -573,13 +590,13 @@
                                 flex-wrap: wrap;
                                 gap: 1rem;
                             }
-                            
+
                             .card-title {
                                 display: flex;
                                 align-items: center;
                                 gap: 0.75rem;
                             }
-                            
+
                             .card-title-icon {
                                 background: var(--primary);
                                 color: white;
@@ -591,13 +608,13 @@
                                 justify-content: center;
                                 animation: bounce 2s ease infinite;
                             }
-                            
+
                             @keyframes bounce {
                                 0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
                                 40% {transform: translateY(-6px);}
                                 60% {transform: translateY(-3px);}
                             }
-                            
+
                             .shipment-progress {
                                 display: flex;
                                 align-items: center;
@@ -605,7 +622,7 @@
                                 font-weight: 600;
                                 color: var(--primary);
                             }
-                            
+
                             .status-indicator {
                                 width: 10px;
                                 height: 10px;
@@ -613,7 +630,7 @@
                                 background-color: var(--success);
                                 animation: pulse 2s infinite;
                             }
-                            
+
                             @keyframes pulse {
                                 0% {
                                     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
@@ -625,20 +642,20 @@
                                     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
                                 }
                             }
-                            
+
                             .shipment-tracker {
                                 padding: 1.5rem;
                                 max-width: 100%;
                                 background: white;
                             }
-                            
+
                             .timeline-container {
                                 position: relative;
                                 list-style: none;
                                 padding: 0;
                                 margin: 0;
                             }
-                            
+
                             .timeline-container:before {
                                 content: '';
                                 position: absolute;
@@ -649,7 +666,7 @@
                                 background: linear-gradient(to bottom, var(--primary), var(--gray-300));
                                 border-radius: 2px;
                             }
-                            
+
                             .timeline-item {
                                 position: relative;
                                 padding-left: 32px;
@@ -660,18 +677,18 @@
                                 animation: fadeIn 0.5s forwards;
                                 animation-delay: calc(var(--data-index) * 0.15s);
                             }
-                            
+
                             @keyframes fadeIn {
                                 to {
                                     opacity: 1;
                                     transform: translateY(0);
                                 }
                             }
-                            
+
                             .timeline-item:last-child {
                                 padding-bottom: 0;
                             }
-                            
+
                             .timeline-marker {
                                 position: absolute;
                                 left: 0;
@@ -684,16 +701,16 @@
                                 z-index: 1;
                                 transition: var(--transition);
                             }
-                            
+
                             .timeline-item:first-child .timeline-marker {
                                 background: var(--primary);
                                 box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
                             }
-                            
+
                             .timeline-item:hover .timeline-marker {
                                 transform: scale(1.2);
                             }
-                            
+
                             .timeline-content {
                                 background: white;
                                 border-radius: var(--radius);
@@ -703,13 +720,13 @@
                                 display: flex;
                                 flex-direction: column;
                             }
-                            
+
                             .timeline-item:hover .timeline-content {
                                 box-shadow: var(--shadow-md);
                                 transform: translateX(5px);
                                 background: linear-gradient(to right, white, var(--gray-100));
                             }
-                            
+
                             .timeline-time {
                                 font-size: 0.875rem;
                                 font-weight: 600;
@@ -717,60 +734,60 @@
                                 margin-bottom: 0.25rem;
                                 letter-spacing: 0.5px;
                             }
-                            
+
                             .timeline-description {
                                 font-size: 0.9375rem;
                                 color: var(--gray-800);
                                 line-height: 1.5;
                             }
-                            
+
                             /* Responsive adjustments */
                             @media (min-width: 768px) {
                                 .timeline-container {
                                     margin: 0;
                                 }
-                            
+
                                 .timeline-container:before {
                                     left: 11px;
                                 }
-                            
+
                                 .timeline-item {
                                     padding-bottom: 1.75rem;
                                 }
-                            
+
                                 .timeline-content {
                                     flex-direction: row;
                                     align-items: baseline;
                                     gap: 1rem;
                                 }
-                            
+
                                 .timeline-time {
                                     min-width: 150px;
                                     margin-bottom: 0;
                                 }
                             }
-                            
+
                             @media (min-width: 992px) {
                                 .shipment-tracker-card {
                                     margin-left: 1rem;
                                     margin-right: 1rem;
                                 }
-                                
+
                                 .timeline-container:before {
                                     left: 12px;
                                 }
-                                
+
                                 .timeline-item {
                                     padding-left: 38px;
                                 }
-                                
+
                                 .timeline-marker {
                                     left: 3px;
                                     width: 22px;
                                     height: 22px;
                                 }
                             }
-                            
+
                             /* Apply animation delay based on index */
                             .timeline-item[data-index="0"] { animation-delay: 0.1s; }
                             .timeline-item[data-index="1"] { animation-delay: 0.25s; }
@@ -780,9 +797,9 @@
                             .timeline-item[data-index="5"] { animation-delay: 0.85s; }
                             .timeline-item[data-index="6"] { animation-delay: 1s; }
                             </style>
-                    </div> 
-                </div> 
-            </div> 
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <br><br>

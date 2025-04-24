@@ -40,8 +40,15 @@ trait Tracker
                     break;
             }
         } catch (\Throwable $th) {
-            dd($th);
+            if ($th->getMessage() === 'Attempt to read property "checkpoint" on null') {
+                session()->flash('error', 'This shipment could not be found in any Consignment');
+            } else {
+                session()->flash('error', 'An error occurred: ' . $th->getMessage());
+            }
+
+
         }
+
     }
 
     public function initalChinaMapArr()

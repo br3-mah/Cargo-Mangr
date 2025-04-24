@@ -101,6 +101,7 @@
 @if($user_role == $admin || auth()->user()->can('manage-missions') || auth()->user()->can('manage-shipments'))
 
     @php
+        $all_consignments    = App\Models\Consignment::count();
         $all_shipments       = Modules\Cargo\Entities\Shipment::count();
         $pending_shipments   = Modules\Cargo\Entities\Shipment::whereIn('status_id', [Modules\Cargo\Entities\Shipment::REQUESTED_STATUS, Modules\Cargo\Entities\Shipment::CAPTAIN_ASSIGNED_STATUS, Modules\Cargo\Entities\Shipment::RECIVED_STATUS, Modules\Cargo\Entities\Shipment::RETURNED_STOCK])->count();
         $delivered_shipments = Modules\Cargo\Entities\Shipment::whereIn('status_id', [Modules\Cargo\Entities\Shipment::DELIVERED_STATUS, Modules\Cargo\Entities\Shipment::SUPPLIED_STATUS, Modules\Cargo\Entities\Shipment::RETURNED_CLIENT_GIVEN])->count();
@@ -113,7 +114,22 @@
         $supply_missions     = Modules\Cargo\Entities\Mission::where('type', Modules\Cargo\Entities\Mission::SUPPLY_TYPE )->count();
     @endphp
 
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-3">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{$all_consignments}}</h3>
+                <p>All Consignments</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <a href="{{ route('shipments.index') }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
@@ -128,7 +144,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
@@ -143,7 +159,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
@@ -158,7 +174,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-6 col-6">
+    <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
@@ -173,7 +189,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-6 col-6">
+    <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
@@ -218,7 +234,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-3 col-6">
+    {{-- <div class="col-lg-3 col-6">
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
@@ -230,10 +246,10 @@
             </div>
             <a href="{{ route('missions.index', ['type' => [Modules\Cargo\Entities\Mission::TRANSFER_TYPE] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
-    <div class="col-lg-3 col-6">
+    {{-- <div class="col-lg-3 col-6">
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
@@ -245,7 +261,7 @@
             </div>
             <a href="{{ route('missions.index', ['type' => [Modules\Cargo\Entities\Mission::SUPPLY_TYPE] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
 @elseif($user_role == $branch)
