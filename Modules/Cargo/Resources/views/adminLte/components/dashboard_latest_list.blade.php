@@ -75,7 +75,7 @@
                                     <td>{{ ($shipment->branch->name) ?? 'No Branch Name'}}</td>
                                 @endif
                             @endif
-                            
+
                             <td>{{format_price($shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}</td>
                             <td>{{$shipment->payment_method_id}}</td>
                             <td>{{$shipment->shipping_date}}</td>
@@ -91,7 +91,7 @@
         <!--end::Card-->
     </div>
 @endif
-
+{{--
 @if(in_array($user_role ,[$admin,$auth_branch]) || auth()->user()->can('manage-drivers') )
     <div class="col-md-12">
         <div class="card card-custom card-stretch">
@@ -124,7 +124,6 @@
                                     <td>{{format_price($captain->wallet)}}</td>
                                 </tr>
                             @endif
-
                         @endforeach
 
                     </tbody>
@@ -188,7 +187,7 @@
                                             <td>{{ ($shipment->branch->name) ?? 'No Branch Name'}}</td>
                                         @endif
                                     @endif
-                                    
+
                                     <td>{{format_price($shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}</td>
                                     <td>{{$shipment->payment_method_id}}</td>
                                     <td>{{$shipment->shipping_date}}</td>
@@ -205,7 +204,7 @@
         <!--end::Card-->
 
     </div>
-@endif
+@endif --}}
 
 @if($user_role == $auth_driver)
     <div class="col-md-12">
@@ -231,8 +230,6 @@
                                 <th>{{ __('cargo::view.amount') }}</th>
                                 <th>{{ __('cargo::view.table.address') }}</th>
                                 <th>{{ __('cargo::view.arrived') }}</th>
-
-
                             </tr>
                         </thead>
                         <tbody id="profile_manifest">

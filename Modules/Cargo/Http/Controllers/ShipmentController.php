@@ -1564,8 +1564,8 @@ class ShipmentController extends Controller
 
         $adminTheme = env('ADMIN_THEME', 'adminLte');
         if ($shipment) {
-            $checkpoint = Consignment::where('id', $shipment->consignment_id)->first();
-            $track_map = $this->getTrackMapArray($checkpoint);
+            $cons = Consignment::where('id', $shipment->consignment_id)->first();
+            $track_map = $this->getTrackMapArray($cons);
             return view('cargo::' . $adminTheme . '.pages.shipments.tracking')->with(['model' => $shipment, 'track_map' => $track_map, 'client' => $client, 'PackageShipment' => $PackageShipment, 'ClientAddress' => $ClientAddress]);
         } else {
             $error = __('cargo::messages.invalid_code');
