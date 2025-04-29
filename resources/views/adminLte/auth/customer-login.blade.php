@@ -59,86 +59,106 @@
 
             <form method="POST" action="{{ route('login.request') }}" novalidate="novalidate" id="kt_sign_in_form">
                 @csrf
+
                 <!-- Email Field -->
                 <div class="mb-6">
-                    <div class="relative group">
-                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-xl opacity-20 group-hover:opacity-25 group-focus-within:opacity-30 transition-opacity duration-300"></div>
+                    <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <span class="fas fa-envelope text-indigo-500 group-focus-within:text-indigo-600 transition-colors"></span>
+                            <span class="fas fa-envelope text-gray-400"></span>
                         </div>
                         <input type="email"
-                            class="w-full h-14 pl-12 pr-4 rounded-xl border-2 border-gray-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-300 text-gray-700"
-                            name="email"
-                            id="email"
-                            placeholder="{{ __('view.Email') }}"
-                            autocomplete="off"
-                            required
-                            autofocus>
-                        <div class="absolute -top-2.5 left-4 px-1 bg-white text-xs font-medium text-indigo-500 transition-all duration-300">Email</div>
+                               class="w-full h-14 pl-12 pr-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition duration-200 text-gray-700"
+                               name="email"
+                               id="email"
+                               placeholder="{{ __('view.Email') }}"
+                               autocomplete="off"
+                               required
+                               autofocus>
                     </div>
                 </div>
 
                 <!-- Password Field -->
                 <div class="mb-6">
-                    <div class="relative group">
-                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-xl opacity-20 group-hover:opacity-25 group-focus-within:opacity-30 transition-opacity duration-300"></div>
+                    <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <span class="fas fa-lock text-indigo-500 group-focus-within:text-indigo-600 transition-colors"></span>
+                            <span class="fas fa-lock text-gray-400"></span>
                         </div>
                         <input type="password"
-                            class="w-full h-14 pl-12 pr-12 rounded-xl border-2 border-gray-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-300 text-gray-700"
-                            name="password"
-                            id="password"
-                            placeholder="{{ __('view.Password') }}"
-                            autocomplete="off"
-                            required>
-                        <div class="absolute -top-2.5 left-4 px-1 bg-white text-xs font-medium text-indigo-500 transition-all duration-300">Password</div>
-                        <button type="button"
-                                id="togglePassword"
-                                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-indigo-500 focus:outline-none transition-colors">
-                            <span class="fas fa-eye" id="showPasswordIcon"></span>
-                            <span class="fas fa-eye-slash hidden" id="hidePasswordIcon"></span>
-                        </button>
+                               class="w-full h-14 pl-12 pr-12 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition duration-200 text-gray-700"
+                               name="password"
+                               id="password"
+                               placeholder="{{ __('view.Password') }}"
+                               autocomplete="off"
+                               required>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                            <button type="button" onclick="togglePassword()" class="focus:outline-none">
+                                <span id="toggleIcon" class="fas fa-eye text-gray-400"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <script>
-                document.getElementById('togglePassword').addEventListener('click', function() {
-                    const passwordField = document.getElementById('password');
-                    const showIcon = document.getElementById('showPasswordIcon');
-                    const hideIcon = document.getElementById('hidePasswordIcon');
+                    function togglePassword() {
+                        const passwordInput = document.getElementById('password');
+                        const toggleIcon = document.getElementById('toggleIcon');
 
-                    if (passwordField.type === 'password') {
-                        passwordField.type = 'text';
-                        showIcon.classList.add('hidden');
-                        hideIcon.classList.remove('hidden');
-                    } else {
-                        passwordField.type = 'password';
-                        showIcon.classList.remove('hidden');
-                        hideIcon.classList.add('hidden');
+                        if (passwordInput.type === 'password') {
+                            passwordInput.type = 'text';
+                            toggleIcon.classList.remove('fa-eye');
+                            toggleIcon.classList.add('fa-eye-slash');
+                        } else {
+                            passwordInput.type = 'password';
+                            toggleIcon.classList.remove('fa-eye-slash');
+                            toggleIcon.classList.add('fa-eye');
+                        }
                     }
-                });
                 </script>
-
                 <!-- Remember Me & Login Button -->
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
-                    <div class="flex items-center mb-4 sm:mb-0">
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 px-3 py-2 rounded-md bg-gradient-to-r from-yellow-50 to-white border-l-4 border-yellow-400">
+                    <div class="flex items-center">
                         <div class="relative">
-                            <input type="checkbox" id="remember" class="peer sr-only">
-                            <div class="w-5 h-5 bg-white border-2 border-yellow-300 rounded-md peer-checked:bg-yellow-100 peer-checked:border-yellow-400 transition-colors duration-200"></div>
-                            <div class="absolute text-yellow-500 top-[2px] left-[2px] opacity-0 peer-checked:opacity-100 transition-opacity duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+                            <!-- Improved checkbox with better focus styles and transitions -->
+                            <input
+                                type="checkbox"
+                                id="remember"
+                                class="peer appearance-none w-5 h-5 border-2 border-yellow-400 rounded-md bg-white
+                                       checked:bg-yellow-500 checked:border-0
+                                       focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2
+                                       hover:border-yellow-500 transition-all duration-150
+                                       cursor-pointer"
+                                aria-checked="false"
+                            >
+                            <!-- Better checkmark with animation -->
+                            <svg
+                                class="absolute w-5 h-5 text-white top-0 left-0 opacity-0 peer-checked:opacity-100
+                                      transition-opacity duration-150 pointer-events-none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
                         </div>
-                        <label for="remember" class="ml-2 text-sm font-medium mt-2 text-gray-600 cursor-pointer select-none">
+                        <!-- Improved label with hover state and better spacing -->
+                        <label
+                            for="remember"
+                            class="ml-3 text-base font-medium text-gray-700 select-none
+                                   hover:text-gray-900 cursor-pointer transition-colors"
+                        >
                             {{ __('view.remember_me') }}
                         </label>
                     </div>
-                    <button type="submit"
-                            class="w-full sm:w-auto px-8 py-3 bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-0.5">
-                        {{ __('view.login') }}
+                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2 bg-yellow-500 text-white text-sm font-semibold rounded-md shadow-sm hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-1 transition-colors duration-150">
+                        <span>{{ __('view.login') }}</span>
+                        <svg class="ml-1.5 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
                     </button>
                 </div>
             </form>
