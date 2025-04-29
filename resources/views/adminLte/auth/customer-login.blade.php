@@ -42,7 +42,7 @@
                     $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
                     $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
                 @endphp
-                <a href="{{ url('/') }}" class="block">
+                <a href="https://www.newworldcargo.com" class="block">
                     <img alt="Logo" src="{{ $model->getFirstMediaUrl('login_page_logo') ? $model->getFirstMediaUrl('login_page_logo') : ( $system_logo->getFirstMediaUrl('system_logo') ? $system_logo->getFirstMediaUrl('system_logo') : asset('assets/lte/cargo-logo.svg') ) }}" class="max-h-20 max-w-[180px] mx-auto object-contain" />
                 </a>
             </div>
