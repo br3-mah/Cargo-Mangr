@@ -20,7 +20,7 @@ if (!$data) {
 }
 
 //  default colore :  '#333333 ' ;
-$color = array_key_exists('main_color', $data) && $data['main_color'] ? " {$data['main_color']} !important;" : ' #ff700a !important ; ';
+$color = array_key_exists('main_color', $data) && $data['main_color'] ? " {$data['main_color']} !important;" : ' #f7c600!important ; ';
 
 @endphp
 

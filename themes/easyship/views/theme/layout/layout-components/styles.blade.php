@@ -20,7 +20,7 @@ if (!$data) {
 }
 
 //  default colore :  '#333333 ' ;
-$color = array_key_exists('main_color', $data) && $data['main_color'] ? " {$data['main_color']} !important;" : ' #ff700a !important ; ';
+$color = array_key_exists('main_color', $data) && $data['main_color'] ? " {$data['main_color']} !important;" : ' #f7c600!important ; ';
 
 @endphp
 
@@ -46,7 +46,7 @@ $color = array_key_exists('main_color', $data) && $data['main_color'] ? " {$data
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="//fonts.googleapis.com/">
 <link href="https://fonts.gstatic.com" crossorigin="" rel="preconnect">
-<link rel="preload" as="script" href="//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"> 
+<link rel="preload" as="script" href="//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js">
 
 @if (isset($current_lang) && $current_lang->dir == 'rtl')
     <link rel="stylesheet" href="{{ asset('themes/easyship/assets/css/rtl.css') }}" />

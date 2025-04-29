@@ -209,7 +209,7 @@
             color: #fff !important;
             width: 100% !important;
             padding: 18px !important;
-            background-color: #ff700a !important;
+            background-color: #f7c600!important;
             border-radius: 0px !important;
         }
         .chbs-form-label-group{
