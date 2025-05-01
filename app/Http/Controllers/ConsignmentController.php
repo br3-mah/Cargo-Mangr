@@ -158,7 +158,7 @@ class ConsignmentController extends Controller
 
     public function import(Request $request)
     {
-        DB::beginTransaction();
+        // DB::beginTransaction();
         try {
             $file = $request->file('excel_file');
             $spreadsheet = IOFactory::load($file->getPathname());
@@ -182,6 +182,7 @@ class ConsignmentController extends Controller
                 throw new \Exception("Row with both 'Consignee' and 'Job No' not found.");
             }
 
+
             // Step 2: Find Mawb No in the next few rows
             $mawbKeywords = ['Mawb No', 'Mawb No.', 'Mawb No :', 'Mawb No.:'];
             $mawbNum = null;
@@ -198,9 +199,9 @@ class ConsignmentController extends Controller
                 }
             }
 
-            if (!$mawbNum) {
-                throw new \Exception("Mawb No. not found below 'Consignee' row.");
-            }
+            // if (!$mawbNum) {
+            //     throw new \Exception("Mawb No. not found below 'Consignee' row.");
+            // }
 
             // Step 3: Find Job No from same row as Consignee
             $jobNum = null;
@@ -260,6 +261,7 @@ class ConsignmentController extends Controller
 
             // Step 5: Loop through data starting after headerRow
             $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
+
             if (!$res) {
                 $this->loopCreateShipmentII($headerRow, $rows, $consignment);
             } else {
@@ -268,14 +270,17 @@ class ConsignmentController extends Controller
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
+            // dd($e);
             DB::rollback();
-            $this->loopCreateShipmentII($headerRow, $rows, $consignment);
+
+            // $this->loopCreateShipmentII($headerRow, $rows, $consignment);
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
     }
 
     public function loopCreateShipment($headerRow, $rows, $consignment)
     {
+
         try {
             for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
                 $rowText = implode(' ', array_map('trim', $rows[$i]));
@@ -289,8 +294,9 @@ class ConsignmentController extends Controller
                     $userName = $data[1] ?? 'customer' . rand(100000, 999999);
                     $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
                     $clientCode = rand(100000, 999999);
-                    $clientAddress = $data[5] ?? '';
+                    $clientPhone = preg_replace('/\D+/', '', (strlen($data[5] ?? '') > 5 ? $data[5] : ($data[6] ?? '')));
 
+                    
                     // Avoid duplicate User by email
                     $user = User::firstOrCreate(
                         ['email' => $userEmail],
@@ -309,7 +315,7 @@ class ConsignmentController extends Controller
                             'code' => $clientCode,
                             'name' => $userName,
                             'email' => $userEmail,
-                            'address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress)
+                            'address' => preg_replace('/[0-9\+\s]+/', '', $clientPhone)
                         ]
                     );
 
@@ -318,6 +324,7 @@ class ConsignmentController extends Controller
                         ->where('consignment_id', $consignment->id)
                         ->first();
 
+                    // dd($clientPhone);
                     if (!$existingShipment) {
                         $shipment = Shipment::create([
                             'consignment_id' => $consignment->id,
@@ -338,16 +345,16 @@ class ConsignmentController extends Controller
 
                             'shipping_date' => Carbon::now(),
                             'total_weight' => (float)($data[4] ?? 0),
-                            'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
-                            'client_phone' => preg_replace('/\D+/', '', $clientAddress),
+                            'client_address' => $userName.''.$clientPhone,
+                            'client_phone' => $clientPhone
                         ]);
 
                         PackageShipment::create([
                             'package_id' => 1,
-                            'description' => $data[2],
+                            'description' => $data[2].' '.$data[3],
                             'shipment_id' => $shipment->id,
-                            'qty' => $data[3] ?? 1,
-                            'weight' => $data[4] ?? 0,
+                            'qty' => is_string($data[3]) ? ($data[4] ?? 1) : 1,
+                            'weight' => (strpos($data[5], '.') || is_numeric($data[5]) !== false) ? $data[5] : ($data[4] ?? 0),
                             'length' => 1,
                             'width' => 1,
                             'height' => 1,
@@ -357,6 +364,7 @@ class ConsignmentController extends Controller
             }
             return true;
         } catch (\Throwable $th) {
+            // dd($th);
             return false;
         }
     }
@@ -412,13 +420,12 @@ class ConsignmentController extends Controller
                     'to_state_id' => 1,
                     'shipping_date' => Carbon::now(),
                     'total_weight' => (float)($data[6] ?? 0),
-                    // 'client_address' => preg_replace('/[0-9\+\s]+/', '', $clientAddress),
                     'client_phone' => preg_replace('/\D+/', '', $clientContact),
                 ]);
-                
+
 
                 $package['description'] = $data[4].'. Parcel items including: ('.preg_replace('/[0-9\+\s]+/', '', $data[5]) .')';
-                $package['qty'] = $data[6] ?? sum(preg_replace('/\D+/', '', $data[3])) ?? sum(preg_replace('/\D+/', '', $data[5]));
+                $package['qty'] = $data[6];
                 $package['weight'] = $data[7];
                 $package['length'] = 1;
                 $package['width'] = 1;
@@ -501,7 +508,6 @@ class ConsignmentController extends Controller
 
 
                     // Create Shipment
-
                     $shipmt = Shipment::create([
                         'consignment_id' => $consignment->id,
                         'code' => $data[2],
@@ -541,7 +547,8 @@ class ConsignmentController extends Controller
 
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            DB::rollback();
+            dd($e);
+            // DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
     }
@@ -701,32 +708,32 @@ class ConsignmentController extends Controller
     {
         try {
             $c = $consignment->where('id', $id)->first();
-    
+
             if (!$c) {
                 return redirect()->back()->with('error', 'Consignment not found.');
             }
-    
+
             // Delete all shipments with this consignment_id
             $shipments = Shipment::where('consignment_id', $c->id)->get();
-    
+
             foreach ($shipments as $shipment) {
                 // Delete related PackageShipment records
                 PackageShipment::where('shipment_id', $shipment->id)->delete();
-    
+
                 // Delete the shipment itself
                 $shipment->delete();
             }
-    
+
             // Delete the consignment
             $c->delete();
-    
+
             $consignments = Consignment::get();
-    
+
             return redirect()->route('consignment.index', compact('consignments'))
                 ->with('success', 'Consignment and related data deleted successfully.');
         } catch (\Throwable $th) {
             dd($th);
         }
     }
-    
+
 }
