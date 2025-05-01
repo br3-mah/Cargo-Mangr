@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New World Cargo</title>
+  <title>Newworld Cargo | Console</title>
   <style>
     body {
       display: flex;
