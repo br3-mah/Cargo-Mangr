@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 // Get Google Map Settings Api Route
 Route::get('checkGoogleMap', 'Api\GoogleSettingsController@googleMapSettings');
 
+Route::post('/mark-as-paid', 'Api\ShipmentController@paid')->name('mark.paid');
 Route::get('/search-shipments', 'Api\ShipmentController@search')->name('search.shipments');
 Route::post('/submit-shipments', 'Api\ConsignmentController@addShipmentsToConsignment')->name('submit.shipments');
 Route::get('/search-consignments', 'Api\ConsignmentController@searchConsignments');

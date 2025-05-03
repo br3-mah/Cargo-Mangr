@@ -18,7 +18,16 @@ class ShipmentController extends Controller
         return response()->json($shipments);
     }
 
-    
+    public function paid(Request $request){
+        try {
+            $shipment = Shipment::where('id', $request->shipment_id)->first();
+            $shipment->paid = 1;
+            $shipment->save();
+            return response()->json($shipments, 200);
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage(), 500);
+        }
+    }
 
     public function getShipmentsForConsignment($consignmentId)
     {
