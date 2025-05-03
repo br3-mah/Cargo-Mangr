@@ -454,37 +454,39 @@ class ShipmentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'Shipment.type'            => 'required',
-            'Shipment.branch_id'       => 'required',
-            'Shipment.shipping_date'   => 'nullable',
-            'Shipment.collection_time' => 'nullable',
-            'Shipment.client_id'       => 'required',
-            'Shipment.client_phone'    => 'required|min:5',
-            'Shipment.country_code'    => 'nullable',
-            'Shipment.client_address'  => 'required',
-            'Shipment.reciver_name'    => 'required|string|min:3|max:50',
-            'Shipment.reciver_phone'   => 'required|min:5',
-            'Shipment.follow_up_country_code'   => 'nullable',
-            'Shipment.reciver_address' => 'required|string|min:8',
-            'Shipment.from_country_id' => 'required',
-            'Shipment.to_country_id'   => 'required',
-            'Shipment.from_state_id'   => 'required',
-            'Shipment.to_state_id'     => 'required',
-            'Shipment.from_area_id'    => 'required',
-            'Shipment.to_area_id'      => 'required',
-            'Shipment.payment_type'    => 'required',
-            'Shipment.payment_method_id' => 'required',
-            'Shipment.order_id'          => 'nullable',
-            'Shipment.attachments_before_shipping' => 'nullable',
-            'Shipment.amount_to_be_collected'      => 'required',
-            'Shipment.delivery_time'    => 'nullable',
-            'Shipment.total_weight'     => 'required',
-            'Shipment.tax'           => 'nullable',
-            'Shipment.insurance'     => 'nullable',
-            'Shipment.shipping_cost' => 'nullable',
-            'Shipment.return_cost'   => 'nullable',
-        ]);
+        // $request->validate([
+        //     'Shipment.type'            => 'required',
+        //     'Shipment.branch_id'       => 'required',
+        //     'Shipment.shipping_date'   => 'nullable',
+        //     'Shipment.collection_time' => 'nullable',
+        //     'Shipment.client_id'       => 'required',
+        //     'Shipment.client_phone'    => 'required|min:5',
+        //     'Shipment.country_code'    => 'nullable',
+        //     'Shipment.client_address'  => 'required',
+        //     'Shipment.reciver_name'    => 'nullable|string|min:3|max:50', //CHANGED
+        //     'Shipment.reciver_phone'   => 'nullable|min:5',
+        //     'Shipment.follow_up_country_code'   => 'nullable',
+        //     'Shipment.reciver_address' => 'nullable|string|min:8',
+        //     'Shipment.from_country_id' => 'nullable',
+        //     'Shipment.to_country_id'   => 'nullable',
+        //     'Shipment.from_state_id'   => 'nullable',
+        //     'Shipment.to_state_id'     => 'nullable',
+        //     'Shipment.from_area_id'    => 'nullable',
+        //     'Shipment.to_area_id'      => 'nullable',
+        //     'Shipment.payment_type'    => 'nullable',
+        //     'Shipment.payment_method_id' => 'nullable',
+        //     'Shipment.order_id'          => 'nullable',
+        //     'Shipment.attachments_before_shipping' => 'nullable',
+        //     'Shipment.amount_to_be_collected'      => 'required',
+        //     'Shipment.delivery_time'    => 'nullable',
+        //     'Shipment.total_weight'     => 'required',
+        //     'Shipment.tax'           => 'nullable',
+        //     'Shipment.insurance'     => 'nullable',
+        //     'Shipment.shipping_cost' => 'nullable',
+        //     'Shipment.return_cost'   => 'nullable',
+        // ]);
+
+        // dd('here');
 
         try {
             DB::beginTransaction();
@@ -519,12 +521,13 @@ class ShipmentController extends Controller
                 }
             }
 
-            event(new UpdateShipment($model));
+            // event(new UpdateShipment($model));
             DB::commit();
 
-            $model->syncFromMediaLibraryRequest($request->image)->toMediaCollection('attachments');
+            // $model->syncFromMediaLibraryRequest($request->image)->toMediaCollection('attachments');
             return redirect()->route('shipments.show', $model->id)->with(['message_alert' => __('cargo::messages.saved')]);;
         } catch (\Exception $e) {
+            // dd($e);
             DB::rollback();
             print_r($e->getMessage());
             exit;

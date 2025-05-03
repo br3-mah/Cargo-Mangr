@@ -229,7 +229,7 @@
             </div>
 
             <!-- Sticky Bottom Toolbar -->
-            <div class="fixed-bottom bg-primary rounded-top rounded text-white shadow-xl px-4 py-3" style="z-index: 1050;">
+            <div class="fixed-bottom bg-dark text-white shadow-lg px-4 py-3" style="z-index: 1050;">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         @php
@@ -247,19 +247,14 @@
                     </div>
 
                     <div class="ml-auto d-flex align-items-center">
-                        <button id="printBtn2" onclick="printCardContent()" class="btn btn-primary font-weight-bold mr-2">
-                            <i class="fas fa-print mr-1"></i>
-                            <span id="printBtnText2">Print Invoice</span>
-                            <span id="printSpinner2" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <button id="printBtn" onclick="printCardContent()" class="btn btn-primary font-weight-bold mr-2">
+                            <span id="printBtnText">Print Invoice</span>
+                            <span id="printSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
-                        
-                        @if ($shipment->paid)
-                            @include('cargo::adminLte.pages.shipments._partials.print-receipt')
-                        @else
-                            <button class="btn btn-warning font-weight-bold text-dark mr-2" onclick="openMarkPaidModal({{ $shipment->id }})">
-                                <i class="fas fa-check-circle mr-1"></i> Mark as Paid
-                            </button>
-                        @endif
+
+                        <button class="btn btn-warning font-weight-bold text-dark mr-2" onclick="openMarkPaidModal({{ $shipment->id }})">
+                            <i class="fas fa-check-circle mr-1"></i> Mark as Paid
+                        </button>
 
                         @if($user_role == $admin || auth()->user()->can('edit-shipments'))
                             <a href="{{ route('shipments.edit', $shipment->id) }}" class="btn btn-info font-weight-bold">
@@ -272,23 +267,23 @@
 
             <!-- Modal for Confirm Payment -->
             <div class="modal fade" id="markPaidModal" tabindex="-1" role="dialog" aria-labelledby="markPaidLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content border-0 shadow-lg">
-                    <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title" id="markPaidLabel">Confirm Payment</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to mark this shipment as paid?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-warning font-weight-bold text-dark" id="confirmMarkPaidBtn">Yes, Mark as Paid</button>
-                    </div>
-                    </div>
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="markPaidLabel">Confirm Payment</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    Are you sure you want to mark this shipment as paid?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning font-weight-bold text-dark" id="confirmMarkPaidBtn">Yes, Mark as Paid</button>
+                </div>
+                </div>
+            </div>
             </div>
 
             @include('cargo::adminLte.pages.shipments._partials.cargo-payment-modal')
@@ -427,118 +422,119 @@
             AIZ.plugins.notify('success', "{{ __('cargo::view.payment_link_copied') }}");
         }
     </script>
-    <script>
-        function printCardContent() {
-            const card = document.querySelector('.card.card-custom.gutter-b');
-            if (!card) return;
+<script>
+    function printCardContent() {
+        const card = document.querySelector('.card.card-custom.gutter-b');
+        if (!card) return;
 
-            // Clone the card to avoid modifying the original
-            const clone = card.cloneNode(true);
+        // Clone the card to avoid modifying the original
+        const clone = card.cloneNode(true);
 
-            // Remove buttons inside elements with class 'd-flex justify-content-between'
-            const buttonContainers = clone.querySelectorAll('.d-flex.justify-content-between');
-            buttonContainers.forEach(container => {
-                const buttons = container.querySelectorAll('button');
-                const anchors = container.querySelectorAll('a');
-                buttons.forEach(btn => btn.remove());
-                anchors.forEach(a => a.remove());
-            });
-
-            // Open a new window for printing
-            const printWindow = window.open('', '_blank');
-            printWindow.document.open();
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Print</title>
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                margin: 20px;
-                            }
-                            img {
-                                max-width: 100%;
-                            }
-                            .footer {
-                                margin-top: 30px;
-                                padding-top: 20px;
-                                border-top: 1px solid #ddd;
-                                text-align: center;
-                                font-size: 14px;
-                                color: #555;
-                            }
-                            .footer-title {
-                                font-weight: bold;
-                                margin-bottom: 10px;
-                                color: #333;
-                            }
-                            .contact-item {
-                                margin-bottom: 8px;
-                            }
-                            .contact-value {
-                                font-weight: bold;
-                                color: #222;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${clone.innerHTML}
-
-                        <div class="footer">
-                            <div class="footer-title">New World Cargo</div>
-                            <div class="contact-item">
-                                Phone: <span class="contact-value">+260 763 297 287</span>
-                            </div>
-                            <div class="contact-item">
-                                Address: <span class="contact-value">Shop 62/A Carousel Shopping Centre, Lusaka, Zambia</span>
-                            </div>
-                            <div class="contact-item">
-                                Email: <span class="contact-value">info@newworldcargo.com</span>
-                            </div>
-                        </div>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-
-            // Wait for content to load before printing
-            printWindow.onload = function() {
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
-            };
-        }
-
-        let selectedShipmentId = null;
-
-        function openMarkPaidModal(shipmentId) {
-            selectedShipmentId = shipmentId;
-            $('#markPaidModal').modal('show');
-        }
-
-        document.getElementById('confirmMarkPaidBtn').addEventListener('click', function () {
-            const url = `/api/mark-as-paid`; // Your API route
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({ shipment_id: selectedShipmentId }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                $('#markPaidModal').modal('hide');
-                alert('Marked as Paid successfully!');
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Failed to mark as paid.');
-            });
+        // Remove buttons inside elements with class 'd-flex justify-content-between'
+        const buttonContainers = clone.querySelectorAll('.d-flex.justify-content-between');
+        buttonContainers.forEach(container => {
+            const buttons = container.querySelectorAll('button');
+            const anchors = container.querySelectorAll('a');
+            buttons.forEach(btn => btn.remove());
+            anchors.forEach(a => a.remove());
         });
-    </script>
+
+        // Open a new window for printing
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print</title>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                        }
+                        img {
+                            max-width: 100%;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            padding-top: 20px;
+                            border-top: 1px solid #ddd;
+                            text-align: center;
+                            font-size: 14px;
+                            color: #555;
+                        }
+                        .footer-title {
+                            font-weight: bold;
+                            margin-bottom: 10px;
+                            color: #333;
+                        }
+                        .contact-item {
+                            margin-bottom: 8px;
+                        }
+                        .contact-value {
+                            font-weight: bold;
+                            color: #222;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${clone.innerHTML}
+
+                    <div class="footer">
+                        <div class="footer-title">New World Cargo</div>
+                        <div class="contact-item">
+                            Phone: <span class="contact-value">+260 763 297 287</span>
+                        </div>
+                        <div class="contact-item">
+                            Address: <span class="contact-value">Shop 62/A Carousel Shopping Centre, Lusaka, Zambia</span>
+                        </div>
+                        <div class="contact-item">
+                            Email: <span class="contact-value">info@newworldcargo.com</span>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+        // Wait for content to load before printing
+        printWindow.onload = function() {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        };
+    }
+    
+
+    let selectedShipmentId = null;
+
+    function openMarkPaidModal(shipmentId) {
+        selectedShipmentId = shipmentId;
+        $('#markPaidModal').modal('show');
+    }
+
+    document.getElementById('confirmMarkPaidBtn').addEventListener('click', function () {
+        const url = `/api/mark-as-paid`; // Your API route
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ shipment_id: selectedShipmentId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('#markPaidModal').modal('hide');
+            alert('Marked as Paid successfully!');
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Failed to mark as paid.');
+        });
+    });
+</script>
 
 @endsection
