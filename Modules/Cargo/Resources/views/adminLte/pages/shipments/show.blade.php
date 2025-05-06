@@ -220,7 +220,13 @@
                             </thead>
                             <tbody>
                                 <tr class="font-weight-bolder">
-                                    <td class="text-right text-primary font-size-h3 font-weight-boldest">{{format_price($shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}<br /><span class="text-muted font-weight-bolder font-size-lg">{{ __('cargo::view.included_tax_insurance') }}</span></td>
+                                    <td class="text-right text-primary font-size-h2 text-2xl font-weight-boldest">
+                                        {{format_price($shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}
+                                        <br />
+                                        <span class="text-muted font-weight-bolder font-size-lg">
+                                            {{ __('cargo::view.included_tax_insurance') }}
+                                        </span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -252,7 +258,7 @@
                             <span id="printBtnText2">Print Invoice</span>
                             <span id="printSpinner2" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
-                        
+
                         @if ($shipment->paid)
                             @include('cargo::adminLte.pages.shipments._partials.print-receipt')
                         @else
@@ -271,26 +277,120 @@
             </div>
 
             <!-- Modal for Confirm Payment -->
-            <div class="modal fade" id="markPaidModal" tabindex="-1" role="dialog" aria-labelledby="markPaidLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content border-0 shadow-lg">
-                    <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title" id="markPaidLabel">Confirm Payment</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
+@php
+$totalAmount = $shipment->amount_to_be_collected;
+@endphp
+
+<div class="modal fade" id="markPaidModal" tabindex="-1" role="dialog" aria-labelledby="markPaidLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-0 shadow-lg rounded-lg overflow-hidden">
+        <div class="modal-header bg-gradient-primary text-white py-3">
+            <div class="d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-credit-card-fill me-2" viewBox="0 0 16 16">
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1"/>
+                </svg>
+                <h5 class="modal-title fw-bold mb-0" id="markPaidLabel">Confirm Payment</h5>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+            <form id="markPaidForm">
+                <div class="alert alert-info d-flex align-items-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-info-circle-fill me-2" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+                    </svg>
+                    <p class="mb-0">Are you sure you want to mark this shipment as paid?</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="discountType" class="form-label fw-medium">Discount Type</label>
+                            <select class="form-select form-control-lg shadow-sm border" id="discountType">
+                                <option value="">None</option>
+                                <option value="fixed">Fixed</option>
+                                <option value="percent">Percentage</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        Are you sure you want to mark this shipment as paid?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-warning font-weight-bold text-dark" id="confirmMarkPaidBtn">Yes, Mark as Paid</button>
-                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="discountValue" class="form-label fw-medium">Discount Value</label>
+                            <input type="number" class="form-control form-control-lg shadow-sm border" id="discountValue" value="0" min="0">
+                        </div>
                     </div>
                 </div>
-            </div>
 
+                <div class="card bg-light border-0 shadow-sm rounded-3 p-3 mt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Original Total:</span>
+                        <span id="originalTotal" class="fw-medium">{{ number_format($totalAmount, 2) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">Final Total:</span>
+                        <span id="finalTotal" class="fw-bold text-primary fs-5">{{ number_format($totalAmount, 2) }}</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer bg-light py-3">
+            <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal">
+                <span>Cancel</span>
+            </button>
+            <button type="button" class="btn btn-success px-4 d-flex align-items-center" id="confirmMarkPaidBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+                <span>Confirm Payment</span>
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+.bg-gradient-primary {
+background: linear-gradient(135deg, #4e73df, #224abe);
+}
+
+.modal-content {
+border-radius: 12px;
+}
+
+.form-control, .form-select {
+border-radius: 8px;
+padding: 0.6rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+border-color: #4e73df;
+box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+.btn {
+border-radius: 8px;
+padding: 0.6rem 1.25rem;
+font-weight: 500;
+transition: all 0.2s ease;
+}
+
+.btn:hover {
+transform: translateY(-1px);
+box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-success {
+background: linear-gradient(135deg, #1cc88a, #169a6f);
+border-color: #169a6f;
+}
+
+.alert {
+border-radius: 8px;
+}
+</style>
             @include('cargo::adminLte.pages.shipments._partials.cargo-payment-modal')
 
         </div>
@@ -509,36 +609,72 @@
                 printWindow.close();
             };
         }
+    </script>
+<script>
+    let selectedShipmentId = null;
+    const originalTotal = parseFloat({{ $totalAmount }});
+    const discountTypeEl = document.getElementById('discountType');
+    const discountValueEl = document.getElementById('discountValue');
+    const finalTotalEl = document.getElementById('finalTotal');
 
-        let selectedShipmentId = null;
+    function openMarkPaidModal(shipmentId) {
+        selectedShipmentId = shipmentId;
+        document.getElementById('discountType').value = '';
+        document.getElementById('discountValue').value = 0;
+        finalTotalEl.textContent = originalTotal.toFixed(2);
+        $('#markPaidModal').modal('show');
+    }
 
-        function openMarkPaidModal(shipmentId) {
-            selectedShipmentId = shipmentId;
-            $('#markPaidModal').modal('show');
+    function computeFinalTotal() {
+        const type = discountTypeEl.value;
+        const discountVal = parseFloat(discountValueEl.value) || 0;
+        let finalTotal = originalTotal;
+
+        if (type === 'fixed') {
+            finalTotal = originalTotal - discountVal;
+        } else if (type === 'percent') {
+            finalTotal = originalTotal - (originalTotal * (discountVal / 100));
         }
 
-        document.getElementById('confirmMarkPaidBtn').addEventListener('click', function () {
-            const url = `/api/mark-as-paid`; // Your API route
+        if (finalTotal < 0) finalTotal = 0;
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({ shipment_id: selectedShipmentId }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                $('#markPaidModal').modal('hide');
-                alert('Marked as Paid successfully!');
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Failed to mark as paid.');
-            });
+        finalTotalEl.textContent = finalTotal.toFixed(2);
+    }
+
+    discountTypeEl.addEventListener('change', computeFinalTotal);
+    discountValueEl.addEventListener('input', computeFinalTotal);
+
+    document.getElementById('confirmMarkPaidBtn').addEventListener('click', function () {
+        const url = `/api/mark-as-paid`;
+
+        const discountType = discountTypeEl.value;
+        const discountValue = parseFloat(discountValueEl.value) || 0;
+        const finalTotal = parseFloat(finalTotalEl.textContent);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({
+                shipment_id: selectedShipmentId,
+                discount_type: discountType,
+                discount_value: discountValue,
+                final_total: finalTotal,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('#markPaidModal').modal('hide');
+            alert('Marked as Paid successfully!');
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Failed to mark as paid.');
         });
-    </script>
+    });
+</script>
 
 @endsection
