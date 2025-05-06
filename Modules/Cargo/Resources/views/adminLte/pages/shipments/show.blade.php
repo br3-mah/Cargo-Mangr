@@ -141,20 +141,12 @@
                             <span class="text-muted font-weight-bolder font-size-lg">{{$shipment->total_weight}} {{ __('cargo::view.KG') }}</span>
                         </div>
                         <div class="d-flex flex-column flex-root">
-                            <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.shipping_cost') }}</span>
-                            <span class="text-muted font-weight-bolder font-size-lg">{{format_price($shipment->shipping_cost)}}</span>
+                            <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.amount_to_be_collected') }}</span>
+                            <span class="text-muted font-weight-bolder font-size-lg">{{format_price($shipment->amount_to_be_collected)}}</span>
                         </div>
                         <div class="d-flex flex-column flex-root">
                             <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.tax_duty') }}</span>
                             <span class="text-muted font-weight-bolder font-size-lg">{{format_price($shipment->tax)}}</span>
-                        </div>
-                        <div class="d-flex flex-column flex-root">
-                            <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.insurance') }}</span>
-                            <span class="text-muted font-weight-bolder font-size-lg">{{format_price($shipment->insurance)}}</span>
-                        </div>
-                        <div class="d-flex flex-column flex-root">
-                            <span class="mb-4 text-dark font-weight-bold">{{ __('cargo::view.return_cost') }}</span>
-                            <span class="text-muted font-weight-bolder font-size-lg">{{format_price($shipment->return_cost)}}</span>
                         </div>
                     </div>
 

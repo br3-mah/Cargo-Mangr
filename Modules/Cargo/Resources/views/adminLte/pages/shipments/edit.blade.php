@@ -6,7 +6,7 @@
 
 
 @section('content')
-    
+
     <!--begin::Basic info-->
     <div class="card mb-5 mb-xl-10">
         <!--begin::Card header-->
@@ -31,10 +31,6 @@
                 </div>
                 <!--end::Card body-->
                 <!--begin::Actions-->
-                <div class="card-footer d-flex justify-content-end py-6 px-9">
-                    <a href="{{ url()->previous() }}" class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>
-                    <button type="button" class="btn btn-success" onclick="get_estimation_cost()" id="kt_account_profile_details_submit">@lang('view.update')</button>
-                </div>
                 <!--end::Actions-->
             </form>
             <!--end::Form-->
