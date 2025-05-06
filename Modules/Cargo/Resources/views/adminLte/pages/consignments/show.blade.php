@@ -11,112 +11,74 @@ $client = 4;
 
 @section('content')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<div class="col-lg-12" id="consignmentModal">
-    <div class="col-12">
-        <div class="content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="consignmentModalLabel">
-                    <span class="fw-bold font-bold"><b>Consignment Code: {{ $consignment->consignment_code }}</b></span>
-                    <span id="formConsignmentCode" class="text-white ms-2"></span>
+    <div class="card shadow-sm border-0 rounded-lg mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h5 class="card-title mb-0 text-primary fw-bold" id="consignmentModalLabel">
+                    Code: <span class="text-dark">{{ $consignment->consignment_code }}</span>
+                    <span id="formConsignmentCode" class="badge bg-primary ms-2"></span>
                 </h5>
-                <div style="margin-left: -20px;" class="items-center flex d-flex">
-                    <img src="http://localhost:8000/assets/lte/cargo-logo.svg" width="60" alt="">
-                </div>
-                <div class="modal-header-actions row">
-                    <form method="POST" action="{{ route('consignment.export') }}">
-                        @csrf
-                            {{-- <div class="col-md-4">
-                                <label for="from_date">From Date</label>
-                                <input type="date" name="from_date" class="form-control" required>
-                            </div> <div class="col-md-4">
-                                <label for="to_date">To Date</label>
-                                <input type="date" name="to_date" class="form-control" required>
-                            </div> --}}
-                        <button type="submit" class="btn btn-success me-2 text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
-                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"/>
-                              </svg>
-                            Export Shipments
-                        </button>
-                    </form>
-                    <button type="button" class="btn btn-primary text-sm" data-bs-toggle="modal"
-                        data-bs-target="#updateTrackerModal" >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.3 1.3 0 0 0-.37.265.3.3 0 0 0-.057.09V14l.002.008.016.033a.6.6 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.6.6 0 0 0 .146-.15l.015-.033L12 14v-.004a.3.3 0 0 0-.057-.09 1.3 1.3 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465s-2.462-.172-3.34-.465c-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411"/>
-                          </svg>
-                        Update Tracker
-                    </button>
-                </div>
             </div>
-
-
-            <div class="modal-body">
-                <div class="row">
-                    <div id="column3" class="col-md-12">
-                        <p class="text-muted text-sm">Mawb Number: {{ $consignment->Mawb_num }}</p>
-
-                        <table id="shipmentTable" class="table table-striped table-bordered">
-                            <thead>
-                                <tr class="text-sm">
-                                    <th><i class="bi bi-upc-scan me-1"></i> Hawb No.</th>
-                                    <th><i class="bi bi-box me-1"></i> Type</th>
-                                    <th><i class="bi bi-building me-1"></i> Branch</th>
-                                    <th><i class="bi bi-person me-1"></i> Client</th>
-                                    <th><i class="bi bi-file me-1"></i> Package Description</th>
-                                    <th><i class="bi bi-telephone me-1"></i> Client Phone</th>
-                                    <th><i class="bi bi-currency-dollar me-1"></i> Cost</th>
-                                    <th><i class="bi bi-clock-history me-1"></i> Created On</th>
-                                    <th><i class="bi bi-gear me-1"></i> Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($consignment->shipments as $shipment)
-                                <tr id="shipment_row_{{ $shipment->id }}">
-                                    <td>
-                                        <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
-                                    </td>
-                                    <td>{{ $shipment->type }}</td>
-                                    <td>{{ 'Lusaka' }}</td>
-                                    <td>{{ $shipment->client->name }}</td>
-                                    <td>
-                                        @foreach(Modules\Cargo\Entities\PackageShipment::where('shipment_id',$shipment->id)->get() as $package)
-                                            {{$package->description}}
-                                        @endforeach
-                                    </td>
-                                    <td>{{ $shipment->client_phone ?? 'No phone' }}</td>
-                                    <td>{{ $shipment->shipping_cost }}</td>
-                                    <td>{{ $shipment->created_at->toFormattedDateString() }}</td>
-                                    <td class="action-buttons">
-                                        <a href="{{ url('admin/shipments/shipments/'.$shipment->id) }}"
-                                           class="btn btn-icon btn-light text-info btn-lg rounded me-2"
-
-                                           title="View Shipment">
-                                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                          </svg>
-                                        </a>
-
-                                        <button class="btn btn-icon btn-light text-danger rounded"
-                                                data-shipment-id="{{ $shipment->id }}"
-                                                data-bs-toggle="tooltip"
-                                                title="Remove Shipment">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-minus" viewBox="0 0 16 16">
-                                                    <path d="m.5 3 .04.87a2 2 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2m5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19q-.362.002-.683.12L1.5 2.98a1 1 0 0 1 1-.98z"/>
-                                                    <path d="M11 11.5a.5.5 0 0 1 .5-.5h4a.5.5 0 1 1 0 1h-4a.5.5 0 0 1-.5-.5"/>
-                                                  </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="d-flex">
+                <form method="POST" action="{{ route('consignment.export') }}" class="me-2">
+                    @csrf
+                    <button type="submit" class="btn btn-success px-3 d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet me-2" viewBox="0 0 16 16">
+                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"/>
+                        </svg>
+                        <span>Export Shipments</span>
+                    </button>
+                </form>
+                <button type="button" class="btn btn-primary px-3 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#updateTrackerModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-fill me-2" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.3 1.3 0 0 0-.37.265.3.3 0 0 0-.057.09V14l.002.008.016.033a.6.6 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.6.6 0 0 0 .146-.15l.015-.033L12 14v-.004a.3.3 0 0 0-.057-.09 1.3 1.3 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465s-2.462-.172-3.34-.465c-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411"/>
+                    </svg>
+                    <span>Update Tracker</span>
+                </button>
             </div>
         </div>
+        <div class="card-body p-0">
+            @include('cargo::adminLte.pages.consignments.editor.s-table')
+        </div>
     </div>
-</div>
+
+<style>
+.card {
+    transition: all 0.2s ease;
+    border-radius: 8px !important;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4e73df, #224abe);
+    border-color: #224abe;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #1cc88a, #169a6f);
+    border-color: #169a6f;
+}
+
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+}
+</style>
 
 
 <div class="modal fade" id="updateTrackerModal" tabindex="-1" role="dialog"

@@ -7,156 +7,27 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <!-- Dropzone CSS for file upload styling -->
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
-<style>
-    .card {
-        border-radius: 8px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-        border: none;
-    }
 
-    .card-header {
-        background-color: #fff;
-    }
-
-    .action-btn {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 2px;
-        border-radius: 4px;
-    }
-
-    .badge {
-        padding: 6px 10px;
-        font-weight: 500;
-    }
-
-    .badge-delivered {
-        background-color: #10B981;
-    }
-
-    .badge-in_transit {
-        background-color: #3B82F6;
-    }
-
-    .badge-pending {
-        background-color: #F59E0B;
-    }
-
-    .table th {
-        border-top: none;
-        font-weight: 600;
-        color: #6B7280;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-    }
-
-    .table td {
-        vertical-align: middle;
-    }
-
-    .btn-group-actions {
-        white-space: nowrap;
-    }
-
-    .tooltip-inner {
-        max-width: 200px;
-        padding: 4px 8px;
-        color: #fff;
-        text-align: center;
-        background-color: #000;
-        border-radius: 4px;
-    }
-</style>
-<div class="card">
-    <div class="card-header border-0 pt-6">
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="m-0">Consignments</h2>
-                <div>
-                    <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#importModal">
-                        <i class="fas fa-file-excel"></i> Import Consignments
-                    </button>
-                    <a href="{{ route('consignment.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Add New Consignment
-                    </a>
-                </div>
-            </div>
-
-            @include('cargo::adminLte.components.flashes.success')
-            @include('cargo::adminLte.components.flashes.error')
-            @include('cargo::adminLte.components.flashes.warning')
-
-            @if (!empty($consignments))
-            <div class="table-responsive">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>CODE</th>
-                            <th>JOB NO.</th>
-                            <th>MAWB NO.</th>
-                            <th>CONSIGNEE</th>
-                            <th>SOURCE</th>
-                            <th>DESTINATION</th>
-                            <th>UPDATED</th>
-                            <th>STATUS</th>
-                            <th class="text-center">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($consignments as $consignment)
-                        <tr>
-                            <td>{{ $consignment->consignment_code ?? 'Unspecified' }}</td>
-                            <td>{{ $consignment->job_num ?? 'Unspecified' }}</td>
-                            <td>{{ $consignment->mawb_num ?? 'Unspecified' }}</td>
-                            <td>{{ $consignment->name }}</td>
-                            <td>{{ $consignment->source ?? 'China' }}</td>
-                            <td>{{ $consignment->destination ?? 'Zambia' }}</td>
-                            <td>{{ $consignment->updated_at->toFormattedDateString() }}</td>
-                            <td>
-                                <span
-                                    class="badge badge-{{ $consignment->status == 'delivered' ? 'success' : ($consignment->status == 'in_transit' ? 'info' : 'warning') }}">
-                                    {{ ucfirst($consignment->status) }}
-                                </span>
-                            </td>
-                            <td class="text-center btn-group-actions">
-                                <a href="{{ route('consignment.edit', $consignment->id) }}"
-                                    class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('consignment.destroy', $consignment->id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                                <a class="btn btn-sm btn-light"
-                                    href="{{ route('consignment.show', $consignment->id) }}">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-
-                                <button type="button" class="btn btn-sm btn-primary update-tracker-btn"
-                                    data-id="{{ $consignment->id }}" data-checkpoint="{{ $consignment->checkpoint }}"
-                                    data-toggle="modal" data-target="#updateTrackerModal">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        @empty
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @endif
+<div class="">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0">Consignments</h2>
+        <div>
+            <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#importModal">
+                <i class="fas fa-file-excel"></i> Import Consignments
+            </button>
+            <a href="{{ route('consignment.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Consignment
+            </a>
         </div>
     </div>
+
+    @include('cargo::adminLte.components.flashes.success')
+    @include('cargo::adminLte.components.flashes.error')
+    @include('cargo::adminLte.components.flashes.warning')
+
+    @if (!empty($consignments))
+        @include('cargo::adminLte.pages.consignments.editor.table')
+    @endif
 </div>
 
 <!-- Update Tracker Modal -->
