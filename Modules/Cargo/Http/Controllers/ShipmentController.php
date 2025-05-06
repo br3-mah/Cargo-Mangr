@@ -488,7 +488,7 @@ class ShipmentController extends Controller
 
         // dd('here');
 
-        dd($request);
+        // dd($request);
         try {
             DB::beginTransaction();
             $model = Shipment::find($id);

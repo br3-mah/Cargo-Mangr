@@ -75,7 +75,6 @@
                     <input type="hidden" id="consignmentId" name="consignment_id">
                     <div id="consignmentResults" class="dropdown-menu w-100" style="display: none;"></div>
                 </div> --}}
-
                 <div class="radio-inline">
                     <label class="radio radio-success">
                         <input checked @if(Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipment_type')=='2') checked @endif
@@ -88,43 +87,42 @@
                     </label>
                 </div>
             </div>
-
             <script>
-            document.getElementById('consignmentCode').addEventListener('keyup', function () {
-                let query = this.value;
-                let resultsDropdown = document.getElementById('consignmentResults');
+                document.getElementById('consignmentCode').addEventListener('keyup', function () {
+                    let query = this.value;
+                    let resultsDropdown = document.getElementById('consignmentResults');
 
-                if (query.length < 2) {
-                    resultsDropdown.style.display = 'none';
-                    return;
-                }
+                    if (query.length < 2) {
+                        resultsDropdown.style.display = 'none';
+                        return;
+                    }
 
-                fetch(`/api/search-consignments?query=${query}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        resultsDropdown.innerHTML = '';
-                        if (data.length > 0) {
-                            data.forEach(consignment => {
-                                let option = document.createElement('a');
-                                option.classList.add('dropdown-item');
-                                option.textContent = `${consignment.code} - ${consignment.name}`;
-                                option.href = '#';
-                                option.style.cursor = 'pointer';
-                                option.onclick = function (event) {
-                                    event.preventDefault();
-                                    document.getElementById('consignmentCode').value = consignment.code; // Display code
-                                    document.getElementById('consignmentId').value = consignment.id; // Store ID in hidden input
-                                    resultsDropdown.style.display = 'none';
-                                };
-                                resultsDropdown.appendChild(option);
-                            });
-                            resultsDropdown.style.display = 'block';
-                        } else {
-                            resultsDropdown.style.display = 'none';
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+                    fetch(`/api/search-consignments?query=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            resultsDropdown.innerHTML = '';
+                            if (data.length > 0) {
+                                data.forEach(consignment => {
+                                    let option = document.createElement('a');
+                                    option.classList.add('dropdown-item');
+                                    option.textContent = `${consignment.code} - ${consignment.name}`;
+                                    option.href = '#';
+                                    option.style.cursor = 'pointer';
+                                    option.onclick = function (event) {
+                                        event.preventDefault();
+                                        document.getElementById('consignmentCode').value = consignment.code; // Display code
+                                        document.getElementById('consignmentId').value = consignment.id; // Store ID in hidden input
+                                        resultsDropdown.style.display = 'none';
+                                    };
+                                    resultsDropdown.appendChild(option);
+                                });
+                                resultsDropdown.style.display = 'block';
+                            } else {
+                                resultsDropdown.style.display = 'none';
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
             </script>
         </div>
         <hr>
@@ -1028,6 +1026,10 @@
     </div>
 </div>
 
+<div class="card-footer d-flex justify-content-end py-6 px-9">
+    <a href="{{ url()->previous() }}" class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>
+    <button type="button" class="btn btn-success" onclick="get_estimation_cost()" id="kt_account_profile_details_submit">@lang('view.update')</button>
+</div>
 {{-- Inject styles --}}
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/4.3.0/jquery.bootstrap-touchspin.css" integrity="sha512-g4B+TyvVE4aa0Y1SgjMHnT/4M4IRl8jnG3Ha9ebg8VhLyrfaAqL5AHDh7zo0/ZdES57Y1E7wvWwsDzX806b1Gw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -1055,7 +1057,7 @@
 @endsection
 
 {{-- Inject Scripts --}}
-@push('js-component')
+{{-- @push('js-component') --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js" integrity="sha512-foIijUdV0fR0Zew7vmw98E6mOWd9gkGWQBWaoA1EOFAx+pY+N8FmmtIYAVj64R98KeD2wzZh1aHK0JSpKmRH8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.js" integrity="sha512-bZAXvpVfp1+9AUHQzekEZaXclsgSlAeEnMJ6LfFAvjqYUVZfcuVXeQoN5LhD7Uw0Jy4NCY9q3kbdEXbwhZUmUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/4.3.0/jquery.bootstrap-touchspin.min.js" integrity="sha512-0hFHNPMD0WpvGGNbOaTXP0pTO9NkUeVSqW5uFG2f5F9nKyDuHE3T4xnfKhAhnAZWZIO/gBLacwVvxxq0HuZNqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -1281,7 +1283,8 @@
                     for (let index = 0; index < data.length; index++) {
                         const element = data[index];
                         var old_client_address = {{old('Shipment.client_address') ? old('Shipment.client_address') : 'null'}};
-                        var edit_client_address = {{ isset($model) ? $model->client_address : 'null'}};
+                        var edit_client_address = 'address';
+                        // var edit_client_address = {{ isset($model) ? $model->client_address : 'null'}};
                         if(element['is_default'] == 1 || old_client_address == element['id'] || edit_client_address == element['id']){
                             $('select[name ="Shipment[client_address]"]').append('<option selected value="' + element['id'] + '">' + element['address'] + '</option>');
                         }else{
@@ -1793,7 +1796,7 @@
             });
         }
 
-        {{--
+
         $(function () {
             let phoneNumbers_1 = $('.phone_input_1'),
                 wrong_number = window.wrong_number_msg,
@@ -1951,9 +1954,9 @@
                 }
             });
         });
-        --}}
+
 
         $('.address').filter(`[data-reflection="${type}"]`).val(iti.getSelectedCountryData().dialCode);
 
     </script>
-@endpush
+{{-- @endpush --}}
