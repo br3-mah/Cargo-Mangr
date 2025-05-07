@@ -144,7 +144,7 @@ $driver = 5;
 @if (auth()->user()->can('manage-shipments') || in_array($user_role, [$admin, $client, $branch]))
 @can('manage-users')
 {{-- {{ areActiveRoutes(['users', ['class_name' => 'show']]) }} --}}
-<li class="nav-item {{ areActiveRoutes(['receivers.index', 'receivers.create'], 'menu-is-opening menu-open active') }}">
+{{-- <li class="nav-item {{ areActiveRoutes(['receivers.index', 'receivers.create'], 'menu-is-opening menu-open active') }}">
     <a href="#"
         class="nav-link {{ areActiveRoutes(['receivers.index', 'receivers.create'], 'menu-is-opening menu-open active') }}">
         <i class="fas fa-user"></i>
@@ -177,10 +177,10 @@ $driver = 5;
         @endif
 
     </ul>
-</li>
+</li> --}}
 @endcan
 @endif
-{{-- 
+{{--
 @if (auth()->user()->can('manage-missions') ||
 $user_role == $admin ||
 $user_role == $branch ||

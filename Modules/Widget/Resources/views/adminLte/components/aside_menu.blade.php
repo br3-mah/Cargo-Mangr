@@ -1,4 +1,4 @@
-@can('view-widgets')
+{{-- @can('view-widgets')
     <li class="nav-item">
         <a href="{{ fr_route('widgets.index') }}" class="nav-link {{ areActiveRoutes(['widgets.index']) }}">
             <i class="fas fa-box fa-fw"></i>
@@ -7,4 +7,4 @@
             </p>
         </a>
     </li>
-@endcan
+@endcan --}}
