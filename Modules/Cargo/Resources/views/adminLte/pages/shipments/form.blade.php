@@ -13,8 +13,6 @@
     $userClient = Modules\Cargo\Entities\Client::where('user_id',auth()->user()->id)->first();
     $userReciver = Modules\Cargo\Entities\Receiver::where('user_id',auth()->user()->id)->first();
 
-
-
     $branches = Modules\Cargo\Entities\Branch::where('is_archived', 0)->get();
     $clients = Modules\Cargo\Entities\Client::where('is_archived', 0)->get();
     $Recivers  =  Modules\Cargo\Entities\Receiver::where('is_archived', 0)->get();
@@ -71,7 +69,7 @@
                 </div> --}}
                 {{-- <div class="form-group">
                     <label for="consignmentCode">Consignment Code</label>
-                    <input type="text" id="consignmentCode" class="form-control" placeholder="Search by consignment code" autocomplete="off">
+              <input type="text" id="consignmentCode" class="form-control" placeholder="Search by consignment code" autocomplete="off">
                     <input type="hidden" id="consignmentId" name="consignment_id">
                     <div id="consignmentResults" class="dropdown-menu w-100" style="display: none;"></div>
                 </div> --}}
@@ -470,8 +468,6 @@
                     @enderror
                 </div>
             </div>
-
-
 
 
             @if($googleMap)

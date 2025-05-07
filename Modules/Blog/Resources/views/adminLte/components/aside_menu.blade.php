@@ -1,4 +1,4 @@
-@can('manage-blog')
+{{-- @can('manage-blog')
 
     <li
         class="nav-item  {{ areActiveRoutes(['posts.index', 'posts.create', 'categories.index', 'tags.index', 'comments.index'],'menu-is-opening menu-open active') }}">
@@ -64,4 +64,4 @@
             @endcan
         </ul>
     </li>
-@endcan
+@endcan --}}

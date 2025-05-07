@@ -316,11 +316,11 @@
         </div>
     </div>
     <!-- ./col -->
-@elseif($user_role == $client)
+    @elseif($user_role == $client)
 
-    @include('cargo::adminLte.components.client-ui.top-dash')
+        @include('cargo::adminLte.components.client-ui.top-dash')
 
-@elseif($user_role == $driver)
+    @elseif($user_role == $driver)
 
     @php
         $driver_id    = Modules\Cargo\Entities\Driver::where('user_id',auth()->user()->id)->pluck('id')->first();
