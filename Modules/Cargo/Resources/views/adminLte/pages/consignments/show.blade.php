@@ -22,26 +22,28 @@ $client = 4;
             <div class="d-flex">
                 <form method="POST" action="{{ route('consignment.export') }}" class="me-2">
                     @csrf
-                    <button type="submit" class="btn btn-success px-3 d-flex align-items-center">
+                    <button type="submit" class="btn btn-info px-3 d-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet me-2" viewBox="0 0 16 16">
                             <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"/>
                         </svg>
                         <span>Export Shipments</span>
                     </button>
                 </form>
-                <button type="button" class="btn btn-primary px-3 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#updateTrackerModal">
+                <button type="button" class="btn btn-warning mr-2" data-toggle="modal" data-target="#importModal">
+                    <i class="fas fa-file-excel"></i> Import Consignments
+                </button>
+                {{-- <button type="button" class="btn btn-primary px-3 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#updateTrackerModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-fill me-2" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.3 1.3 0 0 0-.37.265.3.3 0 0 0-.057.09V14l.002.008.016.033a.6.6 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.6.6 0 0 0 .146-.15l.015-.033L12 14v-.004a.3.3 0 0 0-.057-.09 1.3 1.3 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465s-2.462-.172-3.34-.465c-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411"/>
                     </svg>
                     <span>Update Tracker</span>
-                </button>
+                </button> --}}
             </div>
         </div>
         <div class="card-body p-0">
             @include('cargo::adminLte.pages.consignments.editor.s-table')
         </div>
     </div>
-
 <style>
 .card {
     transition: all 0.2s ease;
@@ -80,42 +82,7 @@ $client = 4;
 }
 </style>
 
-
-<div class="modal fade" id="updateTrackerModal" tabindex="-1" role="dialog"
-    aria-labelledby="updateTrackerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="updateTrackerModalLabel">Update Consignment Tracker</h5>
-                {{-- <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button> --}}
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('consignment.tracker.update', $consignment->id) }}" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <div class="form-group">
-                        <label for="tracker_status">Status</label>
-                        <select class="form-control" name="status" required>
-                            <option value="Parcel received and is being processed" {{ $consignment->checkpoint == 1 ? 'selected' : '' }}>Parcel received and is being processed</option>
-                            <option value="Parcel dispatched from China" {{ $consignment->checkpoint == 2 ? 'selected' : '' }}>Parcel dispatched from China</option>
-                            <option value="Parcel has arrived at the transit Airport" {{ $consignment->checkpoint == 3 ? 'selected' : '' }}>Parcel has arrived at the transit Airport</option>
-                            <option value="Parcel has departed from the Transit Airport to Lusaka Airport" {{ $consignment->checkpoint == 4 ? 'selected' : '' }}>Parcel has departed from the Transit Airport to Lusaka Airport</option>
-                            <option value="Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress" {{ $consignment->checkpoint == 5 ? 'selected' : '' }}>Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress</option>
-                            <option value="Parcel is now ready for collection in Lusaka at the Main Branch" {{ $consignment->checkpoint == 6 ? 'selected' : '' }}>Parcel is now ready for collection in Lusaka at the Main Branch</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Tracker</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+@include('cargo::adminLte.pages.consignments.editor.import-modal')
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>

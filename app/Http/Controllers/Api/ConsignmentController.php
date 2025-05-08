@@ -13,9 +13,9 @@ class ConsignmentController extends Controller
     {
         $query = $request->query('query');
         $results = Consignment::where('consignment_code', 'LIKE', "%{$query}%")
-                              ->orWhere('name', 'LIKE', "%{$query}%")
-                              ->limit(10)
-                              ->get(['id', 'consignment_code as code', 'name']);
+                ->orWhere('name', 'LIKE', "%{$query}%")
+                ->limit(10)
+                ->get(['id', 'consignment_code as code', 'name']);
 
         return response()->json($results);
     }
