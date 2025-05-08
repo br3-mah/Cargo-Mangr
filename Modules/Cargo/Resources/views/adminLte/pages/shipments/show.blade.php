@@ -18,7 +18,7 @@
 <div class="card shadow-lg rounded-lg overflow-hidden">
     <div class="p-0 card-body">
         @include('cargo::adminLte.pages.shipments._partials.payment-modal-message')
-        
+
         <!-- Invoice Header -->
         <div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white px-8 py-6">
             <div class="container mx-auto">
@@ -42,142 +42,9 @@
 
         <!-- Main Content -->
         <div class="container mx-auto px-6 py-8">
-            <!-- Client and Status Section -->
-            <div class="flex flex-wrap -mx-4">
-                <!-- Client Info -->
-                <div class="w-full md:w-1/3 px-4 mb-6">
-                    <div class="p-5 bg-gray-50 rounded-lg shadow-sm h-full">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ __('cargo::view.client_sender') }}</h2>
-                        <div class="border-l-4 border-blue-500 pl-3">
-                            @if($user_role == $admin || auth()->user()->can('show-clients') )
-                                <a class="text-blue-600 font-bold text-lg hover:underline" href="{{route('clients.show',$shipment->client_id)}}">{{$shipment->client->name ?? 'Null'}}</a>
-                            @else
-                                <span class="text-blue-600 font-bold text-lg">{{$shipment->client->name ?? 'Null'}}</span>
-                            @endif
-                            <p class="text-gray-600">{{$shipment->client_phone}}</p>
-                            <p class="text-gray-600 text-sm">{{$shipment->from_address ? $shipment->from_address->address : ''}}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Status Info -->
-                <div class="w-full md:w-1/3 px-4 mb-6">
-                    <div class="p-5 bg-gray-50 rounded-lg shadow-sm h-full">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ __('cargo::view.status') }}</h2>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
-                            @if(strpos(strtolower($shipment->getStatus()), 'delivered') !== false)
-                                bg-green-100 text-green-800
-                            @elseif(strpos(strtolower($shipment->getStatus()), 'returned') !== false || strpos(strtolower($shipment->getStatus()), 'failed') !== false)
-                                bg-red-100 text-red-800
-                            @elseif(strpos(strtolower($shipment->getStatus()), 'transit') !== false)
-                                bg-blue-100 text-blue-800
-                            @else
-                                bg-yellow-100 text-yellow-800
-                            @endif
-                            ">
-                                <svg class="w-4 h-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                {{$shipment->getStatus()}}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Collection Info -->
-                @if (isset($shipment->amount_to_be_collected))
-                <div class="w-full md:w-1/3 px-4 mb-6">
-                    <div class="p-5 bg-gray-50 rounded-lg shadow-sm h-full">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ __('cargo::view.amount_to_be_collected') }}</h2>
-                        <div class="text-2xl font-bold text-blue-600">{{format_price($shipment->amount_to_be_collected)}}</div>
-                    </div>
-                </div>
-                @endif
-            </div>
-
-            <!-- Shipment Details -->
-            <div class="mt-8 bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-xl font-bold text-gray-700 mb-4">{{ __('cargo::view.shipment_details') }}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.shipment_type') }}</p>
-                        <p class="font-medium">{{$shipment->type}}</p>
-                    </div>
-                    
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.current_branch') }}</p>
-                        @if($user_role == $admin || auth()->user()->can('show-branches') )
-                            <a class="font-medium text-blue-600 hover:underline" href="{{route('branches.show', $shipment->branch_id ?? 1)}}">{{$shipment->branch->name ?? 'Null'}}</a>
-                        @else
-                            <p class="font-medium">{{$shipment->branch->name ?? 'Null'}}</p>
-                        @endif
-                    </div>
-                    
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.created_date') }}</p>
-                        <p class="font-medium">{{$shipment->created_at->toFormattedDateString()}}</p>
-                    </div>
-                    
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.shipping_date') }}</p>
-                        <p class="font-medium">
-                            @if(strpos($shipment->shipping_date, '/' ))
-                                {{ Carbon\Carbon::createFromFormat('d/m/Y', $shipment->shipping_date)->format('F j, Y') }}
-                            @else
-                                {{ \Carbon\Carbon::parse($shipment->shipping_date)->format('F j, Y') }}
-                            @endif
-                        </p>
-                    </div>
-                    
-                    @if ($shipment->prev_branch)
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.previous_branch') }}</p>
-                        <p class="font-medium">{{Modules\Cargo\Entities\Branch::find($shipment->prev_branch)->name ?? 'Null'}}</p>
-                    </div>
-                    @endif
-                    
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.total_weight') }}</p>
-                        <p class="font-medium">{{$shipment->total_weight}} {{ __('cargo::view.KG') }}</p>
-                    </div>
-                    
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.tax_duty') }}</p>
-                        <p class="font-medium">{{format_price($shipment->tax)}}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Package Items Table -->
-            <div class="mt-8">
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                        <h2 class="text-xl font-bold text-gray-700">{{ __('cargo::view.package_items') }}</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('cargo::view.package_items') }}</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Packing (CTN)</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('cargo::view.type') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach(Modules\Cargo\Entities\PackageShipment::where('shipment_id',$shipment->id)->get() as $package)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$package->description}}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{$package->qty}}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">@if(isset($package->package->name)){{json_decode($package->package->name, true)[app()->getLocale()]}} @else - @endif</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
+            @include('cargo::adminLte.pages.shipments._partials.shipment-client-details')
+            @include('cargo::adminLte.pages.shipments._partials.shipment-details')
+            @include('cargo::adminLte.pages.shipments._partials.shipment-packages')
             <!-- Total Cost -->
             <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm p-6">
                 <div class="flex justify-between items-center">
@@ -193,7 +60,7 @@
                 </div>
             </div>
         </div>
-            
+
         <!-- Sticky Bottom Toolbar -->
         <div class="fixed-bottom bg-white border-t border-gray-200 shadow-lg px-6 py-4" style="z-index: 1050;">
             <div class="container mx-auto">
@@ -208,7 +75,7 @@
                             @if($shipment->paid == 0 && $shipment->payment_method_id != $cash_payment && $shipment->payment_method_id != $INVOICE_PAYMENT )
                                 <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" onclick="openCheckoutModal()">
                                     {{ __('cargo::view.pay_now') }} <i class="ml-1 fas fa-credit-card"></i>
-                                </button>
+                                </button>Packing (CTN)
                             @endif
                         @endif
                     </div>
@@ -346,6 +213,5 @@
         printWindow.document.close();
     }
 </script>
-
 @endsection
 @include('cargo::adminLte.pages.shipments._partials.bottom-assets')

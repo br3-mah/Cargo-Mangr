@@ -231,18 +231,21 @@ class ConsignmentController extends Controller
 
             $consignmentCode = $jobNum;
 
-            $consignment = Consignment::firstOrCreate(
-                [
+            $consignment = Consignment::orWhere('mawb_num', $mawbNum)
+                ->orWhere('consignment_code', $consignmentCode)
+                ->first();
+                
+            if (empty($consignment)) {
+                // Create a new record if it doesn't exist
+                $consignment = Consignment::create([
                     'job_num' => $jobNum,
                     'mawb_num' => $mawbNum,
                     'consignment_code' => $consignmentCode,
-                ],
-                [
                     'name' => 'NWC',
                     'desc' => 'Consignment shipments',
                     'consignee' => 'Nwc',
-                ]
-            );
+                ]);
+            }
 
             // Step 4: Find the row with "Hawb No"
             foreach ($rows as $i => $row) {
@@ -270,7 +273,7 @@ class ConsignmentController extends Controller
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
             DB::rollback();
 
             // $this->loopCreateShipmentII($headerRow, $rows, $consignment);
@@ -296,7 +299,7 @@ class ConsignmentController extends Controller
                     $clientCode = rand(100000, 999999);
                     $clientPhone = preg_replace('/\D+/', '', (strlen($data[5] ?? '') > 5 ? $data[5] : ($data[6] ?? '')));
 
-                    
+
                     // Avoid duplicate User by email
                     $user = User::firstOrCreate(
                         ['email' => $userEmail],
@@ -642,17 +645,30 @@ class ConsignmentController extends Controller
      */
     public function update(Request $request, Consignment $consignment)
     {
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'source' => 'required|string',
-            'destination' => 'required|string',
-            'status' => 'required',
-        ]);
-
-        $consignment->first()->update($request->all());
-        return redirect()->back();
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'source' => 'required|string',
+                'destination' => 'required|string',
+                'status' => 'required|string',
+                'consignment_code' => 'nullable|string',
+                'consignee' => 'nullable|string',
+                'mawb_num' => 'nullable|string',
+                'eta' => 'nullable|date',
+                'cargo_date' => 'nullable|date',
+                'job_num' => 'nullable|string|nullable',
+                'cargo_type' => 'nullable|string',
+                'eta_dar' => 'nullable|date',
+                'eta_lun' => 'nullable|date',
+            ]);
+            $consignment->update($validated);
+            return redirect()->back()->with('success', 'Consignment updated successfully.');
+        } catch (\Throwable $th) {
+            report($th);
+            return redirect()->back()->withErrors(['error' => 'Failed to update consignment.']);
+        }
     }
+    
 
     public function editTracker($id)
     {

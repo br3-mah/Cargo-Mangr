@@ -65,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consignment', 'ConsignmentController@index')->name('consignment.index');
     Route::get('/create-consignment', 'ConsignmentController@create')->name('consignment.create');
     Route::post('/consignment', 'ConsignmentController@store')->name('consignment.store');
-    Route::put('/consignment', 'ConsignmentController@update')->name('consignment.update');
+    Route::put('/consignment/{consignment}', 'ConsignmentController@update')->name('consignment.update');
     Route::get('/consignment-details/{id}', 'ConsignmentController@show')->name('consignment.show');
     Route::get('/consignment/{id}', 'ConsignmentController@edit')->name('consignment.edit');
     Route::delete('/consignment/{id}', 'ConsignmentController@destroy')->name('consignment.destroy');

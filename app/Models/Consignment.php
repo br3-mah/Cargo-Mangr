@@ -22,6 +22,12 @@ class Consignment extends Model
         'job_num',
         'mawb_num',
         'handler',
+        'eta',
+        'cargo_date',
+        'cargo_type',
+        'eta_dar',
+        'eta_nak',
+        'eta_lun',
     ];
 
 

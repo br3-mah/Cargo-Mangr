@@ -6,7 +6,6 @@
   <div class="bg-gradient-to-r text-dark px-4 py-4 flex justify-between items-center">
     <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2>
     <div class="flex space-x-2">
-
     </div>
   </div>
 
