@@ -4,14 +4,9 @@
 <div class="w-full bg-white shadow-xl rounded-lg overflow-hidden">
   <!-- Header -->
   <div class="bg-gradient-to-r text-dark px-4 py-4 flex justify-between items-center">
-    <h2 class="text-xl font-bold tracking-tight">Consignment Tracking System</h2>
+    <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2>
     <div class="flex space-x-2">
-      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out flex items-center">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        New Consignment
-      </button>
+
     </div>
   </div>
 
