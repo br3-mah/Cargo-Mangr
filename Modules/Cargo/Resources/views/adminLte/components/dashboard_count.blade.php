@@ -174,7 +174,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-3">
+    {{-- <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
@@ -186,11 +186,10 @@
             </div>
             <a href="{{ route('missions.index' , ['status' => 'all']) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
-    <div class="col-lg-3">
-        <!-- small box -->
+    {{-- <div class="col-lg-3">
         <div class="small-box bg-warning">
             <div class="inner">
                 <h3>{{$pending_missions}}</h3>
@@ -201,11 +200,10 @@
             </div>
             <a href="{{ route('missions.index' , ['status' => [Modules\Cargo\Entities\Mission::REQUESTED_STATUS,Modules\Cargo\Entities\Mission::APPROVED_STATUS,Modules\Cargo\Entities\Mission::RECIVED_STATUS] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
-    <div class="col-lg-3 col-6">
-        <!-- small box -->
+    {{-- <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
                 <h3>{{$pickup_missions}}</h3>
@@ -216,11 +214,10 @@
             </div>
             <a href="{{ route('missions.index', ['type' => [Modules\Cargo\Entities\Mission::PICKUP_TYPE] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
-    <div class="col-lg-3 col-6">
-        <!-- small box -->
+    {{-- <div class="col-lg-3 col-6">
         <div class="small-box bg-success">
             <div class="inner">
                 <h3>{{$delivery_missions}}</h3>
@@ -231,7 +228,7 @@
             </div>
             <a href="{{ route('missions.index', ['type' => [Modules\Cargo\Entities\Mission::DELIVERY_TYPE] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
     {{-- <div class="col-lg-3 col-6">

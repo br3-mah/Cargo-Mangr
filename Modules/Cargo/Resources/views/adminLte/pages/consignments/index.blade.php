@@ -12,10 +12,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="m-0">Consignments</h2>
         <div>
-            <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#importModal">
+            <button type="button" class="btn btn-info mr-2" data-toggle="modal" data-target="#importModal">
                 <i class="fas fa-file-excel"></i> Import Consignments
             </button>
-            <a href="{{ route('consignment.create') }}" class="btn btn-primary">
+            <a href="{{ route('consignment.create') }}" class="btn btn-warning">
                 <i class="fas fa-plus"></i> Add New Consignment
             </a>
         </div>

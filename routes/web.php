@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/consignments/export', 'ConsignmentController@export')->name('consignment.export');
     Route::get('/consignment/{id}/tracker', 'ConsignmentController@editTracker')->name('consignment.tracker.edit');
     Route::patch('/consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
+    Route::post('/consignment/bulk-delete', 'ConsignmentController@bulkDelete')->name('consignment.bulkDelete');
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

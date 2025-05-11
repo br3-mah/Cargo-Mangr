@@ -44,49 +44,49 @@
             <p class="font-medium">{{Modules\Cargo\Entities\Branch::find($shipment->prev_branch)->name ?? 'Null'}}</p>
         </div>
         @endif
-
         <div>
             <p class="text-sm text-gray-500">{{ __('cargo::view.total_weight') }}</p>
             <p class="font-medium">{{$shipment->total_weight}} {{ __('cargo::view.KG') }}</p>
         </div>
-
         <div>
             <p class="text-sm text-gray-500">{{ __('cargo::view.tax_duty') }}</p>
             <p class="font-medium">{{format_price($shipment->tax)}}</p>
         </div>
-
         <!-- New Consignment Fields -->
-
         <div>
             <p class="text-sm text-gray-500">Cargo Date</p>
             <p class="font-medium">
                 {{ optional($shipment->consignment->cargo_date)->format('F j, Y') ?? 'N/A' }}
             </p>
         </div>
-
         <div>
             <p class="text-sm text-gray-500">ETA</p>
             <p class="font-medium">
                 {{ optional($shipment->consignment->eta)->format('F j, Y') ?? 'N/A' }}
             </p>
         </div>
-
+        @if ($shipment->consignment->cargo_type == 'sea')
+            <div>
+                <p class="text-sm text-gray-500">ETA DAR</p>
+                <p class="font-medium">
+                    {{ optional($shipment->consignment->eta_dar)->format('F j, Y') ?? 'N/A' }}
+                </p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">ETA LUN</p>
+                <p class="font-medium">
+                    {{ optional($shipment->consignment->eta_lun)->format('F j, Y') ?? 'N/A' }}
+                </p>
+            </div>
+        @endif
+        @if ($shipment->consignment->cargo_type == 'air')
+            <div>
+                <img width="80" src="{{ asset('icon/plane.svg') }}" alt="">
+            </div>
+        @else
         <div>
-            <p class="text-sm text-gray-500">ETA DAR</p>
-            <p class="font-medium">
-                {{ optional($shipment->consignment->eta_dar)->format('F j, Y') ?? 'N/A' }}
-            </p>
+            <img width="80" src="{{ asset('icon/ship.svg') }}" alt="">
         </div>
-
-        <div>
-            <p class="text-sm text-gray-500">ETA LUN</p>
-            <p class="font-medium">
-                {{ optional($shipment->consignment->eta_lun)->format('F j, Y') ?? 'N/A' }}
-            </p>
-        </div>
-
-        <div>
-            
-        </div>
+        @endif
     </div>
 </div>
