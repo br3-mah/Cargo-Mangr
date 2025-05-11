@@ -751,5 +751,14 @@ class ConsignmentController extends Controller
             dd($th);
         }
     }
-
+    public function bulkDelete(Request $request)
+    {
+        try {
+            Consignment::whereIn('id', $request->ids)->delete();
+            return response()->json(['status' => 'success']);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'failed','msg' => $th->getMessage()]);
+        }
+    }
+    
 }

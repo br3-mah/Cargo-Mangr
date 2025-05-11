@@ -11,6 +11,17 @@ $client = 4;
 
 @section('content')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <div class="">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-light p-2 mb-0" style="font-size: 0.9rem; border-radius: 0.25rem;">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('consignment.index') }}">Consignments</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Consignment - Shipments</li>
+            </ol>
+        </nav>
+    </div>
+
     <div class="card shadow-sm border-0 rounded-lg mb-4">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">

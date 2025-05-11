@@ -1567,6 +1567,7 @@ class ShipmentController extends Controller
         $ClientAddress = ClientAddress::where('client_id', $shipment->client_id)->first();
 
         $adminTheme = env('ADMIN_THEME', 'adminLte');
+
         if ($shipment) {
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
             $track_map = $this->getTrackMapArray($cons);

@@ -16,7 +16,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach(Modules\Cargo\Entities\PackageShipment::where('shipment_id',$shipment->id)->get() as $package)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$package->description}}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$package->description ?? 'Unspecified'}}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{{$package->qty}}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">@if(isset($package->package->name)){{json_decode($package->package->name, true)[app()->getLocale()]}} @else - @endif</td>
                         </tr>

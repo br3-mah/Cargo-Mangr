@@ -14,13 +14,33 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <!-- Add Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
+<style>
+    .breadcrumb a {
+      color: #ffc507;
+      text-decoration: none;
+    }
 
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+</style>
+
+<div class="">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light p-2 mb-0" style="font-size: 0.9rem; border-radius: 0.25rem;">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('consignment.index') }}">Consignments</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('consignment.show', $shipment->consignment_id) }}">Consignment Shipments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Shipment - Invoice Details</li>
+        </ol>
+    </nav>
+</div>
 <div class="card shadow-lg rounded-lg overflow-hidden">
     <div class="p-0 card-body">
         @include('cargo::adminLte.pages.shipments._partials.payment-modal-message')
 
         <!-- Invoice Header -->
-        <div class="bg-gradient-to-r from-blue-700 to-blue-900 text-white px-8 py-6">
+        <div class="bg-gradient-to-r from-yellow-400 to-yellow-300 text-white px-8 py-6">
             <div class="container mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start">
                     <div>
@@ -46,15 +66,16 @@
             @include('cargo::adminLte.pages.shipments._partials.shipment-details')
             @include('cargo::adminLte.pages.shipments._partials.shipment-packages')
             <!-- Total Cost -->
-            <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm p-6">
+            <div class="mt-8 bg-gradient-to-r from-yellow-50 rounded-lg shadow-sm p-6">
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-700">{{ __('cargo::view.total_cost') }}</h2>
-                        <p class="text-sm text-gray-500">{{ __('cargo::view.included_tax_insurance') }}</p>
+                        {{-- <p class="text-sm text-gray-500">{{ __('cargo::view.included_tax_insurance') }}</p> --}}
                     </div>
                     <div class="text-right">
                         <span class="text-3xl font-bold text-blue-600">
-                            {{format_price($shipment->amount_to_be_collected + $shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}
+                            {{-- + $shipment->tax + $shipment->shipping_cost + $shipment->insurance --}}
+                            {{format_price($shipment->amount_to_be_collected) }}
                         </span>
                     </div>
                 </div>
@@ -81,12 +102,13 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <button id="printBtn2" onclick="printCardContent()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button id="printBtn2" onclick="printInvoice()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <i class="fas fa-print mr-1"></i>
                             <span id="printBtnText2">Print Invoice</span>
                             <span id="printSpinner2" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
 
+                        @include('cargo::adminLte.pages.shipments._partials.print-invoice')
                         @if ($shipment->paid)
                             @include('cargo::adminLte.pages.shipments._partials.print-receipt')
                         @else
@@ -179,39 +201,5 @@
         @include('cargo::adminLte.pages.shipments._partials.cargo-payment-modal')
     </div>
 </div>
-<script>
-    function printCardContent() {
-        const cardContent = document.querySelector('.card').innerHTML;
-
-        const tailwindCDN = `
-            <script src="https://cdn.tailwindcss.com"><\/script>
-        `;
-
-        const printWindow = window.open('', '', 'width=900,height=700');
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Print Shipment</title>
-                    ${tailwindCDN}
-                    <style>
-                        body { font-family: sans-serif; margin: 20px; }
-                        .shadow-lg, .shadow-sm, .rounded-lg { box-shadow: none !important; border-radius: 0 !important; }
-                        .fixed-bottom { display: none !important; } /* Hide bottom toolbar */
-                    </style>
-                </head>
-                <body>
-                    ${cardContent}
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            setTimeout(() => window.close(), 300);
-                        }
-                    <\/script>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }
-</script>
 @endsection
 @include('cargo::adminLte.pages.shipments._partials.bottom-assets')

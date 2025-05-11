@@ -6,6 +6,26 @@
 
 @section('content')<!-- Tailwind CSS CDN -->
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    .breadcrumb a {
+      color: #ffc507;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+</style>
+
+<div class="">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light p-2 mb-0" style="font-size: 0.9rem; border-radius: 0.25rem;">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('consignment.index') }}">Consignments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Consignment - Create</li>
+        </ol>
+    </nav>
+</div>
 <div class="container">
     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="bg-yellow-400 text-white px-6 py-4 flex items-center">
@@ -15,7 +35,7 @@
         <div class="p-6">
             <form action="{{ route('consignment.store') }}" method="POST">
                 @csrf
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Left Column -->
                     <div>
@@ -32,7 +52,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-user"></i>
                                         </span>
-                                        <input type="text" id="consignee" value="NWC" name="consignee" 
+                                        <input type="text" id="consignee" value="NWC" name="consignee"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                     </div>
                                 </div>
@@ -43,7 +63,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-file-signature"></i>
                                         </span>
-                                        <input type="text" id="name" name="name" 
+                                        <input type="text" id="name" name="name"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                     </div>
                                 </div>
@@ -54,7 +74,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-barcode"></i>
                                         </span>
-                                        <input type="text" id="consignment_code" name="consignment_code" 
+                                        <input type="text" id="consignment_code" name="consignment_code"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                     </div>
                                 </div>
@@ -65,7 +85,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-plane"></i>
                                         </span>
-                                        <input type="text" id="mawb_num" name="mawb_num" 
+                                        <input type="text" id="mawb_num" name="mawb_num"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                     </div>
                                 </div>
@@ -88,7 +108,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-map-marker-alt"></i>
                                         </span>
-                                        <select id="source" name="source" 
+                                        <select id="source" name="source"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                             <option value="">Select source</option>
                                             <option value="zambia">Zambia</option>
@@ -107,7 +127,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-map"></i>
                                         </span>
-                                        <select id="destination" name="destination" 
+                                        <select id="destination" name="destination"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                             <option value="">Select destination</option>
                                             <option value="zambia" selected>Zambia</option>
@@ -181,7 +201,7 @@
                                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                         <i class="fas fa-calendar-check"></i>
                                     </span>
-                                    <input type="date" id="cargo_date" name="cargo_date" 
+                                    <input type="date" id="cargo_date" name="cargo_date"
                                         class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300">
                                 </div>
                             </div>
@@ -193,7 +213,7 @@
                                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                         <i class="fas fa-briefcase"></i>
                                     </span>
-                                    <input type="text" id="job_num" name="job_num" 
+                                    <input type="text" id="job_num" name="job_num"
                                         class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300">
                                 </div>
                             </div>
@@ -204,7 +224,7 @@
                                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                         <i class="fas fa-calendar-day"></i>
                                     </span>
-                                    <input type="date" id="eta_dar" name="eta_dar" 
+                                    <input type="date" id="eta_dar" name="eta_dar"
                                         class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300">
                                 </div>
                             </div>
@@ -214,7 +234,7 @@
                                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                         <i class="fas fa-calendar-day"></i>
                                     </span>
-                                    <input type="date" id="eta_nak" name="eta_nak" 
+                                    <input type="date" id="eta_nak" name="eta_nak"
                                         class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300">
                                 </div>
                             </div>
@@ -224,7 +244,7 @@
                                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                         <i class="fas fa-calendar-day"></i>
                                     </span>
-                                    <input type="date" id="eta_lun" name="eta_lun" 
+                                    <input type="date" id="eta_lun" name="eta_lun"
                                         class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300">
                                 </div>
                             </div>
@@ -250,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle cargo type change
     const cargoTypeSelect = document.getElementById('cargo_type');
     const seaFields = document.querySelectorAll('.sea-field');
-    
+
     cargoTypeSelect.addEventListener('change', function() {
         if (this.value === 'sea') {
             seaFields.forEach(field => {
@@ -264,25 +284,25 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Form validation with visual feedback
     const form = document.querySelector('form');
     form.addEventListener('submit', function(event) {
         if (!form.checkValidity()) {
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Add visual feedback to invalid fields
             const invalidFields = form.querySelectorAll(':invalid');
             invalidFields.forEach(field => {
                 field.classList.add('border-red-500', 'ring-red-500');
                 field.classList.add('animate-shake');
-                
+
                 field.addEventListener('input', function() {
                     this.classList.remove('border-red-500', 'ring-red-500');
                     this.classList.remove('animate-shake');
                 });
-                
+
                 // Remove animation class after animation completes
                 setTimeout(() => {
                     field.classList.remove('animate-shake');

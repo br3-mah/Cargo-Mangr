@@ -14,6 +14,26 @@
 @section('content')
 <!-- Tailwind CSS CDN -->
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    .breadcrumb a {
+      color: #ffc507;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+</style>
+
+<div class="">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light p-2 mb-0" style="font-size: 0.9rem; border-radius: 0.25rem;">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('consignment.index') }}">Consignments</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Consignment - Edit</li>
+        </ol>
+    </nav>
+</div>
 <div class="container">
     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="bg-yellow-400 text-white px-6 py-4 flex items-center">
@@ -24,7 +44,7 @@
             <form action="{{ route('consignment.update', $consignment->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Left Column -->
                     <div>
@@ -119,7 +139,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-shipping-fast"></i>
                                         </span>
-                                        <select id="cargo_type" name="cargo_type" 
+                                        <select id="cargo_type" name="cargo_type"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300" required>
                                             <option value="sea" {{ isset($consignment->cargo_type) && $consignment->cargo_type == 'sea' ? 'selected' : '' }}>Sea</option>
                                             <option value="air" {{ isset($consignment->cargo_type) && $consignment->cargo_type == 'air' ? 'selected' : '' }}>Air</option>
@@ -133,7 +153,7 @@
                                         <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-yellow-400 text-white text-sm">
                                             <i class="fas fa-tasks"></i>
                                         </span>
-                                        <select id="status" name="status" 
+                                        <select id="status" name="status"
                                             class="border-blue-500 flex-1 block w-full rounded-r-md sm:text-sm border-gray-300">
                                             <option value="pending" {{ $consignment->status == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="in_transit" {{ $consignment->status == 'in_transit' ? 'selected' : '' }}>In Transit</option>
@@ -240,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle cargo type change
     const cargoTypeSelect = document.getElementById('cargo_type');
     const seaFields = document.querySelectorAll('.sea-field');
-    
+
     cargoTypeSelect.addEventListener('change', function() {
         if (this.value === 'sea') {
             seaFields.forEach(field => {
@@ -254,25 +274,25 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Form validation with visual feedback
     const form = document.querySelector('form');
     form.addEventListener('submit', function(event) {
         if (!form.checkValidity()) {
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Add visual feedback to invalid fields
             const invalidFields = form.querySelectorAll(':invalid');
             invalidFields.forEach(field => {
                 field.classList.add('border-red-500', 'ring-red-500');
                 field.classList.add('animate-shake');
-                
+
                 field.addEventListener('input', function() {
                     this.classList.remove('border-red-500', 'ring-red-500');
                     this.classList.remove('animate-shake');
                 });
-                
+
                 // Remove animation class after animation completes
                 setTimeout(() => {
                     field.classList.remove('animate-shake');

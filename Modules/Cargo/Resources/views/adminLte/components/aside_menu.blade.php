@@ -11,7 +11,7 @@ $driver = 5;
 @if (auth()->user()->can('manage-shipments') || in_array($user_role, [$admin, $client, $branch]))
 <li style="color: #fff"
     class="nav-item {{ areActiveRoutes(['shipments','shipments.create','shipments.import','shipments.add.api','shipments.barcode.scanner','shipment-calc','shipments.index'],'menu-is-opening menu-open active') }} @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item) {{ areActiveRoutes([$item['route_name']], 'menu-is-opening menu-open active') }} @endforeach ">
-    <a href="#"
+    {{-- <a href="#"
         class="nav-link {{ areActiveRoutes(['shipments','shipments.create','shipments.import','shipments.add.api','shipments.barcode.scanner','shipment-calc','shipments.index'],'menu-is-opening menu-open active') }} @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item) {{ areActiveRoutes([$item['route_name']], 'menu-is-opening menu-open active') }} @endforeach  ">
         <i style="color: #fff" class="fas fa-box-open"></i>
         &nbsp;
@@ -19,7 +19,7 @@ $driver = 5;
             {{ __('cargo::view.shipments') }}
             <i class="right fas fa-angle-left"></i>
         </p>
-    </a>
+    </a> --}}
 
     <ul class="nav nav-treeview">
         <!-- Shipment Menu -->
@@ -27,7 +27,7 @@ $driver = 5;
 
         <!-- create shipment -->
         @if (auth()->user()->can('create-shipments') || in_array($user_role, [$admin, $client, $branch]))
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ fr_route('shipments.create') }}" class="nav-link {{ areActiveRoutes(['shipments.create']) }}">
                 <i style="color: #fff" class="fas fa-plus fa-fw"></i>
                 &nbsp;
@@ -39,7 +39,7 @@ $driver = 5;
                     @endif
                 </p>
             </a>
-        </li>
+        </li> --}}
         @endif
 
 
@@ -77,7 +77,7 @@ $driver = 5;
         @endif --}}
 
         <!-- shipment calc -->
-        @if (Modules\Cargo\Entities\ShipmentSetting::getVal('is_shipping_calc_required') == 1)
+        {{-- @if (Modules\Cargo\Entities\ShipmentSetting::getVal('is_shipping_calc_required') == 1)
         <li class="nav-item">
             <a href="{{ fr_route('shipments.calculator') }}"
                 class="nav-link {{ areActiveRoutes(['shipments.calculator']) }}">
@@ -85,18 +85,18 @@ $driver = 5;
                 <p style="color: #fff">{{ __('cargo::view.shipping_calculator') }}</p>
             </a>
         </li>
-        @endif
+        @endif --}}
 
         <!-- all shipments -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ fr_route('shipments.index') }}" class="nav-link {{ areActiveRoutes(['shipments.index']) }}">
                 <i style="color: #fff" class="far fa-circle nav-icon"></i>
                 <p style="color: #fff">{{ __('cargo::view.all_Shipments') }}</p>
             </a>
-        </li>
+        </li> --}}
 
 
-        @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item)
+        {{-- @foreach (Modules\Cargo\Entities\Shipment::status_info() as $item)
         @if (in_array($user_role, [$admin, $client, $branch]) ||
         auth()->user()->hasAnyDirectPermission($item['permissions']))
         @if ($item['status'] == Modules\Cargo\Entities\Shipment::SAVED_STATUS)
@@ -133,7 +133,7 @@ $driver = 5;
         </li>
         @endif
         @endif
-        @endforeach
+        @endforeach --}}
 
         @endif
     </ul>
@@ -239,7 +239,7 @@ $user_role == $driver)
 @endif --}}
 
 
-@if (auth()->user()->can('manage-transactions') || in_array($user_role, [$admin, $branch, $driver, $client]))
+{{-- @if (auth()->user()->can('manage-transactions') || in_array($user_role, [$admin, $branch, $driver, $client]))
 <li
     class="nav-item {{ active_uri('transactions', ['class_name' => 'show']) }}  {{ areActiveRoutes(['transactions', 'transactions.create', 'transactions.index'],'menu-is-opening menu-open active') }}">
     <a href="#"
@@ -280,7 +280,7 @@ $user_role == $driver)
 
     </ul>
 </li>
-@endif
+@endif --}}
 
 
 
@@ -441,7 +441,7 @@ $user_role == $branch)
 @endif
 
 
-<li
+{{-- <li
     class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
     <a href="#"
         class="nav-link {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
@@ -458,7 +458,7 @@ $user_role == $branch)
         @endforeach
         @endif
     </ul>
-</li>
+</li> --}}
 
 @if ($user_role == $client)
 <!-- shipment api -->
