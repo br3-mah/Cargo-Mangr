@@ -74,6 +74,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consignment/{id}/tracker', 'ConsignmentController@editTracker')->name('consignment.tracker.edit');
     Route::patch('/consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
     Route::post('/consignment/bulk-delete', 'ConsignmentController@bulkDelete')->name('consignment.bulkDelete');
+    Route::post('/currency/update-rates', 'CurrencyExchangeController@updateRates')->name('currency.update_rates');
+
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

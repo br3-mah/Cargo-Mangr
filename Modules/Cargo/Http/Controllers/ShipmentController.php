@@ -36,6 +36,7 @@ use app\Http\Helpers\ApiHelper;
 use App\Models\Consignment;
 use App\Models\User;
 use App\Traits\Tracker;
+use App\Traits\HandlesCurrencyExchange;
 use Modules\Cargo\Events\AddShipment;
 use Modules\Cargo\Events\CreateMission;
 use Modules\Cargo\Events\ShipmentAction;
@@ -44,13 +45,13 @@ use Modules\Cargo\Events\UpdateShipment;
 use Modules\Acl\Repositories\AclRepository;
 use Modules\Cargo\Http\Controllers\ClientController;
 use Modules\Cargo\Http\Requests\RegisterRequest;
-use Auth;
 use Carbon\Carbon;
+use Auth;
 use Illuminate\Support\Facades\DB as FDB;
 
 class ShipmentController extends Controller
 {
-    use Tracker;
+    use Tracker, HandlesCurrencyExchange;
     private $aclRepo;
 
     public function __construct(AclRepository $aclRepository)

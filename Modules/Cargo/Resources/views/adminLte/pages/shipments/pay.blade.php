@@ -126,7 +126,7 @@ $d = new DNS1D();
                             <form action="{{ route('payment.checkout') }}" class="form-default" role="form" method="POST" id="checkout-form">
                                 @csrf
                                 <input type="hidden" name="shipment_id" value="{{$shipment->id}}">
-                                <button type="submit" class="mr-3 btn btn-success btn-md">{{__('cargo::view.pay_now')}} <i class="ml-2 far fa-credit-card"></i></button>
+                                <button type="submit" class="btnclicky mr-3 btn btn-success btn-md">{{__('cargo::view.pay_now')}} <i class="ml-2 far fa-credit-card"></i></button>
                             </form>
                         </div>
                     </div>

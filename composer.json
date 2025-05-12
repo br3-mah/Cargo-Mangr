@@ -75,7 +75,8 @@
         "files": [
             "app/Helpers/functions/url_helpers.php",
             "app/Helpers/functions/helpers.php",
-            "app/Helpers/functions/wedget_functions.php"
+            "app/Helpers/functions/wedget_functions.php",
+            "app/helper.php"
         ]
     },
     "autoload-dev": {

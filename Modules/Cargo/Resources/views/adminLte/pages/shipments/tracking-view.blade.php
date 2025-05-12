@@ -40,7 +40,7 @@
                             <input type="text" name="code" placeholder="{{__('cargo::view.example_SH00001')}}">
                         </p>
                         <p>
-                            <input type="submit" class="btn btn-submit submit" value="{{__('cargo::view.search')}}">
+                            <input type="submit" class="btnclicky btn btn-submit submit" value="{{__('cargo::view.search')}}">
                         </p>
                     </div>
                 </form>

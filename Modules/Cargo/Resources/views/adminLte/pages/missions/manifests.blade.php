@@ -21,7 +21,7 @@
                 {{ __('cargo::view.manifest') }}
             </h3>
         </div>
-       
+
     </div>
 
     <div class="card-body">
@@ -37,9 +37,9 @@
                             $manifest_captains = Modules\Cargo\Entities\Driver::all();
                         }
                     @endphp
-                    
+
                     <label>{{ __('cargo::view.driver') }}:</label>
-                    <select 
+                    <select
                         class="form-control  select-branch  @error('captain_id') is-invalid @enderror"
                         data-control="select2"
                         data-placeholder="{{ __('cargo::view.table.choose_driver') }}"
@@ -52,7 +52,7 @@
                         >{{$captain->name}}</option>
                         @endforeach
                     </select>
-                    @error('captain_id') 
+                    @error('captain_id')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -65,7 +65,7 @@
                 <label>{{ __('cargo::view.manifest_date') }}:</label>
                 <div class="form-group mb-5">
                     <input type="text" placeholder="{{ __('cargo::view.manifest_date') }}" name="manifest_date" autocomplete="off" value="{{ old('Shipment.shipping_date') }}" class="form-control @error('manifest_date') is-invalid @enderror" id="kt_datepicker_3" />
-                    @error('manifest_date') 
+                    @error('manifest_date')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -76,7 +76,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group mb-5">
-                  <button type="submit" class="btn btn-primary" style="display:block">{{ __('cargo::view.get_ganifest') }}</button>
+                  <button type="submit" class="btnclicky btn btn-primary" style="display:block">{{ __('cargo::view.get_ganifest') }}</button>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
 {{-- Inject styles --}}
 @section('styles')
     <style media="print">
-        
+
     </style>
 @endsection
 

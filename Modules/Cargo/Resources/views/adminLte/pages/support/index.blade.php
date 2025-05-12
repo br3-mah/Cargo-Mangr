@@ -330,7 +330,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary font-weight-bold">
+                    <button type="submit" class="btnclicky btn btn-primary font-weight-bold">
                         <span class="indicator-label">Submit Ticket</span>
                         <span class="indicator-progress">Please wait...
                         <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>

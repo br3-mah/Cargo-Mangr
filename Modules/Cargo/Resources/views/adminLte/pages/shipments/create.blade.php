@@ -159,7 +159,7 @@
 
                             <div class="card-footer d-flex justify-content-end py-6 px-9">
                             {{-- <a href="{{ url()->previous() }}" class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>--}}
-                                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit_client">@lang('view.create')</button>
+                                <button type="submit" class="btnclicky btn btn-primary" id="kt_account_profile_details_submit_client">@lang('view.create')</button>
                             </div>
                         </form>
                     </div>
@@ -186,7 +186,7 @@
 
                             <div class="card-footer d-flex justify-content-end py-6 px-9">
                             {{--   <a href="{{ url()->previous() }}" class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>--}}
-                                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit_client">@lang('view.create')</button>
+                                <button type="submit" class="btnclicky btn btn-primary" id="kt_account_profile_details_submit_client">@lang('view.create')</button>
                             </div>
                         </form>
                     </div>

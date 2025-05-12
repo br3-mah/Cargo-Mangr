@@ -1246,7 +1246,7 @@
 
                         <div class="steps-navi">
                             <input type="button" name="previous" class="navi-prev previous action-button-previous" value="{{ __('cargo::view.previous') }}" />
-                            <input type="submit" id="submit" name="make_payment" class="next action-button" value="Confirm" />
+                            <input type="submit" id="submit" name="make_payment" class="btnclicky next action-button" value="Confirm" />
                         </div>
                     </fieldset>
 

@@ -188,7 +188,7 @@
                     @csrf
                     <input type="hidden" id="formConsignmentId" name="consignment_id">
                     <input type="hidden" id="selectedShipmentIds" name="shipment_id[]" value="[]">
-                    <button type="submit" class="btn btn-primary" style="background-color: #010212">Save Changes</button>
+                    <button type="submit" class="btnclicky btn btn-primary" style="background-color: #010212">Save Changes</button>
                 </form>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>

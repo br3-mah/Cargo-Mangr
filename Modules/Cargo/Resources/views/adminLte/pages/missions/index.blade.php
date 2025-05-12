@@ -180,7 +180,7 @@
                     @endif
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('cargo::view.close')}}</button>
-                        <button type="submit" class="btn btn-primary">{{__('cargo::view.send')}}</button>
+                        <button type="submit" class="btnclicky btn btn-primary">{{__('cargo::view.send')}}</button>
                     </div>
                 @endif
                 </div>

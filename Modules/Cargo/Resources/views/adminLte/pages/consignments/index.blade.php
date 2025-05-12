@@ -65,7 +65,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Tracker</button>
+                        <button type="submit" class="btn btn-primary btnclicky">Update Tracker</button>
                     </div>
                 </form>
 

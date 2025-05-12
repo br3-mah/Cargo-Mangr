@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    
+
     <!--begin::Basic info-->
     <div class="card mb-5 mb-xl-10">
         <!--begin::Card header-->
@@ -30,7 +30,7 @@
                 <!--begin::Actions-->
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
                     <a href="{{ url()->previous() }}" class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>
-                    <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">@lang('view.create')</button>
+                    <button type="submit" class="btnclicky btn btn-primary" id="kt_account_profile_details_submit">@lang('view.create')</button>
                 </div>
                 <!--end::Actions-->
             </form>
