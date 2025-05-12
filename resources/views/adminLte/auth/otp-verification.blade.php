@@ -11,7 +11,7 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
                     <div class="text-center">
-                        <img src="{{ asset('https://newworldcargo.com/assets/lte/cargo-logo.svg') }}" alt="Secure Verification" width="60" class="mb-3">
+                        <img src="https://www.newworldcargo.com/images/logo.png" alt="Secure Verification" width="60" class="mb-3">
                         <h3 class="font-weight-bold text-primary">Verify Your Account</h3>
                         <p class="text-muted">We've sent a 6-digit code to your email {{ Auth::user()->email ?? '' }}</p>
                     </div>

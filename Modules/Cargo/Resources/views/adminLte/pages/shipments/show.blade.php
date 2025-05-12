@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <button id="printBtn2" onclick="printInvoice()" class="btnclicky inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button id="printBtn2" onclick="printInvoice()" class="btnclicky inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-dark bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                             <i class="fas fa-print mr-1"></i>
                             <span id="printBtnText2">Print Invoice</span>
                             <span id="printSpinner2" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
@@ -128,76 +128,139 @@
         </div>
 
         <!-- Modal for Confirm Payment -->
-        @php
-            $totalAmount = $shipment->amount_to_be_collected;
-        @endphp
-        <div class="modal fade" id="markPaidModal" tabindex="-1" role="dialog" aria-labelledby="markPaidLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content border-0 shadow-lg rounded-lg overflow-hidden">
-                <div class="modal-header bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3">
-                    <div class="d-flex align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-credit-card-fill me-2" viewBox="0 0 16 16">
-                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1"/>
-                        </svg>
-                        <h5 class="modal-title fw-bold mb-0" id="markPaidLabel">Confirm Payment</h5>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+@php
+    $totalAmount = convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw');
+@endphp
+<div class="modal fade" id="markPaidModal" tabindex="-1" role="dialog" aria-labelledby="markPaidLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-lg overflow-hidden" style="background-color: #f8f9fa;">
+            <!-- Header with dark blue gradient -->
+            <div class="modal-header py-4" style="background: linear-gradient(45deg, #0a2463 0%, #1e3a8a 100%); border: none;">
+                <div class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#FFD700" class="bi bi-credit-card-fill me-3" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1"/>
+                    </svg>
+                    <h5 class="modal-title fw-bold mb-0 text-white" id="markPaidLabel">Confirm Payment</h5>
                 </div>
+                <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-                <div class="modal-body p-4">
-                    <form id="markPaidForm">
-                        <div class="alert alert-info d-flex align-items-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-info-circle-fill me-2" viewBox="0 0 16 16">
+            <div class="modal-body p-4">
+                <form id="markPaidForm">
+                    <!-- Alert with yellow accent -->
+                    <div class="alert mb-4 border-0 shadow-sm" style="background-color: #fffbeb; border-left: 4px solid #FFD700;">
+                        <div class="d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FFD700" class="bi bi-info-circle-fill me-3" viewBox="0 0 16 16">
                                 <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
                             </svg>
-                            <p class="mb-0">Are you sure you want to mark this shipment as paid?</p>
+                            <p class="mb-0 fw-medium">Are you sure you want to mark this shipment as paid?</p>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                    </div>
+              <div class="card border-0 shadow-sm rounded-3 p-4 mb-4" style="background-color: white;">
+                        <h6 class="mb-3 text-uppercase" style="color: #0a2463; font-size: 0.85rem; letter-spacing: 0.5px;">Discount Details</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="discountType" class="form-label fw-medium">Discount Type</label>
-                                    <select class="form-select form-control-lg shadow-sm border" id="discountType">
-                                        <option value="">None</option>
-                                        <option value="fixed">Fixed</option>
-                                        <option value="percent">Percentage</option>
-                                    </select>
+                                    <label for="discountType" class="form-label fw-medium mb-2" style="color: #475569; font-size: 0.9rem;">
+                                        Discount Type
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #f8fafc; border-radius: 8px 0 0 8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFD700" viewBox="0 0 16 16">
+                                                <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2h6.5a.5.5 0 0 1 0 1H18v6.5a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 0 1H17v6.5a.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5V16H.5a.5.5 0 0 1 0-1H1v-6.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 0-1H1V.5a.5.5 0 0 1 .5-.5H8v.5a.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5z"/>
+                                            </svg>
+                                        </span>
+                                        <select class="form-select form-control-lg border-0" id="discountType" style="background-color: #f8fafc; border-radius: 0 8px 8px 0; height: 48px; font-size: 0.95rem;">
+                                            <option value="">None</option>
+                                            <option value="fixed">Fixed Amount</option>
+                                            <option value="percent">Percentage</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="discountValue" class="form-label fw-medium">Discount Value</label>
-                                    <input type="number" class="form-control form-control-lg shadow-sm border" id="discountValue" value="0" min="0">
+                                    <label for="discountValue" class="form-label fw-medium mb-2" style="color: #475569; font-size: 0.9rem;">
+                                        Discount Value
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #f8fafc; border-radius: 8px 0 0 8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFD700" viewBox="0 0 16 16">
+                                                <path d="M1.5 2.5A1.5 1.5 0 0 1 3 1h10a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 13 5h-1a1.5 1.5 0 0 1 0 3h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 13 12H3a1.5 1.5 0 0 1-1.5-1.5v-1A1.5 1.5 0 0 1 3 8h1a1.5 1.5 0 0 1 0-3H3a1.5 1.5 0 0 1-1.5-1.5z"/>
+                                            </svg>
+                                        </span>
+                                        <input type="number" class="form-control form-control-lg border-0" id="discountValue" value="0" min="0" style="background-color: #f8fafc; border-radius: 0 8px 8px 0; height: 48px; font-size: 0.95rem;">
+                                        <span class="input-group-text border-0 d-none" id="percentSymbol" style="background-color: #f8fafc; border-radius: 0 8px 8px 0;">%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="card bg-light border-0 shadow-sm rounded-3 p-3 mt-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Original Total:</span>
-                                <span id="originalTotal" class="fw-medium">{{ number_format($totalAmount, 2) }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold">Final Total:</span>
-                                <span id="finalTotal" class="fw-bold text-primary fs-5">{{ number_format($totalAmount, 2) }}</span>
-                            </div>
+                    <!-- Summary card with yellow accent -->
+                    <div class="card border-0 shadow-sm rounded-3 p-4 mt-4" style="background-color: white;">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Original Total:</span>
+                            <span id="originalTotal" class="fw-medium">{{ number_format($totalAmount, 2) }}</span>
                         </div>
-                    </form>
-                </div>
+                        <hr style="opacity: 0.1;">
+                        <div class="d-flex justify-content-between mt-2">
+                            <span class="fw-bold" style="color: #0a2463;">Final Total:</span>
+                            <span id="finalTotal" class="fw-bold fs-5" style="color: #0a2463;">{{ number_format($totalAmount, 2) }}</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
-                <div class="modal-footer bg-light py-3">
-                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal">
-                        <span>Cancel</span>
-                    </button>
-                    <button type="button" class="btn btn-success px-4 d-flex align-items-center" id="confirmMarkPaidBtn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
-                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                        </svg>
-                        <span>Confirm Payment</span>
-                    </button>
-                </div>
+            <div class="modal-footer py-4" style="background-color: #f8f9fa; border-top: 1px solid rgba(0,0,0,0.05);">
+                <button type="button" class="btn px-4 py-2" data-dismiss="modal" style="background-color: #e2e8f0; color: #64748b; border: none; border-radius: 8px; font-weight: 600;">
+                    Cancel
+                </button>
+                <button type="button" class="btn px-4 py-2 d-flex align-items-center" id="confirmMarkPaidBtn" style="background-color: #FFD700; color: #0a2463; border: none; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 5px rgba(255, 215, 0, 0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </svg>
+                    <span>Confirm Payment</span>
+                </button>
             </div>
         </div>
-        </div>
+    </div>
+</div>
+
+<!-- Add this script at the end of your document -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const discountTypeEl = document.getElementById('discountType');
+        const discountValueEl = document.getElementById('discountValue');
+        const originalTotalEl = document.getElementById('originalTotal');
+        const finalTotalEl = document.getElementById('finalTotal');
+        
+        // Original total amount from PHP
+        const originalTotal = {{ $totalAmount }};
+        
+        // Function to update final total based on discount
+        function updateFinalTotal() {
+            const discountType = discountTypeEl.value;
+            const discountValue = parseFloat(discountValueEl.value) || 0;
+            let finalTotal = originalTotal;
+            
+            if (discountType === 'fixed') {
+                finalTotal = Math.max(0, originalTotal - discountValue);
+            } else if (discountType === 'percent') {
+                finalTotal = originalTotal * (1 - (discountValue / 100));
+            }
+            
+            finalTotalEl.textContent = finalTotal.toFixed(2);
+        }
+        
+        // Add event listeners
+        discountTypeEl.addEventListener('change', updateFinalTotal);
+        discountValueEl.addEventListener('input', updateFinalTotal);
+        
+        // Initialize
+        updateFinalTotal();
+    });
+</script>
         @include('cargo::adminLte.pages.shipments._partials.cargo-payment-modal')
     </div>
 </div>

@@ -24,31 +24,26 @@ $client = 4;
 
     <div class="card shadow-sm border-0 rounded-lg mb-4">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
+            
                 <h5 class="card-title mb-0 text-primary fw-bold" id="consignmentModalLabel">
-                    Code: <span class="text-dark">{{ $consignment->consignment_code }}</span>
+                    Consignment Code: <span class="text-dark">{{ $consignment->consignment_code }}</span>
                     <span id="formConsignmentCode" class="badge bg-primary ms-2"></span>
                 </h5>
-            </div>
+            
             <div class="d-flex">
-                <form method="POST" action="{{ route('consignment.export') }}" class="me-2">
+                {{-- <form method="POST" action="{{ route('consignment.export') }}" class="me-2">
                     @csrf
-                    <button type="submit" class="btnclicky btn btn-info px-3 d-flex align-items-center">
+                    <button type="submit" class="btnclicky btn-sm text-sm btn btn-info px-3 d-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet me-2" viewBox="0 0 16 16">
                             <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"/>
                         </svg>
                         <span>Export Shipments</span>
                     </button>
-                </form>
+                </form> --}}
                 <button type="button" class="btn btn-warning mr-2" data-toggle="modal" data-target="#importModal">
-                    <i class="fas fa-file-excel"></i> Import Consignments
+                    <i class="fas fa-file-excel"></i> Import Consignment
                 </button>
-                {{-- <button type="button" class="btn btn-primary px-3 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#updateTrackerModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-fill me-2" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.3 1.3 0 0 0-.37.265.3.3 0 0 0-.057.09V14l.002.008.016.033a.6.6 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.6.6 0 0 0 .146-.15l.015-.033L12 14v-.004a.3.3 0 0 0-.057-.09 1.3 1.3 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465s-2.462-.172-3.34-.465c-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411"/>
-                    </svg>
-                    <span>Update Tracker</span>
-                </button> --}}
+                
             </div>
         </div>
         <div class="card-body p-0">
@@ -108,7 +103,7 @@ $client = 4;
             "info": true,
             "lengthMenu": [10, 25, 50, 100],
             "columnDefs": [
-                { "orderable": false, "targets": 7 }
+                { "orderable": false, "targets": 8 }
             ]
         });
 
