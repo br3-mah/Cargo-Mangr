@@ -11,7 +11,7 @@
 
                         <div class="subtitle">
                             {{ __('Already have an account?') }}
-                            <a href="{{ theme()->getPageUrl('login') }}" class="link-primary">
+                            <a href="https://www.newworldcargo.com" class="link-primary">
                                 {{ __('Sign in here') }}
                             </a>
                         </div>
