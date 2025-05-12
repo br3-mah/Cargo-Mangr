@@ -16,18 +16,22 @@ trait HandlesCurrencyExchange
      */
     public function convertCurrency(float $amount, string $fromCurrency, string $toCurrency): ?float
     {
-        if ($fromCurrency === $toCurrency) {
-            return $amount; // No conversion needed
+        try {
+            if ($fromCurrency === $toCurrency) {
+                return $amount; // No conversion needed
+            }
+
+            $rate = CurrencyExchangeRate::where('from_currency', $fromCurrency)
+                ->where('to_currency', $toCurrency)
+                ->value('exchange_rate');
+
+            if (!$rate) {
+                return null; // No rate found
+            }
+
+            return round($amount * $rate, 4);
+        } catch (\Throwable $th) {
+            return round($amount, 4);
         }
-
-        $rate = CurrencyExchangeRate::where('from_currency', $fromCurrency)
-            ->where('to_currency', $toCurrency)
-            ->value('exchange_rate');
-
-        if (!$rate) {
-            return null; // No rate found
-        }
-
-        return round($amount * $rate, 4);
     }
 }
