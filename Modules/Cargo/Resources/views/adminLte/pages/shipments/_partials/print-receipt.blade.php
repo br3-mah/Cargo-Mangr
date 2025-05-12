@@ -1,12 +1,20 @@
-<button id="printBtn" onclick="printReceipt()" class="btn btn-light text-dark fw-300 me-2">
+<button id="printBtn" onclick="printReceipt()" class="btnclicky btn btn-light text-dark fw-300 me-2">
     <i class="fas fa-print mr-1"></i>
     <span id="printBtnText">Print Receipt</span>
     <span id="printSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
 </button>
-
 <div id="receiptContent" style="display:none;">
     <div style="font-family: monospace; width: 58mm; padding: 10px;">
-        <h3 style="text-align: center;">New World Cargo</h3>
+        <div style="text-align: center;">
+            <img src="https://app.newworldcargo.com/assets/lte/cargo-logo.svg" alt="New World Cargo Logo" style="max-width: 100px; margin-bottom: 5px;">
+            <h3 style="margin: 0;">New World Cargo</h3>
+            <p style="font-size: 11px; margin: 2px 0;">Shop 62/A, Carousel Shopping Centre</p>
+            <p style="font-size: 11px; margin: 2px 0;">Lusaka, Zambia</p>
+            <p style="font-size: 11px; margin: 2px 0;">+260 763 297 287 | +260 763 313 193</p>
+            <p style="font-size: 11px; margin: 2px 0;">info@newworldcargo.com</p>
+        </div>
+
+        <hr />
         <p>Date: {{ now()->format('Y-m-d H:i') }}</p>
         <p>Shipment ID: {{ $shipment->id }}</p>
         <p>Customer: {{ $shipment->client->name ?? '-' }}</p>
@@ -41,6 +49,7 @@
         <p style="text-align:center;">Thank you!</p>
     </div>
 </div>
+
 <script>
     function printReceipt() {
         const btn = document.getElementById("printBtn");

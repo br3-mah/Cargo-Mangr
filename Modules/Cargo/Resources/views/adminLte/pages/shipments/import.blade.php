@@ -109,7 +109,7 @@
                     </div>
 
                     <div class="mb-0 text-right form-group">
-                        <button type="submit" class="btn btn-sm btn-primary">{{ __('cargo::view.parse_CSV') }}</button>
+                        <button type="submit" class="btnclicky btn btn-sm btn-primary">{{ __('cargo::view.parse_CSV') }}</button>
                     </div>
                 </form>
             </div>

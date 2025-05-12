@@ -74,7 +74,7 @@
                 <p>Click "Pay Now" to complete your payment.</p>
 
                 <button type="button" class="btn btn-secondary prev-btn" onclick="prevStep(3)">Back</button>
-                <button type="submit" class="btn btn-success">Pay Now</button>
+                <button type="submit" class="btnclicky btn btn-success">Pay Now</button>
             </div>
         </form>
     </div>

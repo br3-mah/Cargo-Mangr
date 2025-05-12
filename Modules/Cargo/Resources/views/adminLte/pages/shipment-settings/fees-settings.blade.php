@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-    
+
     <!--begin::Card-->
     <div class="mx-auto col-lg-12">
         <div class="mb-10 card">
@@ -85,17 +85,17 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="row">             
+                            <div class="row">
                                 <div class="def_mile_costs form-group col-md-4">
                                     <label>{{ __('cargo::view.default_mile_cost') }}:</label>
                                     <input type="text" min="0" class="form-control" placeholder="{{ __('cargo::view.default_mile_cost') }}" value="{{Modules\Cargo\Entities\ShipmentSetting::getVal('def_mile_cost')}}" name="Setting[def_mile_cost]" >
                                 </div>
-                            
+
                                 <div class="def_shiping_costs form-group col-md-4">
                                     <label>{{ __('cargo::view.default_shipping_cost') }}:</label>
                                     <input type="text" min="0" class="form-control" placeholder="{{ __('cargo::view.default_shipping_cost') }}" value="{{Modules\Cargo\Entities\ShipmentSetting::getVal('def_shipping_cost')}}" name="Setting[def_shipping_cost]" >
                                 </div>
-                                
+
 
                                 <div class="form-group col-md-4">
                                     <label>{{ __('cargo::view.default_tax') }}%:</label>
@@ -110,7 +110,7 @@
                                     <label>{{ __('cargo::view.default_returned_mile_cost') }}:</label>
                                     <input type="text" min="0" class="form-control" placeholder="{{ __('cargo::view.default_returned_mile_cost') }}" value="{{Modules\Cargo\Entities\ShipmentSetting::getVal('def_return_mile_cost')}}" name="Setting[def_return_mile_cost]" >
                                 </div>
-                            
+
                                 <div class="def_shiping_costs form-group col-md-4">
                                     <label>{{ __('cargo::view.default_returned_shipment_cost') }}:</label>
                                     <input type="text" min="0" class="form-control" placeholder="{{ __('cargo::view.default_returned_shipment_cost') }}" value="{{Modules\Cargo\Entities\ShipmentSetting::getVal('def_return_cost')}}" name="Setting[def_return_cost]" >
@@ -163,7 +163,7 @@
                 </div>
             </div>
             <div class="mb-0 text-right form-group">
-                <button type="submit" class="mt-2 btn btn-lg btn-success">{{ __('cargo::view.save') }}</button>
+                <button type="submit" class="btnclicky mt-2 btn btn-lg btn-success">{{ __('cargo::view.save') }}</button>
             </div>
         </form>
 
@@ -316,13 +316,13 @@
                 $(".def_mile_costs").css("display","none");
                 $(".def_shiping_costs").css("display","block");
             }
-                
+
         });
         $('.select-country').select2({
             placeholder: "Select country"
         });
         var inputs = document.getElementsByTagName('input');
-        
+
         for (var i = 0; i < inputs.length; i++) {
             if (inputs[i].type.toLowerCase() == 'number') {
                 inputs[i].onkeydown = function(e) {

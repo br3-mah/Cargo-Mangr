@@ -19,7 +19,7 @@
         <meta property="og:type" content="article" />
         <meta property="og:title" content="{{ \Str::title(get_general_setting('company_name', config('app.name'))) }}" />
 
-        @php 
+        @php
             $model = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
         @endphp
         <link rel="shortcut icon" href="{{ $model->getFirstMediaUrl('system_logo') ? $model->getFirstMediaUrl('system_logo') : asset('assets/lte/media/logos/favicon.png') }}" />
@@ -30,7 +30,7 @@
         <!--begin::Global Stylesheets Bundle(used by all pages)-->
 		<link href="{{ asset('assets/lte/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
         <!--end::Global Stylesheets Bundle-->
-        
+
         <!-- Select2 -->
         <link rel="stylesheet" href="{{ asset('assets/lte') }}/plugins/select2/css/select2.min.css">
         <!-- Theme style -->
@@ -57,7 +57,7 @@
         <link rel="stylesheet" href="{{ asset('assets/lte') }}/plugins/dropzone/min/dropzone.min.css">
         <!-- flag-icon-css -->
         <link rel="stylesheet" href="{{ asset('assets/lte') }}/plugins/flag-icon-css/css/flag-icon.min.css">
-        
+
         <!--begin::Custom Stylesheets-->
 		<link href="{{ asset('assets/global/css/app.css') }}" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('assets/custom/css/custom.css') }}" rel="stylesheet" type="text/css" />
@@ -86,10 +86,11 @@
     </head>
     <body class="hold-transition sidebar-mini layout-fixed @if(isset($current_lang) && $current_lang->dir == 'rtl') rtl @endif">
 
+        @include('adminLte.components.processing-loader')
         <div class="wrapper">
 
             <!-- Preloader -->
-            @php 
+            @php
                 $model = App\Models\Settings::where('group', 'general')->where('name','loading_logo')->first();
                 $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
                 $user_role = auth()->user()->role;
@@ -100,8 +101,8 @@
 
             <!-- Navbar -->
             @include('adminLte.components.header')
+            @include('adminLte.components.exchange-rate')
             <!-- /.navbar -->
-
             <!--begin::Aside-->
             @if ($user_role == 4)
                 @include('adminLte.components.customer-aside')
@@ -113,19 +114,18 @@
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
 
-                
+
                 @if($user_role !== 4)
                     @include('adminLte.components.page-title')
                 @endif
                 <br>
-                
+
                 <!-- Main content -->
                 <section @if($user_role == 4) style="margin-left: 2%; padding-left:5%" @endif class="content">
                     <div class="container-fluid">
+
                     @yield('before-page')
-
                     {{ $slot }}
-
                     @yield('after-page')
                     </div><!-- /.container-fluid -->
                 </section>
@@ -138,8 +138,61 @@
             <!--end::Footer-->
 
         </div>
-        <!-- ./wrapper -->
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            const button = document.querySelector('.btnclicky');
+            const overlayLoader = document.querySelector('.overlay-loader');
+            const topNavProgress = document.querySelector('.top-nav-progress');
+
+            button.addEventListener('click', function() {
+                // Show the overlay
+                overlayLoader.classList.add('active');
+
+                // Animate the top nav progress
+                let width = 0;
+                const progressInterval = setInterval(() => {
+                if (width >= 70) {
+                    // Slow down at 70%
+                    width += 0.3;
+                } else {
+                    width += 1;
+                }
+
+                if (width >= 100) {
+                    clearInterval(progressInterval);
+
+                    // Hide the overlay after a delay
+                    setTimeout(() => {
+                    overlayLoader.classList.remove('active');
+
+                    // Reset the progress bar after the overlay is hidden
+                    setTimeout(() => {
+                        topNavProgress.style.width = '0%';
+                    }, 300);
+                    }, 500);
+                }
+
+                topNavProgress.style.width = width + '%';
+                }, 30);
+
+                // Simulate loading time (remove this in production and trigger the hiding based on your actual loading completion)
+                setTimeout(() => {
+                clearInterval(progressInterval);
+                topNavProgress.style.width = '100%';
+
+                setTimeout(() => {
+                    overlayLoader.classList.remove('active');
+
+                    // Reset the progress bar after the overlay is hidden
+                    setTimeout(() => {
+                    topNavProgress.style.width = '0%';
+                    }, 300);
+                }, 500);
+                }, 3000);
+            });
+            });
+        </script>
         <!-- jQuery -->
         <script
             src="https://code.jquery.com/jquery-1.12.4.min.js"
@@ -190,10 +243,11 @@
             bsCustomFileInput.init();
             });
         </script>
-		
+
 		{{-- Show message alert from session flash --}}
 		@include('adminLte.helpers.message-alert')
 		<!--end::Javascript-->
+
 
         @yield('scripts')
 

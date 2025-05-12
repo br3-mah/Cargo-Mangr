@@ -25,17 +25,16 @@
         <!-- Header -->
         <div class="flex justify-between items-center pb-5 border-b-2 border-primary mb-6 relative z-10">
             <div class="flex items-center">
-                <div class="w-20 h-20 bg-primary rounded-full flex justify-center items-center text-white font-bold text-2xl mr-4">
-                    NC
+                <div class="w-20 h-20 rounded-full overflow-hidden bg-white mr-4 flex justify-center items-center">
+                    <img src="https://app.newworldcargo.com/assets/lte/cargo-logo.svg" alt="Newworld Cargo Logo" class="object-contain h-full w-full" />
                 </div>
                 <div class="leading-relaxed">
                     <div class="text-xl font-bold text-primary">NEWWORLD CARGO</div>
                     <div>Global Logistics Solutions</div>
-                    <div>+1 (555) 123-4567 | info@newworldcargo.com</div>
-                    <div>123 Shipping Lane, Port City, PC 12345</div>
+                    <div>+260 763 297 287 | info@newworldcargo.com</div>
+                    <div>Shop 62/A, Carousel Shopping Centre, Lusaka, Zambia</div>
                 </div>
             </div>
-
             <div class="text-right">
                 <div class="text-2xl font-bold text-primary mb-1">SHIPMENT INVOICE</div>
                 <div class="inline-block px-3 py-1 bg-gray-200 rounded text-gray-600 font-medium">
@@ -174,10 +173,22 @@
 
         <!-- Footer -->
         <div class="text-center mt-5 pt-5 border-t border-gray-200 text-sm text-gray-500">
-            <p>This is an official document issued by Newworld Cargo Ltd.</p>
-            <p>For inquiries, please contact customer service at +1 (555) 123-4567 or support@newworldcargo.com</p>
-            <p class="font-semibold">Generated on: {{ now()->format('F j, Y, g:i a') }}</p>
+            <p>This is an official document issued by Newworld Cargo Limited.</p>
+            <p>
+                For inquiries, please contact Customer Care at
+                <br>
+                +260 763 297 287 or +260 763 313 193
+                <br>
+                or write to us at <a href="mailto:info@newworldcargo.com" class="text-blue-500 hover:underline">info@newworldcargo.com</a>
+            </p>
+            <p class="mt-2">
+                Our Location: Shop 62/A, Carousel Shopping Centre, Lusaka, Zambia
+            </p>
+            <p class="font-semibold mt-2">
+                Generated on: {{ now()->format('F j, Y, g:i a') }}
+            </p>
         </div>
+
     </div>
 
 <script>

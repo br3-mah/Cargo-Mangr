@@ -73,11 +73,11 @@
                         {{-- <p class="text-sm text-gray-500">{{ __('cargo::view.included_tax_insurance') }}</p> --}}
                     </div>
                     <div class="text-right">
-                        <span class="text-3xl font-bold text-blue-600">
-                            {{-- + $shipment->tax + $shipment->shipping_cost + $shipment->insurance --}}
-                            {{format_price($shipment->amount_to_be_collected) }}
-                        </span>
+                            <span class="text-3xl font-bold text-blue-600">
+                                {{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw')) }}
+                            </span>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <button id="printBtn2" onclick="printInvoice()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button id="printBtn2" onclick="printInvoice()" class="btnclicky inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <i class="fas fa-print mr-1"></i>
                             <span id="printBtnText2">Print Invoice</span>
                             <span id="printSpinner2" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>

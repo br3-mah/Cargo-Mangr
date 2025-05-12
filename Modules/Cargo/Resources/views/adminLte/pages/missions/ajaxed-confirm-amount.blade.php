@@ -36,22 +36,22 @@
                     @if($mission->getRawOriginal('type') ==  Modules\Cargo\Entities\Mission::DELIVERY_TYPE && $mission->status_id == Modules\Cargo\Entities\Mission::RECIVED_STATUS)
                         @if($shipment->payment_type == Modules\Cargo\Entities\Shipment::POSTPAID)
                             <input type="number" class="form-control mb-4"  value="{{ $shipment->amount_to_be_collected + $shipment->shipping_cost + $shipment->tax + $shipment->insurance }}" name="amount"
-                                style="background:#f3f6f9;color:#3f4254;" disabled /> 
+                                style="background:#f3f6f9;color:#3f4254;" disabled />
                         @elseif($shipment->payment_type == Modules\Cargo\Entities\Shipment::PREPAID)
 
                             @if($mission->getRawOriginal('type') == Modules\Cargo\Entities\Mission::DELIVERY_TYPE)
                                 <input type="number" class="form-control mb-4"  value="{{ $shipment->amount_to_be_collected }}" name="amount"
-                                style="background:#f3f6f9;color:#3f4254;" disabled /> 
+                                style="background:#f3f6f9;color:#3f4254;" disabled />
                             @else
                                 <input type="number" class="form-control mb-4"  value="{{ $shipment->shipping_cost + $shipment->tax + $shipment->insurance }}" name="amount"
-                                style="background:#f3f6f9;color:#3f4254;" disabled /> 
+                                style="background:#f3f6f9;color:#3f4254;" disabled />
                             @endif
 
                         @endif
                     @else
                         <input type="number" class="form-control mb-4" value="{{$shipment_cost}}" name="amount" style="background:#f3f6f9;color:#3f4254;" disabled />
                     @endif
-                        
+
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('cargo::view.close') }}</button>
-        <button type="submit" id="confirm" class="btn btn-primary">{{ __('cargo::view.confirm_amount_and_done') }}</button>
+        <button type="submit" id="confirm" class="btnclicky btn btn-primary">{{ __('cargo::view.confirm_amount_and_done') }}</button>
     </div>
 </form>
 
@@ -120,6 +120,6 @@
             $('#signaturePadImg').val(dataURL);
             $('.kt_form').submit();
         });
-        
+
     </script>
 @endif

@@ -220,7 +220,7 @@
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
                     <a href="{{ url()->previous() }}"
                         class="btn btn-light btn-active-light-primary me-2">@lang('view.discard')</a>
-                    <button type="submit" class="btn btn-success"
+                    <button type="submit" class="btnclicky btn btn-success"
                         id="kt_account_profile_details_submit">@lang('view.update')</button>
                 </div>
                 <!--end::Actions-->

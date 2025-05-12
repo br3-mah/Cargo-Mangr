@@ -30,7 +30,7 @@
                     <div class="col-md-9">
                         <div class="pb-10 d-flex justify-content-between pb-md-20 flex-column flex-md-row">
                             <h1 class="mb-10 display-4 font-weight-boldest">
-                                @php 
+                                @php
                                     $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
                                 @endphp
                                 <img alt="Logo" src="{{  $system_logo->getFirstMediaUrl('system_logo') ? $system_logo->getFirstMediaUrl('system_logo') : asset('assets/lte/cargo-logo.svg') }}" class="logo" style="max-height: 90px;" />
@@ -91,7 +91,7 @@
                 </div>
                 <!-- end: Invoice header-->
                 <!-- begin: Invoice body-->
-                
+
                 <div class="row justify-content-center py-md-10 px-md-0" style="padding: 4.25rem!important;">
                     <div class="col-12 row">
                         <div class="col-12">
@@ -103,7 +103,7 @@
                                 <button type="button" class="mb-5 btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModalCenter" id="modal_open">
                                     {{__('cargo::view.reschedule')}}
                                 </button>
-                            
+
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -122,7 +122,7 @@
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label>{{__('cargo::view.reason')}}:</label>
-                                                                
+
                                                                 <select name="reason" class="form-control mb-4 captain_id kt-select2">
                                                                     @foreach ($reasons as $reason)
                                                                         <option value="{{$reason->id}}">{{$reason->name}}</option>
@@ -140,7 +140,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('cargo::view.close')}}</button>
-                                                    <button type="submit" class="btn btn-primary">{{__('cargo::view.save')}}</button>
+                                                    <button type="submit" class="btnclicky btn btn-primary">{{__('cargo::view.save')}}</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -173,7 +173,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                
+
                                 @foreach($mission_shipments as $key=> $shipment_mission)
                                     <tr class="font-weight-boldest @if(in_array($shipment_mission->shipment->status_id ,[Modules\Cargo\Entities\Shipment::RETURNED_STATUS,Modules\Cargo\Entities\Shipment::RETURNED_STOCK,Modules\Cargo\Entities\Shipment::RETURNED_CLIENT_GIVEN])) table-danger @endif">
                                         <td class="text-right pt-7" width="3%">{{ ($key+1) }}</td>
@@ -199,7 +199,7 @@
                                             @endif
 
                                         @endif
-                                        
+
                                         <td class="pr-5 text-right text-danger pt-7 no-print">
                                             @if(in_array($shipment_mission->mission->status_id , [Modules\Cargo\Entities\Mission::APPROVED_STATUS,Modules\Cargo\Entities\Mission::REQUESTED_STATUS,Modules\Cargo\Entities\Mission::RECIVED_STATUS]) && $shipment_mission->shipment->mission_id != null)
                                                 <!-- Button trigger modal -->
@@ -218,7 +218,7 @@
                                                         {{__('cargo::view.remove_from')}} {{$mission->code}}
                                                     @endif
                                                 </button>
-                                                
+
                                             @else
                                                 {{__('cargo::view.no_actions')}}
                                             @endif
@@ -226,7 +226,7 @@
                                         <td class="text-center print-only"><input type="checkbox" class="form-control" /></td>
                                     </tr>
                                 @endforeach
-                                
+
                                 </tbody>
                             </table>
                         </div>
@@ -268,7 +268,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>{{__('cargo::view.reason')}}:</label>
-                                                
+
                                                 <select name="reason" class="form-control captain_id kt-select2" required>
                                                     @foreach ($reasons as $reason)
                                                         <option value="{{$reason->id}}">{{$reason->name}}</option>
@@ -281,7 +281,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('cargo::view.close')}}</button>
-                                    <button type="submit" class="btn btn-danger">
+                                    <button type="submit" class="btnclicky btn btn-danger">
                                     @if($mission->getRawOriginal('type') == Modules\Cargo\Entities\Mission::DELIVERY_TYPE)
                                         {{__('cargo::view.return')}}
                                     @else

@@ -27,8 +27,8 @@
                     <div class="fallback">
                         <input name="excel_file" type="file" />
                     </div>
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-upload"></i> Upload & Process
+                    <button type="submit" class="btn btn-success btnclicky">
+                        <i class="fas fa-upload"></i> Upload
                     </button>
                 </form>
 

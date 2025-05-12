@@ -1,49 +1,38 @@
 <!-- Left navbar links -->
-<ul class="navbar-nav">
+<ul class="navbar-nav d-flex align-items-center">
+    <!-- Toggle Menu Button -->
     <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-    </li>
-    <li class="nav-item d-sm-inline-block mobile_section">
-        <a href="{{ fr_route('/') }}" target="_blank"
-            class="nav-link {{ active_route('/') }}">@lang('view.website')</a>
+        <a class="nav-link px-2 text-primary-hover transition-all" data-widget="pushmenu" href="#" role="button">
+            <i class="fas fa-bars fa-fw"></i>
+        </a>
     </li>
 
-    @if (check_module('Cargo'))
-        @if($user_role == $auth_branch || $user_role == $auth_client || auth()->user()->can('create-shipments'))
-        <li class="nav-item d-sm-inline-block mobile_section">
-            <a href="{{ LaravelLocalization::localizeUrl(route('shipments.create')) }}"
-                class="nav-link {{ active_route('shipments.create') }}">{{ __('cargo::view.create_new_shipment') }}</a>
-        </li>
-        @endif
-    @endif
-</ul>
+    <!-- Divider -->
+    <li class="nav-item d-none d-sm-block">
+        <div class="border-end h-75 mx-2 opacity-25"></div>
+    </li>
+
+    <!-- Website Link -->
+    <li class="nav-item d-sm-inline-block mobile_section">
+        <a href="https://www.newworldcargo.com"
+           target="_blank"
+           class="nav-link px-2 {{ active_route('/') }} d-flex align-items-center">
+            <i class="fas fa-globe fa-fw me-1"></i>
+            <span class="font-weight-medium">Website</span>
+        </a>
+    </li>
+</ul>   
 
 <!-- Right navbar links -->
 <ul class="navbar-nav ml-auto">
-
-    <!-- Navbar Search -->
-    <!-- <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-            <i class="fas fa-search"></i>
+    <!-- Currency Conversion Button -->
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#currencyModal">
+            <i class="fas fa-money-bill-wave"></i>
+            Exchange Rates
         </a>
-        <div class="navbar-search-block">
-            <form class="form-inline">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                    <div class="input-group-append">
-                    <button class="btn btn-navbar" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </li> -->
+    </li>
 
-    <!-- Notifications Dropdown Menu -->
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
@@ -67,15 +56,12 @@
                 @endforeach
                 <a href="#" class="dropdown-item dropdown-footer">@lang('view.see_all_notifications')</a>
             @else
-                <!--begin::Nav-->
                 <span class="dropdown-item dropdown-header">@lang('view.no_new_notifications')</span>
                 <div class="dropdown-divider"></div>
-                <!--end::Nav-->
             @endif
         </div>
     </li>
 
-    <!-- User Dropdown Menu -->
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="fas fa-user"></i>
@@ -209,9 +195,5 @@
             <i class="fas fa-expand-arrows-alt"></i>
         </a>
     </li>
-    <!-- <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-            <i class="fas fa-th-large"></i>
-        </a>
-    </li> -->
 </ul>
+
