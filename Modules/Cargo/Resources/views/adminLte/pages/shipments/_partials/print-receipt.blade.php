@@ -1,5 +1,5 @@
-<button id="printBtn" onclick="printReceipt()" class="btnclicky btn btn-light text-dark fw-300 me-2">
-    <i class="fas fa-print mr-1"></i>
+<button id="printBtn" onclick="printReceipt()" class="btnclicky btn btn-sm btn-light text-dark me-2">
+    <i class="bi bi-receipt-cutoff"></i>
     <span id="printBtnText">Print Receipt</span>
     <span id="printSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
 </button>
