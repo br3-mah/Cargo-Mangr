@@ -24,7 +24,7 @@
                 <input type="checkbox" class="bulk-checkbox" id="select-all">
             </th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">CODE</th>
-            <th class="px-6 py-3 font-semibold tracking-wider text-left">SHIPMENTS</th>
+            <th class="px-6 py-3 font-semibold tracking-wider text-left">SHIPMENT PARCELS</th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">CONSIGNEE</th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">SOURCE</th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">DESTINATION</th>
@@ -43,7 +43,7 @@
                 {{ $consignment->consignment_code ?? 'Unspecified' }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                {{ $consignment->mawb_num ?? 'Unspecified' }}
+                {{ $consignment->shipment_count ?? 'Unspecified' }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                 {{ $consignment->name }}
@@ -102,6 +102,12 @@
 
                 <button type="button"
                         data-id="{{ $consignment->id }}"
+                        data-consignment_code="{{ $consignment->consignment_code }}"
+                        data-consignee_name="{{ $consignment->name }}"
+                        data-source="{{ $consignment->source ?? 'China' }}"
+                        data-destination="{{ $consignment->destination ?? 'Zambia'  }}"
+                        data-status="{{ $consignment->status }}"
+                        data-updated_at="{{ $consignment->updated_at }}"
                         data-checkpoint="{{ $consignment->checkpoint }}"
                         data-toggle="modal"
                         data-target="#updateTrackerModal"

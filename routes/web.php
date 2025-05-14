@@ -75,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/consignment/tracker/update/{id}', 'ConsignmentController@updateTracker')->name('consignment.tracker.update');
     Route::post('/consignment/bulk-delete', 'ConsignmentController@bulkDelete')->name('consignment.bulkDelete');
     Route::post('/currency/update-rates', 'CurrencyExchangeController@updateRates')->name('currency.update_rates');
+    Route::get('/twilio-settings', 'TwilioSettingController@index')->name('twilio.settings');
+    Route::post('/twilio-setting', 'TwilioSettingController@store')->name('twilio.settings.store');
 
 });
 

@@ -65,3 +65,13 @@ $admin = 1;
         </a>
     </li>
 @endif
+
+@if (auth()->user()->can('twilio-settings') || $user_role == $admin)
+    <li class="nav-item {{ areActiveRoutes(['twilio.settings'], 'menu-is-opening menu-open active') }}">
+        <a href="{{ fr_route('twilio.settings') }}"
+            class="nav-link {{ areActiveRoutes(['twilio.settings'], 'menu-is-opening menu-open active') }}">
+            <i class="fas fa-cog fa-fw"></i>
+            <p>SMS Settings (Twilio)</p>
+        </a>
+    </li>
+@endif
