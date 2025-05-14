@@ -30,6 +30,10 @@ class Consignment extends Model
         'eta_lun',
     ];
 
+    public function getShipmentCountAttribute()
+    {
+        return $this->shipments()->count();
+    }
 
 
     /**
@@ -39,4 +43,6 @@ class Consignment extends Model
     {
         return $this->hasMany(Shipment::class);
     }
+
+    
 }

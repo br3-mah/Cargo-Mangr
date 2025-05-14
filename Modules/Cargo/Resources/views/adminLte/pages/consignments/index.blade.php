@@ -33,46 +33,169 @@
 <!-- Update Tracker Modal -->
 <div class="modal fade" id="updateTrackerModal" tabindex="-1" role="dialog" aria-labelledby="updateTrackerModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="updateTrackerModalLabel">Update Consignment Tracker</h5>
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-warning border-0">
+                <h5 class="modal-title font-weight-bold text-white" id="updateTrackerModalLabel">
+                    <i class="fas fa-shipping-fast mr-2"></i>Update Consignment Tracker
+                </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="updateTrackerForm" action="" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <!-- Laravel requires PATCH for updates -->
-
-                    <!-- Hidden field for consignment_id -->
-                    <input type="hidden" name="consignment_id" id="consignmentId">
-
-                    <div class="form-group">
-                        <label for="trackerStatus">Status</label>
-                        <select class="form-control" name="status" id="trackerStatus" required>
-                            <option value="1">Parcel received and is being processed</option>
-                            <option value="2">Parcel dispatched from China</option>
-                            <option value="3">Parcel has arrived at the transit Airport</option>
-                            <option value="4">Parcel has departed from the Transit Airport to Lusaka Airport</option>
-                            <option value="5">Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress
-                            </option>
-                            <option value="6">Parcel is now ready for collection in Lusaka at the Main Branch</option>
-                        </select>
+            <div class="modal-body p-0">
+                <div class="row no-gutters">
+                    <!-- Illustration Column -->
+                    <div class="col-md-4 bg-white d-flex flex-column align-items-center justify-content-center p-4">
+                        <div class="shipment-illustration mb-4">
+                            <img src="{{ asset('assets/anime/earth.gif') }}" alt="">
+                        </div>
+                        <div class="tracking-status text-center">
+                            <span class="badge badge-pill badge-primary px-3 py-2">Tracking Active</span>
+                            <p class="text-muted small mt-3 mb-0">Last updated: <span id="statusUpdateTime"></span></p>
+                        </div>
                     </div>
+                    <!-- Form Column -->
+                    <div class="col-md-8 py-4 px-4">
+                        <form id="updateTrackerForm" action="" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="consignment_id" id="consignmentId">
+                            <div class="card border-0 shadow-sm mb-4" id="consignmentDetails">
+                                <div class="card-header bg-light py-3">
+                                    <h6 class="font-weight-bold mb-0 text-dark">
+                                        <i class="fas fa-info-circle mr-2 text-primary"></i>Consignment Details
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="detail-item mb-3">
+                                                <span class="text-muted small text-uppercase">Consignment Name</span>
+                                                <p class="font-weight-bold mb-1" id="conName"></p>
+                                            </div>
+                                            <div class="detail-item mb-3">
+                                                <span class="text-muted small text-uppercase">Tracking No</span>
+                                                <p class="font-weight-bold mb-1" id="modalTracking"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="detail-item mb-3">
+                                                <span class="text-muted small text-uppercase">Source</span>
+                                                <p class="font-weight-bold mb-1" id="sourceDestination"></p>
+                                            </div>
+                                            <div class="detail-item mb-3">
+                                                <span class="text-muted small text-uppercase">Destination</span>
+                                                <p class="font-weight-bold mb-1" id="finalDestination"></p>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="text-muted small text-uppercase">Last Update</span>
+                                                <p class="font-weight-bold mb-1" id="conLastUpdate"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btnclicky">Update Tracker</button>
+                            <div class="form-group">
+                                <label for="trackerStatus" class="font-weight-bold">
+                                    <i class="fas fa-map-marker-alt mr-2 text-primary"></i>Update Shipment Status
+                                </label>
+                                <select class="form-control custom-select border-0 shadow-sm" name="status" id="trackerStatus" required>
+                                    <option value="1">Parcel received and is being processed</option>
+                                    <option value="2">Parcel dispatched from China</option>
+                                    <option value="3">Parcel has arrived at the transit Airport</option>
+                                    <option value="4">Parcel has departed from the Transit Airport to Lusaka Airport</option>
+                                    <option value="5">Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress</option>
+                                    <option value="6">Parcel is now ready for collection in Lusaka at the Main Branch</option>
+                                </select>
+                            </div>
+
+                            <div class="modal-footer border-0 px-0 pt-4">
+                                <button type="button" class="btn btn-light border shadow-sm px-4" data-dismiss="modal">
+                                    <i class="fas fa-times mr-2"></i>Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary shadow px-4 btnclicky">
+                                    <i class="fas fa-sync-alt mr-2"></i>Update Tracker
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Modal Enhancement Styles */
+#updateTrackerModal .modal-content {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#updateTrackerModal .modal-header {
+    padding: 1.2rem 1.5rem;
+}
+
+#updateTrackerModal .bg-gradient-primary {
+    background: linear-gradient(135deg, #012642 0%, #2b5db0 100%);
+}
+
+#updateTrackerModal .custom-select {
+    height: 50px;
+    background-color: #f8f9fa;
+}
+
+#updateTrackerModal .custom-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(58, 123, 213, 0.25);
+    border-color: #012642;
+}
+
+#updateTrackerModal .btn-primary {
+    background: linear-gradient(135deg, #012642 0%, #012642 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#updateTrackerModal .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(43, 93, 176, 0.3);
+}
+
+#updateTrackerModal .tracking-status .badge-primary {
+    background-color: #012642;
+    font-weight: normal;
+}
+
+#updateTrackerModal .card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Animation for the illustration */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Update the status timestamp */
+#updateTrackerModal #statusUpdateTime:empty:before {
+    content: "Just now";
+    opacity: 0.8;
+}
+</style>
+
+<script>
+// Set current time for status update
+document.addEventListener('DOMContentLoaded', function() {
+    const updateTimeEl = document.getElementById('statusUpdateTime');
+    if(updateTimeEl) {
+        const now = new Date();
+        updateTimeEl.textContent = now.toLocaleString();
+    }
+});
+</script>
 
 @include('cargo::adminLte.pages.consignments.editor.import-modal')
 @include('cargo::adminLte.pages.consignments.editor.index')
@@ -185,6 +308,15 @@
 
             // Add hidden input field for consignmentId if needed
             let consignmentInput = document.getElementById("consignmentId");
+
+            // Set modal display details
+            document.getElementById("conName").textContent = this.dataset.consignee_name || '';
+            document.getElementById("modalTracking").textContent = this.dataset.consignment_code || '';
+            document.getElementById("sourceDestination").textContent = this.dataset.source || '';
+            document.getElementById("finalDestination").textContent = this.dataset.destination || '';
+            document.getElementById("conStatus").textContent = this.dataset.status || '';
+            document.getElementById("conLastUpdate").textContent = this.dataset.updated_at || '';
+
             if (!consignmentInput) {
                 consignmentInput = document.createElement("input");
                 consignmentInput.type = "hidden";
