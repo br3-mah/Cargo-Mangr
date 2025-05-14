@@ -50,7 +50,7 @@
         "sslwireless/sslwireless-sms": "^0.0.1",
         "stripe/stripe-php": "^7.0.0",
         "touhidurabir/laravel-stub-generator": "^1.0",
-        "twilio/sdk": "^6.44",
+        "twilio/sdk": "^8.6",
         "unicodeveloper/laravel-paystack": "^1.0",
         "yajra/laravel-datatables-buttons": "^4.10",
         "yajra/laravel-datatables-oracle": "~9.0"
