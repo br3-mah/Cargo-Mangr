@@ -45,7 +45,7 @@
         @endforeach
 
         <hr />
-        <p>Total: <strong>{{ format_price($shipment->shipping_cost + $shipment->tax + $shipment->insurance) }}</strong></p>
+        <p>Total: <strong>{{ format_price($shipment->amount_to_be_collected) }}</strong></p>
         <p style="text-align:center;">Thank you!</p>
     </div>
 </div>

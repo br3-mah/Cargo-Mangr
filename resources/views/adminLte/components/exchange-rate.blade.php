@@ -28,14 +28,14 @@
                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fromCurrency" class="small font-weight-bold text-primary mb-1">From Currency</label>
-                                <input type="text" class="form-control" id="fromCurrency" name="from_currency" placeholder="e.g. ZMW" value="ZMW" style="font-size: 0.85rem; height: calc(1.5em + 0.75rem);">
+                                <input disabled type="text" class="form-control" id="fromCurrency" name="from_currency" placeholder="e.g. USD" value="USD" style="font-size: 0.85rem; height: calc(1.5em + 0.75rem);">
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="toCurrency" class="small font-weight-bold text-primary mb-1">To Currency</label>
-                                <input type="text" class="form-control" id="toCurrency" name="to_currency" placeholder="e.g. USD" value="USD" style="font-size: 0.85rem; height: calc(1.5em + 0.75rem);">
+                                <input disabled type="text" class="form-control" id="toCurrency" name="to_currency" placeholder="e.g. ZMW" value="ZMW" style="font-size: 0.85rem; height: calc(1.5em + 0.75rem);">
                             </div>
                         </div>
 

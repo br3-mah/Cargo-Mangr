@@ -5,7 +5,7 @@
 
         <div>
             <p class="text-sm text-gray-500">Cargo</p>
-            <p class="font-medium">{{$shipment->consignment->cargo_type ?? 'Sea'}} Freight</p>
+            <p class="font-medium">{{ ucfirst($shipment->consignment->cargo_type ?? 'sea') }} Freight</p>
         </div>
 
         <div>
@@ -76,6 +76,12 @@
                 <p class="text-sm text-gray-500">ETA LUN</p>
                 <p class="font-medium">
                     {{ optional($shipment->consignment->eta_lun)->format('F j, Y') ?? 'N/A' }}
+                </p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Destination Port</p>
+                <p class="font-medium">
+                    {{ optional($shipment->consignment->dest_port) }}
                 </p>
             </div>
         @endif
