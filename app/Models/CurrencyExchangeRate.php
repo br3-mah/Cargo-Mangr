@@ -10,4 +10,6 @@ class CurrencyExchangeRate extends Model
     use HasFactory;
 
     protected $fillable = ['from_currency', 'to_currency', 'exchange_rate'];
+
+    
 }

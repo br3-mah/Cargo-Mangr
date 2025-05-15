@@ -28,6 +28,11 @@ class Consignment extends Model
         'eta_dar',
         'eta_nak',
         'eta_lun',
+        'voyage_no',
+        'date',
+        'departure_date',
+        'shipping_line',
+        'arrival_date'
     ];
 
     public function getShipmentCountAttribute()

@@ -13,5 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'shipment-update-payment',
+        'currency-reset',
+        '/currency/delete'
     ];
 }

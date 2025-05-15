@@ -15,6 +15,7 @@ use Modules\Cargo\Entities\Client;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class ConsignmentController extends Controller
 {
@@ -36,13 +37,149 @@ class ConsignmentController extends Controller
 
     public function import(Request $request)
     {
-        // DB::beginTransaction();
+        switch ($request->shipment_type) {
+            case 'sea':
+                $this->importSea($request);
+                break;
+            case 'air':
+                $this->importAir($request);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public function importSea($request)
+    {
         try {
             $file = $request->file('excel_file');
             $spreadsheet = IOFactory::load($file->getPathname());
             $worksheet = $spreadsheet->getActiveSheet();
             $rows = $worksheet->toArray();
+            
+            $code = $rows[2][0] ?? null;
+            $dateRaw = $rows[2][5] ?? null;
+            $date = $this->extractDate($dateRaw);
 
+            $destAgent = $rows[5][0] ?? null;
+            $voyageRaw = $rows[5][4] ?? '';
+            preg_match('/Vessel \/ Voyage No ?: (.*)/', $voyageRaw, $voyageMatch);
+            $voyage_no = $voyageMatch[1] ?? null;
+
+            $departureRaw = $rows[5][8] ?? '';
+            $departure_date = $this->extractDate($departureRaw);
+
+            $shippingRaw = $rows[6][0] ?? '';
+            $shipping_line = trim(str_replace('Shipping line :', '', $shippingRaw));
+
+            $destinationRaw = $rows[6][4] ?? '';
+            $destination = trim(str_replace('Destination:', '', $destinationRaw));
+
+            $arrivalRaw = $rows[6][8] ?? '';
+            $arrival_date = $this->extractDate($arrivalRaw);
+            // Step 2: Create consignment
+            $consignment = Consignment::create([
+                'consignment_code' => $code,
+                'name' => 'NEWWORLD INVESTMENT LIMITED',
+                'voyage_no' => $voyage_no,
+                'date' => $date,
+                'departure_date' => $departure_date,
+                'shipping_line' => $shipping_line,
+                'arrival_date' => $arrival_date,
+                'destination' => $destination,
+            ]);
+
+            // Step 3: Extract and create shipments
+            for ($i = 9; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                if($row[2] !== null){
+                    if (empty($row[0]) || Str::startsWith($row[0], 'HB')) {
+                        continue; // Skip empty rows or header
+                    }
+                    $email = strtolower(str_replace(' ', '', $row[2])) . '@mail.com';
+                    $username = strtolower(str_replace(' ', '', $row[2]));
+                    $clientCode = rand(100000, 999999);
+
+                    $user = User::firstOrCreate(
+                        ['email' => $email],
+                        [
+                            'name' => $row[2],
+                            'password' => bcrypt('password123'),
+                            'role' => 4,
+                            'verified' => 1
+                        ]
+                    );
+
+                    $client = Client::firstOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'code' => $clientCode,
+                            'name' => $row[2],
+                            'email' => $email,
+                            'address' => $email.' '.$row[2],
+                        ]
+                    );
+
+                    $shipment = Shipment::create([
+                        'consignment_id' => $consignment->id,
+                        'code' => $row[0], // hbl No
+                        'client_id' => $client->id,
+                        'branch_id' => 1,
+                        'type' => 1,
+                        'status_id' => 1,
+                        'client_status' => 1,
+                        'from_country_id' => 1,
+                        'from_state_id' => 1,
+                        'to_country_id' => 1,
+                        'to_state_id' => 1,
+
+                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
+                        'return_cost' => 0,
+                        'amount_to_be_collected' => (float)preg_replace('/\D+/', '', ($row[10])),
+
+                        'shipping_date' => Carbon::now(),
+                        'total_weight' => (float)($row[6] ?? 0),
+                        'client_address' => $username,
+                        'client_phone' => null,
+
+                        'salesman' => $row[9],
+                        'dest_port' => $row[8]
+                    ]);
+
+                    PackageShipment::create([
+                        'package_id' => 1,
+                        'description' => $row[3],
+                        'shipment_id' => $shipment->id,
+                        'qty' => $row[5],
+                        'weight' => $row[6],
+                        'length' => 1,
+                        'width' => 1,
+                        'height' => 1,
+                    ]);
+
+                }
+            }
+            return redirect()->back()->with(['success' => true, 'message' => 'Import completed']);
+        } catch (\Throwable $th) {
+            dd($th);
+            // return redirect()->back()->with(['error' => false, 'message' => $th->getMessage()]);
+        }
+    }
+
+    private function extractDate($text)
+    {
+        if (preg_match('/(\d{4}-\d{1,2}-\d{1,2})/', $text, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
+
+    public function importAir($request){
+        try {
+            $file = $request->file('excel_file');
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
             $consigneeRow = null;
             $mawbRow = null;
             $headerRow = null;
@@ -59,7 +196,6 @@ class ConsignmentController extends Controller
             if (is_null($consigneeRow)) {
                 throw new \Exception("Row with both 'Consignee' and 'Job No' not found.");
             }
-
 
             // Step 2: Find Mawb No in the next few rows
             $mawbKeywords = ['Mawb No', 'Mawb No.', 'Mawb No :', 'Mawb No.:'];
@@ -87,7 +223,6 @@ class ConsignmentController extends Controller
 
             foreach ($rows[$consigneeRow] as $k => $cell) {
                 $cleanedCell = preg_replace('/\s+/', ' ', trim($cell)); // Normalize all whitespace to single space
-
                 foreach ($jobKeywords as $keyword) {
                     if (stripos($cleanedCell, $keyword) !== false) {
                         // Check next non-empty cell for actual Job No value
@@ -112,7 +247,6 @@ class ConsignmentController extends Controller
             $consignment = Consignment::orWhere('mawb_num', $mawbNum)
                 ->orWhere('consignment_code', $consignmentCode)
                 ->first();
-                
             if (empty($consignment)) {
                 // Create a new record if it doesn't exist
                 $consignment = Consignment::create([
@@ -151,10 +285,7 @@ class ConsignmentController extends Controller
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
-
-            // $this->loopCreateShipmentII($headerRow, $rows, $consignment);
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
     }

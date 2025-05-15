@@ -24,12 +24,12 @@ $client = 4;
 
     <div class="card shadow-sm border-0 rounded-lg mb-4">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            
+
                 <h5 class="card-title mb-0 text-primary fw-bold" id="consignmentModalLabel">
                     Consignment Code: <span class="text-dark">{{ $consignment->consignment_code }}</span>
                     <span id="formConsignmentCode" class="badge bg-primary ms-2"></span>
                 </h5>
-            
+
             <div class="d-flex">
                 {{-- <form method="POST" action="{{ route('consignment.export') }}" class="me-2">
                     @csrf
@@ -43,7 +43,7 @@ $client = 4;
                 <button type="button" class="btn btn-warning mr-2" data-toggle="modal" data-target="#importModal">
                     <i class="fas fa-file-excel"></i> Import Consignment
                 </button>
-                
+
             </div>
         </div>
         <div class="card-body p-0">
@@ -51,41 +51,41 @@ $client = 4;
         </div>
     </div>
 <style>
-.card {
-    transition: all 0.2s ease;
-    border-radius: 8px !important;
-}
+    .card {
+        transition: all 0.2s ease;
+        border-radius: 8px !important;
+    }
 
-.card-header {
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-}
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
 
-.btn {
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+    .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
 
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 
-.btn-primary {
-    background: linear-gradient(135deg, #4e73df, #224abe);
-    border-color: #224abe;
-}
+    .btn-primary {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        border-color: #224abe;
+    }
 
-.btn-success {
-    background: linear-gradient(135deg, #1cc88a, #169a6f);
-    border-color: #169a6f;
-}
+    .btn-success {
+        background: linear-gradient(135deg, #1cc88a, #169a6f);
+        border-color: #169a6f;
+    }
 
-.badge {
-    padding: 0.5em 0.75em;
-    font-weight: 500;
-}
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+    }
 </style>
 
 @include('cargo::adminLte.pages.consignments.editor.import-modal')

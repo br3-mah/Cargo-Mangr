@@ -1,13 +1,8 @@
 @extends('cargo::adminLte.layouts.master')
-
 @section('pageTitle', 'Consignments')
-
 @section('content')
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<!-- Dropzone CSS for file upload styling -->
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
-
 <div class="">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="m-0">Consignments</h2>
@@ -20,11 +15,10 @@
             </a>
         </div>
     </div>
-
+    {{--
     @include('cargo::adminLte.components.flashes.success')
     @include('cargo::adminLte.components.flashes.error')
-    @include('cargo::adminLte.components.flashes.warning')
-
+    @include('cargo::adminLte.components.flashes.warning') --}}
     @if (!empty($consignments))
         @include('cargo::adminLte.pages.consignments.editor.table')
     @endif
@@ -45,7 +39,6 @@
             </div>
             <div class="modal-body p-0">
                 <div class="row no-gutters">
-                    <!-- Illustration Column -->
                     <div class="col-md-4 bg-white d-flex flex-column align-items-center justify-content-center p-4">
                         <div class="shipment-illustration mb-4">
                             <img src="{{ asset('assets/anime/earth.gif') }}" alt="">
@@ -55,7 +48,6 @@
                             <p class="text-muted small mt-3 mb-0">Last updated: <span id="statusUpdateTime"></span></p>
                         </div>
                     </div>
-                    <!-- Form Column -->
                     <div class="col-md-8 py-4 px-4">
                         <form id="updateTrackerForm" action="" method="POST">
                             @csrf

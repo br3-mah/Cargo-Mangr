@@ -77,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/currency/update-rates', 'CurrencyExchangeController@updateRates')->name('currency.update_rates');
     Route::get('/twilio-settings', 'TwilioSettingController@index')->name('twilio.settings');
     Route::post('/twilio-setting', 'TwilioSettingController@store')->name('twilio.settings.store');
-
+    Route::post('/currency/delete', 'CurrencyExchangeController@reset')->name('currency-reset');
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

@@ -26,12 +26,15 @@
 <!-- Right navbar links -->
 <ul class="navbar-nav ml-auto">
     <!-- Currency Conversion Button -->
+    
+    @if ($defcurrency->code == 'USD')
     <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="modal" data-target="#currencyModal">
             <i class="fas fa-money-bill-wave"></i>
             Exchange Rates
         </a>
     </li>
+    @endif
 
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
