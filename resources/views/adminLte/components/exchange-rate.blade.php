@@ -8,6 +8,8 @@
     </div>
 @endif
 </div>
+
+
 <div class="modal fade" id="currencyModal" tabindex="-1" role="dialog" aria-labelledby="currencyModalLabel" aria-hidden="true">
     <div style="z-index: 9999" class="modal-dialog modal-lg" role="document">
         <div class="modal-content shadow-lg border-0">
@@ -46,10 +48,13 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
+                    <button id="deleteItemBtn" type="button" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-times mr-1"></i>Reset
+                    </button>
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">
                         <i class="fas fa-times mr-1"></i>Close
                     </button>
-                    <button type="submit" class="btn btn-primary btn-sm btnclicky" data-show-loader="true">
+                    <button type="submit" class="btn btn-primary btn-sm" data-show-loader="true">
                         <i class="fas fa-save mr-1"></i>Save Changes
                     </button>
                 </div>
@@ -57,3 +62,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('deleteItemBtn').addEventListener('click', function () {
+        const deleteUrl = "{{ route('currency-reset') }}";
+
+        fetch(deleteUrl, {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>

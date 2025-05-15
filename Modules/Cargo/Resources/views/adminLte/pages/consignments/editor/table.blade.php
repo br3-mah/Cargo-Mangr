@@ -1,13 +1,9 @@
-<!-- Tailwind CSS CDN -->
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
 <div class="w-full bg-white px-3 shadow-sm rounded-lg overflow-hidden">
-  <!-- Header -->
   <div class="bg-gradient-to-r text-dark py-4 flex justify-between items-center">
     <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2>
-    <!-- Bulk Delete Button -->
     <div class="flex space-x-2">
-        <button id="bulk-delete-btn" 
+        <button id="bulk-delete-btn"
             class="btnclicky btn-sm d-flex item-center justify-content-center bg-red-500 text-white rounded hover:bg-red-600 transition disabled:opacity-50"
             disabled>
             <span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
