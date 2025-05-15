@@ -37,15 +37,20 @@ class ConsignmentController extends Controller
 
     public function import(Request $request)
     {
-        switch ($request->shipment_type) {
-            case 'sea':
-                $this->importSea($request);
-                break;
-            case 'air':
-                $this->importAir($request);
-                break;
-            default:
-                break;
+        try {
+            switch ($request->shipment_type) {
+                case 'sea':
+                    $this->importSea($request);
+                    break;
+                case 'air':
+                    $this->importAir($request);
+                    break;
+                default:
+                    break;
+            }
+            return redirect()->back()->with('success', 'Excel data imported successfully!');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -87,6 +92,7 @@ class ConsignmentController extends Controller
                 'shipping_line' => $shipping_line,
                 'arrival_date' => $arrival_date,
                 'destination' => $destination,
+                'cargo_type' => 'sea'
             ]);
 
             // Step 3: Extract and create shipments
@@ -159,10 +165,9 @@ class ConsignmentController extends Controller
 
                 }
             }
-            return redirect()->back()->with(['success' => true, 'message' => 'Import completed']);
+            return true;
         } catch (\Throwable $th) {
-            dd($th);
-            // return redirect()->back()->with(['error' => false, 'message' => $th->getMessage()]);
+            return false;
         }
     }
 
@@ -256,6 +261,7 @@ class ConsignmentController extends Controller
                     'name' => 'NWC',
                     'desc' => 'Consignment shipments',
                     'consignee' => 'Nwc',
+                    'cargo_type' => 'air'
                 ]);
             }
 
