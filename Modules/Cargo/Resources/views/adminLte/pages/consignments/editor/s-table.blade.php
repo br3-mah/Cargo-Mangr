@@ -66,7 +66,10 @@
                             @endforeach
                         </td>
                         <td>{{ $shipment->client_phone ?? 'No phone' }}</td>
-                        <td>{{ $shipment->shipping_cost }}</td>
+                        <td>
+                            {{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }} 
+                            <span class="text-muted text-sm">(${{ $shipment->amount_to_be_collected }})</span>
+                        </td>
                         <td>
                             @if($shipment->paid)
                             <span class="badge bg-success rounded-pill">PAID</span>
