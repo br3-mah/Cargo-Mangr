@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\ShipmentExport;
 use App\Http\Controllers\Controller;
 use App\Models\Consignment;
+use App\Models\Transxn;
 use App\Models\User;
 use App\Traits\Twilio;
 use Illuminate\Http\Request;
@@ -634,6 +635,7 @@ class ConsignmentController extends Controller
             foreach ($shipments as $shipment) {
                 // Delete related PackageShipment records
                 PackageShipment::where('shipment_id', $shipment->id)->delete();
+                Transxn::where('shipment_id', $shipment->id)->delete();
 
                 // Delete the shipment itself
                 $shipment->delete();
@@ -653,11 +655,30 @@ class ConsignmentController extends Controller
     public function bulkDelete(Request $request)
     {
         try {
-            Consignment::whereIn('id', $request->ids)->delete();
+            $consignments = Consignment::whereIn('id', $request->ids)->get();
+
+            foreach ($consignments as $consignment) {
+                // Get all related shipments
+                $shipments = Shipment::where('consignment_id', $consignment->id)->get();
+
+                foreach ($shipments as $shipment) {
+                    // Delete related PackageShipment records
+                    PackageShipment::where('shipment_id', $shipment->id)->delete();
+                    Transxn::where('shipment_id', $shipment->id)->delete();
+
+                    // Delete the shipment
+                    $shipment->delete();
+                }
+
+                // Delete the consignment itself
+                $consignment->delete();
+            }
+
             return response()->json(['status' => 'success']);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 'failed','msg' => $th->getMessage()]);
+            return response()->json(['status' => 'failed', 'msg' => $th->getMessage()]);
         }
     }
+
 
 }
