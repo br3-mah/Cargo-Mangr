@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Cargo\Entities\Shipment;
 
 class Transxn extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'shipment_id',
         'receipt_number',

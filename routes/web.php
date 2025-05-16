@@ -78,6 +78,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/twilio-settings', 'TwilioSettingController@index')->name('twilio.settings');
     Route::post('/twilio-setting', 'TwilioSettingController@store')->name('twilio.settings.store');
     Route::post('/currency/delete', 'CurrencyExchangeController@reset')->name('currency-reset');
+
+    Route::get('/transactions', 'TransxnController@index')->name('transxn.index');
+
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

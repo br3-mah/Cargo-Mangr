@@ -31,7 +31,7 @@
     <li class="nav-item dropdown">
         <a class="nav-link d-flex align-items-center bg-light rounded-pill px-3 py-2 border-0" href="#" data-toggle="modal" data-target="#currencyModal">
             <span class="text-primary mr-2">{{ number_format(current_x_rate(), 2) }}</span>
-            <i class="fas fa-money-bill-wave text-info animated-icon"></i>
+            <i class="fas fa-exchange-alt fa-fw text-info animated-icon"></i>
         </a>
     </li>
     @endif

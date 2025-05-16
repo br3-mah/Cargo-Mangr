@@ -82,8 +82,18 @@
 
 
                 <li
-                    class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
+                    class="nav-item {{ areActiveRoutes(['transxn.index'],'menu-is-opening menu-open active') }}">
+                    <a href="{{ route('transxn.index') }}"
+                        class="nav-link  {{ areActiveRoutes(['transxn.index'],'menu-is-opening menu-open active') }}">
+                        <i class="fas fa-money-bill-wave fa-fw"></i>
+                        <p>
+                            Transactions
+                        </p>
+                    </a>
+                </li>
 
+                {{-- <li
+                    class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
                     <a href="#"
                         class="nav-link  {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
                         <i class="fas fa-book fa-fw"></i>
@@ -93,7 +103,6 @@
                         </p>
                     </a>
 
-
                     <ul class="nav nav-treeview">
                         @if (app('hook')->get('aside_menu_reports'))
                             @foreach (app('hook')->get('aside_menu_reports') as $componentView)
@@ -101,8 +110,7 @@
                             @endforeach
                         @endif
                     </ul>
-
-                </li>
+                </li> --}}
 
 
                 <li
