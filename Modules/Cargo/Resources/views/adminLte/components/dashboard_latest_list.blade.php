@@ -90,7 +90,7 @@
                                     @endif
                                 @endif
 
-                                <td class="py-2 font-weight-bold">{{format_price($shipment->tax + $shipment->shipping_cost + $shipment->insurance) }}</td>
+                                <td class="py-2 font-weight-bold">{{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw')) }}</td>
                                 <td class="py-2">{{$shipment->payment_method_id}}</td>
                                 <td class="py-2 text-nowrap">{{$shipment->shipping_date}}</td>
                             </tr>
