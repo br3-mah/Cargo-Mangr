@@ -22,22 +22,16 @@
                     <!--begin::Card header-->
                     {{-- <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details"> --}}
                     <div class="card-header">
-                        <!--begin::Card title-->
                         <div class="card-title m-0">
                             <h3 class="fw-bolder m-0">{{ __('currency::view.systemd_default_currency') }}</h3>
                         </div>
-                        <!--end::Card title-->
                     </div>
-                    <!--begin::Card header-->
-                    <!--begin::Content-->
                     <div>
-                        <!--begin::Form-->
                         <form class="form" action="{{ fr_route('currency.update_default_currency') }}" method="post" enctype="multipart/form-data">
                             @csrf
-                            <!--begin::Card body-->
                             <div class="card-body border-top p-9">
 
-                                <select class="form-control aiz-selectpicker" 
+                                <select class="form-control aiz-selectpicker"
                                     data-control="select2"
                                     data-allow-clear="true"
                                     name="system_default_currency"
@@ -48,10 +42,10 @@
                                 </select>
 
                             </div>
-                            <!--end::Card body-->
-                            <!--begin::Actions-->
+
+
                             <div class="card-footer d-flex justify-content-end py-6 px-9">
-                                <button type="submit" class="btn btn-sm btn-primary">@lang('view.save')</button>
+                                <button type="submit" class="btn btn-sm btn-primary btnclicky">@lang('view.save')</button>
                             </div>
                             <!--end::Actions-->
                         </form>
@@ -89,8 +83,8 @@
                             <!--end::Card body-->
                             <!--begin::Actions-->
                             <div class="card-footer d-flex justify-content-end py-6 px-9">
-                                <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2">{{ __('view.reset') }}</button>
-                                <button type="submit" class="btn btn-sm btn-primary">@lang('view.create')</button>
+                                <button type="reset" class="btn btn-active-light-primary me-2">{{ __('view.reset') }}</button>
+                                <button type="submit" class="btn btn-primary">@lang('view.create')</button>
                             </div>
                             <!--end::Actions-->
                         </form>
@@ -111,15 +105,15 @@
                 <div class="card-header border-0 pt-6">
                     <!--begin::Card title-->
                     <div class="card-title">
-        
+
                         <!--begin::Search-->
                         {{-- search table --}}
                         @include('adminLte.components.modules.datatable.search', ['table_id' => $table_id])
                         <!--end::Search-->
-        
+
                     </div>
                     <!--begin::Card title-->
-        
+
                     <!--begin::Card toolbar-->
                     <div class="card-toolbar">
                         <!--begin::Toolbar-->
@@ -128,26 +122,26 @@
                             @include('adminLte.components.modules.datatable.datatable_length', ['table_id' => $table_id])
                             {{-- btn reload table --}}
                             @include('adminLte.components.modules.datatable.reload', ['table_id' => $table_id])
-        
+
                             <!--begin::Filter-->
                             <x-table-filter :table_id="$table_id" :filters="$filters">
-        
+
                                 {{-- Start Custom Filters --}}
 
                                 {{-- End Custom Filters --}}
-        
+
                             </x-table-filter>
                             <!--end::Filter-->
-        
+
                             @if(auth()->user()->can('export-table-currencies') || $user_role == $admin )
                                 <!-- ================== begin export buttons =============================== -->
                                 @include('adminLte.components.modules.datatable.export', ['table_id' => $table_id, 'btn_exports' => $btn_exports])
                                 <!-- ================== end export buttons =============================== -->
                             @endif
-        
+
                         </div>
                         <!--end::Toolbar-->
-        
+
                         <!--begin::Group actions-->
                         @include('adminLte.components.modules.datatable.columns.checkbox-actions', [
                             'table_id' => $table_id,
@@ -157,21 +151,21 @@
                             'model_name' => __('currency::view.selected_currencies')
                         ])
                         <!--end::Group actions-->
-        
+
                     </div>
                     <!--end::Card toolbar-->
                 </div>
                 <!--end::Card header-->
-        
-        
+
+
                 <!--begin::Card body-->
                 <div class="card-body pt-6">
-        
+
                     <!--begin::Table-->
                     {{ $dataTable->table() }}
                     <!--end::Table-->
-        
-        
+
+
                 </div>
                 <!--end::Card body-->
             </div>
