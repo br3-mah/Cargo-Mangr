@@ -14,10 +14,6 @@ if (!function_exists('convert_currency')) {
     }
 
     function convert_currency($amount, $from, $to) {
-        if ($from === $to) {
-            return $amount;
-        }
-
         $rate = CurrencyExchangeRate::first();
         if ($rate && $rate->exchange_rate) {
             return $amount * $rate->exchange_rate;
@@ -25,7 +21,7 @@ if (!function_exists('convert_currency')) {
 
         return $amount; // fallback if no rate found
     }
-    
+
 function customer_numbers($consignment_id)
 {
     $shipments = Shipment::where('consignment_id', $consignment_id)->get();

@@ -21,21 +21,20 @@
             <span class="font-weight-medium">Website</span>
         </a>
     </li>
-</ul>   
+</ul>
 
 <!-- Right navbar links -->
 <ul class="navbar-nav ml-auto">
     <!-- Currency Conversion Button -->
-    
-    @if ($defcurrency->code == 'USD')
-    <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#currencyModal">
-            <i class="fas fa-money-bill-wave"></i>
-            Exchange Rates
+
+    @if ($defcurrency->code == 'ZMW')
+    <li class="nav-item dropdown">
+        <a class="nav-link d-flex align-items-center bg-light rounded-pill px-3 py-2 border-0" href="#" data-toggle="modal" data-target="#currencyModal">
+            <span class="text-primary mr-2">{{ number_format(current_x_rate(), 2) }}</span>
+            <i class="fas fa-money-bill-wave text-info animated-icon"></i>
         </a>
     </li>
     @endif
-
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
@@ -93,7 +92,6 @@
                         ->pluck('id')
                         ->first();
                 @endphp
-
                 <a href="{{ fr_route('clients.show', ['client' => $item_id]) }}" class="dropdown-item">
                     @lang('users::view.my_profile')
                 </a>
@@ -160,9 +158,6 @@
                 </a>
                 <div class="dropdown-divider"></div>
             @endif
-
-
-
             @endcheckModule
             <form id="formLogout" method="POST" action="{{ fr_route('logout') }}">
                 @csrf

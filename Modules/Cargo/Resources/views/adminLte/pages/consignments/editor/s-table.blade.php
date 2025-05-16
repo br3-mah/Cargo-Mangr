@@ -2,23 +2,56 @@
     <div class="row">
         <div id="column3" class="col-md-12 px-6">
             <p class="text-muted text-sm">Mawb Number: {{ $consignment->Mawb_num }}</p>
+            @if ($consignment->cargo_type == 'sea')
+                <div class="items-center d-flex space-x-2">
+                    <p class="text-sm text-gray-500">ETA DAR</p>
+                    <p class="font-medium">
+                        {{ optional($consignment->eta_dar)->format('F j, Y') ?? 'N/A' }}
+                    </p>
+                </div>
+                <div class="items-center d-flex space-x-2">
+                    <p class="text-sm text-gray-500">ETA LUN</p>
+                    <p class="font-medium">
+                        {{ optional($consignment->eta_lun)->format('F j, Y') ?? 'N/A' }}
+                    </p>
+                </div>
+                <div class="items-center d-flex space-x-2">
+                    <p class="text-sm text-gray-500">Destination Port</p>
+                    <p class="font-medium">
+                        {{ optional($consignment->dest_port) }}
+                    </p>
+                </div>
+                <div>
+                    <img width="80" src="{{ asset('icon/ship.svg') }}" alt="">
+                </div>
+            @else
+                <div class="items-center d-flex space-x-2">
+                    <p class="text-sm text-gray-500">Expected time of arrival:</p>
+                    <p class="font-medium">
+                        {{ optional($consignment->eta)->format('F j, Y') ?? 'Not placed' }}
+                    </p>
+                </div>
+                <div>
+                    <img width="80" src="{{ asset('icon/plane.svg') }}" alt="">
+                </div>
+            @endif
+            <table id="shipmentTable" class="table table-hover">
+                    <thead class="sticky-top bg-white z-10">
+                        <tr class="text-sm">
+                            <th><i class="bi bi-upc-scan me-1"></i> Hawb No.</th>
+                            <th><i class="bi bi-box me-1"></i> Type</th>
+                            <th><i class="bi bi-building me-1"></i> Branch</th>
+                            <th><i class="bi bi-person me-1"></i> Client</th>
+                            <th><i class="bi bi-file me-1"></i> Package Description</th>
+                            <th><i class="bi bi-telephone me-1"></i> Client Phone</th>
+                            <th><i class="bi bi-currency-dollar me-1"></i> Cost</th>
+                            <th><i class="bi bi-cash-coin me-1"></i> Payment</th>
+                            <th><i class="bi bi-clock-history me-1"></i> Created On</th>
+                            <th><i class="bi bi-gear me-1"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-            <table id="shipmentTable" class="table table-striped table-bordered">
-                <thead>
-                    <tr class="text-sm">
-                        <th><i class="bi bi-upc-scan me-1"></i> Hawb No.</th>
-                        <th><i class="bi bi-box me-1"></i> Type</th>
-                        <th><i class="bi bi-building me-1"></i> Branch</th>
-                        <th><i class="bi bi-person me-1"></i> Client</th>
-                        <th><i class="bi bi-file me-1"></i> Package Description</th>
-                        <th><i class="bi bi-telephone me-1"></i> Client Phone</th>
-                        <th><i class="bi bi-currency-dollar me-1"></i> Cost</th>
-                        <th><i class="bi bi-cash-coin me-1"></i> Payment</th>
-                        <th><i class="bi bi-clock-history me-1"></i> Created On</th>
-                        <th><i class="bi bi-gear me-1"></i> Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
                     @foreach ($consignment->shipments as $shipment)
                     <tr id="shipment_row_{{ $shipment->id }}">
                         <td>

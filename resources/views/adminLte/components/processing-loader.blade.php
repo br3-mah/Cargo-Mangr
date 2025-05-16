@@ -1,6 +1,6 @@
  <style>
     .btnclicky {
-      background-color: #ffd903;
+      /* background-color: #ffd903;
       color: white;
       border: none;
       padding: 12px 24px;
@@ -9,7 +9,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s, transform 0.2s;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
     }
 
     .btnclicky:hover {

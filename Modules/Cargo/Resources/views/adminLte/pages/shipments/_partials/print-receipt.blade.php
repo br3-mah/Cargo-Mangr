@@ -16,8 +16,9 @@
 
         <hr />
         <p>Date: {{ now()->format('Y-m-d H:i') }}</p>
-        <p>Shipment ID: {{ $shipment->id }}</p>
+        <p>Shipment ID: {{ $shipment->code }}</p>
         <p>Customer: {{ $shipment->client->name ?? '-' }}</p>
+        <p>Receipt No.: {{ $shipment->receipt->receipt_number ?? '-' }}</p>
 
         <hr />
         <p><strong>Items:</strong></p>
@@ -45,7 +46,7 @@
         @endforeach
 
         <hr />
-        <p>Total: <strong>{{ format_price($shipment->amount_to_be_collected) }}</strong></p>
+        <p>Total: <strong>{{ format_price($shipment->receipt->total ) }}</strong></p>
         <p style="text-align:center;">Thank you!</p>
     </div>
 </div>

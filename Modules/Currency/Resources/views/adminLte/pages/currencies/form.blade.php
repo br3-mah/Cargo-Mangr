@@ -4,9 +4,6 @@
 <div class="row mb-6">
     <!--begin::Label-->
     <label class="col-lg-4 col-form-label required fw-bold fs-6">{{ __('cargo::view.table.name') }}</label>
-    <!--end::Label-->
-
-    <!--begin::Input group-->
     <div class="col-lg-8 fv-row">
         <div class="mb-4">
             <input
@@ -16,7 +13,7 @@
                 placeholder="{{ __('cargo::view.table.name') }}"
                 value="{{ old('name', isset($model) ? $model->name : '') }}"
             >
-            @error('name') 
+            @error('name')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
@@ -31,9 +28,6 @@
 <div class="row mb-6">
     <!--begin::Label-->
     <label class="col-lg-4 col-form-label required fw-bold fs-6">{{ __('currency::view.symbol') }}</label>
-    <!--end::Label-->
-
-    <!--begin::Input group-->
     <div class="fv-row col-lg-8">
         <div class="mb-4">
             <input
@@ -43,7 +37,7 @@
                 placeholder="{{ __('currency::view.symbol') }}"
                 value="{{ old('symbol', isset($model) ? $model->symbol : '') }}"
             >
-            @error('symbol') 
+            @error('symbol')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
@@ -58,9 +52,6 @@
 <div class="row mb-6">
     <!--begin::Label-->
     <label class="col-lg-4 col-form-label required fw-bold fs-6">{{ __('cargo::view.table.code') }}</label>
-    <!--end::Label-->
-
-    <!--begin::Input group-->
     <div class="col-lg-8 fv-row">
         <div class="mb-4">
             <input
@@ -70,7 +61,7 @@
                 placeholder="{{ __('cargo::view.table.code') }}"
                 value="{{ old('code', isset($model) ? $model->code : '') }}"
             >
-            @error('code') 
+            @error('code')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
@@ -85,9 +76,6 @@
 <div class="row mb-6">
     <!--begin::Label-->
     <label class="col-lg-4 col-form-label required fw-bold fs-6">{{ __('currency::view.exchange_rate') }}</label>
-    <!--end::Label-->
-
-    <!--begin::Input group-->
     <div class="col-lg-8 fv-row">
         <div class="mb-4">
             <input
@@ -98,7 +86,7 @@
                 placeholder="{{ __('currency::view.exchange_rate') }}"
                 value="{{ old('exchange_rate', isset($model) ? $model->exchange_rate : '') }}"
             >
-            @error('exchange_rate') 
+            @error('exchange_rate')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>

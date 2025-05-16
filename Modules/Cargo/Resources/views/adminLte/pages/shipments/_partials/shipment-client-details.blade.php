@@ -1,16 +1,14 @@
-<!-- Client and Status Section -->
 <div class="flex flex-wrap -mx-4">
-    <!-- Client Info -->
     <div class="w-full md:w-1/3 px-4 mb-6">
         <div class="p-5 bg-gray-50 rounded-lg shadow-sm h-full">
-            <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ __('cargo::view.client_sender') }}</h2>
+            <h2 class="text-lg font-semibold text-gray-700 mb-3">Package Owner</h2>
             <div class="border-l-4 border-yellow-400 pl-3">
                 @if($user_role == $admin || auth()->user()->can('show-clients') )
                     <a class="text-blue-600 font-bold text-lg hover:underline" href="{{route('clients.show',$shipment->client_id)}}">{{$shipment->client->name ?? 'Null'}}</a>
                 @else
                     <span class="text-blue-900 font-bold text-lg">{{$shipment->client->name ?? 'Null'}}</span>
                 @endif
-                <p class="text-gray-600">{{$shipment->client_phone}}</p>
+                <p class="text-gray-600">{{ $shipment->client_phone }}</p>
                 <p class="text-gray-600 text-sm">{{$shipment->from_address ? $shipment->from_address->address : ''}}</p>
             </div>
         </div>
@@ -30,23 +28,21 @@
                     bg-blue-100 text-blue-800
                 @else
                     bg-yellow-100 text-yellow-800
-                @endif
-                ">
+                @endif">
                     <svg class="w-4 h-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {{$shipment->getStatus()}}
+                    {{ $shipment->getStatus() }}
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- Collection Info -->
     @if (isset($shipment->amount_to_be_collected))
     <div class="w-full md:w-1/3 px-4 mb-6">
         <div class="p-5 bg-gray-50 rounded-lg shadow-sm h-full">
             <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ __('cargo::view.amount_to_be_collected') }}</h2>
-            <div class="text-2xl font-bold text-blue-600">{{format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'))}}</div>
+            <div class="text-2xl font-bold text-blue-600">{{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw')) }}</div>
         </div>
     </div>
     @endif

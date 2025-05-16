@@ -61,7 +61,7 @@ class ConsignmentController extends Controller
             $spreadsheet = IOFactory::load($file->getPathname());
             $worksheet = $spreadsheet->getActiveSheet();
             $rows = $worksheet->toArray();
-            
+
             $code = $rows[2][0] ?? null;
             $dateRaw = $rows[2][5] ?? null;
             $date = $this->extractDate($dateRaw);
@@ -141,7 +141,7 @@ class ConsignmentController extends Controller
 
                         'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
                         'return_cost' => 0,
-                        'amount_to_be_collected' => (float)preg_replace('/\D+/', '', ($row[10])),
+                        'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
 
                         'shipping_date' => Carbon::now(),
                         'total_weight' => (float)($row[6] ?? 0),
@@ -359,7 +359,7 @@ class ConsignmentController extends Controller
 
                             'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
                             'return_cost' => 0,
-                            'amount_to_be_collected' => (float)preg_replace('/\D+/', '', ($data[8])),
+                            'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
 
                             'shipping_date' => Carbon::now(),
                             'total_weight' => (float)($data[4] ?? 0),
@@ -460,12 +460,8 @@ class ConsignmentController extends Controller
 
     public function export(Request $request)
     {
-        $request->validate([
-            'from_date' => 'required|date',
-            'to_date' => 'required|date|after_or_equal:from_date',
-        ]);
         return Excel::download(
-            new ShipmentExport($request->from_date, $request->to_date),
+            new ShipmentExport($request),
             'shipments_export_' . now()->format('Ymd_His') . '.xlsx'
         );
     }
@@ -663,5 +659,5 @@ class ConsignmentController extends Controller
             return response()->json(['status' => 'failed','msg' => $th->getMessage()]);
         }
     }
-    
+
 }

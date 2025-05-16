@@ -9,7 +9,6 @@
 @endif
 </div>
 
-
 <div class="modal fade" id="currencyModal" tabindex="-1" role="dialog" aria-labelledby="currencyModalLabel" aria-hidden="true">
     <div style="z-index: 9999" class="modal-dialog modal-lg" role="document">
         <div class="modal-content shadow-lg border-0">

@@ -415,7 +415,7 @@ class ShipmentController extends Controller
 
     public function show($id)
     {
-        $shipment = Shipment::with('consignment')->find($id);
+        $shipment = Shipment::with(['consignment','receipt'])->find($id);
         breadcrumb([
             [
                 'name' => __('cargo::view.dashboard'),

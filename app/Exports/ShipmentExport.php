@@ -8,17 +8,16 @@ use Modules\Cargo\Entities\Shipment;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 class ShipmentExport implements FromCollection
 {
-    protected $from; protected $to;
-    public function __construct($from, $to)
+    protected $data;
+    public function __construct($request)
     {
-        $this->from = $from;
-        $this->to = $to;
+        $this->data = $request;
     }
-    
+
     public function collection()
     {
         return Shipment::with('consignment', 'client')
-            ->whereBetween('created_at', [$this->from, $this->to])
+            ->where('id', $this->data->consignment_id)
             ->get()
             ->map(function ($shipment) {
                 return [
@@ -34,7 +33,7 @@ class ShipmentExport implements FromCollection
                     optional($shipment->consignment)->job_num,
                     optional($shipment->consignment)->mawb_num,
                     optional($shipment->consignment)->handler,
-    
+
                     // Shipment row
                     $shipment->code,
                     $shipment->client_id,
@@ -48,24 +47,25 @@ class ShipmentExport implements FromCollection
                     $shipment->to_state_id,
                     $shipment->shipping_date,
                     $shipment->total_weight,
+                    $shipment->amount_to_be_collected,
                     $shipment->client_address,
                     $shipment->client_phone,
                 ];
             });
     }
-    
+
     public function headings(): array
     {
         return [
             // Consignment
             'Consignment Code', 'Name', 'Description', 'Source', 'Destination', 'Status', 'Tracker',
             'Consignee', 'Job Number', 'MAWB Number', 'Handler',
-    
+
             // Shipment
             'Code', 'Client ID', 'Branch ID', 'Type', 'Status ID', 'Client Status',
             'From Country', 'From State', 'To Country', 'To State',
-            'Shipping Date', 'Total Weight', 'Client Address', 'Client Phone'
+            'Shipping Date', 'Total Weight', 'Total Cost', 'Client Address', 'Client Phone'
         ];
     }
-    
+
 }

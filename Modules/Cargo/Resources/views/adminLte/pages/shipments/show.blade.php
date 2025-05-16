@@ -38,8 +38,6 @@
 <div class="card shadow-lg rounded-lg overflow-hidden">
     <div class="p-0 card-body">
         @include('cargo::adminLte.pages.shipments._partials.payment-modal-message')
-
-        <!-- Invoice Header -->
         <div class="bg-gradient-to-r from-yellow-400 to-yellow-300 text-white px-8 py-6">
             <div class="container mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start">
@@ -73,9 +71,9 @@
                         {{-- <p class="text-sm text-gray-500">{{ __('cargo::view.included_tax_insurance') }}</p> --}}
                     </div>
                     <div class="text-right">
-                            <span class="text-3xl font-bold text-blue-600">
-                                {{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw')) }}
-                            </span>
+                        <span class="text-3xl font-bold text-blue-600">
+                            {{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw')) }}
+                        </span>
                     </div>
 
                 </div>
@@ -156,7 +154,7 @@
                             <p class="mb-0 fw-medium">Are you sure you want to mark this shipment as paid?</p>
                         </div>
                     </div>
-              <div class="card border-0 shadow-sm rounded-3 p-4 mb-4" style="background-color: white;">
+                    <div class="card border-0 shadow-sm rounded-3 p-4 mb-4" style="background-color: white;">
                         <h6 class="mb-3 text-uppercase" style="color: #0a2463; font-size: 0.85rem; letter-spacing: 0.5px;">Discount Details</h6>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -216,7 +214,7 @@
                 <button type="button" class="btn px-4 py-2" data-dismiss="modal" style="background-color: #e2e8f0; color: #64748b; border: none; border-radius: 8px; font-weight: 600;">
                     Cancel
                 </button>
-                <button type="button" class="btn px-4 py-2 d-flex align-items-center" id="confirmMarkPaidBtn" style="background-color: #FFD700; color: #0a2463; border: none; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 5px rgba(255, 215, 0, 0.3);">
+                <button type="button" class="btn px-4 py-2 d-flex align-items-center btnclicky" id="confirmMarkPaidBtn" style="background-color: #FFD700; color: #0a2463; border: none; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 5px rgba(255, 215, 0, 0.3);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                     </svg>
@@ -234,29 +232,29 @@
         const discountValueEl = document.getElementById('discountValue');
         const originalTotalEl = document.getElementById('originalTotal');
         const finalTotalEl = document.getElementById('finalTotal');
-        
+
         // Original total amount from PHP
         const originalTotal = {{ $totalAmount }};
-        
+
         // Function to update final total based on discount
         function updateFinalTotal() {
             const discountType = discountTypeEl.value;
             const discountValue = parseFloat(discountValueEl.value) || 0;
             let finalTotal = originalTotal;
-            
+
             if (discountType === 'fixed') {
                 finalTotal = Math.max(0, originalTotal - discountValue);
             } else if (discountType === 'percent') {
                 finalTotal = originalTotal * (1 - (discountValue / 100));
             }
-            
+
             finalTotalEl.textContent = finalTotal.toFixed(2);
         }
-        
+
         // Add event listeners
         discountTypeEl.addEventListener('change', updateFinalTotal);
         discountValueEl.addEventListener('input', updateFinalTotal);
-        
+
         // Initialize
         updateFinalTotal();
     });

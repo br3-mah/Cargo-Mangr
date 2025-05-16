@@ -3,6 +3,7 @@
 namespace Modules\Cargo\Entities;
 
 use App\Models\Consignment;
+use App\Models\Transxn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Cargo\Entities\Client;
@@ -415,6 +416,10 @@ class Shipment extends Model implements HasMedia
     public function consignment()
     {
         return $this->belongsTo(Consignment::class);
+    }
+    public function receipt()
+    {
+        return $this->hasOne(Transxn::class);
     }
 
 }
