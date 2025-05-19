@@ -1,5 +1,6 @@
 @php
     use \Milon\Barcode\DNS1D;
+    use Carbon\Carbon;
     $d = new DNS1D();
     $user_role = auth()->user()->role;
     $admin  = 1;
