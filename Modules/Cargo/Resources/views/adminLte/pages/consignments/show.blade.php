@@ -150,6 +150,7 @@ $client = 4;
 
             <!-- Button group with modern styling -->
             <div class="flex flex-col sm:flex-row gap-3">
+                @can('export-shipment-invoices')
                 <form method="POST" action="{{ route('consignment.export') }}" class="flex-shrink-0">
                     @csrf
                     <input type="hidden" name="consignment_id" value="{{ $consignment->id }}">
@@ -160,10 +161,13 @@ $client = 4;
                         <span class="text-sm font-medium">Export Shipments</span>
                     </button>
                 </form>
+                @endcan
+                @can('import-consignments')
                 <button type="button" class="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm" data-toggle="modal" data-target="#importModal">
                     <i class="fas fa-file-excel mr-2"></i>
                     <span class="text-sm font-medium">Import Consignment</span>
                 </button>
+                @endcan
             </div>
         </div>
 

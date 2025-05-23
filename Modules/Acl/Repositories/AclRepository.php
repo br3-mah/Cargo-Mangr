@@ -12,7 +12,7 @@ class AclRepository
 
     public function getPermissionsByGroup()
     {
-        return PermissionGroup::with('permissions')->get();
+        return PermissionGroup::with('permissions')->orderBy('name', 'desc')->get();
     }
 
     public function getRoleList()

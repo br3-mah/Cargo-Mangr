@@ -101,19 +101,26 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
+                        @can('print-shipment-invoice')
                         <button id="printBtn2" onclick="printInvoice()" class="btnclicky inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-dark bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                             <i class="fas fa-print mr-1"></i>
                             <span id="printBtnText2">Print Invoice</span>
                             <span id="printSpinner2" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
-
+                        @endcan
                         @include('cargo::adminLte.pages.shipments._partials.print-invoice')
+
+
                         @if ($shipment->paid)
-                            @include('cargo::adminLte.pages.shipments._partials.print-receipt')
+                            @can('print-shipment-receipt')
+                                @include('cargo::adminLte.pages.shipments._partials.print-receipt')
+                            @endcan
                         @else
-                            <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400" onclick="openMarkPaidModal({{ $shipment->id }})">
+                            @can('confirm-shipment-payment')
+                                <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400" onclick="openMarkPaidModal({{ $shipment->id }})">
                                 <i class="fas fa-check-circle mr-1"></i> Mark as Paid
                             </button>
+                            @endcan
                         @endif
 
                         @if($user_role == $admin || auth()->user()->can('edit-shipments'))

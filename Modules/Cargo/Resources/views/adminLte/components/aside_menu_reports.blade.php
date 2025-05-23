@@ -1,4 +1,4 @@
-@php
+    @php
     $user_role = auth()->user()->role;
     $admin = 1;
     $staff = 0;

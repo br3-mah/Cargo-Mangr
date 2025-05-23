@@ -27,7 +27,8 @@
 @endphp
 
 {{-- @if(in_array($user_role ,[$admin,$auth_branch,$auth_client]) || auth()->user()->can('manage-shipments') ) --}}
-@if(in_array($user_role ,[$admin,$auth_branch]) || auth()->user()->can('manage-shipments') )
+{{-- in_array($user_role ,[$admin,$auth_branch]) || --}}
+@if( auth()->user()->can('manage-shipments') )
     <div class="col-md-12">
         <div class="card card-custom shadow-sm">
             <div class="card-header py-3 border-bottom">

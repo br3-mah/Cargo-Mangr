@@ -26,12 +26,12 @@ class UsersController extends Controller
     {
         $this->aclRepo = $aclRepository;
         // check on permissions
-        $this->middleware('can:view-users')->only('index');
-        $this->middleware('user_role:1|0|3|4|5')->only('show');
-        $this->middleware('can:create-users')->only('create', 'store');
-        $this->middleware('user_role:1|0|3|4|5')->only('edit', 'update');
-        $this->middleware('can:delete-users')->only('delete', 'multiDestroy');
-        $this->middleware('isAdmin')->only('assignPermissionToUserView', 'assignPermissionToUser');
+        // $this->middleware('can:view-users')->only('index');
+        // $this->middleware('user_role:1|0|3|4|5')->only('show');
+        // $this->middleware('can:create-users')->only('create', 'store');
+        // $this->middleware('user_role:1|0|3|4|5')->only('edit', 'update');
+        // $this->middleware('can:delete-users')->only('delete', 'multiDestroy');
+        // $this->middleware('isAdmin')->only('assignPermissionToUserView', 'assignPermissionToUser');
     }
 
     /**
