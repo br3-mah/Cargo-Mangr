@@ -85,6 +85,7 @@
                 @endif
 
 
+                @can('access-finance-transactions')
                 <li
                     class="nav-item {{ areActiveRoutes(['transxn.index'],'menu-is-opening menu-open active') }}">
                     <a href="{{ route('transxn.index') }}"
@@ -95,6 +96,7 @@
                         </p>
                     </a>
                 </li>
+                @endcan
 
                 {{-- <li
                     class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
