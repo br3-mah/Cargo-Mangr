@@ -145,7 +145,7 @@
     </div>
     <!-- ./col -->
 
-    <div class="col-lg-3">
+    {{-- <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
@@ -157,10 +157,10 @@
             </div>
             <a href="{{ route('shipments.index', ['status'=>[ Modules\Cargo\Entities\Shipment::REQUESTED_STATUS,Modules\Cargo\Entities\Shipment::CAPTAIN_ASSIGNED_STATUS,Modules\Cargo\Entities\Shipment::RETURNED_STOCK,Modules\Cargo\Entities\Shipment::RECIVED_STATUS ] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
-    <div class="col-lg-3">
+    {{-- <div class="col-lg-3">
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
@@ -172,7 +172,7 @@
             </div>
             <a href="{{ route('shipments.index', ['status'=>[ Modules\Cargo\Entities\Shipment::RETURNED_CLIENT_GIVEN,Modules\Cargo\Entities\Shipment::SUPPLIED_STATUS,Modules\Cargo\Entities\Shipment::DELIVERED_STATUS ] ]) }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-    </div>
+    </div> --}}
     <!-- ./col -->
 
     {{-- <div class="col-lg-3">
