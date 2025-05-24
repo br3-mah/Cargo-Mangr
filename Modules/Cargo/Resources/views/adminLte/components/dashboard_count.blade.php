@@ -30,8 +30,8 @@
 
 @endphp
 
-{{-- Free --}}
-{{-- @if($user_role == $admin || auth()->user()->can('manage-branches')) --}}
+
+@if($user_role == $admin || auth()->user()->can('manage-branches'))
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <div class="small-box bg-info">
@@ -46,7 +46,7 @@
         </div>
     </div>
     <!-- ./col -->
-{{-- @endif --}}
+@endif
 
 @if(in_array($user_role ,[$admin,$branch]) || auth()->user()->can('manage-staffs'))
     <div class= @if($user_role == $admin)"col-xl-3 col-6" @else "col-xl-4 col-6"@endif >
