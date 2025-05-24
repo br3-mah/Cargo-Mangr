@@ -31,7 +31,7 @@
             background: rgba(0, 191, 255, 0.15);
         ">
             <div class="image">
-                <img src="{{ auth()->user()->avatar ? Storage::url(auth()->user()->avatar) : asset('assets/lte/media/avatars/blank.png') }}"
+                <img src="{{ auth()->user()->avatar ? url('storage/app/public/'.auth()->user()->avatar) : asset('assets/lte/media/avatars/blank.png') }}"
                     class="img-circle elevation-2" alt="User Image" style="
                         width: 40px;
                         height: 40px;
