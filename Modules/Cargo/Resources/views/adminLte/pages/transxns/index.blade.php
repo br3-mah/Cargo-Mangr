@@ -27,26 +27,36 @@ $client = 4;
 </nav>
 <!-- Transaction Summary Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+    @can('view-total-to-date-transactions')
     <div class="bg-white border-l-4 border-yellow-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">Total To Date</div>
         <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['todate'], 2) }}</div>
     </div>
+    @endcan
+    @can('view-total-today-transactions')
     <div class="bg-white border-l-4 border-green-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">Today</div>
         <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['today'], 2) }}</div>
     </div>
+    @endcan
+    @can('view-total-yesterday-transactions')
     <div class="bg-white border-l-4 border-blue-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">Yesterday</div>
         <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['yesterday'], 2) }}</div>
     </div>
+    @endcan
+    @can('view-total-this-week-transactions')
     <div class="bg-white border-l-4 border-purple-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">This Week</div>
         <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['this_week'], 2) }}</div>
     </div>
+    @endcan
+    @can('view-total-this-month-transactions')
     <div class="bg-white border-l-4 border-red-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">This Month</div>
         <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['this_month'], 2) }}</div>
     </div>
+    @endcan
 </div>
 
 <!-- Transactions Table Card -->
