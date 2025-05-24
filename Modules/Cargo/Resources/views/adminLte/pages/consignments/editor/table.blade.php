@@ -3,6 +3,7 @@
   <div class="bg-gradient-to-r text-dark py-4 flex justify-between items-center">
     <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2>
     <div class="flex space-x-2">
+      @can('delete-consignments')
         <button id="bulk-delete-btn"
             class="btnclicky btn-sm d-flex item-center justify-content-center bg-red-500 text-white rounded hover:bg-red-600 transition disabled:opacity-50"
             disabled>
@@ -11,6 +12,7 @@
             <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
             </svg></span>
         </button>
+      @endcan
     </div>
   </div>
 
@@ -73,13 +75,17 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-center">
                 <div class="flex justify-center space-x-2">
+
+                @can('edit-consignments')
                 <a href="{{ route('consignment.edit', $consignment->id) }}"
                     class="p-1.5 bg-yellow-500 text-white rounded-md shadow-sm hover:bg-yellow-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
                 </a>
+                @endcan
 
+                @can('delete-consignments')
                 <form action="{{ route('consignment.destroy', $consignment->id) }}" method="POST" class="inline-block">
                     @csrf
                     @method('DELETE')
@@ -90,7 +96,9 @@
                     </svg>
                     </button>
                 </form>
+                @endcan
 
+                @can('view-consignments')
                 <a href="{{ route('consignment.show', $consignment->id) }}"
                     class="p-1.5 bg-gray-200 text-gray-700 rounded-md shadow-sm hover:bg-gray-300 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +106,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
                 </a>
+                @endcan
 
+                @can('update-consignment-tracker')
                 <button type="button"
                         data-id="{{ $consignment->id }}"
                         data-consignment_code="{{ $consignment->consignment_code }}"
@@ -116,6 +126,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
                 </button>
+                @endcan
                 </div>
             </td>
         </tr>

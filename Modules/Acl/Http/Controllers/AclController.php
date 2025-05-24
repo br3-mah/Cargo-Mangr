@@ -27,7 +27,7 @@ class AclController extends Controller
     public function __construct(AclRepository $aclRepository)
     {
         $this->aclRepo = $aclRepository;
-        $this->middleware('isAdmin');
+        // $this->middleware('isAdmin');
     }
 
 
@@ -102,22 +102,6 @@ class AclController extends Controller
      */
     public function edit($id)
     {
-        if (env('DEMO_MODE') == 'On') {
-            return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
-        }
-
-        breadcrumb([
-            [
-                'name' => __('acl::view.acl'),
-            ],
-            [
-                'name' => __('acl::view.roles'),
-                'path' => route('roles.index')
-            ],
-            [
-                'name' => __('acl::view.edit_role')
-            ],
-        ]);
         $role = Role::findOrFail($id);
         $role_permissions = $role->getPermissionNames()->toArray();
         $permissions_by_group = $this->aclRepo->getPermissionsByGroup();
@@ -134,11 +118,6 @@ class AclController extends Controller
 
     public function update($id, RoleRequest $request)
     {
-
-        if (env('DEMO_MODE') == 'On') {
-            return redirect()->back()->with(['error_message_alert' => __('view.demo_mode')]);
-        }
-
         $role = Role::find($id);
         $data = $request->only(['name', 'permissions']);
         $role = $this->aclRepo->updateRole($role, $data);

@@ -46,7 +46,7 @@
 
                 <li class="nav-header">@lang('view.pages')</li>
 
-
+                @can('view-consignments')
                 <li
                     class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
 
@@ -65,15 +65,17 @@
                                     <p>All Consignments</p>
                                 </a>
                             </li>
+                            @can('create-consignments')
                             <li class="nav-item">
                                 <a href="{{ route('consignment.create') }}" class="nav-link">
                                     <i class="fas fa-plus-square fa-fw"></i>
                                     <p>New Consignment</p>
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                 </li>
-
+                @endcan
                 @if (app('hook')->get('aside_menu'))
                     @foreach (aasort(app('hook')->get('aside_menu'), 'order') as $componentView)
                         {!! $componentView !!}

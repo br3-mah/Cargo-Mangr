@@ -7,18 +7,18 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="m-0">Consignments</h2>
         <div>
+            @can('create-consignments')
             <button type="button" class="btn btn-info mr-2" data-toggle="modal" data-target="#importModal">
                 <i class="fas fa-file-excel"></i> Import Consignments
             </button>
+            @endcan
+            @can('create-consignments')
             <a href="{{ route('consignment.create') }}" class="btn btn-warning">
                 <i class="fas fa-plus"></i> Add New Consignment
             </a>
+            @endcan
         </div>
     </div>
-    {{--
-    @include('cargo::adminLte.components.flashes.success')
-    @include('cargo::adminLte.components.flashes.error')
-    @include('cargo::adminLte.components.flashes.warning') --}}
     @if (!empty($consignments))
         @include('cargo::adminLte.pages.consignments.editor.table')
     @endif

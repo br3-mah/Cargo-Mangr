@@ -47,15 +47,20 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
+                    @can('reset-exchange-rates')
                     <button id="deleteItemBtn" type="button" class="btn btn-outline-danger btn-sm">
                         <i class="fas fa-times mr-1"></i>Reset
                     </button>
+                    @endcan
+
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">
                         <i class="fas fa-times mr-1"></i>Close
                     </button>
+                    @can('edit-exchange-rates')
                     <button type="submit" class="btn btn-primary btn-sm" data-show-loader="true">
                         <i class="fas fa-save mr-1"></i>Save Changes
                     </button>
+                    @endcan
                 </div>
             </form>
         </div>
