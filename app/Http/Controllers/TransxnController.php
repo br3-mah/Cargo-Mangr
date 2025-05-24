@@ -8,6 +8,13 @@ use Carbon\Carbon;
 
 class TransxnController extends Controller
 {
+    
+    public function __construct()
+    {
+        // check on permissions
+        $this->middleware('can:access-finance-transactions')->only('index');
+    }
+
     public function index()
     {
         $transactions = Transxn::with('shipment.client')
