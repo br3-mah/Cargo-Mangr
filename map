@@ -19,3 +19,9 @@ $user->save();
 012642
 
 
+$admin  = 1;
+    $staff  = 0;
+    $branch = 3;
+    $client = 4;
+    $driver = 5;
+
