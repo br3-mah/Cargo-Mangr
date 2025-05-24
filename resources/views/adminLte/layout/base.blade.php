@@ -18,10 +18,7 @@
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="article" />
         <meta property="og:title" content="{{ \Str::title(get_general_setting('company_name', config('app.name'))) }}" />
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta http-equiv="Expires" content="0" />
-        
+
         @php
             $model = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
         @endphp
