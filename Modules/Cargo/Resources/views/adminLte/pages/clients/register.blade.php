@@ -16,7 +16,7 @@
         </a>
     </div>
     <div class="card-body">
-      <h3 class="widget-title">{{ __('cargo::view.create_a_new_account') }}</h3>
+      <h3 class="widget-title text-lg">Create a new account</h3>
       <form method="POST" action="{{ route('register.request') }}" novalidate="novalidate" id="kt_sign_in_form">
         @csrf
         <div class="input-group mb-3">
