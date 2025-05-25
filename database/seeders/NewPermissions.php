@@ -22,14 +22,13 @@ class NewPermissions extends Seeder
             'updated_at' => Carbon::now(),
         ]);
         $permissionGroupId2 = DB::table('permission_groups')->insertGetId([
-
             'name' => 'transactions and finance',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         $permissionGroupId3 = DB::table('permission_groups')->insertGetId([
 
-            'name' => 'Xchange Rates',
+            'name' => 'xchange Rates',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

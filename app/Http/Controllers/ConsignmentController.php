@@ -604,13 +604,11 @@ class ConsignmentController extends Controller
 
             $consignment->save();
             $recipients = customer_numbers($consignment->id);
-            // dd($recipients);
             $message = "Hi! Your parcel has reached the Airport.";
             $this->sendBulkSms($recipients, $message);
             return redirect()->back()->with('success', 'Tracker updated successfully.');
         } catch (\Throwable $th) {
-            dd($th);
-            return redirect()->back()->with('error', 'Failed to update shipment tracker.');
+            return redirect()->back()->with('error', 'Failed to update shipment tracker. '.$th->getMessage());
         }
     }
 
