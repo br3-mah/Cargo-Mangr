@@ -1559,10 +1559,10 @@ class ShipmentController extends Controller
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
         }
         $shipment = Shipment::where('code', $request->code)
-        ->orWhere('code', $request->code)
         ->latest()
         ->first();
     
+        dd($shipment);
         if (empty($shipment)) {
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.error_in_shipment_number')]);
         }
