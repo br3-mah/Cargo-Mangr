@@ -8,8 +8,7 @@ trait Tracker
 
     public function getTrackMapArray($cons)
     {
-
-        dd($cons);
+        
         try {
             switch ($cons->checkpoint) {
 
