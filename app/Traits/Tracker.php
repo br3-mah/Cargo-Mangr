@@ -40,11 +40,12 @@ trait Tracker
                     break;
             }
         } catch (\Throwable $th) {
-            if ($th->getMessage() === 'Attempt to read property "checkpoint" on null') {
-                session()->flash('error', 'This shipment could not be found in any Consignment');
-            } else {
-                session()->flash('error', 'An error occurred: ' . $th->getMessage());
-            }
+            dd($th);
+            // if ($th->getMessage() === 'Attempt to read property "checkpoint" on null') {
+            //     session()->flash('error', 'This shipment could not be found in any Consignment');
+            // } else {
+            //     session()->flash('error', 'An error occurred: ' . $th->getMessage());
+            // }
 
 
         }
@@ -79,13 +80,6 @@ trait Tracker
 
     public function departTransitPortMapArr($cons)
     {
-        dd([
-            ['Parcel received and is being processed', $cons->created_at],
-            ['Parcel dispatched from China',  $checkdate[0]],
-            ['Parcel has arrived at the transit Airport',  $checkdate[1]],
-            ['Parcel has departed from the Transit Airport to Lusaka Airport',  $checkdate[2]],
-        ]);
-
         return [
             ['Parcel received and is being processed', $cons->created_at],
             ['Parcel dispatched from China',  $checkdate[0]],
