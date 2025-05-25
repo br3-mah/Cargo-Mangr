@@ -76,7 +76,6 @@
                         </ul>
                 </li>
                 @endcan
-
                 
                 @if (app('hook')->get('aside_menu'))
                     @foreach (aasort(app('hook')->get('aside_menu'), 'order') as $componentView)
