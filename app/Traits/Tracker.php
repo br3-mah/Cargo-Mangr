@@ -9,7 +9,7 @@ trait Tracker
     public function getTrackMapArray($cons)
     {
 
-        // dd($cons);
+        dd($cons);
         try {
             switch ($cons->checkpoint) {
 
@@ -80,6 +80,8 @@ trait Tracker
 
     public function departTransitPortMapArr($cons)
     {
+        dd($cons);
+
         return [
             ['Parcel received and is being processed', $cons->created_at],
             ['Parcel dispatched from China',  $checkdate[0]],
