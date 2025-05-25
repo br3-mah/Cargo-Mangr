@@ -1573,7 +1573,7 @@ class ShipmentController extends Controller
 
         if ($shipment) {
             // dd($shipment);
-            dd($shipment->consignment_id);
+            // dd($shipment->consignment_id);
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
             dd($cons);
             $track_map = $this->getTrackMapArray($cons);
