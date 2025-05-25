@@ -1572,7 +1572,7 @@ class ShipmentController extends Controller
         $adminTheme = env('ADMIN_THEME', 'adminLte');
 
         if ($shipment) {
-            dd($shipment);
+            // dd($shipment);
             dd($shipment->consignment_id);
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
             dd($cons);
