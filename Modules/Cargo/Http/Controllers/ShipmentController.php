@@ -1558,8 +1558,11 @@ class ShipmentController extends Controller
         if (empty($request->code)) {
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
         }
-        $shipment = Shipment::where('code', $request->code)->orWhere('order_id', $request->code)->first();
-
+        $shipment = Shipment::where('code', $request->code)
+        ->orWhere('code', $request->code)
+        ->latest()
+        ->first();
+    
         if (empty($shipment)) {
             return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.error_in_shipment_number')]);
         }
@@ -1570,6 +1573,7 @@ class ShipmentController extends Controller
         $adminTheme = env('ADMIN_THEME', 'adminLte');
 
         if ($shipment) {
+            
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
             $track_map = $this->getTrackMapArray($cons);
             return view('cargo::' . $adminTheme . '.pages.shipments.tracking')->with(['model' => $shipment, 'track_map' => $track_map, 'client' => $client, 'PackageShipment' => $PackageShipment, 'ClientAddress' => $ClientAddress]);

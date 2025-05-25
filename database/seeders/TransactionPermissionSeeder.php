@@ -17,7 +17,7 @@ class TransactionPermissionSeeder extends Seeder
     {
         // Insert into permission_groups table
         $permissionGroupId = DB::table('permission_groups')->insertGetId([
-            'name' => 'Finances',
+            'name' => 'finances',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
