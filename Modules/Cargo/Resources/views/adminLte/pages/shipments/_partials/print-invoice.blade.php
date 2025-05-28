@@ -29,7 +29,7 @@
                     <img src="https://app.newworldcargo.com/assets/lte/cargo-logo.svg" alt="Newworld Cargo Logo" class="object-contain h-full w-full" />
                 </div>
                 <div class="leading-relaxed">
-                    <div class="text-xl font-bold text-primary">NEWWORLD CARGO</div>
+                    <div class="text-xl font-bold text-primary">NEWWORLD CARGO LIMITED</div>
                     <div>Global Logistics Solutions</div>
                     <div>+260 763 297 287 | info@newworldcargo.com</div>
                     <div>Shop 62/A, Carousel Shopping Centre, Lusaka, Zambia</div>
@@ -50,7 +50,7 @@
                 <div class="text-base font-semibold mb-2 text-primary uppercase tracking-wider">Sender Information</div>
                 <div class="leading-8">
                     <div><span class="font-semibold inline-block w-24">Name:</span> {{ $shipment->client->name ?? 'N/A' }}</div>
-                    <div><span class="font-semibold inline-block w-24">Phone:</span> {{ $shipment->client_phone }}</div>
+                    <div><span class="font-semibold inline-block w-24">Phone:</span> {{ $shipment->client_phone ?? '--' }}</div>
                     <div><span class="font-semibold inline-block w-24">Address:</span> {{ $shipment->from_address->address ?? 'N/A' }}</div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                     @endif
                     <div><span class="font-semibold inline-block w-24">Weight:</span> {{ $shipment->total_weight }} KG</div>
                     <div><span class="font-semibold inline-block w-24">Tax:</span> {{ format_price($shipment->tax) }}</div>
-                    <div><span class="font-semibold inline-block w-24">Collection:</span> {{ format_price($shipment->amount_to_be_collected ?? 0) }}</div>
+                    {{-- <div><span class="font-semibold inline-block w-24">Collection:</span> {{ (number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) ?? 0) }}</div> --}}
                 </div>
 
                 <div class="w-1/3 mb-3">
@@ -152,7 +152,7 @@
         <div class="w-80 ml-auto border border-gray-200 rounded-md overflow-hidden mb-6">
             <div class="flex justify-between px-4 py-2 border-b border-gray-200">
                 <div>Subtotal:</div>
-                <div>${{ number_format(($shipment->amount_to_be_collected ?? 0) - ($shipment->tax ?? 0), 2) }}</div>
+                <div>K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'),2)}}</div>
             </div>
             <div class="flex justify-between px-4 py-2 border-b border-gray-200">
                 <div>Tax:</div>
@@ -160,7 +160,7 @@
             </div>
             <div class="flex justify-between px-4 py-2 bg-primary text-white font-semibold">
                 <div>TOTAL:</div>
-                <div>{{ format_price($shipment->amount_to_be_collected ?? 0) }}</div>
+                <div>K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'),2) ?? 0 }}</div>
             </div>
         </div>
 

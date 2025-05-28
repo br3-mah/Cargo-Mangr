@@ -73,7 +73,7 @@
                     </div>
                     <div class="text-right">
                         <span class="text-3xl font-bold text-blue-600">
-                            {{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw')) }}
+                            K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}
                         </span>
                     </div>
 

@@ -42,7 +42,7 @@
     <div class="w-full md:w-1/3 px-4 mb-6">
         <div class="p-5 bg-gray-50 rounded-lg shadow-sm h-full">
             <h2 class="text-lg font-semibold text-gray-700 mb-3">{{ __('cargo::view.amount_to_be_collected') }}</h2>
-            <div class="text-2xl font-bold text-blue-600">{{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}</div>
+            <div class="text-2xl font-bold text-blue-600">K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}</div>
             <span class="text-muted text-sm">(${{ $shipment->amount_to_be_collected }})</span>
         </div>
     </div>
