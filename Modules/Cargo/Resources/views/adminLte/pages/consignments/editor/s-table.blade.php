@@ -69,8 +69,10 @@
                             </td>
                             <td>{{ $shipment->client_phone ?? 'No phone' }}</td>
                             <td>
-                                {{ format_price(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}
-                                <span class="text-muted text-sm">(${{ $shipment->amount_to_be_collected }})</span>
+                                <span class="text-dark text-md font-weight-bold">
+                                    K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}
+                                </span>
+                                <span class="text-warning text-sm">(${{ $shipment->amount_to_be_collected }})</span>
                             </td>
                             <td>
                                 @if ($shipment->paid)
