@@ -4,26 +4,36 @@
     @endphp
     <div class="row">
         <div id="column3" class="col-md-12 px-6">
+            @if ($consignment->Mawb_num )
             <p class="text-muted text-sm">Mawb Number: {{ $consignment->Mawb_num }}</p>
+            @endif
+            @if ($consignment->voyage_no )
+            <p class="text-muted text-sm">Vessel / Voyage No : {{ $consignment->voyage_no }}</p>
+            @endif
+            @if ($consignment->container_no )
+            <p class="text-muted text-sm">Container No: {{ $consignment->container_no }}</p>
+            @endif
             @if ($consignment->cargo_type == 'sea')
                 <div class="items-center d-flex space-x-2">
                     <p class="text-sm text-gray-500">ETA DAR</p>
                     <p class="font-medium">
-                        {{ Carbon::parse($consignment->eta_dar)->format('l, F j, Y') ?? 'Not placed' }}
+                        {{ $consignment->eta_dar ?? 'Not placed' }}
                     </p>
                 </div>
                 <div class="items-center d-flex space-x-2">
                     <p class="text-sm text-gray-500">ETA LUN</p>
                     <p class="font-medium">
-                        {{ Carbon::parse($consignment->eta_lun)->format('l, F j, Y') ?? 'Not placed' }}
+                        {{ $consignment->eta_lun ?? 'Not placed' }}
                     </p>
                 </div>
+                @if ($consignment->destination)
                 <div class="items-center d-flex space-x-2">
                     <p class="text-sm text-gray-500">Destination Port</p>
                     <p class="font-medium">
-                        {{ $consignment->dest_port }}
+                        {{ $consignment->destination }}
                     </p>
-                </div>
+                </div>  
+                @endif
                 <div>
                     <img width="80" src="{{ asset('icon/ship.svg') }}" alt="">
                 </div>
@@ -42,7 +52,7 @@
                 <thead class="sticky-top bg-white z-10">
                     <tr class="text-sm">
                         <th><i class="bi bi-upc-scan me-1"></i> Hawb No.</th>
-                        <th><i class="bi bi-box me-1"></i> Type</th>
+                        <th><i class="bi bi-box me-1"></i> Salesman</th>
                         <th><i class="bi bi-building me-1"></i> Branch</th>
                         <th><i class="bi bi-person me-1"></i> Client</th>
                         <th><i class="bi bi-file me-1"></i> Package Description</th>
@@ -59,7 +69,8 @@
                             <td>
                                 <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
                             </td>
-                            <td>{{ $shipment->type }}</td>
+                            <td>{{ $shipment->salesman }}</td>
+                           
                             <td>{{ 'Lusaka' }}</td>
                             <td>{{ $shipment->client->name }}</td>
                             <td>

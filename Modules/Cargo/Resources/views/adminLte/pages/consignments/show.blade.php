@@ -252,7 +252,7 @@ $client = 4;
             if (typeof $.fn.DataTable !== 'undefined') {
                 $('#shipmentTable').DataTable({
                     responsive: true,
-                    "pageLength": 10
+                    "pageLength": 8
                 });
             }
 
@@ -431,7 +431,7 @@ $client = 4;
             if (typeof $.fn.DataTable !== 'undefined') {
                 $('#shipmentTable').DataTable({
                     responsive: true,
-                    "pageLength": 10
+                    "pageLength": 8
                 });
             }
 

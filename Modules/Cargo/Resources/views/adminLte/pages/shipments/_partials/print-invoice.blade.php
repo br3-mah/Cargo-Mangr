@@ -99,11 +99,11 @@
                 </div>
 
                 <div class="w-1/3 mb-3">
-                    <div><span class="font-semibold inline-block w-24">Cargo Date:</span> {{ optional($shipment->consignment->cargo_date)->format('F j, Y') ?? 'N/A' }}</div>
-                    <div><span class="font-semibold inline-block w-24">ETA:</span> {{ optional($shipment->consignment->eta)->format('F j, Y') ?? 'N/A' }}</div>
+                    <div><span class="font-semibold inline-block w-24">Cargo Date:</span> {{ $shipment->consignment->cargo_date }}</div>
+                    <div><span class="font-semibold inline-block w-24">ETA:</span> {{ $shipment->consignment->eta }}</div>
                     @if ($shipment->consignment->cargo_type == 'sea')
-                        <div><span class="font-semibold inline-block w-24">ETA DAR:</span> {{ optional($shipment->consignment->eta_dar)->format('F j, Y') ?? 'N/A' }}</div>
-                        <div><span class="font-semibold inline-block w-24">ETA LUN:</span> {{ optional($shipment->consignment->eta_lun)->format('F j, Y') ?? 'N/A' }}</div>
+                        <div><span class="font-semibold inline-block w-24">ETA DAR:</span> {{ $shipment->consignment->eta_dar }}</div>
+                        <div><span class="font-semibold inline-block w-24">ETA LUN:</span> {{ $shipment->consignment->eta_lun }}</div>
                     @endif
                 </div>
             </div>
