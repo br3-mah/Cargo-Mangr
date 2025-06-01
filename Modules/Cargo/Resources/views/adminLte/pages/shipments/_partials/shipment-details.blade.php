@@ -34,11 +34,7 @@
         <div>
             <p class="text-sm text-gray-500">{{ __('cargo::view.shipping_date') }}</p>
             <p class="font-medium">
-                @if (strpos($shipment->shipping_date, '/'))
-                    {{ Carbon\Carbon::createFromFormat('d/m/Y', $shipment->shipping_date)->format('F j, Y') }}
-                @else
-                    {{ \Carbon\Carbon::parse($shipment->shipping_date)->format('F j, Y') }}
-                @endif
+                {{ ucfirst($shipment->consignment->date) }}
             </p>
         </div>
 
@@ -61,32 +57,32 @@
         <div>
             <p class="text-sm text-gray-500">Cargo Date</p>
             <p class="font-medium">
-                {{ Carbon::parse($shipment->consignment->cargo_date)->format('l, F j, Y') ?? 'Not placed' }}
+                {{ ucfirst($shipment->consignment->date) }}
             </p>
         </div>
         <div>
             <p class="text-sm text-gray-500">ETA</p>
             <p class="font-medium">
-                {{ Carbon::parse($shipment->consignment->eta)->format('l, F j, Y') ?? 'Not placed' }}
+                {{ ucfirst($shipment->consignment->eta ?? '--') }}
             </p>
         </div>
         @if ($shipment->consignment->cargo_type == 'sea')
             <div>
                 <p class="text-sm text-gray-500">ETA DAR</p>
                 <p class="font-medium">
-                    {{ Carbon::parse($shipment->consignment->eta_dar)->format('l, F j, Y') ?? 'Not placed' }}
+                    {{ ucfirst($shipment->consignment->eta_dar ?? '--') }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">ETA LUN</p>
                 <p class="font-medium">
-                    {{ Carbon::parse($shipment->consignment->eta_lun)->format('l, F j, Y') ?? 'Not placed' }}
+                    {{ $shipment->consignment->eta_lun ?? '--' }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">Destination Port</p>
                 <p class="font-medium">
-                    {{ $shipment?->consignment?->dest_port ?? 'N/A' }}
+                    {{ $shipment?->consignment?->destination ??  $shipment?->consignment?->dest_port }}
                 </p>
             </div>
         @endif
