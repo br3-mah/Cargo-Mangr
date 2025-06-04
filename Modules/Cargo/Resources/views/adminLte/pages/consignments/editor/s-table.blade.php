@@ -49,8 +49,19 @@
                 </div>
             @endif
 
-            <!-- View Toggle Toolbar -->
-            <div class="d-flex justify-content-end mb-3">
+            <!-- View Toggle Toolbar and Search -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="flex-grow-1 me-3">
+                    <div class="input-group" style="max-width: 400px;">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="shipmentSearch" placeholder="Search shipments..." onkeyup="filterShipments()">
+                        <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="btn-group" role="group" aria-label="View Toggle">
                     <button type="button" class="btn btn-outline-primary active" id="tableViewBtn" onclick="switchView('table')">
                         <i class="bi bi-table me-1"></i>Table
@@ -83,7 +94,8 @@
                     </thead>
                     <tbody>
                         @foreach ($consignment->shipments as $shipment)
-                            <tr id="shipment_row_{{ $shipment->id }}">
+                            <tr id="shipment_row_{{ $shipment->id }}" class="shipment-row" 
+                                data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
                                 <td>
                                     <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
                                 </td>
@@ -148,7 +160,9 @@
             <div id="listView" class="view-container" style="display: none;">
                 <div class="list-group">
                     @foreach ($consignment->shipments as $shipment)
-                        <div class="list-group-item list-group-item-action p-3 mb-2 border rounded" id="shipment_list_{{ $shipment->id }}">
+                        <div class="list-group-item list-group-item-action p-3 mb-2 border rounded shipment-item" 
+                             id="shipment_list_{{ $shipment->id }}"
+                             data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
                             <div class="d-flex w-100 justify-content-between align-items-start">
                                 <div class="flex-grow-1">
                                     <div class="row">
@@ -221,7 +235,9 @@
             <div id="gridView" class="view-container" style="display: none;">
                 <div class="row">
                     @foreach ($consignment->shipments as $shipment)
-                        <div class="col-lg-4 col-md-6 mb-4" id="shipment_grid_{{ $shipment->id }}">
+                        <div class="col-lg-4 col-md-6 mb-4 shipment-card" 
+                             id="shipment_grid_{{ $shipment->id }}"
+                             data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
                             <div class="card h-100 shadow-sm">
                                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                     <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
@@ -319,7 +335,102 @@
                     document.getElementById('gridViewBtn').classList.add('active');
                     break;
             }
+            
+            // Apply current search filter to new view
+            const searchTerm = document.getElementById('shipmentSearch').value;
+            if (searchTerm.trim() !== '') {
+                filterShipments();
+            }
         }
+
+        function filterShipments() {
+            const searchTerm = document.getElementById('shipmentSearch').value.toLowerCase();
+            
+            // Filter table rows
+            const tableRows = document.querySelectorAll('.shipment-row');
+            tableRows.forEach(row => {
+                const searchText = row.getAttribute('data-search-text');
+                if (searchText.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Filter list items
+            const listItems = document.querySelectorAll('.shipment-item');
+            listItems.forEach(item => {
+                const searchText = item.getAttribute('data-search-text');
+                if (searchText.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Filter grid cards
+            const gridCards = document.querySelectorAll('.shipment-card');
+            gridCards.forEach(card => {
+                const searchText = card.getAttribute('data-search-text');
+                if (searchText.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results message
+            updateNoResultsMessage();
+        }
+
+        function clearSearch() {
+            document.getElementById('shipmentSearch').value = '';
+            filterShipments();
+        }
+
+        function updateNoResultsMessage() {
+            const searchTerm = document.getElementById('shipmentSearch').value.toLowerCase();
+            if (searchTerm.trim() === '') {
+                // Remove any existing no results messages
+                const existingMessages = document.querySelectorAll('.no-results-message');
+                existingMessages.forEach(msg => msg.remove());
+                return;
+            }
+
+            // Check if any items are visible
+            const visibleRows = document.querySelectorAll('.shipment-row:not([style*="display: none"])');
+            const visibleItems = document.querySelectorAll('.shipment-item:not([style*="display: none"])');
+            const visibleCards = document.querySelectorAll('.shipment-card:not([style*="display: none"])');
+            
+            const hasVisibleResults = visibleRows.length > 0 || visibleItems.length > 0 || visibleCards.length > 0;
+            
+            // Remove existing no results messages
+            const existingMessages = document.querySelectorAll('.no-results-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            if (!hasVisibleResults) {
+                // Add no results message to the active view
+                const activeView = document.querySelector('.view-container:not([style*="display: none"])');
+                if (activeView) {
+                    const noResultsDiv = document.createElement('div');
+                    noResultsDiv.className = 'no-results-message text-center py-5';
+                    noResultsDiv.innerHTML = `
+                        <div class="text-muted">
+                            <i class="bi bi-search fs-1 mb-3"></i>
+                            <h5>No shipments found</h5>
+                            <p>Try adjusting your search terms or clear the search to see all shipments.</p>
+                        </div>
+                    `;
+                    activeView.appendChild(noResultsDiv);
+                }
+            }
+        }
+
+        // Initialize search functionality when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('shipmentSearch');
+            searchInput.addEventListener('input', filterShipments);
+        });
     </script>
 
     <style>
@@ -350,12 +461,21 @@
         }
         
         @media (max-width: 768px) {
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
             .btn-group {
                 width: 100%;
             }
             
             .btn-group .btn {
                 flex: 1;
+            }
+            
+            .input-group {
+                max-width: 100% !important;
             }
         }
     </style>
