@@ -67,3 +67,6 @@ Route::get('show-register-in-driver-app', 'Api\ShipmentController@showRegisterIn
 
 // Support Api Routes
 Route::post('submit-support','Api\SupportController@ajaxSubmitTicket')->name('support.ticket.submit');
+
+Route::post('/mark-as-paid', 'ShipmentController@markAsPaid')->name('api.mark-as-paid');
+Route::post('/refund-payment', 'ShipmentController@refundPayment')->name('api.refund-payment');

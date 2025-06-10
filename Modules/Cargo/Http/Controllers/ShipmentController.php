@@ -48,6 +48,8 @@ use Modules\Cargo\Http\Requests\RegisterRequest;
 use Carbon\Carbon;
 use Auth;
 use Illuminate\Support\Facades\DB as FDB;
+use Modules\Cargo\Entities\Payment;
+use Modules\Cargo\Entities\ShipmentLog;
 
 class ShipmentController extends Controller
 {
@@ -1702,5 +1704,110 @@ class ShipmentController extends Controller
             'success' => true,
             'shipment' => $shipment
         ], 200);
+    }
+
+    /**
+     * Process a refund for a shipment payment
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refundPayment(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $shipment = Shipment::findOrFail($request->shipment_id);
+            
+            // Check if shipment is actually paid
+            if (!$shipment->paid) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This shipment is not marked as paid.'
+                ], 400);
+            }
+
+
+            // Update shipment status
+            $shipment->paid = 0;
+            $shipment->save();
+
+    
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment refunded successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::error('Refund Error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process refund: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Mark a shipment as paid
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAsPaid(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Validate request
+            if (!$request->has('shipment_id')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Shipment ID is required'
+                ], 400);
+            }
+
+            $shipment = Shipment::find($request->shipment_id);
+            
+            // Check if shipment exists
+            if (!$shipment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Shipment not found'
+                ], 404);
+            }
+            
+            // Check if shipment is already paid
+            if ($shipment->paid) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This shipment is already marked as paid.'
+                ], 400);
+            }
+
+
+            // Update shipment status
+            $shipment->paid = 1;
+            $shipment->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment marked as paid successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::error('Mark as Paid Error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to mark as paid: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

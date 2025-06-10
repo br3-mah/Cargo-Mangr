@@ -5,7 +5,17 @@
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
 <div class="">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="m-0">Consignments</h2>
+        <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+                <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-yellow-400 tracking-tight">Consignments</h2>
+                <p class="text-sm text-gray-600 mt-1">Manage and track your shipment consignments</p>
+            </div>
+        </div>
         <div>
             @can('create-consignments')
             <button type="button" class="btn btn-info mr-2" data-toggle="modal" data-target="#importModal">
