@@ -78,11 +78,12 @@ class ConsignmentController extends Controller
             }
             return true;
         } catch (\Throwable $th) {
-            dd($th);
-            // return false;
+            // dd($th);
+            return false;
         }
     }
 
+    //size 12
     public function manifest_sea($rows){
         $code = $rows[2][0] ?? null;
         $dateRaw = $rows[2][5] ?? null;
@@ -190,6 +191,8 @@ class ConsignmentController extends Controller
         }
     }
 
+
+    //Size 15
     public function manifest_sea2($rows){
         $code = $rows[2][0] ?? null;
         // dd($rows);
@@ -329,6 +332,7 @@ class ConsignmentController extends Controller
                     'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
 
                     'shipping_date' => Carbon::now(),
+                    'volume' => (float)$row[7],
                     'total_weight' => (float)($row[8] ?? 0),
                     'client_address' => $username,
                     'client_phone' => $clientPhone,
@@ -829,7 +833,8 @@ class ConsignmentController extends Controller
             return redirect()->route('consignment.index', compact('consignments'))
                 ->with('success', 'Consignment and related data deleted successfully.');
         } catch (\Throwable $th) {
-            dd($th);
+            return redirect()->route('consignment.index', compact('consignments'))
+                ->with('error', $th->getMessage());
         }
     }
     public function bulkDelete(Request $request)

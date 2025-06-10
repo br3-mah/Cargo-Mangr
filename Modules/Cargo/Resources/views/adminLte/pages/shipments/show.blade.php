@@ -61,6 +61,8 @@
 
         <!-- Main Content -->
         <div class="container mx-auto px-6 py-8">
+
+
             @include('cargo::adminLte.pages.shipments._partials.shipment-client-details')
             @include('cargo::adminLte.pages.shipments._partials.shipment-details')
             @include('cargo::adminLte.pages.shipments._partials.shipment-packages')
@@ -115,6 +117,11 @@
                             @can('print-shipment-receipt')
                                 @include('cargo::adminLte.pages.shipments._partials.print-receipt')
                             @endcan
+                            {{-- @can('refund-shipment-payment') --}}
+                                <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="openRefundModal({{ $shipment->id }})">
+                                    <i class="fas fa-undo mr-1"></i> Refund Payment
+                                </button>
+                            {{-- @endcan --}}
                         @else
                             @can('confirm-shipment-payment')
                                 <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400" onclick="openMarkPaidModal({{ $shipment->id }})">
@@ -227,6 +234,87 @@
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                     </svg>
                     <span>Confirm Payment</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Refund Modal -->
+<div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-lg overflow-hidden" style="background-color: #f8f9fa;">
+            <!-- Header with red gradient -->
+            <div class="modal-header py-4" style="background: linear-gradient(45deg, #dc2626 0%, #b91c1c 100%); border: none;">
+                <div class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffffff" class="bi bi-arrow-counterclockwise me-3" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                    </svg>
+                    <h5 class="modal-title fw-bold mb-0 text-white" id="refundLabel">Confirm Refund</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form id="refundForm">
+                    <!-- Alert with red accent -->
+                    <div class="alert mb-4 border-0 shadow-sm" style="background-color: #fef2f2; border-left: 4px solid #dc2626;">
+                        <div class="d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#dc2626" class="bi bi-exclamation-triangle-fill me-3" viewBox="0 0 16 16">
+                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>
+                            <p class="mb-0 fw-medium">Are you sure you want to refund this payment? This action cannot be undone.</p>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-3 p-4 mb-4" style="background-color: white;">
+                        <h6 class="mb-3 text-uppercase" style="color: #dc2626; font-size: 0.85rem; letter-spacing: 0.5px;">Refund Details</h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="refundReason" class="form-label fw-medium mb-2" style="color: #475569; font-size: 0.9rem;">
+                                        Reason for Refund
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-0" style="background-color: #f8fafc; border-radius: 8px 0 0 8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#dc2626" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                                            </svg>
+                                        </span>
+                                        <textarea class="form-control form-control-lg border-0" id="refundReason" rows="3" style="background-color: #f8fafc; border-radius: 0 8px 8px 0; font-size: 0.95rem;" placeholder="Enter reason for refund..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary card with red accent -->
+                    <div class="card border-0 shadow-sm rounded-3 p-4 mt-4" style="background-color: white;">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Original Payment Amount:</span>
+                            <span class="fw-medium">{{ number_format($totalAmount, 2) }}</span>
+                        </div>
+                        <hr style="opacity: 0.1;">
+                        <div class="d-flex justify-content-between mt-2">
+                            <span class="fw-bold" style="color: #dc2626;">Refund Amount:</span>
+                            <span class="fw-bold fs-5" style="color: #dc2626;">{{ number_format($totalAmount, 2) }}</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer py-4" style="background-color: #f8f9fa; border-top: 1px solid rgba(0,0,0,0.05);">
+                <button type="button" class="btn px-4 py-2" data-dismiss="modal" style="background-color: #e2e8f0; color: #64748b; border: none; border-radius: 8px; font-weight: 600;">
+                    Cancel
+                </button>
+                <button type="button" class="btn px-4 py-2 d-flex align-items-center btnclicky" id="confirmRefundBtn" style="background-color: #dc2626; color: white; border: none; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise me-2" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                    </svg>
+                    <span>Confirm Refund</span>
                 </button>
             </div>
         </div>

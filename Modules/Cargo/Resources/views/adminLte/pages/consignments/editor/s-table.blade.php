@@ -81,8 +81,8 @@
                     <thead class="sticky-top bg-white z-10">
                         <tr class="text-sm">
                             <th><i class="bi bi-upc-scan me-1"></i> Hawb No.</th>
-                            <th><i class="bi bi-box me-1"></i> Salesman</th>
-                            <th><i class="bi bi-building me-1"></i> Branch</th>
+                            <th><i class="bi bi-box me-1"></i>Salesman</th>
+                            <th><i class="bi bi-cube me-1"></i>Volume</th>
                             <th><i class="bi bi-person me-1"></i> Client</th>
                             <th><i class="bi bi-file me-1"></i> Package Description</th>
                             <th><i class="bi bi-telephone me-1"></i> Client Phone</th>
@@ -94,13 +94,12 @@
                     </thead>
                     <tbody>
                         @foreach ($consignment->shipments as $shipment)
-                            <tr id="shipment_row_{{ $shipment->id }}" class="shipment-row" 
-                                data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
+                            <tr id="shipment_row_{{ $shipment->id }}" class="shipment-row" data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
                                 <td>
                                     <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
                                 </td>
                                 <td>{{ $shipment->salesman }}</td>
-                                <td>{{ 'Lusaka' }}</td>
+                                <td>{{ $shipment->volume }}</td>
                                 <td>{{ $shipment->client->name }}</td>
                                 <td>
                                     @foreach (Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->get() as $package)

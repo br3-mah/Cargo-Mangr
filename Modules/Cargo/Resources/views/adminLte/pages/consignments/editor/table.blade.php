@@ -1,7 +1,7 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <div class="w-full bg-white px-3 shadow-sm rounded-lg overflow-hidden">
   <div class="bg-gradient-to-r text-dark py-4 flex justify-between items-center">
-    <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2>
+    {{-- <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2> --}}
     <div class="flex space-x-2">
       @can('delete-consignments')
         <button id="bulk-delete-btn"
