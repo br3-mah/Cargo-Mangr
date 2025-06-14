@@ -37,14 +37,12 @@
     </script>
     <style>
         .background-container {
-            position: fixed;
+            position: relative;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
             overflow: hidden;
-            background-color: #f0f0f0; /* Fallback color */
         }
         .background-image {
             position: absolute;
@@ -96,6 +94,24 @@
             box-shadow: 0 0 0 2px #e5e7eb;
             position: relative;
         }
+        .stage-dot.completed {
+            background: #f7c600;
+            box-shadow: 0 0 0 2px #f7c600;
+        }
+        .stage-dot.completed::after {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+        }
         .stage-dot.active {
             background: #012642;
             box-shadow: 0 0 0 2px #012642;
@@ -113,10 +129,6 @@
             opacity: 0;
             animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        .stage-dot.completed {
-            background: #f7c600;
-            box-shadow: 0 0 0 2px #f7c600;
-        }
         @keyframes pulse-ring {
             0% {
                 transform: scale(0.8);
@@ -131,13 +143,6 @@
 @endsection
 
 @section('page-content')
-<!-- Background Container -->
-<div class="background-container">
-    <img src="https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg" 
-         class="background-image" 
-         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(12px) brightness(0.8); transform: scale(1.1);">
-    <div class="background-overlay"></div>
-</div>
 
 @if(isset($error))
     <div class="min-h-screen">
@@ -199,10 +204,12 @@
         </div>
     </div>
 @else
-    <div class="min-h-screen">
-        <div class="container mx-auto px-4 py-12">
+    <div class="min-h-screen" style= src="https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg" 
+    class="background-image" 
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(12px) brightness(0.8); transform: scale(1.1);">
+        <div class="container mx-auto px-4 py-0">
             <!-- Header Section -->
-            <div class="text-center mb-12">
+            <div class="text-center mb-6">
                 <p class="text-xl text-gray-600 mb-4">#{{ $model->code ?? 'Unknown' }}</p>
                 
                 @if($track_map)
@@ -244,11 +251,18 @@
                                     'Arrived',
                                     'Ready'
                                 ];
+                                $currentStage = count($track_map);
                             @endphp
                             @foreach($stages as $index => $stage)
+                                @php
+                                    $isCompleted = $index < $currentStage;
+                                    $isActive = $index === $currentStage;
+                                    $stageClass = $isCompleted ? 'completed' : ($isActive ? 'active' : '');
+                                    $textClass = $isCompleted ? 'text-primary-600' : ($isActive ? 'text-gray-800' : 'text-gray-400');
+                                @endphp
                                 <div class="text-center">
-                                    <div class="stage-dot mx-auto mb-2 {{ $index < count($track_map) ? 'completed' : ($index === count($track_map) ? 'active' : '') }}"></div>
-                                    <span class="text-xs font-medium {{ $index < count($track_map) ? 'text-primary-600' : ($index === count($track_map) ? 'text-gray-800' : 'text-gray-400') }}">
+                                    <div class="stage-dot mx-auto mb-2 {{ $stageClass }}"></div>
+                                    <span class="text-xs font-medium {{ $textClass }}">
                                         {{ $stage }}
                                     </span>
                                 </div>
@@ -258,6 +272,11 @@
                         <!-- Tracking Timeline -->
                         <div class="space-y-6">
                             @foreach($track_map as $index => $log)
+                                @php
+                                    $date = $log[1];
+                                    $formattedDate = $date instanceof \Carbon\Carbon ? $date->format('M j, Y g:i A') : \Carbon\Carbon::parse($date)->format('M j, Y g:i A');
+                                    $timeAgo = $date instanceof \Carbon\Carbon ? $date->diffForHumans() : \Carbon\Carbon::parse($date)->diffForHumans();
+                                @endphp
                                 <div class="flex items-start">
                                     <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center mr-4">
                                         <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,9 +290,9 @@
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                {{ \Carbon\Carbon::parse($log[1])->format('M j, Y g:i A') }}
+                                                {{ $formattedDate }}
                                                 <span class="mx-2">•</span>
-                                                <span>{{ \Carbon\Carbon::parse($log[1])->diffForHumans() }}</span>
+                                                <span>{{ $timeAgo }}</span>
                                             </div>
                                         </div>
                                     </div>
