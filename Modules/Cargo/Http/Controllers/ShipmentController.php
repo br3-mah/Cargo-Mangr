@@ -1557,32 +1557,55 @@ class ShipmentController extends Controller
     // Tracking Get results function
     public function tracking(Request $request)
     {
-        if (empty($request->code)) {
-            return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
-        }
-        $shipment = Shipment::where('code', $request->code)
-        ->latest()
-        ->first();
-    
-        if (empty($shipment)) {
-            return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.error_in_shipment_number')]);
-        }
-        $client = Client::where('id', $shipment->client_id)->first();
-        $PackageShipment = PackageShipment::where('shipment_id', $shipment->id)->get();
-        $ClientAddress = ClientAddress::where('client_id', $shipment->client_id)->first();
+        try {
+            if (empty($request->code)) {
+                return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
+            }
 
-        $adminTheme = env('ADMIN_THEME', 'adminLte');
+            $shipment = Shipment::where('code', $request->code)
+                ->latest()
+                ->first();
+        
+            if (empty($shipment)) {
+                return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.error_in_shipment_number')]);
+            }
 
-        if ($shipment) {
-            // dd($shipment);
-            // dd($shipment->consignment_id);
+            $client = Client::where('id', $shipment->client_id)->first();
+            $PackageShipment = PackageShipment::where('shipment_id', $shipment->id)->get();
+            $ClientAddress = ClientAddress::where('client_id', $shipment->client_id)->first();
+            $adminTheme = env('ADMIN_THEME', 'adminLte');
+
+            // Get consignment and tracking info
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
-            // dd($cons);
+            
+            if (!$cons) {
+                return view('cargo::' . $adminTheme . '.pages.shipments.tracking')
+                    ->with([
+                        'model' => $shipment,
+                        'track_map' => $this->getFallbackTrackMap(),
+                        'client' => $client,
+                        'PackageShipment' => $PackageShipment,
+                        'ClientAddress' => $ClientAddress
+                    ]);
+            }
+
             $track_map = $this->getTrackMapArray($cons);
-            return view('cargo::' . $adminTheme . '.pages.shipments.tracking')->with(['model' => $shipment, 'track_map' => $track_map, 'client' => $client, 'PackageShipment' => $PackageShipment, 'ClientAddress' => $ClientAddress]);
-        } else {
-            $error = __('cargo::messages.invalid_code');
-            return view('cargo::' . $adminTheme . '.pages.shipments.tracking')->with(['error' => $error]);
+
+            // dd($track_map);
+            return view('cargo::' . $adminTheme . '.pages.shipments.tracking')
+                ->with([
+                    'model' => $shipment,
+                    'track_map' => $track_map,
+                    'client' => $client,
+                    'PackageShipment' => $PackageShipment,
+                    'ClientAddress' => $ClientAddress
+                ]);
+
+        } catch (\Exception $e) {
+            dd($e);
+            \Log::error('Tracking Error: ' . $e->getMessage());
+            return view('cargo::adminLte.pages.shipments.tracking')
+                ->with(['error' => __('cargo::messages.error_occurred')]);
         }
     }
 
