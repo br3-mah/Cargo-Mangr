@@ -769,32 +769,40 @@ class ConsignmentController extends Controller
             ]);
 
             $consignment = Consignment::findOrFail($id);
-            $consignment->checkpoint = $request->status;
+            $currentStage = $consignment->getCurrentStage();
+            $targetStage = $request->status;
+            $now = Carbon::now();
 
-            // Decode existing JSON or initialize an empty array
-            $checkpointDates = json_decode($consignment->checkpoint_date, true) ?? [];
-
-            // Append the new timestamp
-            $checkpointDates[] = Carbon::now()->toDateTimeString();
-
-            // Save the updated JSON data
-            $consignment->checkpoint_date = json_encode($checkpointDates);
-
-            // Update consignment status
-            if ($request->status > 1) {
-                $consignment->status = 'in_transit';
+            // If moving to an earlier stage, delete tracking history entries for stages being undone
+            if ($targetStage < $currentStage) {
+                $consignment->trackingHistory()
+                    ->where('stage_id', '>', $targetStage)
+                    ->delete();
             }
-            if ($request->status > 5) {
-                $consignment->status = 'delivered';
+            // If skipping ahead, create entries for intermediate stages
+            else if ($targetStage > $currentStage + 1) {
+                // Create entries for all intermediate stages
+                for ($stage = $currentStage + 1; $stage < $targetStage; $stage++) {
+                    $consignment->updateTrackingStage($stage, [
+                        'completed_at' => $now,
+                        'notes' => 'Stage completed automatically during stage skip',
+                        'location' => 'System'
+                    ]);
+                }
             }
 
-            $consignment->save();
-            $recipients = customer_numbers($consignment->id);
-            $message = "Hi! Your parcel has reached the Airport.";
-            $this->sendBulkSms($recipients, $message);
+            // Update the target stage
+            if (!$consignment->updateTrackingStage($targetStage, [
+                'completed_at' => $now,
+                'notes' => 'Stage updated via tracker',
+                'location' => 'System'
+            ])) {
+                throw new \Exception('Failed to update tracking stage');
+            }
+
             return redirect()->back()->with('success', 'Tracker updated successfully.');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Failed to update shipment tracker. '.$th->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update shipment tracker: ' . $e->getMessage());
         }
     }
 
