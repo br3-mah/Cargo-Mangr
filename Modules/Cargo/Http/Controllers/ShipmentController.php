@@ -1577,7 +1577,7 @@ class ShipmentController extends Controller
             // dd($shipment);
             // dd($shipment->consignment_id);
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
-            dd($cons);
+            // dd($cons);
             $track_map = $this->getTrackMapArray($cons);
             return view('cargo::' . $adminTheme . '.pages.shipments.tracking')->with(['model' => $shipment, 'track_map' => $track_map, 'client' => $client, 'PackageShipment' => $PackageShipment, 'ClientAddress' => $ClientAddress]);
         } else {

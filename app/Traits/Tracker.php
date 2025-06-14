@@ -22,6 +22,7 @@ trait Tracker
                 }
             }
 
+            dd($cons->checkpoint);
             switch ($cons->checkpoint) {
                 case 1:
                     return $this->initalChinaMapArr($cons);
