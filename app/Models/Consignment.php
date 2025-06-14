@@ -35,11 +35,53 @@ class Consignment extends Model
         'arrival_date'
     ];
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'eta',
+        'cargo_date',
+        'eta_dar',
+        'eta_nak',
+        'eta_lun',
+        'date',
+        'departure_date',
+        'arrival_date'
+    ];
+
+    public function getFormattedCreatedAtAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('Y-m-d H:i:s') : 'N/A';
+    }
+
+    public function getFormattedUpdatedAtAttribute()
+    {
+        return $this->updated_at ? $this->updated_at->format('Y-m-d H:i:s') : 'N/A';
+    }
+
+    public function getFormattedEtaAttribute()
+    {
+        return $this->eta ? $this->eta->format('Y-m-d') : 'N/A';
+    }
+
+    public function getFormattedCargoDateAttribute()
+    {
+        return $this->cargo_date ? $this->cargo_date->format('Y-m-d') : 'N/A';
+    }
+
+    public function getFormattedArrivalDateAttribute()
+    {
+        return $this->arrival_date ? $this->arrival_date->format('Y-m-d') : 'N/A';
+    }
+
+    public function getFormattedDepartureDateAttribute()
+    {
+        return $this->departure_date ? $this->departure_date->format('Y-m-d') : 'N/A';
+    }
+
     public function getShipmentCountAttribute()
     {
         return $this->shipments()->count();
     }
-
 
     /**
      * Get the shipments for the consignment.
@@ -48,6 +90,4 @@ class Consignment extends Model
     {
         return $this->hasMany(Shipment::class);
     }
-
-    
 }
