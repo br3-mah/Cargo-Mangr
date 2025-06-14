@@ -36,6 +36,46 @@
         }
     </script>
     <style>
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background-color: #f0f0f0; /* Fallback color */
+        }
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072') center/cover no-repeat;
+            filter: blur(12px) brightness(0.8);
+            transform: scale(1.1);
+            transition: filter 0.3s ease;
+        }
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.95),
+                rgba(255, 255, 255, 0.85)
+            );
+            backdrop-filter: blur(4px);
+        }
+        .content-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
         .progress-bar {
             height: 4px;
             background: #e5e7eb;
@@ -91,11 +131,19 @@
 @endsection
 
 @section('page-content')
+<!-- Background Container -->
+<div class="background-container">
+    <img src="https://www.gstatic.com/earth/social/00_generic_facebook-001.jpg" 
+         class="background-image" 
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(12px) brightness(0.8); transform: scale(1.1);">
+    <div class="background-overlay"></div>
+</div>
+
 @if(isset($error))
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen">
         <div class="container mx-auto px-4 py-16">
             <div class="max-w-md mx-auto">
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="content-card rounded-lg shadow-md overflow-hidden">
                     <div class="p-8">
                         <div class="text-center mb-8">
                             <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-6">
@@ -151,25 +199,19 @@
         </div>
     </div>
 @else
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen">
         <div class="container mx-auto px-4 py-12">
             <!-- Header Section -->
             <div class="text-center mb-12">
-                {{-- <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                    </svg>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Track Your Shipment</h1> --}}
                 <p class="text-xl text-gray-600 mb-4">#{{ $model->code ?? 'Unknown' }}</p>
                 
                 @if($track_map)
-                    <div class="inline-flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-full border border-green-200">
+                    <div class="inline-flex items-center space-x-2 bg-green-50/90 backdrop-blur-sm px-4 py-2 rounded-full border border-green-200">
                         <div class="w-3 h-3 bg-green-500 rounded-full"></div>
                         <span class="text-green-700 font-medium">Tracking Active</span>
                     </div>
                 @else
-                    <div class="inline-flex items-center space-x-2 bg-red-50 px-4 py-2 rounded-full border border-red-200">
+                    <div class="inline-flex items-center space-x-2 bg-red-50/90 backdrop-blur-sm px-4 py-2 rounded-full border border-red-200">
                         <div class="w-3 h-3 bg-red-500 rounded-full"></div>
                         <span class="text-red-700 font-medium">{{ __('cargo::view.consignment_not_found') }}</span>
                     </div>
@@ -179,7 +221,7 @@
             <!-- Delivery Progress -->
             @if($track_map)
                 <div class="max-w-4xl mx-auto mb-12">
-                    <div class="bg-white rounded-lg shadow-md p-8 border border-gray-100">
+                    <div class="content-card rounded-lg p-8">
                         <!-- Progress Bar -->
                         <div class="mb-8">
                             <div class="flex justify-between mb-2">

@@ -101,7 +101,7 @@ trait Tracker
         $checkdate = json_decode($cons->checkpoint_date, true);
         return [
             ['Parcel received and is being processed', $this->validateDate($cons->created_at)],
-            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? null)],
+            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? $this->validateDate($cons->created_at))],
         ];
     }
 
@@ -110,7 +110,7 @@ trait Tracker
         $checkdate = json_decode($cons->checkpoint_date, true);
         return [
             ['Parcel received and is being processed', $this->validateDate($cons->created_at)],
-            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? null)],
+            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? $this->validateDate($cons->created_at))],
             ['Parcel has arrived at the transit Airport', $this->validateDate($checkdate[1]['date'] ?? null)],
         ];
     }
@@ -120,7 +120,7 @@ trait Tracker
         $checkdate = json_decode($cons->checkpoint_date, true);
         return [
             ['Parcel received and is being processed', $this->validateDate($cons->created_at)],
-            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? null)],
+            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? $this->validateDate($cons->created_at))],
             ['Parcel has arrived at the transit Airport', $this->validateDate($checkdate[1]['date'] ?? null)],
             ['Parcel has departed from the Transit Airport to Lusaka Airport', $this->validateDate($checkdate[2]['date'] ?? null)],
         ];
@@ -131,7 +131,7 @@ trait Tracker
         $checkdate = json_decode($cons->checkpoint_date, true);
         return [
             ['Parcel received and is being processed', $this->validateDate($cons->created_at)],
-            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? null)],
+            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? $this->validateDate($cons->created_at))],
             ['Parcel has arrived at the transit Airport', $this->validateDate($checkdate[1]['date'] ?? null)],
             ['Parcel has departed from the Transit Airport to Lusaka Airport', $this->validateDate($checkdate[2]['date'] ?? null)],
             ['Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress', $this->validateDate($checkdate[3]['date'] ?? null)],
@@ -143,7 +143,7 @@ trait Tracker
         $checkdate = json_decode($cons->checkpoint_date, true);
         return [
             ['Parcel received and is being processed', $this->validateDate($cons->created_at)],
-            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? null)],
+            ['Parcel dispatched from China', $this->validateDate($checkdate[0]['date'] ?? $this->validateDate($cons->created_at))],
             ['Parcel has arrived at the transit Airport', $this->validateDate($checkdate[1]['date'] ?? null)],
             ['Parcel has departed from the Transit Airport to Lusaka Airport', $this->validateDate($checkdate[2]['date'] ?? null)],
             ['Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress', $this->validateDate($checkdate[3]['date'] ?? null)],
