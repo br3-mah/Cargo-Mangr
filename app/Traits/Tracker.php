@@ -16,13 +16,33 @@ trait Tracker
             // Validate checkpoint dates
             if ($cons->checkpoint > 1) {
                 $checkpointDates = json_decode($cons->checkpoint_date, true);
-                if (!is_array($checkpointDates) || count($checkpointDates) < ($cons->checkpoint - 1)) {
-                    \Log::error('Invalid checkpoint dates for consignment: ' . $cons->id);
-                    return $this->getFallbackTrackMap($cons);
+                if (!is_array($checkpointDates)) {
+                    // Initialize checkpoint dates if not set
+                    $checkpointDates = [];
+                    for ($i = 0; $i < $cons->checkpoint; $i++) {
+                        $checkpointDates[] = [
+                            'date' => $cons->created_at,
+                            'status' => 'created'
+                        ];
+                    }
+                    $cons->checkpoint_date = json_encode($checkpointDates);
+                    $cons->save();
                 }
+                
+                // Ensure we have enough checkpoint dates
+                while (count($checkpointDates) < $cons->checkpoint) {
+                    $checkpointDates[] = [
+                        'date' => $cons->created_at,
+                        'status' => 'created'
+                    ];
+                }
+                
+                // Update checkpoint dates if needed
+                $cons->checkpoint_date = json_encode($checkpointDates);
+                $cons->save();
             }
 
-            dd($cons->checkpoint);
+            // dd($cons->checkpoint);
             switch ($cons->checkpoint) {
                 case 1:
                     return $this->initalChinaMapArr($cons);
