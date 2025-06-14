@@ -1,653 +1,296 @@
 @extends('cargo::adminLte.layouts.blank')
 
 @php
-    $pageTitle =  __('cargo::view.tracking_shipment') . ' #' . (isset($model) ? $model->code : __('cargo::view.error'));
-
-    // use \Milon\Barcode\DNS1D;
-    // $d = new DNS1D();
-
-    // $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
+    $pageTitle = __('cargo::view.tracking_shipment') . ' #' . (isset($model) ? $model->code : __('cargo::view.error'));
 @endphp
 
-@section('page-title', $pageTitle )
-
+@section('page-title', $pageTitle)
 @section('page-type', 'page')
 
 @section('styles')
-
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#012642',
+                            300: '#012642',
+                            400: '#f7c600',
+                            500: '#012642',
+                            600: '#f7c600',
+                            700: '#f7c600',
+                            800: '#075985',
+                            900: '#012642',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #012642 0%, #f7c600 100%);
+            transition: width 0.3s ease;
+        }
+        .stage-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #e5e7eb;
+            position: relative;
+        }
+        .stage-dot.active {
+            background: #012642;
+            box-shadow: 0 0 0 2px #012642;
+            animation: pulse-slow 2s infinite;
+        }
+        .stage-dot.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid #012642;
+            opacity: 0;
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .stage-dot.completed {
+            background: #f7c600;
+            box-shadow: 0 0 0 2px #f7c600;
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
 @endsection
 
 @section('page-content')
+@if(isset($error))
+    <div class="min-h-screen bg-gray-50">
+        <div class="container mx-auto px-4 py-16">
+            <div class="max-w-md mx-auto">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-8">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-6">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                </svg>
+                            </div>
+                            <h1 class="text-2xl font-bold text-gray-800 mb-2">Track Your Shipment</h1>
+                            <p class="text-gray-600">Enter your tracking number to get started</p>
+                        </div>
 
-    @if(isset($error))
+                        @if($error)
+                            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <p class="text-red-700 font-medium">{{ $error }}</p>
+                                </div>
+                            </div>
+                        @endif
 
-        <div id="shipments-tracking-page">
-            <div id="shipments-tracking" class="widget bdaia-widget widget_mc4wp_form_widget">
-                <div class="tracking-error">
-                    <p class="bdaia-mc4wp-bform-p bd1-font"  >
-                        {{ $error ?? '' }}
-                    </p>
+                        <form action="{{ route('shipments.tracking') }}" method="GET" class="space-y-6">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    name="code"
+                                    class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all text-gray-800 bg-white"
+                                    placeholder="{{ __('cargo::view.example_SH00001') }}"
+                                >
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                            >
+                                <span class="flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    {{ __('cargo::view.search') }}
+                                </span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+@else
+    <div class="min-h-screen bg-gray-50">
+        <div class="container mx-auto px-4 py-12">
+            <!-- Header Section -->
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Track Your Shipment</h1>
+                <p class="text-xl text-gray-600 mb-4">#{{ $model->code ?? 'Unknown' }}</p>
+                
+                @if($track_map)
+                    <div class="inline-flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-full border border-green-200">
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span class="text-green-700 font-medium">Tracking Active</span>
+                    </div>
+                @else
+                    <div class="inline-flex items-center space-x-2 bg-red-50 px-4 py-2 rounded-full border border-red-200">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span class="text-red-700 font-medium">{{ __('cargo::view.consignment_not_found') }}</span>
+                    </div>
+                @endif
+            </div>
 
-                <div class="widget-inner">
-                    <form class="form" action="{{route('shipments.tracking')}}" method="GET">
-                        <div class="bdaia-mc4wp-form-icon">
-                            <span class="bdaia-io text-primary" style="line-height: 0">
-                                <svg style="width:auto" height="58px" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m57.123 31.247v13.63h-12.247v-13.63zm3.925-4h27.552l-8.625-15.99h-20.155zm-18.868-15.99h-20.159l-8.621 15.99h27.551zm2.783 15.99h12.073l-1.229-15.99h-9.615zm2.03 44.992a25.612 25.612 0 0 1 .486-4.979h-19.888a5.133 5.133 0 0 0 -5.127 5.127v1.432a5.133 5.133 0 0 0 5.127 5.127h20.3a25.46 25.46 0 0 1 -.897-6.707zm7.393 17.875a25.231 25.231 0 0 1 -5.032-7.169h-21.763a9.137 9.137 0 0 1 -9.127-9.127v-1.431a9.137 9.137 0 0 1 9.127-9.127h21.04a25.28 25.28 0 0 1 41.507-8.9c.214.214.418.434.623.654v-23.767h-29.638v15.63a2 2 0 0 1 -2 2h-16.247a2 2 0 0 1 -2-2v-15.63h-29.638v60.185h44.58c-.49-.421-.97-.856-1.432-1.318zm10.36-23.922a2.08 2.08 0 0 0 -2.08 2.08v7.933a2.08 2.08 0 1 0 4.16 0v-7.932a2.08 2.08 0 0 0 -2.08-2.08zm9.6 2.08v7.933a2.08 2.08 0 1 1 -4.16 0v-7.932a2.08 2.08 0 0 1 4.16 0zm7.516 0v7.933a2.08 2.08 0 1 1 -4.16 0v-7.932a2.08 2.08 0 0 1 4.16 0zm-17.112-2.08a2.08 2.08 0 0 0 -2.08 2.08v7.933a2.08 2.08 0 1 0 4.16 0v-7.932a2.08 2.08 0 0 0 -2.084-2.08zm9.6 2.08v7.933a2.08 2.08 0 1 1 -4.16 0v-7.932a2.08 2.08 0 0 1 4.16 0zm7.516 0v7.933a2.08 2.08 0 1 1 -4.16 0v-7.932a2.08 2.08 0 0 1 4.16 0zm11.673 3.967a21.292 21.292 0 1 1 -21.3-21.292 21.292 21.292 0 0 1 21.292 21.292zm-6.716 0a14.576 14.576 0 1 0 -14.584 14.576 14.576 14.576 0 0 0 14.576-14.576zm29.934 37.387a6.864 6.864 0 0 1 -6.974 7.1 8.6 8.6 0 0 1 -6.214-2.785l-14.663-15.651a1 1 0 0 1 .023-1.391l.977-.977-3.057-3.057a25.493 25.493 0 0 0 6.036-6.044l3.061 3.061.977-.977a1 1 0 0 1 1.391-.023l15.651 14.656a8.624 8.624 0 0 1 2.784 6.088zm-4 .066a4.608 4.608 0 0 0 -1.52-3.233l-13.537-12.672-3.89 3.888 12.671 13.532a4.586 4.586 0 0 0 3.294 1.52 2.868 2.868 0 0 0 2.974-3.034z"/></svg>
+            <!-- Delivery Progress -->
+            @if($track_map)
+                <div class="max-w-4xl mx-auto mb-12">
+                    <div class="bg-white rounded-lg shadow-md p-8 border border-gray-100">
+                        <!-- Progress Bar -->
+                        <div class="mb-8">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-600">Delivery Progress</span>
+                                <span class="text-sm font-medium text-primary-600">{{ count($track_map) }}/6 Stages</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: {{ (count($track_map) / 6) * 100 }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Stages -->
+                        <div class="grid grid-cols-6 gap-4 mb-8">
+                            @php
+                                $stages = [
+                                    'Processing',
+                                    'Dispatched',
+                                    'In Transit',
+                                    'Departing',
+                                    'Arrived',
+                                    'Ready'
+                                ];
+                            @endphp
+                            @foreach($stages as $index => $stage)
+                                <div class="text-center">
+                                    <div class="stage-dot mx-auto mb-2 {{ $index < count($track_map) ? 'completed' : ($index === count($track_map) ? 'active' : '') }}"></div>
+                                    <span class="text-xs font-medium {{ $index < count($track_map) ? 'text-primary-600' : ($index === count($track_map) ? 'text-gray-800' : 'text-gray-400') }}">
+                                        {{ $stage }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Tracking Timeline -->
+                        <div class="space-y-6">
+                            @foreach($track_map as $index => $log)
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center mr-4">
+                                        <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="bg-gray-50 rounded-lg p-4">
+                                            <p class="font-medium text-gray-800 mb-1">{{ $log[0] }}</p>
+                                            <div class="flex items-center text-sm text-gray-500">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                {{ \Carbon\Carbon::parse($log[1])->format('M j, Y g:i A') }}
+                                                <span class="mx-2">•</span>
+                                                <span>{{ \Carbon\Carbon::parse($log[1])->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="max-w-2xl mx-auto mb-12">
+                    <div class="bg-white rounded-lg shadow-md p-12 text-center border border-gray-100">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-lg mb-6">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">No Tracking Data Available</h3>
+                        <p class="text-gray-600">We couldn't find any tracking information for this shipment</p>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Search Another Shipment -->
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-8 border border-gray-100">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Track Another Shipment</h3>
+                        <p class="text-gray-600">Enter a different tracking code to search</p>
+                    </div>
+                    
+                    <form action="{{ route('shipments.tracking') }}" method="GET" class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                name="code"
+                                class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all text-gray-700 bg-white"
+                                placeholder="{{ __('cargo::view.example_SH00001') }}"
+                            >
+                        </div>
+                        <button
+                            type="submit"
+                            class="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 whitespace-nowrap"
+                        >
+                            <span class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                {{ __('cargo::view.search') }}
                             </span>
-                        </div>
-
-                        <p class="bdaia-mc4wp-bform-p bd1-font"  >
-                            {{ __('cargo::view.tracking_shipment') }}
-                        </p>
-
-                        <p class="bdaia-mc4wp-bform-p2 bd2-font" >
-                            {{ __('cargo::view.enter_your_tracking_code') }}
-                        </p>
-
-                        <div class="mc4wp-form-fields">
-                            <p>
-                                <label >
-                                    {{ __('cargo::view.enter_your_tracking_code') }}
-                                </label>
-
-                                <input type="text" name="code" placeholder="{{__('cargo::view.example_SH00001')}}">
-                            </p>
-                            <p>
-                                <input type="submit" class="btn btn-submit submit" value="{{__('cargo::view.search')}}">
-                            </p>
-                        </div>
+                        </button>
                     </form>
                 </div>
             </div>
-        </div><!--#shipments-tracking-page -->
-    @else
-    <style>
-            .payment-wrap {
-            border: 1px solid #ececec;
-            padding: 0 10px 10px;
-            margin: 0 0 10px;
-            border-radius: 3px;}
-
-            .payment-title {
-            border-bottom: 1px solid #ccc;
-            padding: 18px 0;
-            margin: 0 0 26px; }
-            .payment-title span {
-                display: inline-block;
-                color: #ff6b6b;
-                font-size: 22px;
-                margin: 0 8px 0 0; }
-            .payment-title h4 {
-                display: inline-block;
-                margin: 0; }
-
-            .track-title {
-            border-bottom: 1px solid #ccc;
-            padding: 3px 0;
-            margin: 0 0 6px; }
-            .track-title span {
-                display: inline-block;
-                color: #bbb;
-                font-size: 18px;
-                margin: 0 5px 0 0; }
-            .track-title h4 {
-                display: inline-block;
-                margin: 0; }
-
-            .trackstatus-title {
-            border-bottom: 0px solid #ccc;
-            padding: 3px 0;
-            margin: 0 0 6px; }
-            .trackstatus-title span {
-                display: inline-block;
-                color: #00ab4c;
-                font-size: 18px;
-                margin: 0 8px 0 0; }
-            .trackstatus-title h4 {
-                display: inline-block;
-                margin: 0; }
-
-            .mapstatus-title {
-            border-bottom: 0px solid #ccc;
-            padding: 3px 0;
-            margin: 0 0 6px; }
-            .mapstatus-title span {
-                display: inline-block;
-                color: #2962FF;
-                font-size: 18px;
-                margin: 0 8px 0 0; }
-            .mapstatus-title h4 {
-                display: inline-block;
-                margin: 0; }
-
-            .card-header:hover {
-            text-decoration: none; }
-
-            .card-header h5 {
-            text-align: left;
-            font-size: 20px;
-            font-weight: 500; }
-
-            .card-header img {
-            width: 82px;
-            position: absolute;
-            right: 14px;
-            top: 13px; }
-
-            .booking-summary_block {
-            border: 1px solid #ececec; }
-            .booking-summary_block h6 {
-                font-weight: 700; }
-            .booking-summary_block span {
-                font-size: 14px; }
-
-            .booking-summary-box {
-            padding: 24px; }
-
-            .booking-summary_contact {
-            margin: 22px 0 22px; }
-            .booking-summary_contact p {
-                font-size: 15px;
-                margin: 0;
-                line-height: 1.8; }
-
-            .booking-summary_deatail h5 {
-            font-weight: 600; }
-
-            .min-height-block {
-            min-height: 500px; }
-
-            .mintrack-height-block {
-            min-height: 250px; }
-
-            .booking-cost {
-            margin: 20px 0 0; }
-            .booking-cost span {
-                font-weight: 600; }
-            .booking-cost p {
-                font-size: 15px;
-                margin: 10px 0 0;
-                line-height: 1.8; }
-                .booking-cost p span {
-                float: right; }
-
-            .track-cost {
-            margin: 0px 0 0; }
-            .track-cost span {
-                font-weight: 600; }
-            .track-cost p {
-                font-size: 15px;
-                margin: 10px 0 0;
-                line-height: 1; }
-
-
-
-            .payment-method-collapse .card-header {
-            cursor: pointer; }
-
-            .total-red {
-            color: #ff6b6b; }
-
-            .flex-fill {
-            -ms-flex: 1 1 auto !important;
-            -webkit-box-flex: 1 !important;
-            flex: 1 1 auto !important; }
-
-            /*# sourceMappingURL=style.css.map */
-
-
-            .param {
-                margin-bottom: 7px;
-                line-height: 1.4;
-            }
-            .param-inline dt {
-                display: inline-block;
-            }
-            .param dt {
-                margin: 0;
-                margin-right: 7px;
-                font-weight: 600;
-            }
-            .param-inline dd {
-                vertical-align: baseline;
-                display: inline-block;
-            }
-
-            .param dd {
-                margin: 0;
-                vertical-align: baseline;
-            }
-
-            .shopping-cart-wrap .price {
-                font-size: 18px;
-                margin-right: 5px;
-                display: block;
-            }
-
-            .table {
-                width: 100%;
-                background: #fff;
-                -webkit-box-shadow: rgba(0,0,0,.19) 0 2px 6px;
-                box-shadow: 0 1px 3px rgba(0,0,0,.19);
-                border-radius: 8px;
-                border-color: #ff6b6b;
-                border-radius: .35rem;
-                -webkit-font-smoothing: antialiased;
-                color: #737373;
-            }
-
-            .text-muted {
-                background: #fafafa;
-                line-height: 2.5;
-            }
-            var {
-                font-style: normal;
-            }
-
-            h5.form_sub {
-                color: #797979;
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-                padding: 10px 10px 12px;
-                background: #f3f3f3;
-                margin: 23px 0 12px;
-                font-size: 15px;
-                text-align: left;
-            }
-
-
-            .timeline {
-            position: relative;
-            padding: 1em 3em;
-            border-left: 2px solid #82b641;
-            border-top: none;
-            }
-
-            .event .event-speaker {
-            font-style: italic;
-            text-align: right;
-            }
-
-            .timeline .event {
-            border-bottom: 1px dashed rgba(89, 89, 89, 0.14);
-            padding-bottom: 2em;
-            margin-bottom: 0em;
-            position: relative;
-            }
-
-            .timeline .event:last-of-type {
-            padding-bottom: 0;
-            margin-bottom: 0;
-            border: none;
-            }
-
-            .timeline .event:after {
-            position: absolute;
-            display: block;
-            }
-
-            .timeline .event:after {
-            box-shadow: 0 0 0 4px #82b641;
-            left: -52.85px;
-            background: #fff;
-            border-radius: 50%;
-            height: 8px;
-            width: 8px;
-            content: "";
-            top: 15px;
-            }
-
-            .fake{
-                background: #fff;
-                padding: 30px;
-            }
-
-            .booking-page-container h1{
-                text-align: center;
-                padding: 30px;
-            }
-
-            #items {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-                border-collapse: collapse;
-                width: 100%;
-            }
-
-    </style>
-<!-- ERROR PAGE -->
-<section class="bg-home">
-    <div class="home-center">
-        <div class="home-desc-center">
-            <div class="container">
-                <div class="checkout-form">
-                    <div class="row">
-                        {{-- <div class="col-lg-7">
-                            <div class="user-profile-data">
-
-                                <br><br><br>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="trackstatus-title">
-                                            <p><span class="ti-package align-top" style="font-size: 30px;"></span> <b>{{$model->getStatus()}}</b></p>
-                                            <label> </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="trackstatus-title">
-                                        <label>{{ __('cargo::view.shipment') }}: <b>{{$model->code}}</b></label>
-                                    </div>
-                                    </div>
-                                    {{--
-                                    <div class="col-md-4">
-                                        <div class="trackstatus-title">
-                                            <a class="btn btn-secondary btn-sm" target="blank" href="{{route('tracking.print', $model->id )}}"><i style="color:white" class="ti-printer"></i>&nbsp;{{ __('cargo::view.shipping_print') }}</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="payment-wrap">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="track-title">
-                                                <h5 class="form_sub" style="background-color: #ff700a; border-radius: 3px; color:white">{{ __('cargo::view.Sender') }}</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <span class="ti-location-pin align-top"style="font-size: 30px;"></span> <label>{{ __('cargo::view.City_collection') }}<br>
-                                                    <b>@if(isset($model->from_country)){{$model->from_country->name}} @endif</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <span class="ti-location-pin align-top"style="font-size: 30px;"></span> <label>{{ __('cargo::view.City_of_origin') }}<br>
-                                                    <b>@if(isset($model->from_state)){{$model->from_state->name}} @endif </b></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <span class="ti-calendar align-top"style="font-size: 30px;"></span> <label>{{ __('cargo::view.Date_of_shipment') }}<br>
-                                                    <b>{{$model->shipping_date}}</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="track-title">
-                                                    <span class="ti-timer align-top"style="font-size: 30px;"></span> <label>{{ __('cargo::view.Shipping_Time') }}<br>
-                                                        <b>{{ $model->deliveryTime ? json_decode($model->deliveryTime->name, true)[app()->getLocale()] : ''}}</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <label>{{ __('cargo::view.Contact_name') }}<br> <b>{{ $client->name }}</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="track-title">
-                                                    <span class="ti-direction-alt align-top" style="font-size: 30px;"></span> <label>   <br> <b>{{$ClientAddress->address}}</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @foreach($PackageShipment as $package)
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <label>{{ __('cargo::view.Shipping_quantity') }}<br> <b>{{$package->qty}}</b></label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="track-title">
-                                                    <label>{{ __('cargo::view.weigh_length_width_height') }}<br> <b> {{$package->weight." ". __('cargo::view.KG')." x ".$package->length." ". __('cargo::view.CM') ." x ".$package->width." ".__('cargo::view.CM')." x ".$package->height." ".__('cargo::view.CM')}}</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <div class="track-title">
-                                                    <span class="ti-comment-alt align-top"
-                                                        style="font-size: 30px;"></span>
-                                                    <label>
-                                                    {{ __('cargo::view.package_items') }} <br> <b>{{$package->description}}</b>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                                <!--// General Information -->
-
-                                <!-- track shipment -->
-                                <div class="payment-wrap">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="track-title">
-                                                <h5 class="form_sub"  style="background-color: #ff700a; border-radius: 3px; color:white">{{ __('cargo::view.recipient') }}</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <span class="ti-location-pin align-top" style="font-size: 30px;"></span> <label>{{ __('cargo::view.delivery_city') }}<br>
-                                                    <b>@if(isset($model->to_country)){{$model->to_country->name}} @endif</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <span class="ti-location-pin align-top" style="font-size: 30px;"></span> <label>{{ __('cargo::view.Destination_city') }}<br>
-                                                    <b>@if(isset($model->to_state)){{$model->to_state->name}} @endif</b></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <span class="ti-calendar align-top"
-                                                    style="font-size: 30px;"></span> <label>{{ __('cargo::view.Shipping_Time') }}<br>
-                                                    <b>{{ $model->deliveryTime ? json_decode($model->deliveryTime->name, true)[app()->getLocale()] : ''}}</b>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="track-title">
-                                                    <span class="ti-timer align-top"
-                                                        style="font-size: 30px;"></span> <label>{{ __('cargo::view.expected_date_of_arrival') }}<br> <b>{{$model->collection_time}}</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="track-title">
-                                                <label> {{ __('cargo::view.contact_name') }}<br> <b>{{$model->reciver_name}}</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="track-title">
-                                                    <span class="ti-direction-alt align-top"
-                                                        style="font-size: 30px;"></span> <label>{{ __('cargo::view.contact_address') }}<br> <b>{{$model->reciver_address}}</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>  --}}
-
-                        {{-- <div class="col-lg-5"> --}}
-                        <div class="col-lg-12">
-                            <br><br><br><br><br><br><br>
-                            <div class="booking-summary_block">
-                                <div class="booking-summary-box">
-                                    <h5 class="fw-bold">Shipment Tracking Status</h5>
-                                    <div class="shipment-tracker">
-                                        <ul class="timeline-container">
-                                            @foreach($track_map as $log)
-                                                <li class="timeline-item">
-                                                    <div class="timeline-marker"></div>
-                                                    <div class="timeline-content">
-                                                        <span class="timeline-time">{{ $log[1] }}</span>
-                                                        <span class="timeline-description"><b>{{ $log[0] }}</b></span>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-
-                                    <style>
-                                    /* Minimal Professional Timeline */
-                                    .shipment-tracker {
-                                        padding: 12px;
-                                        max-width: 100%;
-                                        background: #fff;
-                                        border-radius: 4px;
-                                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-                                    }
-
-                                    .timeline-container {
-                                        position: relative;
-                                        list-style: none;
-                                        padding: 0;
-                                        margin: 0;
-                                    }
-
-                                    .timeline-container:before {
-                                        content: '';
-                                        position: absolute;
-                                        top: 0;
-                                        left: 7px;
-                                        height: 100%;
-                                        width: 1px;
-                                        background: #e2e8f0;
-                                    }
-
-                                    .timeline-item {
-                                        position: relative;
-                                        padding-left: 24px;
-                                        padding-bottom: 16px;
-                                        margin: 0;
-                                    }
-
-                                    .timeline-item:last-child {
-                                        padding-bottom: 0;
-                                    }
-
-                                    .timeline-marker {
-                                        position: absolute;
-                                        left: 0;
-                                        top: 4px;
-                                        width: 14px;
-                                        height: 14px;
-                                        border-radius: 50%;
-                                        background: #fff;
-                                        border: 2px solid #2563eb;
-                                        z-index: 1;
-                                    }
-
-                                    .timeline-item:first-child .timeline-marker {
-                                        background: #2563eb;
-                                    }
-
-                                    .timeline-content {
-                                        display: flex;
-                                        flex-direction: column;
-                                        padding: 0;
-                                        transition: transform 0.2s ease;
-                                    }
-
-                                    .timeline-time {
-                                        font-size: 12px;
-                                        font-weight: 600;
-                                        color: #2563eb;
-                                        margin-bottom: 2px;
-                                        letter-spacing: 0.2px;
-                                    }
-
-                                    .timeline-description {
-                                        font-size: 14px;
-                                        color: #1e293b;
-                                        line-height: 1.4;
-                                    }
-
-                                    /* Subtle hover state */
-                                    .timeline-item:hover .timeline-content {
-                                        transform: translateX(2px);
-                                    }
-
-                                    .timeline-item:first-child .timeline-time,
-                                    .timeline-item:first-child .timeline-description {
-                                        font-weight: 500;
-                                    }
-
-                                    /* Responsive adjustments - keeping it minimal */
-                                    @media (min-width: 768px) {
-                                        .timeline-container {
-                                            margin: 0 8px;
-                                        }
-
-                                        .timeline-item {
-                                            padding-bottom: 12px;
-                                        }
-
-                                        .timeline-content {
-                                            flex-direction: row;
-                                            align-items: baseline;
-                                        }
-
-                                        .timeline-time {
-                                            min-width: 120px;
-                                            margin-bottom: 0;
-                                            margin-right: 12px;
-                                        }
-                                    }
-                                    </style>
-
-
-                                            {{-- @foreach($model->logs()->orderBy('id','asc')->get() as $log)
-                                                <li class="event">
-                                                    <div class="row">
-                                                        <div class="col-md-7">
-                                                            <p class="text-left button5">{{$log->created_at->diffForHumans()}}</p>
-                                                        </div>
-                                                        <div class="col-md-5">
-                                                            <p class="text-right button5">{{Modules\Cargo\Entities\Shipment::getClientStatusByStatusId($log->to)}}</p>
-                                                            <h4></h4>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            @endforeach --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div> <!-- /.row -->
-                </div> <!-- /.checkout-form -->
-            </div> <!-- /.container -->
         </div>
     </div>
-    <br><br>
-
-</section>
-
-
 @endif
 @endsection
