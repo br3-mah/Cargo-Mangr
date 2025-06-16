@@ -98,9 +98,9 @@
                                 <td>
                                     <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
                                 </td>
-                                <td>{{ $shipment->salesman }}</td>
-                                <td>{{ $shipment->volume }}</td>
-                                <td>{{ $shipment->client->name }}</td>
+                                <td>{{ $shipment->salesman ?? 'No Salesman' }}</td>
+                                <td>{{ $shipment->volume ?? 'No Volume' }}</td>
+                                <td>{{ $shipment->client->name  }}</td>
                                 <td>
                                     @foreach (Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->get() as $package)
                                         {{ $package->description }}
