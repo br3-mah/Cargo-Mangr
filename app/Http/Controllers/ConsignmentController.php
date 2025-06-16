@@ -78,7 +78,7 @@ class ConsignmentController extends Controller
             }
             return true;
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             return false;
         }
     }
@@ -105,6 +105,8 @@ class ConsignmentController extends Controller
 
         $arrivalRaw = $rows[6][8] ?? '';
         $arrival_date = $this->extractDate($arrivalRaw);
+
+        dd($code);
         // Step 2: Create consignment
         $consignment = Consignment::create([
             'consignment_code' => $code,
@@ -195,7 +197,10 @@ class ConsignmentController extends Controller
     //Size 15
     public function manifest_sea2($rows){
         $code = $rows[2][0] ?? null;
-        // dd($rows);
+        // Debug the initial code value
+        \Log::info('Initial consignment code value:', ['code' => $code, 'row_2' => $rows[2] ?? 'empty']);
+        
+        // dd($code);
         foreach ($rows as $row) {
             foreach ($row as $cell) {
                 if ($cell && str_starts_with($cell, 'Date:')) {
@@ -269,6 +274,13 @@ class ConsignmentController extends Controller
 
         $arrivalDate = !empty($arrivalRaw) ? date('Y-m-d', strtotime($arrivalRaw)) : null;
 
+        // Debug the $code value
+        \Log::info('Consignment code value:', ['code' => $code]);
+        
+        if (empty($code)) {
+            throw new \Exception('Consignment code is required but was empty');
+        }
+
         $consignment = Consignment::create([
             'consignment_code' => $code,
             'name' => 'NEWWORLD INVESTMENT LIMITED',
@@ -282,6 +294,7 @@ class ConsignmentController extends Controller
             'cargo_type' => 'sea',
         ]);
         
+        // dd($consignment);
 
         for ($i = 9; $i < count($rows); $i++) {
             $row = $rows[$i];
