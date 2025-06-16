@@ -23,8 +23,39 @@
             <form id="currencyRatesForm" action="{{ route('currency.update_rates') }}" method="POST">
                 @csrf
                 <div class="modal-body">
+                    <!-- Real-time Exchange Rate Display -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center">
+                                        <div class="currency-pair">
+                                            <span class="h4 mb-0">USD/ZMW</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <div class="d-flex align-items-baseline">
+                                                <span class="h3 mb-0" id="realTimeRate">Loading...</span>
+                                                <small class="text-muted ml-2" id="rateStatus"></small>
+                                            </div>
+                                            <div class="rate-info mt-1">
+                                                <small class="text-muted d-block" id="lastUpdated">Last updated: -</small>
+                                                <small class="text-muted d-block" id="timeZone"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="refreshRateBtn" onclick="fetchRealTimeRate()">
+                                        <i class="fas fa-sync-alt mr-1"></i>Refresh Rate
+                                        <span class="badge badge-light ml-1" id="refreshCount">3</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
-                       <div class="col-md-4">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fromCurrency" class="small font-weight-bold text-primary mb-1">From Currency</label>
                                 <input disabled type="text" class="form-control" id="fromCurrency" name="from_currency" placeholder="e.g. USD" value="USD" style="font-size: 0.85rem; height: calc(1.5em + 0.75rem);">
@@ -68,6 +99,129 @@
 </div>
 
 <script>
+    let refreshCount = 3;
+    let lastRefreshTime = null;
+    const REFRESH_LIMIT = 3;
+    const REFRESH_RESET_TIME = 3600000; // 1 hour in milliseconds
+
+    // Function to update refresh button state
+    function updateRefreshButtonState() {
+        const refreshBtn = document.getElementById('refreshRateBtn');
+        const refreshCountElement = document.getElementById('refreshCount');
+        
+        if (refreshCount <= 0) {
+            refreshBtn.disabled = true;
+            refreshBtn.classList.add('disabled');
+            refreshCountElement.textContent = '0';
+            
+            // Calculate time until reset
+            const timeUntilReset = REFRESH_RESET_TIME - (Date.now() - lastRefreshTime);
+            const minutesUntilReset = Math.ceil(timeUntilReset / 60000);
+            
+            refreshBtn.title = `Please wait ${minutesUntilReset} minutes before refreshing again`;
+        } else {
+            refreshBtn.disabled = false;
+            refreshBtn.classList.remove('disabled');
+            refreshCountElement.textContent = refreshCount;
+            refreshBtn.title = `${refreshCount} refreshes remaining`;
+        }
+    }
+
+    // Function to check and reset refresh count
+    function checkAndResetRefreshCount() {
+        if (lastRefreshTime && (Date.now() - lastRefreshTime) >= REFRESH_RESET_TIME) {
+            refreshCount = REFRESH_LIMIT;
+            lastRefreshTime = Date.now();
+            updateRefreshButtonState();
+        }
+    }
+
+    // Function to fetch real-time exchange rate
+    function fetchRealTimeRate() {
+        if (refreshCount <= 0) {
+            return;
+        }
+
+        const rateElement = document.getElementById('realTimeRate');
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        const timeZoneElement = document.getElementById('timeZone');
+        const rateStatusElement = document.getElementById('rateStatus');
+        
+        rateElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        rateStatusElement.textContent = '';
+        
+        // Check cache first
+        const cachedData = localStorage.getItem('exchangeRateData');
+        const cacheTime = localStorage.getItem('exchangeRateTime');
+        const now = Date.now();
+        
+        // Use cache if it's less than 5 minutes old
+        if (cachedData && cacheTime && (now - parseInt(cacheTime)) < 300000) {
+            const data = JSON.parse(cachedData);
+            updateRateDisplay(data);
+            return;
+        }
+        
+        fetch('https://exchange-rates7.p.rapidapi.com/convert?base=USD&target=ZMW', {
+            method: 'GET',
+            headers: {
+                'x-rapidapi-host': 'exchange-rates7.p.rapidapi.com',
+                'x-rapidapi-key': 'c760539c3dmshcce41028fd9cf47p1c3e4ejsnc7486d3ef21b'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.code === "0") {
+                // Cache the response
+                localStorage.setItem('exchangeRateData', JSON.stringify(data));
+                localStorage.setItem('exchangeRateTime', now.toString());
+                
+                updateRateDisplay(data);
+                
+                // Update refresh count
+                refreshCount--;
+                lastRefreshTime = Date.now();
+                updateRefreshButtonState();
+            } else {
+                rateElement.textContent = 'Error fetching rate';
+                rateStatusElement.textContent = 'Failed to fetch rate';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            rateElement.textContent = 'Error fetching rate';
+            rateStatusElement.textContent = 'Network error';
+        });
+    }
+
+    function updateRateDisplay(data) {
+        const rateElement = document.getElementById('realTimeRate');
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        const timeZoneElement = document.getElementById('timeZone');
+        const rateStatusElement = document.getElementById('rateStatus');
+        
+        const rate = data.convert_result.rate;
+        const updateTime = new Date(data.time_update.time_utc);
+        
+        rateElement.textContent = rate.toFixed(4);
+        lastUpdatedElement.textContent = `Last updated: ${updateTime.toLocaleString()}`;
+        timeZoneElement.textContent = `Time Zone: ${data.time_update.time_zone}`;
+        rateStatusElement.textContent = 'Live Rate';
+        
+        // Update the exchange rate input with the real-time rate
+        document.getElementById('exchangeRate').value = rate.toFixed(4);
+    }
+
+    // Fetch rate when modal opens
+    $('#currencyModal').on('show.bs.modal', function () {
+        checkAndResetRefreshCount();
+        fetchRealTimeRate();
+    });
+
+    // Check refresh count every minute
+    setInterval(checkAndResetRefreshCount, 60000);
+
+    // Existing delete button event listener
     document.getElementById('deleteItemBtn').addEventListener('click', function () {
         const deleteUrl = "{{ route('currency-reset') }}";
 
@@ -83,3 +237,29 @@
         });
     });
 </script>
+
+<style>
+.currency-pair {
+    background: #f8f9fc;
+    padding: 0.5rem 1rem;
+    border-radius: 0.35rem;
+    border: 1px solid #e3e6f0;
+}
+#realTimeRate {
+    color: #4e73df;
+    font-weight: 600;
+}
+.rate-info {
+    font-size: 0.8rem;
+}
+#rateStatus {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #e3e6f0;
+}
+#refreshRateBtn.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+</style>
