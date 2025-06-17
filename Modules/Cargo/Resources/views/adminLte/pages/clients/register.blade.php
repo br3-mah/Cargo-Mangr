@@ -16,7 +16,7 @@
         </a>
     </div>
     <div class="card-body">
-      <h3 class="widget-title text-lg">Create a new account</h3>
+      <h3 class="widget-title text-lg">Create a new account today</h3>
       <form method="POST" action="{{ route('register.request') }}" novalidate="novalidate" id="kt_sign_in_form">
         @csrf
         <div class="input-group mb-3">
@@ -26,7 +26,7 @@
             <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required placeholder="Your full names" autocomplete="off" value="{{ old('name') }}" required autofocus>
             @error('name')
                 <div class="invalid-feedback">
-                    {{ $message }}
+                    {{ $message }} 
                 </div>
             @enderror
         </div>
@@ -88,8 +88,8 @@
             {{-- <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
             </div> --}}
-            <input type="tel" id="phone" dir="ltr" autocomplete="off" required class="phone_input number-only form-control inptFielsd @error('responsible_mobile') is-invalid @enderror" name="responsible_mobile" required placeholder="{{ __('cargo::view.table.owner_phone') }}" autocomplete="off" value="{{ old('responsible_mobile', isset($model->country_code) ?$model->country_code.$model->responsible_mobile : base_country_code()) }}" required autofocus>
-            <input type="hidden" class="country_code" name="country_code" value="{{ old('country_code', isset($model) ?$model->country_code : base_country_code()) }}" data-reflection="phone">
+            <input type="tel" id="phone" dir="ltr" autocomplete="off" required class="phone_input number-only form-control inptFielsd @error('responsible_mobile') is-invalid @enderror" name="responsible_mobile" required placeholder="{{ __('cargo::view.table.owner_phone') }}" autocomplete="off" value="" required autofocus>
+            <input type="hidden" class="country_code" name="country_code" value="" data-reflection="phone">
             @error('responsible_mobile')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -102,12 +102,9 @@
                 <span class="input-group-text"><i class="fas fa-building"></i></span>
             </div>
             <select class="form-control select-branch @error('branch_id') is-invalid @enderror" name="branch_id">
-                <option></option>
-                @foreach($branches as $branch)
-                    <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
-                        {{ $branch->name }}
-                    </option>
-                @endforeach
+                <option selected value="1">
+                    Lusaka 
+                </option>
             </select>
             @error('branch_id')
                 <div class="invalid-feedback">
@@ -175,6 +172,113 @@
         
         $('#kt_sign_in_form').on('submit', function() {
             $('.btn-register').html('<i class="fas fa-spinner fa-spin mr-2"></i> {{ __("cargo::view.register") }}');
+        });
+    });
+</script>
+@endsection
+
+@section('scripts')
+<script>
+    $(function () {
+        var phoneNumbers = $('.phone_input'),
+            wrong_number = window.wrong_number_msg,
+            required_phone = window.required_phone
+
+        phoneNumbers.each(function () {
+            var self = $(this),
+                input = self[0],
+                type = self.attr('data-type');
+                // initialise plugin
+            var iti = window.intlTelInput(input, {
+                separateDialCode: true,
+                utilsScript: window.static_asset_utils_file,
+                initialCountry: "",
+                preferredCountries: ["eg","ng", "zm"],
+                autoPlaceholder: "aggressive",
+                allowDropdown: true,
+                nationalMode: true,
+                formatOnDisplay: true,
+                separateDialCode: true,
+                initialCountry: "",
+                geoIpLookup: function(callback) {
+                    callback("");
+                }
+            });
+
+            // Clear any initial value
+            self.val('');
+
+            input.addEventListener("countrychange", function() {
+                var countryCode = iti.getSelectedCountryData().dialCode;
+                $('.country_code').val('+'+countryCode);
+                // Clear the input when country changes
+                self.val('');
+            });
+
+            // Handle form submission
+            $('form').on('submit', function(e) {
+                if (!iti.isValidNumber()) {
+                    e.preventDefault();
+                    self.addClass('is-invalid');
+                    return false;
+                }
+                var number = iti.getNumber();
+                var countryCode = iti.getSelectedCountryData().dialCode;
+                $('.country_code').val('+'+countryCode);
+                self.val(number);
+            });
+
+            var reset = function() {
+                self.parent().next('.invalid-feedback').remove();
+                self.parent().removeClass('not-valid');
+                self.removeClass("error is-invalid");
+            };
+
+            var addError = function(msg) {
+                self.addClass('error is-invalid');
+                self.parent().addClass('not-valid');
+                self.parent().after("<span style='display: block' class=\"invalid-feedback\" role=\"alert\">\n" +
+                    " <strong>" + msg + "</strong>\n" +
+                    " </span>");
+                return false;
+            };
+            // on blur: validate
+            input.addEventListener('blur', function() {
+                reset();
+
+                if (self.attr('required')) {
+                    if (input.value.trim() == '') {
+                        return addError('field is empty')
+                    }
+                }
+
+                if (input.value.trim() && !iti.isValidNumber()) {
+                    return addError('reqierd')
+                }
+                // run code if verified
+            });
+            // on keyup / change flag: reset
+            input.addEventListener('change', reset);
+            input.addEventListener('keyup', reset);
+        });
+
+        $(".number-only").keypress(function(event){
+            var ewn = event.which;
+            if(ewn >= 48 && ewn <= 57) {
+                return true;
+            }
+            return false;
+        });
+
+        $(".phone-validation").on("submit", function(evt) {
+            var phoneField = $(this).find(".phone_input");
+            if (phoneField.hasClass('error')) {
+                evt.preventDefault();
+                return false
+            } else {
+                //do the rest of your validations here
+                $(this).submit();
+            }
         });
     });
 </script>

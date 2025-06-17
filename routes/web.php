@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\OTPVerificationController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\TwoFactorAuthController;
+use Modules\Cargo\Http\Controllers\ClientController;
 // use App\Http\Controllers\ConsignmentController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -48,6 +49,14 @@ Route::post('/2fa/enable', [TwoFactorAuthController::class, 'enable'])->name('2f
 Route::delete('/2fa/disable', [TwoFactorAuthController::class, 'disable'])->name('2fa.disable');
 Route::post('/2fa/regenerate', [TwoFactorAuthController::class, 'regenerate'])->name('2fa.regenerate');
 
+
+// Claim Accounts Routes - Guest only
+Route::get('/clients/claim-accounts', [ClientController::class, 'showClaimAccounts'])
+    ->name('clients.claim-accounts')
+    ->middleware('guest');
+Route::post('/clients/process-claim', [ClientController::class, 'processClaim'])
+    ->name('clients.process-claim')
+    ->middleware('guest');
 
 
 Route::get('/', 'HomeController@index')->name('home');

@@ -64,7 +64,7 @@ class ConsignmentController extends Controller
             $rows = $worksheet->toArray();
 
             // Step 3: Extract and create shipments
-
+            // dd($rows[8]);
             $xlsSize = count($rows[8]);
             // dd($rows[8]);
             // dd($xlsSize);
@@ -72,13 +72,16 @@ class ConsignmentController extends Controller
                 case 12:
                     $this->manifest_sea($rows);
                     break;
+                case 14:
+                    $this->manifest_sea15($rows);
+                    break;
                 case 15:
-                    $this->manifest_sea2($rows);
+                    $this->manifest_sea15($rows);
                     break;
             }
             return true;
         } catch (\Throwable $th) {
-            dd('Failed to Import this Excel Format');
+            dd('Failed to Import this Excel Format'. $th->getMessage());
             return false;
         }
     }
@@ -192,9 +195,184 @@ class ConsignmentController extends Controller
         }
     }
 
+    //Size 15
+    public function manifest_sea14($rows){
+        $code = $rows[2][0] ?? null;
+        // Debug the initial code value
+        \Log::info('Initial consignment code value:', ['code' => $code, 'row_2' => $rows[2] ?? 'empty']);
+        
+        // dd($code);
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Date:')) {
+                    $rawDate = str_replace('Date:', '', $cell);
+                    $date = date('Y-m-d', strtotime($rawDate));
+                    break 2; // stop once found
+                }
+            }
+        }
+
+        $destAgent = $rows[5][0] ?? null;
+
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Dest Agent :')) {
+                    $destAgentRaw = str_replace('Dest Agent :', '', $cell);
+                    $destAgent = ltrim(trim($destAgentRaw), '/-.: ');
+                    break 2;
+                }
+            }
+        }
+
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Vessel / Voyage No :')) {
+                    $voyageRaw = str_replace('Vessel / Voyage No :', '', $cell);
+                    $voyage_no = ltrim(trim($voyageRaw), '/-.: ');
+                    break 2;
+                }
+            }
+        }
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Departure Date :')) {
+                    $rawDate = str_replace('Departure Date :', '', $cell);
+                    $rawDate = ltrim(trim($rawDate), '/-.: ');
+                    $departure_date = date('Y-m-d', strtotime($rawDate));
+                    break 2;
+                }
+            }
+        }
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Shipping line :')) {
+                    $line = str_replace('Shipping line :', '', $cell);
+                    $shipping_line = ltrim(trim($line), '/-.: ');
+                    break 2;
+                }
+            }
+        }
+        
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Destination:')) {
+                    $destinationRaw = str_replace('Destination:', '', $cell);
+                    $destination = ltrim(trim($destinationRaw), '/-.: ');
+                    break 2;
+                }
+            }
+        }
+        foreach ($rows as $row) {
+            foreach ($row as $cell) {
+                if ($cell && str_starts_with($cell, 'Arrive Date :')) {
+                    $arrivalRaw = str_replace('Arrive Date :', '', $cell);
+                    $arrivalRaw = ltrim(trim($arrivalRaw), '/-.: ');
+                    $arrival_date = date('Y-m-d', strtotime($arrivalRaw));
+                    break 2;
+                }
+            }
+        }
+
+        $arrivalDate = !empty($arrivalRaw) ? date('Y-m-d', strtotime($arrivalRaw)) : null;
+
+        // Debug the $code value
+        \Log::info('Consignment code value:', ['code' => $code]);
+        
+        if (empty($code)) {
+            throw new \Exception('Consignment code is required but was empty');
+        }
+
+        $consignment = Consignment::create([
+            'consignment_code' => $code,
+            'name' => 'NEWWORLD INVESTMENT LIMITED',
+            'voyage_no' => $voyage_no,
+            'date' => $date,
+            'departure_date' => $departure_date,
+            'shipping_line' => $shipping_line,
+            'arrival_date' => $arrivalDate,
+            'eta_dar' => $arrivalDate,
+            'destination' => $destination,
+            'cargo_type' => 'sea',
+        ]);
+        
+        // dd($consignment);
+
+        for ($i = 9; $i < count($rows); $i++) {
+            $row = $rows[$i];
+            if($row[2] !== null){
+                if (empty($row[0]) || Str::startsWith($row[0], 'HB')) {
+                    continue; // Skip empty rows or header
+                }
+                $email = strtolower(str_replace(' ', '', $row[2])) . '@mail.com';
+                $username = strtolower(str_replace(' ', '', $row[2]));
+                $clientCode = rand(100000, 999999);
+                $clientPhone = preg_replace('/\D+/', '', $row[9]);
+
+                $user = User::firstOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $row[2],
+                        'password' => bcrypt('password123'),
+                        'role' => 4,
+                        'verified' => 1
+                    ]
+                );
+
+                $client = Client::firstOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'code' => $clientCode,
+                        'name' => $row[2],
+                        'email' => $email,
+                        'address' => $email.' '.$row[2],
+                    ]
+                );
+
+                $shipment = Shipment::create([
+                    'consignment_id' => $consignment->id,
+                    'code' => $row[0], // hbl No
+                    'client_id' => $client->id,
+                    'branch_id' => 1,
+                    'type' => 1,
+                    'status_id' => 1,
+                    'client_status' => 1,
+                    'from_country_id' => 1,
+                    'from_state_id' => 1,
+                    'to_country_id' => 1,
+                    'to_state_id' => 1,
+
+                    'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
+                    'return_cost' => 0,
+                    'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
+
+                    'shipping_date' => Carbon::now(),
+                    'volume' => (float)$row[7],
+                    'total_weight' => (float)($row[8] ?? 0),
+                    'client_address' => $username,
+                    'client_phone' => $clientPhone,
+
+                    'salesman' => $row[11],
+                    'dest_port' => $row[10]
+                ]);
+
+                PackageShipment::create([
+                    'package_id' => 1,
+                    'description' => $row[4],
+                    'shipment_id' => $shipment->id,
+                    'qty' => $row[6],
+                    'weight' => $row[8] ?? 0,
+                    'length' => 1,
+                    'width' => 1,
+                    'height' => 1,
+                ]);
+
+            }
+        }
+    }
+
 
     //Size 15
-    public function manifest_sea2($rows){
+    public function manifest_sea15($rows){
         $code = $rows[2][0] ?? null;
         // Debug the initial code value
         \Log::info('Initial consignment code value:', ['code' => $code, 'row_2' => $rows[2] ?? 'empty']);
