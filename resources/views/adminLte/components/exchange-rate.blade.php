@@ -162,21 +162,26 @@
             return;
         }
         
-        fetch('https://exchange-rates7.p.rapidapi.com/convert?base=USD&target=ZMW', {
-            method: 'GET',
-            headers: {
-                'x-rapidapi-host': 'exchange-rates7.p.rapidapi.com',
-                'x-rapidapi-key': 'c760539c3dmshcce41028fd9cf47p1c3e4ejsnc7486d3ef21b'
-            }
-        })
+        // Using ExchangeRate-API
+        fetch('https://open.er-api.com/v6/latest/USD')
         .then(response => response.json())
         .then(data => {
-            if (data && data.code === "0") {
+            if (data && data.rates && data.rates.ZMW) {
+                const formattedData = {
+                    convert_result: {
+                        rate: data.rates.ZMW
+                    },
+                    time_update: {
+                        time_utc: data.time_last_update_utc,
+                        time_zone: 'UTC'
+                    }
+                };
+
                 // Cache the response
-                localStorage.setItem('exchangeRateData', JSON.stringify(data));
+                localStorage.setItem('exchangeRateData', JSON.stringify(formattedData));
                 localStorage.setItem('exchangeRateTime', now.toString());
-                
-                updateRateDisplay(data);
+
+                updateRateDisplay(formattedData);
                 
                 // Update refresh count
                 refreshCount--;
@@ -191,6 +196,13 @@
             console.error('Error:', error);
             rateElement.textContent = 'Error fetching rate';
             rateStatusElement.textContent = 'Network error';
+            
+            // If we have cached data, use it even if expired
+            if (cachedData) {
+                const data = JSON.parse(cachedData);
+                updateRateDisplay(data);
+                rateStatusElement.textContent = 'Using cached data';
+            }
         });
     }
 
@@ -199,15 +211,15 @@
         const lastUpdatedElement = document.getElementById('lastUpdated');
         const timeZoneElement = document.getElementById('timeZone');
         const rateStatusElement = document.getElementById('rateStatus');
-        
+
         const rate = data.convert_result.rate;
         const updateTime = new Date(data.time_update.time_utc);
-        
+
         rateElement.textContent = rate.toFixed(4);
         lastUpdatedElement.textContent = `Last updated: ${updateTime.toLocaleString()}`;
         timeZoneElement.textContent = `Time Zone: ${data.time_update.time_zone}`;
         rateStatusElement.textContent = 'Live Rate';
-        
+
         // Update the exchange rate input with the real-time rate
         document.getElementById('exchangeRate').value = rate.toFixed(4);
     }
