@@ -219,62 +219,218 @@ class ClientController extends Controller
 
     public function registerStore(Request $request , $calc = false)
     {
-        $countryCodeReq = 'required';
-        if($calc){
-            $countryCodeReq = 'nullable';
-        }
+        try {
+            $request->validate([
+                'name' => 'required|string|min:3|max:50',
+                'email' => 'required|max:50|email|unique:users,email',
+                'password' => 'required|string|min:6',
+                'responsible_mobile' => 'required|digits_between:8,20',
+                'country_code' => 'required',
+                'responsible_name' => 'required|string|min:3|max:50',
+                'national_id'   => 'required',
+                'branch_id' => 'required',
+                'terms_conditions' => 'required',
+            ]);
 
-        $request->validate([
-            'name' => 'required|string|min:3|max:50',
-            'email' => 'required|max:50|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'responsible_mobile' => 'required|digits_between:8,20',
-            'country_code' => $countryCodeReq,
-            'responsible_name' => 'required|string|min:3|max:50',
-            'national_id'   => 'required',
-            'branch_id' => 'required',
-            'terms_conditions' => 'required',
+            $data = $request->only(['name', 'email', 'password', 'responsible_mobile', 'country_code' , 'responsible_name','national_id','branch_id']);
+
+            // Check for similar accounts before proceeding with registration
+            $nameParts = explode(' ', trim($data['name']));
+            $similarUsers = User::where(function($query) use ($nameParts) {
+                foreach ($nameParts as $part) {
+                    if (strlen($part) > 2) {
+                        $query->orWhere(function($q) use ($part) {
+                            $q->where('name', 'like', '%' . $part . '%')
+                              ->orWhere('name', 'like', $part . '%')
+                              ->orWhere('name', 'like', '%' . $part)
+                              ->orWhere('name', 'like', '% ' . $part . '%')
+                              ->orWhere('name', 'like', '%' . $part . ' %');
+                        });
+                    }
+                }
+            })->where('role', 4)->get();
+
+            $similarAccounts = Client::whereIn('user_id', $similarUsers->pluck('id'))->get();
+
+            if (!$similarAccounts->isEmpty()) {
+                // Store the registration data in session
+                session(['pending_registration' => $data]);
+                
+                // Redirect to claim accounts page
+                return redirect()->route('clients.claim-accounts')->with([
+                    'similar_accounts' => $similarAccounts,
+                    'registration_data' => $data
+                ]);
+            }
+
+            // If no similar accounts found, proceed with registration
+            $Userdata['name']     = $data['name'];
+            $Userdata['email']    = $data['email'];
+            $Userdata['password'] = $data['password'];
+            $Userdata['role']     = 4;
+
+            $userRegistrationHelper = new UserRegistrationHelper();
+            $response = $userRegistrationHelper->NewUser($Userdata);
+            if(!$response['success']){
+                throw new \Exception($response['error_msg']);
+            }
+
+            $data['code']    = 0;
+            $data['user_id'] = $response['user']['id'];
+            $data['created_by'] = auth()->check() ? auth()->id() : null;
+            unset($data['password']);
+            unset($data['address']);
+
+            $client = new Client();
+            $client->fill($data);
+            if (!$client->save()){
+                throw new \Exception();
+            }
+            $client->code = $client->id;
+            if (!$client->save()){
+                throw new \Exception();
+            }
+            event(new AddClient($client));
+            Auth::loginUsingId($client->user_id);
+
+            // Send Welcome Email
+            Mail::to($client->email)->send(new WelcomeMail($client));
+            if($calc)
+            {
+                return $client;
+            }
+
+            return redirect()->route('admin.dashboard');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    public function claimExistingAccount($data){
+        // Split the name into parts
+        $nameParts = explode(' ', trim($data['name']));
+        
+
+        // dd($similarUsers);
+        // Search for similar accounts by name in both User and Client tables
+        $similarUsers = User::where(function($query) use ($nameParts) {
+            foreach ($nameParts as $part) {
+                if (strlen($part) > 2) { // Only search for parts longer than 2 characters
+                    $query->orWhere(function($q) use ($part) {
+                        // Search for exact part match
+                        $q->where('name', 'like', '%' . $part . '%')
+                          // Search for part at start of name
+                          ->orWhere('name', 'like', $part . '%')
+                          // Search for part at end of name
+                          ->orWhere('name', 'like', '%' . $part)
+                          // Search for part with space before
+                          ->orWhere('name', 'like', '% ' . $part . '%')
+                          // Search for part with space after
+                          ->orWhere('name', 'like', '%' . $part . ' %');
+                    });
+                }
+            }
+        })->where('role', 4)->get();
+
+        // Get the corresponding clients for these users
+        $similarAccounts = Client::whereIn('user_id', $similarUsers->pluck('id'))->get();
+
+        // Store the registration data in session for later use
+        session(['pending_registration' => $data]);
+        
+        // Always redirect to claim accounts page, even if no similar accounts found
+        return redirect()->route('clients.claim-accounts')->with([
+            'similar_accounts' => $similarAccounts,
+            'registration_data' => $data
         ]);
+    }
 
-        $data = $request->only(['name', 'email', 'password', 'responsible_mobile', 'country_code' , 'responsible_name','national_id','branch_id']);
-
-        $Userdata['name']     = $data['name'];
-        $Userdata['email']    = $data['email'];
-        $Userdata['password'] = $data['password'];
-        $Userdata['role']     = 4;
-
-        $userRegistrationHelper = new UserRegistrationHelper();
-		$response = $userRegistrationHelper->NewUser($Userdata);
-        if(!$response['success']){
-            throw new \Exception($response['error_msg']);
+    public function showClaimAccounts()
+    {
+        if (!session()->has('pending_registration')) {
+            return redirect()->route('clients.register');
         }
 
-        $data['code']    = 0;
-        $data['user_id'] = $response['user']['id'];
-        $data['created_by'] = auth()->check() ? auth()->id() : null;
-        unset($data['password']);
-        unset($data['address']);
+        $similarAccounts = session('similar_accounts');
+        $registrationData = session('pending_registration');
+        
+        $adminTheme = env('ADMIN_THEME', 'adminLte');
+        return view('cargo::'.$adminTheme.'.pages.clients.claim-accounts', [
+            'similar_accounts' => $similarAccounts,
+            'registration_data' => $registrationData
+        ]);
+    }
 
-        $client = new Client();
-        $client->fill($data);
-        if (!$client->save()){
-            throw new \Exception();
-        }
-        $client->code = $client->id;
-        if (!$client->save()){
-            throw new \Exception();
-        }
-        event(new AddClient($client));
-        Auth::loginUsingId($client->user_id);
+    public function processClaim(Request $request)
+    {
+        if ($request->has('claim_account')) {
+            // User wants to claim an existing account
+            $accountId = $request->claim_account;
+            $account = Client::findOrFail($accountId);
+            
+            // Update the account with new information
+            $registrationData = session('pending_registration');
+            $account->update([
+                'name' => $registrationData['name'],
+                'email' => $registrationData['email'],
+                'responsible_mobile' => $registrationData['responsible_mobile'],
+                'country_code' => $registrationData['country_code'],
+                'responsible_name' => $registrationData['responsible_name'],
+                'national_id' => $registrationData['national_id'],
+                'branch_id' => $registrationData['branch_id']
+            ]);
 
-        // Send Welcome Email
-        Mail::to($client->email)->send(new WelcomeMail($client));
-        if($calc)
-        {
-            return $client;
-        }
+            // Clear the session
+            session()->forget(['pending_registration', 'similar_accounts']);
 
-        return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard')
+                ->with('message_alert', __('cargo::messages.account_claimed'));
+        } else {
+            // User wants to create a new account
+            $registrationData = session('pending_registration');
+            
+            // Clear the session
+            session()->forget(['pending_registration', 'similar_accounts']);
+
+            // Create new user
+            $Userdata['name'] = $registrationData['name'];
+            $Userdata['email'] = $registrationData['email'];
+            $Userdata['password'] = $registrationData['password'];
+            $Userdata['role'] = 4;
+
+            $userRegistrationHelper = new UserRegistrationHelper();
+            $response = $userRegistrationHelper->NewUser($Userdata);
+            
+            if (!$response['success']) {
+                throw new \Exception($response['error_msg']);
+            }
+
+            // Create new client
+            $registrationData['code'] = 0;
+            $registrationData['user_id'] = $response['user']['id'];
+            $registrationData['created_by'] = auth()->check() ? auth()->id() : null;
+            unset($registrationData['password']);
+
+            $client = new Client();
+            $client->fill($registrationData);
+            if (!$client->save()) {
+                throw new \Exception();
+            }
+            
+            $client->code = $client->id;
+            if (!$client->save()) {
+                throw new \Exception();
+            }
+
+            event(new AddClient($client));
+            Auth::loginUsingId($client->user_id);
+
+            // Send Welcome Email
+            Mail::to($client->email)->send(new WelcomeMail($client));
+
+            return redirect()->route('admin.dashboard')
+                ->with('message_alert', __('cargo::messages.created'));
+        }
     }
 
     /**
