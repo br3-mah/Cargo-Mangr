@@ -106,7 +106,6 @@ class ConsignmentController extends Controller
         $arrivalRaw = $rows[6][8] ?? '';
         $arrival_date = $this->extractDate($arrivalRaw);
 
-        dd($code);
         // Step 2: Create consignment
         $consignment = Consignment::create([
             'consignment_code' => $code,
@@ -378,6 +377,7 @@ class ConsignmentController extends Controller
     }
 
     public function importAir($request){
+        // dd($request);
         try {
             $file = $request->file('excel_file');
             $spreadsheet = IOFactory::load($file->getPathname());
@@ -481,14 +481,16 @@ class ConsignmentController extends Controller
             // Step 5: Loop through data starting after headerRow
             $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
 
+            // dd($res);
             if (!$res) {
-                $this->loopCreateShipmentII($headerRow, $rows, $consignment);
-            } else {
-
-            }
+                // dd('here');
+                $res = $this->loopCreateShipmentII($headerRow, $rows, $consignment);
+            } 
+            // dd($res);
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
+            dd($e);
             DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
@@ -586,7 +588,7 @@ class ConsignmentController extends Controller
     }
 
     public function loopCreateShipmentII($headerRow, $rows, $consignment){
-        // dd($rows);
+        dd($consignment);
         for ($i = 7 + 1; $i < count($rows) - 1; $i++) {
             $data = $rows[$i];
             if (!empty($data[2])) {
