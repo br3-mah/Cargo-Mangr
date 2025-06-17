@@ -78,7 +78,7 @@ class ConsignmentController extends Controller
             }
             return true;
         } catch (\Throwable $th) {
-            dd($th);
+            dd('Failed to Import this Excel Format');
             return false;
         }
     }
@@ -490,7 +490,7 @@ class ConsignmentController extends Controller
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
@@ -588,7 +588,7 @@ class ConsignmentController extends Controller
     }
 
     public function loopCreateShipmentII($headerRow, $rows, $consignment){
-        dd($consignment);
+        // dd($consignment);
         for ($i = 7 + 1; $i < count($rows) - 1; $i++) {
             $data = $rows[$i];
             if (!empty($data[2])) {
