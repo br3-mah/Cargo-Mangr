@@ -12,6 +12,7 @@ use Modules\Cargo\Http\Controllers\ClientController;
 // use App\Http\Controllers\ConsignmentController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\TrackingStageController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -90,6 +91,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/transactions', 'TransxnController@index')->name('transxn.index');
 
+    // Tracking Stages Routes
+    Route::get('/tracking-stages', [TrackingStageController::class, 'index'])->name('tracking-stages.index');
+    Route::get('/tracking-stages/create', [TrackingStageController::class, 'create'])->name('tracking-stages.create');
+    Route::post('/tracking-stages', [TrackingStageController::class, 'store'])->name('tracking-stages.store');
+    Route::get('/tracking-stages/{trackingStage}/edit', [TrackingStageController::class, 'edit'])->name('tracking-stages.edit');
+    Route::put('/tracking-stages/{trackingStage}', [TrackingStageController::class, 'update'])->name('tracking-stages.update');
+    Route::delete('/tracking-stages/{trackingStage}', [TrackingStageController::class, 'destroy'])->name('tracking-stages.destroy');
+
+    // API Routes for tracking stages
+    Route::get('/api/tracking-stages', [TrackingStageController::class, 'apiIndex']);
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

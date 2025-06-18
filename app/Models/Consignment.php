@@ -95,14 +95,29 @@ class Consignment extends Model
 
     public function getTrackingStages()
     {
-        return [
-            1 => 'Parcel received and is being processed',
-            2 => 'Parcel dispatched from China',
-            3 => 'Parcel has arrived at the transit Airport',
-            4 => 'Parcel has departed from the Transit Airport to Lusaka Airport',
-            5 => 'Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress',
-            6 => 'Parcel is now ready for collection in Lusaka at the Main Branch'
-        ];
+        if ($this->cargo_type === 'sea') {
+            return [
+                1 => 'Parcel received and is being processed',
+                2 => 'Parcel dispatched from China',
+                3 => 'The Parcel has arrived at the transit Sea port',
+                4 => 'The parcel has departed from the transit Sea port headed for Dar Es Salaam',
+                5 => 'The parcel has arrived at the port in Dar es Salaam',
+                6 => 'The parcel has left the port headed for the Nakonde Border',
+                7 => 'The Parcel has arrived at the Nakonde Border, waiting for clearance',
+                8 => 'The Parcel has been cleared from Nakonde and is headed for Lusaka',
+                9 => 'The Parcel is now ready for collection in Lusaka at our warehouse'
+            ];
+        } else {
+            // Default to air stages if cargo_type is 'air' or null/unspecified
+            return [
+                1 => 'Parcel received and is being processed',
+                2 => 'Parcel dispatched from China',
+                3 => 'Parcel has arrived at the transit Airport',
+                4 => 'Parcel has departed from the Transit Airport to Lusaka Airport',
+                5 => 'Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress',
+                6 => 'Parcel is now ready for collection in Lusaka at the Main Branch'
+            ];
+        }
     }
 
     public function getCurrentStage()
@@ -118,18 +133,29 @@ class Consignment extends Model
 
     public function updateCheckpoint($stageId)
     {
-        if ($stageId < 1 || $stageId > 6) {
+        $maxStage = count($this->getTrackingStages());
+        if ($stageId < 1 || $stageId > $maxStage) {
             return false;
         }
 
         $this->checkpoint = $stageId;
         
-        // Update status based on checkpoint
-        if ($stageId > 1) {
-            $this->status = 'in_transit';
-        }
-        if ($stageId > 5) {
-            $this->status = 'delivered';
+        // Update status based on checkpoint for air and sea stages
+        if ($this->cargo_type === 'sea') {
+            if ($stageId > 1) {
+                $this->status = 'in_transit';
+            }
+            if ($stageId > 8) {
+                $this->status = 'delivered';
+            }
+        } else {
+            // Air cargo type logic
+            if ($stageId > 1) {
+                $this->status = 'in_transit';
+            }
+            if ($stageId > 5) {
+                $this->status = 'delivered';
+            }
         }
 
         return $this->save();
@@ -138,6 +164,10 @@ class Consignment extends Model
     public function updateTrackingStage($stageId, $data = [])
     {
         try {
+            $maxStage = count($this->getTrackingStages());
+            if ($stageId < 1 || $stageId > $maxStage) {
+                throw new \Exception('Invalid stage ID for ' . $this->cargo_type . ' cargo type.');
+            }
             // If moving to an earlier stage, ensure we don't have duplicate entries
             $existingEntry = $this->trackingHistory()
                 ->where('stage_id', $stageId)
@@ -168,11 +198,21 @@ class Consignment extends Model
             $this->checkpoint = $stageId;
             
             // Update status based on checkpoint
-            if ($stageId > 1) {
-                $this->status = 'in_transit';
-            }
-            if ($stageId > 5) {
-                $this->status = 'delivered';
+            if ($this->cargo_type === 'sea') {
+                if ($stageId > 1) {
+                    $this->status = 'in_transit';
+                }
+                if ($stageId > 8) {
+                    $this->status = 'delivered';
+                }
+            } else {
+                // Air cargo type logic
+                if ($stageId > 1) {
+                    $this->status = 'in_transit';
+                }
+                if ($stageId > 5) {
+                    $this->status = 'delivered';
+                }
             }
             
             $this->save();

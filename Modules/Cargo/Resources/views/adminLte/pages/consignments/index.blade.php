@@ -104,12 +104,7 @@
                                     <i class="fas fa-map-marker-alt mr-2 text-primary"></i>Update Shipment Status
                                 </label>
                                 <select class="form-control custom-select border-0 shadow-sm" name="status" id="trackerStatus" required>
-                                    <option value="1">Parcel received and is being processed</option>
-                                    <option value="2">Parcel dispatched from China</option>
-                                    <option value="3">Parcel has arrived at the transit Airport</option>
-                                    <option value="4">Parcel has departed from the Transit Airport to Lusaka Airport</option>
-                                    <option value="5">Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress</option>
-                                    <option value="6">Parcel is now ready for collection in Lusaka at the Main Branch</option>
+                                    <!-- Options will be populated dynamically via JavaScript -->
                                 </select>
                             </div>
 
@@ -224,6 +219,51 @@ document.addEventListener('DOMContentLoaded', function() {
             ]
         });
 
+        // Handle update tracker button click
+        $('.update-tracker-btn').on('click', function() {
+            const consignmentId = $(this).data('id');
+            const currentCheckpoint = $(this).data('checkpoint');
+            const cargoType = $(this).data('cargo_type') || 'air';
+            
+            // Update form action
+            $('#updateTrackerForm').attr('action', `/consignment/tracker/update/${consignmentId}`);
+            
+            // Fetch tracking stages from the database based on cargo type
+            $.ajax({
+                url: '/api/tracking-stages',
+                method: 'GET',
+                data: { cargo_type: cargoType },
+                success: function(stages) {
+                    // Clear and populate the select dropdown
+                    const $select = $('#trackerStatus');
+                    $select.empty();
+                    
+                    stages.forEach((stage) => {
+                        const option = new Option(stage.description, stage.id);
+                        if (stage.order === parseInt(currentCheckpoint)) {
+                            option.selected = true;
+                        }
+                        $select.append(option);
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching tracking stages:', error);
+                    alert('Failed to load tracking stages. Please try again.');
+                }
+            });
+
+            // Update modal details
+            $('#conName').text($(this).data('consignee_name') || '');
+            $('#modalTracking').text($(this).data('consignment_code') || '');
+            $('#sourceDestination').text($(this).data('source') || '');
+            $('#finalDestination').text($(this).data('destination') || '');
+            $('#conStatus').text($(this).data('status') || '');
+            $('#conLastUpdate').text($(this).data('updated_at') || '');
+            
+            // Set consignment ID
+            $('#consignmentId').val(consignmentId);
+        });
+
         // Initialize Dropzone
         Dropzone.autoDiscover = false;
 
@@ -294,43 +334,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 600);
         }
     });
-
-    document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".update-tracker-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            let consignmentId = this.dataset.id; // Get the consignment ID
-            let checkpoint = this.dataset.checkpoint; // Get the current checkpoint
-
-            // Set the correct form action dynamically
-            let form = document.getElementById("updateTrackerForm");
-            form.action = `/consignment/tracker/update/${consignmentId}`;
-
-            // Set the tracker status in the dropdown
-            document.getElementById("trackerStatus").value = checkpoint;
-
-            // Add hidden input field for consignmentId if needed
-            let consignmentInput = document.getElementById("consignmentId");
-
-            // Set modal display details
-            document.getElementById("conName").textContent = this.dataset.consignee_name || '';
-            document.getElementById("modalTracking").textContent = this.dataset.consignment_code || '';
-            document.getElementById("sourceDestination").textContent = this.dataset.source || '';
-            document.getElementById("finalDestination").textContent = this.dataset.destination || '';
-            document.getElementById("conStatus").textContent = this.dataset.status || '';
-            document.getElementById("conLastUpdate").textContent = this.dataset.updated_at || '';
-
-            if (!consignmentInput) {
-                consignmentInput = document.createElement("input");
-                consignmentInput.type = "hidden";
-                consignmentInput.name = "consignment_id";
-                consignmentInput.id = "consignmentId";
-                form.appendChild(consignmentInput);
-            }
-            consignmentInput.value = consignmentId;
-        });
-    });
-});
-
-
 </script>
 @endsection
