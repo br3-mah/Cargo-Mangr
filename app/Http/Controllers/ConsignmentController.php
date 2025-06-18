@@ -78,6 +78,9 @@ class ConsignmentController extends Controller
                 case 15:
                     $this->manifest_sea15($rows);
                     break;
+                case 16:
+                    $this->manifest_sea15($rows);
+                    break;
             }
             return true;
         } catch (\Throwable $th) {
@@ -956,15 +959,29 @@ class ConsignmentController extends Controller
     public function updateTracker(Request $request, $id)
     {
         try {
+            $consignment = Consignment::findOrFail($id);
+            $cargoType = $consignment->cargo_type ?? 'air';
+            
+            // Get max stage based on cargo type
+            $maxStage = $cargoType === 'air' ? 6 : 15;
+
             // Validate the request
             $request->validate([
-                'status' => 'required|integer|min:1|max:6',
+                'status' => "required|integer|min:1|max:{$maxStage}",
             ]);
 
-            $consignment = Consignment::findOrFail($id);
             $currentStage = $consignment->getCurrentStage();
             $targetStage = $request->status;
             $now = Carbon::now();
+
+            // Get the tracking stage to determine the status
+            $trackingStage = DB::table('tracking_stages')
+                ->where('id', $targetStage)
+                ->first();
+
+            if (!$trackingStage) {
+                throw new \Exception('Invalid tracking stage');
+            }
 
             // If moving to an earlier stage, delete tracking history entries for stages being undone
             if ($targetStage < $currentStage) {
@@ -993,8 +1010,13 @@ class ConsignmentController extends Controller
                 throw new \Exception('Failed to update tracking stage');
             }
 
+            // Update the consignment status based on the tracking stage status
+            $consignment->status = strtolower($trackingStage->status);
+            $consignment->save();
+
             return redirect()->back()->with('success', 'Tracker updated successfully.');
         } catch (\Exception $e) {
+            // dd($e);
             return redirect()->back()->with('error', 'Failed to update shipment tracker: ' . $e->getMessage());
         }
     }
@@ -1009,7 +1031,6 @@ class ConsignmentController extends Controller
     {
         try {
             $c = $consignment->where('id', $id)->first();
-
             if (!$c) {
                 return redirect()->back()->with('error', 'Consignment not found.');
             }

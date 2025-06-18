@@ -461,13 +461,35 @@ $user_role == $branch)
 </li> --}}
 
 @if ($user_role == $client)
-<!-- shipment api -->
 <li class="nav-item">
+    <a href="{{ fr_route('dashboard') }}" class="nav-link">
+        <i class="fas fa-tachometer-alt fa-fw text-white"></i>
+        <p class="text-white">&nbsp;Dashboard</p>
+    </a>
+</li>
+
+<!-- Aircraft -->
+<li class="nav-item">
+    <a href="{{ fr_route('aircraft.index') }}" class="nav-link">
+        <i class="fas fa-plane fa-fw text-white"></i>
+        <p class="text-white">&nbsp;Aircraft</p>
+    </a>
+</li>
+
+<!-- Shipment -->
+<li class="nav-item">
+    <a href="{{ fr_route('shipments.index') }}" class="nav-link">
+        <i class="fas fa-shipping-fast fa-fw text-white"></i>
+        <p class="text-white">&nbsp;Shipment</p>
+    </a>
+</li>
+<!-- shipment api -->
+{{-- <li class="nav-item">
     <a href="{{ fr_route('shipments.calculator') }}" class="nav-link">
         <i class="fas fa-calculator fa-fw text-white"></i>
         <p class="text-white">&nbsp;Shipment Calculator</p>
     </a>
-</li>
+</li> --}}
 <li class="nav-item">
     <a href="{{ fr_route('support') }}" class="nav-link">
         <i class="fas fa-headset fa-fw text-white"></i>
