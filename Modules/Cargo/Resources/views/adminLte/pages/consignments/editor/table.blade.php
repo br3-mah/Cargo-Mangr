@@ -69,7 +69,8 @@
                 </span>
                 @else
                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                    {{ strtoupper($consignment->status) }}
+                    {{-- {{ strtoupper($consignment->status) }} --}}
+                    {{ strtoupper($consignment->current_status) }}
                 </span>
                 @endif
             </td>

@@ -5,34 +5,40 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class AddCargoTypeToTrackingStagesTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('tracking_stages', function (Blueprint $table) {
-            $table->string('cargo_type')->default('air')->after('description');
+            $table->enum('status', ['PENDING', 'IN_TRANSIT', 'DELIVERED', 'DEFAULTED'])->default('PENDING')->after('cargo_type');
         });
 
-        // Update existing records to have cargo_type
-        DB::table('tracking_stages')
-            ->where('order', '<=', 6)
-            ->update(['cargo_type' => 'air']);
-
-        DB::table('tracking_stages')
-            ->where('order', '>', 6)
-            ->update(['cargo_type' => 'sea']);
+        // Update existing records with appropriate statuses
+        DB::table('tracking_stages')->where('order', 1)->update(['status' => 'PENDING']);
+        DB::table('tracking_stages')->whereIn('order', [2, 3, 4, 5])->update(['status' => 'IN_TRANSIT']);
+        DB::table('tracking_stages')->where('order', 6)->update(['status' => 'DELIVERED']);
+        
+        // For sea cargo
+        DB::table('tracking_stages')->where('order', 7)->update(['status' => 'PENDING']);
+        DB::table('tracking_stages')->whereIn('order', [8, 9, 10, 11, 12, 13, 14])->update(['status' => 'IN_TRANSIT']);
+        DB::table('tracking_stages')->where('order', 15)->update(['status' => 'DELIVERED']);
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('tracking_stages', function (Blueprint $table) {
             $table->dropColumn('cargo_type');
+            $table->dropColumn('status');
         });
     }
-}; 
+} 

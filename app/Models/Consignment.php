@@ -122,13 +122,32 @@ class Consignment extends Model
 
     public function getCurrentStage()
     {
-        return $this->checkpoint ?? 0;
+        $latestHistory = $this->trackingHistory()
+            ->orderBy('stage_id', 'desc')
+            ->first();
+
+        return $latestHistory ? $latestHistory->stage_id : 0;
     }
 
     public function getCurrentStageName()
     {
         $stages = $this->getTrackingStages();
         return $stages[$this->checkpoint] ?? 'Unknown';
+    }
+
+    public function getCurrentStatusAttribute()
+    {
+        $currentStage = $this->getCurrentStage();
+        
+        if ($currentStage === 0) {
+            return 'PENDING';
+        }
+
+        $stage = \DB::table('tracking_stages')
+            ->where('id', $currentStage)
+            ->first();
+
+        return $stage ? $stage->status : 'PENDING';
     }
 
     public function updateCheckpoint($stageId)
@@ -163,64 +182,13 @@ class Consignment extends Model
 
     public function updateTrackingStage($stageId, $data = [])
     {
-        try {
-            $maxStage = count($this->getTrackingStages());
-            if ($stageId < 1 || $stageId > $maxStage) {
-                throw new \Exception('Invalid stage ID for ' . $this->cargo_type . ' cargo type.');
-            }
-            // If moving to an earlier stage, ensure we don't have duplicate entries
-            $existingEntry = $this->trackingHistory()
-                ->where('stage_id', $stageId)
-                ->first();
-
-            if ($existingEntry) {
-                // Update existing entry
-                $existingEntry->update([
-                    'status' => 'completed',
-                    'notes' => $data['notes'] ?? $existingEntry->notes,
-                    'location' => $data['location'] ?? $existingEntry->location,
-                    'updated_by' => auth()->id(),
-                    'completed_at' => isset($data['completed_at']) ? Carbon::parse($data['completed_at']) : Carbon::now()
-                ]);
-            } else {
-                // Create new tracking history entry
-                $this->trackingHistory()->create([
-                    'stage_id' => $stageId,
-                    'status' => 'completed',
-                    'notes' => $data['notes'] ?? null,
-                    'location' => $data['location'] ?? null,
-                    'updated_by' => auth()->id(),
-                    'completed_at' => isset($data['completed_at']) ? Carbon::parse($data['completed_at']) : Carbon::now()
-                ]);
-            }
-
-            // Update checkpoint
-            $this->checkpoint = $stageId;
-            
-            // Update status based on checkpoint
-            if ($this->cargo_type === 'sea') {
-                if ($stageId > 1) {
-                    $this->status = 'in_transit';
-                }
-                if ($stageId > 8) {
-                    $this->status = 'delivered';
-                }
-            } else {
-                // Air cargo type logic
-                if ($stageId > 1) {
-                    $this->status = 'in_transit';
-                }
-                if ($stageId > 5) {
-                    $this->status = 'delivered';
-                }
-            }
-            
-            $this->save();
-
-            return true;
-        } catch (\Exception $e) {
-            \Log::error('Error updating tracking stage: ' . $e->getMessage());
-            return false;
-        }
+        return $this->trackingHistory()->create([
+            'stage_id' => $stageId,
+            'status' => $data['status'] ?? 'completed',
+            'notes' => $data['notes'] ?? null,
+            'location' => $data['location'] ?? null,
+            'completed_at' => $data['completed_at'] ?? Carbon::now(),
+            'updated_by' => auth()->id()
+        ]);
     }
 }

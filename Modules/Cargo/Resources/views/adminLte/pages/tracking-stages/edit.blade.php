@@ -123,6 +123,36 @@
                         </div>
 
                         <div class="form-group mt-3">
+                            <label for="status">
+                                <i class="fas fa-flag text-warning me-2"></i>Status
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning text-white">
+                                    <i class="fas fa-flag"></i>
+                                </span>
+                                <select class="form-control @error('status') is-invalid @enderror" 
+                                    id="status" name="status" required>
+                                    <option value="">Select status</option>
+                                    <option value="PENDING" {{ old('status', $trackingStage->status) == 'PENDING' ? 'selected' : '' }}>
+                                        Pending
+                                    </option>
+                                    <option value="IN_TRANSIT" {{ old('status', $trackingStage->status) == 'IN_TRANSIT' ? 'selected' : '' }}>
+                                        In Transit
+                                    </option>
+                                    <option value="DELIVERED" {{ old('status', $trackingStage->status) == 'DELIVERED' ? 'selected' : '' }}>
+                                        Delivered
+                                    </option>
+                                    <option value="DEFAULTED" {{ old('status', $trackingStage->status) == 'DEFAULTED' ? 'selected' : '' }}>
+                                        Defaulted
+                                    </option>
+                                </select>
+                                @error('status')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="is_active" 
                                     name="is_active" value="1" {{ old('is_active', $trackingStage->is_active) ? 'checked' : '' }}>
