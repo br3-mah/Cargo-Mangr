@@ -109,22 +109,19 @@
                 @endcan
 
                 @can('update-consignment-tracker')
-                <button type="button"
-                        data-id="{{ $consignment->id }}"
-                        data-consignment_code="{{ $consignment->consignment_code }}"
-                        data-consignee_name="{{ $consignment->name }}"
-                        data-source="{{ $consignment->source ?? 'China' }}"
-                        data-destination="{{ $consignment->destination ?? 'Zambia'  }}"
-                        data-status="{{ $consignment->status }}"
-                        data-updated_at="{{ $consignment->updated_at }}"
-                        data-checkpoint="{{ $consignment->checkpoint }}"
-                        data-toggle="modal"
-                        data-target="#updateTrackerModal"
-                        class="p-1.5 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 update-tracker-btn">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
+                <button type="button" class="btn btn-sm btn-warning update-tracker-btn" 
+                    data-toggle="modal" 
+                    data-target="#updateTrackerModal"
+                    data-id="{{ $consignment->id }}"
+                    data-checkpoint="{{ $consignment->checkpoint }}"
+                    data-cargo_type="{{ $consignment->cargo_type }}"
+                    data-consignee_name="{{ $consignment->consignee_name }}"
+                    data-consignment_code="{{ $consignment->consignment_code }}"
+                    data-source="{{ $consignment->source }}"
+                    data-destination="{{ $consignment->destination }}"
+                    data-status="{{ $consignment->status }}"
+                    data-updated_at="{{ $consignment->updated_at }}">
+                    <i class="fas fa-shipping-fast"></i> Update Tracker
                 </button>
                 @endcan
                 </div>
