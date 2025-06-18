@@ -2,30 +2,6 @@
 @section('pageTitle', 'Tracking Stages')
 @section('content')
 <div class="container-fluid">
-    <!-- Toggle Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="form-check form-switch me-4">
-                            <input class="form-check-input" type="checkbox" id="seaTableToggle" checked>
-                            <label class="form-check-label" for="seaTableToggle">
-                                <i class="fas fa-ship me-2"></i>Sea Cargo Table
-                            </label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="airTableToggle" checked>
-                            <label class="form-check-label" for="airTableToggle">
-                                <i class="fas fa-plane me-2"></i>Air Cargo Table
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- Sea Table section 1 --}}
     <div class="row" id="seaTableSection">
         <div class="col-12">
