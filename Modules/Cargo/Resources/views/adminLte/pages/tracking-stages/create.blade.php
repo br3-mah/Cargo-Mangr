@@ -14,7 +14,7 @@
                 </svg>
             </li>
             <li class="flex items-center">
-                <a href="#" class="text-yellow-400 hover:text-yellow-500 transition-colors">
+                <a href="{{ fr_route('tracking-stages.index') }}" class="text-yellow-400 hover:text-yellow-500 transition-colors">
                     <i class="fas fa-list mr-1"></i> Tracking Stages
                 </a>
                 <svg class="h-4 w-4 mx-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
