@@ -84,11 +84,11 @@
                             <th><i class="bi bi-box me-1"></i>Salesman</th>
                             <th><i class="bi bi-cube me-1"></i>Volume</th>
                             <th><i class="bi bi-person me-1"></i> Client</th>
-                            <th><i class="bi bi-file me-1"></i> Package Description</th>
+                            <th><i class="bi bi-file me-1"></i> Package Information</th>
                             <th><i class="bi bi-telephone me-1"></i> Client Phone</th>
                             <th><i class="bi bi-currency-dollar me-1"></i> Cost</th>
                             <th><i class="bi bi-cash-coin me-1"></i> Payment</th>
-                            <th><i class="bi bi-clock-history me-1"></i> Created On</th>
+                            <th><i class="bi bi-clock-history me-1"></i> Added On</th>
                             <th><i class="bi bi-gear me-1"></i> Actions</th>
                         </tr>
                     </thead>
@@ -96,7 +96,7 @@
                         @foreach ($consignment->shipments as $shipment)
                             <tr id="shipment_row_{{ $shipment->id }}" class="shipment-row" data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
                                 <td>
-                                    <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
+                                    <span class="badge bg-info rounded-pill copy-shipment-code" style="cursor:pointer;" data-code="{{ $shipment->code }}" title="Click to copy">{{ $shipment->code }}</span>
                                 </td>
                                 <td>{{ $shipment->salesman ?? 'No Salesman' }}</td>
                                 <td>{{ $shipment->volume ?? 'No Volume' }}</td>
@@ -129,13 +129,17 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
                                             <path
-                                                d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z" />
+                                                d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z" />
                                             <path
                                                 d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5" />
                                         </svg>
                                     </a>
                                     @endcan
-
+                                    <a target="_blank" href="{{ url('en/shipments/tracking?code=' . $shipment->code) }}" class="btn btn-icon btn-light text-primary btn-lg rounded me-2" title="Track Shipment">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                        </svg>
+                                    </a>
                                     @can('delete-shipment-invoices')
                                     <button class="btn btn-icon btn-light text-danger rounded"
                                         data-shipment-id="{{ $shipment->id }}" data-bs-toggle="tooltip"
@@ -307,6 +311,10 @@
         </div>
     </div>
 
+    <div id="copyAlert" class="alert alert-success text-center" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999; min-width:200px; max-width:90%;">
+        <span id="copyAlertText">Copied to clipboard!</span>
+    </div>
+
     <script>
         function switchView(viewType) {
             // Hide all views
@@ -429,6 +437,26 @@
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('shipmentSearch');
             searchInput.addEventListener('input', filterShipments);
+
+            // Copy shipment code to clipboard on badge click
+            document.querySelectorAll('.copy-shipment-code').forEach(function(badge) {
+                badge.addEventListener('click', function() {
+                    const code = this.getAttribute('data-code');
+                    navigator.clipboard.writeText(code).then(() => {
+                        showCopyAlert('Shipment code copied: ' + code);
+                    });
+                });
+            });
+
+            function showCopyAlert(message) {
+                const alertDiv = document.getElementById('copyAlert');
+                const alertText = document.getElementById('copyAlertText');
+                alertText.textContent = message;
+                alertDiv.style.display = 'block';
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 1500);
+            }
         });
     </script>
 
