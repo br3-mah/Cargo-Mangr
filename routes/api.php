@@ -26,3 +26,4 @@ Route::get('/search-shipments', 'Api\ShipmentController@search')->name('search.s
 Route::post('/submit-shipments', 'Api\ConsignmentController@addShipmentsToConsignment')->name('submit.shipments');
 Route::get('/search-consignments', 'Api\ConsignmentController@searchConsignments');
 Route::post('consignments/{consignmentId}/remove-shipment/{shipmentId}', 'Api\ConsignmentController@removeShipmentFromConsignment')->name('consignments.remove-shipment');
+Route::get('get-current-stage', [App\Http\Controllers\ConsignmentController::class, 'getCurrentStage']);

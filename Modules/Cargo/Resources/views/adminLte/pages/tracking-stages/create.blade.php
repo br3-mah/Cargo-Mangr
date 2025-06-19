@@ -1,6 +1,9 @@
 @extends('cargo::adminLte.layouts.master')
 @section('pageTitle', 'Add Tracking Stage')
 @section('content')
+
+<!-- Add Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 <div class="container-fluid">
     <!-- Breadcrumb navigation with modern styling -->
     <nav aria-label="breadcrumb" class="mb-4">
@@ -65,7 +68,7 @@
                                             <i class="fas fa-sort-numeric-down"></i>
                                         </span>
                                         <input type="number" class="form-control @error('order') is-invalid @enderror" 
-                                            id="order" name="order" value="{{ old('order', $nextOrder ?? 1) }}" required readonly>
+                                            id="order" name="order" value="{{ old('order', isset($lastStage) ? $lastStage->order + 1 : 1) }}" required readonly>
                                         @error('order')
                                             <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror

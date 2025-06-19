@@ -11,12 +11,14 @@ class TrackingStageController extends Controller
     {
         $airStages = TrackingStage::where('cargo_type', 'air')->orderBy('order')->get();
         $seaStages = TrackingStage::where('cargo_type', 'sea')->orderBy('order')->get();
-        return view('cargo::adminLte.pages.tracking-stages.index', compact('airStages', 'seaStages'));
+        $lastStage = TrackingStage::orderByDesc('order')->first();
+        return view('cargo::adminLte.pages.tracking-stages.index', compact('airStages', 'seaStages', 'lastStage'));
     }
 
     public function create()
-    {
-        return view('cargo::adminLte.pages.tracking-stages.create');
+    {        
+        $lastStage = TrackingStage::orderByDesc('order')->first();
+        return view('cargo::adminLte.pages.tracking-stages.create', compact('lastStage'));
     }
 
     public function store(Request $request)
@@ -66,7 +68,7 @@ class TrackingStageController extends Controller
 
     // API endpoint for fetching stages by cargo type
     public function apiIndex(Request $request)
-    {
+    {   
         $cargoType = $request->input('cargo_type', 'air');
         $stages = TrackingStage::where('cargo_type', $cargoType)
             ->where('is_active', true)

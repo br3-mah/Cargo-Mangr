@@ -2,6 +2,14 @@
 
 @php
     $pageTitle = __('cargo::view.tracking_shipment') . ' #' . (isset($model) ? $model->code : __('cargo::view.error'));
+    // $allStages = [ ... ]; // Get all stages from DB or config
+    $completedCount = 0;
+    foreach ($track_map as $log) {
+        if ($log[1] !== null) $completedCount++;
+    }
+    $stages = \App\Models\TrackingStage::where('cargo_type', $model->cargo_type)
+        ->orderBy('order')
+        ->get();
 @endphp
 
 @section('page-title', $pageTitle)
