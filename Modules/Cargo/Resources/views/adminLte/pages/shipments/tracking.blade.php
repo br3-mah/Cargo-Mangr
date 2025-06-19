@@ -89,12 +89,16 @@
             background: #012642;
             box-shadow: 0 0 0 2px #012642;
         }
+        .tracking-bg {
+            background: transparent;
+            min-height: 100vh;
+        }
     </style>
 @endsection
 
 @section('page-content')
 @if(isset($error))
-    <div class="min-h-screen">
+    <div class="min-h-screen tracking-bg">
         <div class="container mx-auto px-4 py-16">
             <div class="max-w-md mx-auto">
                 <div class="content-card rounded-lg shadow-md overflow-hidden">
@@ -153,7 +157,7 @@
         </div>
     </div>
 @else
-    <div class="min-h-screen">
+    <div class="min-h-screen tracking-bg">
         <div class="container mx-auto px-4 py-8">
             <!-- Header Section -->
             <div class="text-center mb-8">
@@ -199,14 +203,15 @@
                                         </svg>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="bg-gray-50 rounded-lg p-4">
-                                            <p class="font-medium text-gray-800 mb-1">{{ $log[0] }}</p>
+                                        <div class="text-white {{ $isCompleted ? 'bg-orange-500':'bg-gray-500' }} rounded-lg p-4">
+                                           
+                                            <p class="font-medium {{ $isCompleted ? 'text-gray-200':'text-gray-400' }} text-lg  mb-1">{{ $log[0] }}</p>
                                             @if($isCompleted)
-                                                <div class="flex items-center text-sm text-gray-500">
+                                                <div class="flex items-center text-sm text-white-500">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    {{ $formattedDate }}
+                                                    {{ $formattedDate ?? 'Not Yet' }}
                                                     <span class="mx-2">•</span>
                                                     <span>{{ $timeAgo }}</span>
                                                 </div>

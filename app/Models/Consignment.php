@@ -102,7 +102,7 @@ class Consignment extends Model
         // Return as [id => name] or [id => description] as needed
         $result = [];
         foreach ($stages as $stage) {
-            $result[$stage->id] = $stage->name; // or $stage->description if you prefer
+            $result[$stage->id] = $stage->name.' | '.$stage->description; // or $stage->description if you prefer
         }
         return $result;
     }
