@@ -31,6 +31,7 @@ use Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -367,9 +368,8 @@ class ClientController extends Controller
             // User wants to claim an existing account
             $accountId = $request->claim_account;
             $account = Client::findOrFail($accountId);
-            
-            // Update the account with new information
             $registrationData = session('pending_registration');
+            // Update the account with new information
             $account->update([
                 'name' => $registrationData['name'],
                 'email' => $registrationData['email'],
@@ -379,10 +379,14 @@ class ClientController extends Controller
                 'national_id' => $registrationData['national_id'],
                 'branch_id' => $registrationData['branch_id']
             ]);
-
+            // Update the password for the related user
+            $user = \App\Models\User::findOrFail($account->user_id);
+            $user->password = Hash::make($registrationData['password']);
+            $user->save();
+            // Log the user in immediately
+            Auth::loginUsingId($user->id);
             // Clear the session
             session()->forget(['pending_registration', 'similar_accounts']);
-
             return redirect()->route('admin.dashboard')
                 ->with('message_alert', __('cargo::messages.account_claimed'));
         } else {

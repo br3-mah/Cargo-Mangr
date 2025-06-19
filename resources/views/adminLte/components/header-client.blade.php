@@ -12,13 +12,14 @@
             </svg>
             &nbsp;
             <small>
-                View website
+                Goto Website
             </small>
         </a>
     </li>
 
+    {{-- $user_role == $auth_client --}}
     @if (check_module('Cargo'))
-        @if($user_role == $auth_branch || $user_role == $auth_client || auth()->user()->can('create-shipments'))
+        @if($user_role == $auth_branch || auth()->user()->can('create-shipments'))
         <li class="nav-item d-sm-inline-block mobile_section">
             <a href="{{ LaravelLocalization::localizeUrl(route('shipments.create')) }}"
                 class="nav-link {{ active_route('shipments.create') }}" style="display: flex; align-items: center;">
