@@ -1558,22 +1558,30 @@ class ShipmentController extends Controller
     public function tracking(Request $request)
     {
         try {
-            if (empty($request->code)) {
-                return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.enter_your_tracking_code')]);
-            }
 
             $shipment = Shipment::where('code', $request->code)
                 ->latest()
                 ->first();
+                
+            $adminTheme = env('ADMIN_THEME', 'adminLte');
+
+            $track_map = [];
+            if (empty($request->code)) {
+                return view('cargo::adminLte.pages.shipments.tracking')
+                ->with([
+                    'error' => __('cargo::view.enter_your_tracking_code'),
+                    'model' => $shipment,
+                    'track_map' => $this->getFallbackTrackMap(),
+                ]);
+            }
         
             if (empty($shipment)) {
-                return view('cargo::adminLte.pages.shipments.tracking')->with(['error' => __('cargo::view.error_in_shipment_number')]);
+                return view('cargo::adminLte.pages.shipments.tracking')->with([
+                    'error' => __('cargo::view.error_in_shipment_number'),
+                    'model' => $shipment,
+                    'track_map' => $this->getFallbackTrackMap(),
+                ]);
             }
-
-            $client = Client::where('id', $shipment->client_id)->first();
-            $PackageShipment = PackageShipment::where('shipment_id', $shipment->id)->get();
-            $ClientAddress = ClientAddress::where('client_id', $shipment->client_id)->first();
-            $adminTheme = env('ADMIN_THEME', 'adminLte');
 
             // Get consignment and tracking info
             $cons = Consignment::where('id', $shipment->consignment_id)->first();
@@ -1583,29 +1591,26 @@ class ShipmentController extends Controller
                     ->with([
                         'model' => $shipment,
                         'track_map' => $this->getFallbackTrackMap(),
-                        'client' => $client,
-                        'PackageShipment' => $PackageShipment,
-                        'ClientAddress' => $ClientAddress
                     ]);
             }
 
             $track_map = $this->getTrackMapArray($cons);
 
-            // dd($track_map);
             return view('cargo::' . $adminTheme . '.pages.shipments.tracking')
                 ->with([
                     'model' => $shipment,
                     'track_map' => $track_map,
-                    'client' => $client,
-                    'PackageShipment' => $PackageShipment,
-                    'ClientAddress' => $ClientAddress
                 ]);
 
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             \Log::error('Tracking Error: ' . $e->getMessage());
             return view('cargo::adminLte.pages.shipments.tracking')
-                ->with(['error' => __('cargo::messages.error_occurred')]);
+                ->with([
+                    'error' => __('cargo::messages.error_occurred'),
+                    'model' => null,
+                    'track_map' => [],
+            ]);
         }
     }
 
