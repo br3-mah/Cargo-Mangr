@@ -95,29 +95,16 @@ class Consignment extends Model
 
     public function getTrackingStages()
     {
-        if ($this->cargo_type === 'sea') {
-            return [
-                1 => 'Parcel received and is being processed',
-                2 => 'Parcel dispatched from China',
-                3 => 'The Parcel has arrived at the transit Sea port',
-                4 => 'The parcel has departed from the transit Sea port headed for Dar Es Salaam',
-                5 => 'The parcel has arrived at the port in Dar es Salaam',
-                6 => 'The parcel has left the port headed for the Nakonde Border',
-                7 => 'The Parcel has arrived at the Nakonde Border, waiting for clearance',
-                8 => 'The Parcel has been cleared from Nakonde and is headed for Lusaka',
-                9 => 'The Parcel is now ready for collection in Lusaka at our warehouse'
-            ];
-        } else {
-            // Default to air stages if cargo_type is 'air' or null/unspecified
-            return [
-                1 => 'Parcel received and is being processed',
-                2 => 'Parcel dispatched from China',
-                3 => 'Parcel has arrived at the transit Airport',
-                4 => 'Parcel has departed from the Transit Airport to Lusaka Airport',
-                5 => 'Parcel has arrived at the Airport in Lusaka, Customs Clearance in progress',
-                6 => 'Parcel is now ready for collection in Lusaka at the Main Branch'
-            ];
+        // Fetch stages from the tracking_stages table for this consignment's cargo_type
+        $stages = \App\Models\TrackingStage::where('cargo_type', $this->cargo_type)
+            ->orderBy('order')
+            ->get();
+        // Return as [id => name] or [id => description] as needed
+        $result = [];
+        foreach ($stages as $stage) {
+            $result[$stage->id] = $stage->name; // or $stage->description if you prefer
         }
+        return $result;
     }
 
     public function getCurrentStage()

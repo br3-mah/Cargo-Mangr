@@ -1,6 +1,9 @@
 @extends('cargo::adminLte.layouts.master')
 @section('pageTitle', 'Tracking Stages')
 @section('content')
+
+<!-- Add Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 <div class="container-fluid">
     {{-- Sea Table section 1 --}}
     <div class="row" id="seaTableSection">

@@ -57,6 +57,16 @@
                             <span class="badge badge-pill badge-primary px-3 py-2">Tracking Active</span>
                             <p class="text-muted small mt-3 mb-0">Last updated: <span id="statusUpdateTime"></span></p>
                         </div>
+                        <!-- Current Stage Details -->
+                        <div class="current-stage-details mt-4 text-center">
+                            <h6 class="font-weight-bold text-dark mb-1">Current Stage</h6>
+                            <div class="mb-2">
+                                <span id="currentStageName" class="text-primary font-weight-bold"></span>
+                            </div>
+                            <div>
+                                <span id="currentStageDescription" class="text-muted small"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-8 py-4 px-4">
                         <form id="updateTrackerForm" action="" method="POST">
@@ -237,13 +247,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Clear and populate the select dropdown
                     const $select = $('#trackerStatus');
                     $select.empty();
-                    
                     stages.forEach((stage) => {
                         const option = new Option(stage.description, stage.id);
-                        if (stage.order === parseInt(currentCheckpoint)) {
-                            option.selected = true;
-                        }
                         $select.append(option);
+                    });
+
+                    // Fetch and display current stage details using the new API
+                    $.ajax({
+                        url: '/api/get-current-stage',
+                        method: 'GET',
+                        data: { consignment_id: consignmentId },
+                        success: function(data) {
+                            $('#currentStageName').text(data.stage_name || 'Unknown');
+                            $('#currentStageDescription').text(data.stage_description || 'No details available.');
+                            // Set the select dropdown to the current stage id if available
+                            if (data.stage_name && data.stage_description) {
+                                // Find the option with the same description and select it
+                                $select.find('option').each(function() {
+                                    if ($(this).text() === data.stage_description) {
+                                        $(this).prop('selected', true);
+                                    }
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            $('#currentStageName').text('Unknown');
+                            $('#currentStageDescription').text('No details available.');
+                        }
                     });
                 },
                 error: function(error) {

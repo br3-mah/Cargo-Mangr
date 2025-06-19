@@ -958,16 +958,14 @@ class ConsignmentController extends Controller
 
     public function updateTracker(Request $request, $id)
     {
+
+        // dd($request);
         try {
             $consignment = Consignment::findOrFail($id);
-            $cargoType = $consignment->cargo_type ?? 'air';
-            
-            // Get max stage based on cargo type
-            $maxStage = $cargoType === 'air' ? 6 : 15;
 
             // Validate the request
             $request->validate([
-                'status' => "required|integer|min:1|max:{$maxStage}",
+                'status' => "required|integer|min:1",
             ]);
 
             $currentStage = $consignment->getCurrentStage();
@@ -1087,5 +1085,39 @@ class ConsignmentController extends Controller
         }
     }
 
+    public function getCurrentStage(Request $request)
+    {
+        $consignmentId = $request->input('consignment_id');
+        if (!$consignmentId) {
+            return response()->json(['error' => 'consignment_id is required'], 400);
+        }
+
+        $history = \App\Models\ConsignmentTrackingHistory::where('consignment_id', $consignmentId)
+            ->orderByDesc('completed_at')
+            ->orderByDesc('id')
+            ->first();
+
+        
+        if ($history) {
+            $stage = \App\Models\TrackingStage::find($history->stage_id);
+            return response()->json([
+                'stage_name' => $stage ? $stage->name : null,
+                'stage_description' => $stage ? $stage->description : null,
+                'status' => $history->status,
+                'notes' => $history->notes,
+                'location' => $history->location,
+                'completed_at' => $history->completed_at,
+            ]);
+        } else {
+            return response()->json([
+                'stage_name' => null,
+                'stage_description' => null,
+                'status' => null,
+                'notes' => null,
+                'location' => null,
+                'completed_at' => null,
+            ]);
+        }
+    }
 
 }
