@@ -417,7 +417,10 @@ class ShipmentController extends Controller
 
     public function show($id)
     {
-        $shipment = Shipment::with(['consignment','receipt'])->find($id);
+        $shipment = Shipment::find($id);
+        if (!$shipment) {
+            abort(404, 'Shipment not found');
+        }
         breadcrumb([
             [
                 'name' => __('cargo::view.dashboard'),
@@ -1837,5 +1840,26 @@ class ShipmentController extends Controller
                 'message' => 'Failed to mark as paid: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function overview()
+    {
+
+        $airConsignments = \App\Models\Consignment::with('shipments')->where('cargo_type', 'air')->get();
+        $seaConsignments = \App\Models\Consignment::with('shipments')->where('cargo_type', 'sea')->get();
+
+        $airStats = [
+            'total' => $airConsignments->count(),
+            'delivered' => $airConsignments->where('status', 'delivered')->count(),
+            'in_transit' => $airConsignments->where('status', 'in_transit')->count(),
+        ];
+        $seaStats = [
+            'total' => $seaConsignments->count(),
+            'delivered' => $seaConsignments->where('status', 'delivered')->count(),
+            'in_transit' => $seaConsignments->where('status', 'in_transit')->count(),
+        ];
+
+        $shipments = \Modules\Cargo\Entities\Shipment::all();
+        return view('cargo::adminLte.pages.shipments.overview', compact('shipments', 'airStats', 'seaStats'));
     }
 }

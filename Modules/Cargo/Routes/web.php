@@ -223,6 +223,7 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
                 Route::get('generate-token','ShipmentController@ajaxGgenerateToken')->name('shipments.generate-token');
                 Route::delete('/shipments-multi-destroy', 'ShipmentController@multiDestroy')->name('shipments.multi-destroy');
                 Route::resource('shipments','ShipmentController');
+
             });
 
             // Manifests Routes
@@ -324,6 +325,11 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
                 Route::PUT('receiver/update/{receiver}','ReceiversController@update')->name('receiver.update');
                 Route::DELETE('receiver/destroy/{id}','ReceiversController@destroy')->name('receiver.destroy');
            });
+
+            // Aircraft Routes
+            Route::resource('aircraft', 'AircraftController');
+            Route::get('consignments/air', 'AircraftController@airConsignments')->name('consignments.air');
+            Route::get('consignments/sea', 'AircraftController@seaConsignments')->name('consignments.sea');
 
         });
     });
@@ -513,6 +519,8 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
             Route::get('generate-token','ShipmentController@ajaxGgenerateToken')->name('shipments.generate-token');
             Route::delete('/shipments-multi-destroy', 'ShipmentController@multiDestroy')->name('shipments.multi-destroy');
             Route::resource('shipments','ShipmentController');
+
+            Route::get('shipments/overview', 'ShipmentController@overview')->name('shipments.overview');
         });
 
         // Manifests Routes

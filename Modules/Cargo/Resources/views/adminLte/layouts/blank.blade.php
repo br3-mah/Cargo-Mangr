@@ -4,7 +4,7 @@
 
 <style>
     .bd-content-bg {
-        background: url('https://images.pexels.com/photos/104346/pexels-photo-104346.jpeg') no-repeat center center;
+        background: url('https://images.pexels.com/photos/3140204/pexels-photo-3140204.jpeg') no-repeat center center;
         background-size: cover;
         background-attachment: fixed;
         min-height: 100vh;

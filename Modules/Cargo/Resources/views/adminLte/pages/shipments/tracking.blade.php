@@ -206,8 +206,8 @@
         <div class="container mx-auto px-4 py-8">
             <!-- Header Section -->
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Tracking Information</h1>
-                <p class="text-xl text-gray-600">#{{ $model->code ?? 'Unknown' }}</p>
+                <h1 class="text-3xl font-bold text-white mb-2">Tracking Information</h1>
+                <p class="text-xl text-white">#{{ $model->code ?? 'Unknown' }}</p>
                 
                 @if($model)
                     <div class="inline-flex items-center space-x-2 bg-green-50/90 backdrop-blur-sm px-4 py-2 rounded-full border border-green-200 mt-4">
@@ -250,9 +250,9 @@
                                         </svg>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-white {{ $isCompleted ? 'bg-orange-500':'bg-gray-500' }} rounded-lg p-4">
+                                        <div class="text-white {{ $isCompleted ? 'bg-blue-900':'bg-gray-500' }} rounded-lg p-4">
                                            
-                                            <p class="font-medium {{ $isCompleted ? 'text-gray-200':'text-gray-400' }} text-lg  mb-1">{{ $log[0] }}</p>
+                                            <p class="font-medium {{ $isCompleted ? 'text-yellow-600':'text-yellow-500' }} text-lg  mb-1">{{ $log[0] }}</p>
                                             @if($isCompleted)
                                                 <div class="flex items-center text-sm text-white-500">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

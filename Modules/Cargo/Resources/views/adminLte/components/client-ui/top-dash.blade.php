@@ -44,6 +44,10 @@
       <script src="https://cdn.tailwindcss.com"></script>
       <!-- Font Awesome -->
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+      <!-- Driver.js CSS -->
+      <link rel="stylesheet" href="https://unpkg.com/driver.js/dist/driver.min.css">
+      <!-- Driver.js JS -->
+      <script src="https://unpkg.com/driver.js/dist/driver.min.js"></script>
 
       <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
         <!-- Welcome Section -->
@@ -52,13 +56,13 @@
           <div class="relative bg-white rounded-3xl p-8 shadow-xl">
             <div class="flex items-center justify-between">
               <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome back, {{ auth()->user()->name }}!</h1>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2" id="welcome-title">Welcome back, {{ auth()->user()->name }}!</h1>
                 <p class="text-gray-600">Here's what's happening with your shipments today.</p>
               </div>
-              <div class="hidden md:block">
-                <div class="w-32 h-32 bg-yellow-100 rounded-full flex items-center justify-center transform hover:scale-105 transition-transform duration-300">
+              <div class="hidden md:block relative" style="height: 8rem;">
+                <div class="absolute -top-8 -right-8 w-80 h-60  rounded-full flex items-center justify-center z-10">
                   {{-- <i class="fas fa-shipping-fast text-4xl text-yellow-500"></i> --}}
-                  <img src="data:image/jpeg;base64,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">
+                  <img class="w-80 h-80 object-contain" src="https://cdn3d.iconscout.com/3d/premium/thumb/air-cargo-3d-icon-download-in-png-blend-fbx-gltf-file-formats--delivery-freight-airplane-shipment-and-logistic-pack-industry-icons-10476768.png?f=webp" alt="Air Cargo 3D Icon">
                 </div>
               </div>
             </div>
@@ -81,7 +85,7 @@
             </div>
           </a>
 
-          <a href="#" class="group">
+          <a href="#" class="group" id="schedule-trigger">
             <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <div class="flex items-center space-x-4">
                 <div class="bg-yellow-100 p-3 rounded-xl">
@@ -113,7 +117,7 @@
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- All Shipments Card -->
-          <div class="bg-white rounded-2xl p-6 shadow-lg relative overflow-hidden group">
+          <div class="bg-white rounded-2xl p-6 shadow-lg relative overflow-hidden group" id="all-shipments-card">
             <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-100 rounded-full transform translate-x-16 -translate-y-16 opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
@@ -157,13 +161,6 @@
             </div>
           </div>
         </div>
-
-        <!-- 3D Decorative Elements -->
-        {{-- <div class="fixed bottom-0 right-0 w-96 h-96 pointer-events-none">
-          <div class="absolute bottom-0 right-0 w-64 h-64 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div class="absolute bottom-0 right-0 w-64 h-64 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          <div class="absolute bottom-0 right-0 w-64 h-64 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div> --}}
       </div>
 
       <style>
@@ -183,5 +180,204 @@
           animation-delay: 4s;
         }
       </style>
+
     </div>
     <!-- ./col -->
+
+    <!-- Schedule Modal -->
+    <div id="scheduleModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-white/40 backdrop-blur-sm hidden">
+      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl p-0 relative overflow-hidden">
+        <!-- Illustration/Header -->
+        <div class="bg-gradient-to-r from-yellow-400 to-yellow-200 flex flex-col items-center justify-center py-6 rounded-t-3xl">
+          <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Schedule a Shipment</h2>
+          <p class="text-gray-700 text-sm mt-1">Let us help you get started with your shipment request</p>
+          <button id="closeScheduleModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-3xl font-bold bg-white bg-opacity-60 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all">&times;</button>
+        </div>
+        <form id="scheduleForm" class="p-8 pt-4 bg-white">
+          <div id="questionnaireSteps"></div>
+          <div class="flex justify-between mt-8">
+            <button type="button" id="prevStep" class="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold shadow hover:bg-gray-200 transition-all" style="display:none;">Previous</button>
+            <button type="button" id="nextStep" class="px-5 py-2 bg-yellow-500 text-white rounded-lg font-semibold shadow hover:bg-yellow-600 transition-all">Next</button>
+            <button type="submit" id="submitSchedule" class="px-5 py-2 bg-green-500 text-white rounded-lg font-semibold shadow hover:bg-green-600 transition-all" style="display:none;">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Modal logic
+      const scheduleTrigger = document.getElementById('schedule-trigger');
+      const scheduleModal = document.getElementById('scheduleModal');
+      const closeScheduleModal = document.getElementById('closeScheduleModal');
+      scheduleTrigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        scheduleModal.classList.remove('hidden');
+        startQuestionnaire();
+      });
+      closeScheduleModal.addEventListener('click', function() {
+        scheduleModal.classList.add('hidden');
+      });
+      window.addEventListener('click', function(e) {
+        if (e.target === scheduleModal) scheduleModal.classList.add('hidden');
+      });
+
+      // Questionnaire logic
+      const steps = [
+        {
+          question: 'Are you a first time or old client?',
+          name: 'client_type',
+          type: 'radio',
+          options: ['First time', 'Old client'],
+          illustration: 'https://img.freepik.com/premium-vector/add-user-concept-illustration_86047-677.jpg'
+        },
+        {
+          question: 'What are your full names?',
+          name: 'full_names',
+          type: 'text',
+          illustration: 'https://img.freepik.com/premium-vector/visit-link-flat-illustration-call-action-concept-light-blue-yellow-color-isometric-minimal-style_146120-297.jpg'
+        },
+        {
+          question: 'Which route do you wish to ship from?',
+          name: 'route',
+          type: 'radio',
+          options: ['From China', 'From Dubai'],
+          illustration: 'https://blog.shipsgo.com/wp-content/uploads/2023/10/5-Major-International-Shipping-Routes-01.png'
+        },
+        {
+          question: 'What type of goods are being shipped?',
+          name: 'goods_type',
+          type: 'radio',
+          options: ['General', 'Electric'],
+          illustration: 'https://img.freepik.com/premium-vector/illustration-loading-goods-shipment-client_81522-2047.jpg'
+        },
+        {
+          question: 'Do you have a supplier?',
+          name: 'has_supplier',
+          type: 'radio',
+          options: ['Yes', 'No'],
+          illustration: 'https://blog.modalku.co.id/wp-content/uploads/2021/01/Cara-Mencari-Supplier-Tangan-Pertama-untuk-Kualitas-Terbaik-Harga-Termurah.jpg'
+        },
+        // If No supplier, ask if need help
+        {
+          question: 'Do you need help finding a supplier?',
+          name: 'need_supplier_help',
+          type: 'radio',
+          options: ['Yes', 'No'],
+          conditional: {
+            field: 'has_supplier',
+            value: 'No'
+          },
+          illustration: 'https://cashflowinventory.com/blog/wp-content/uploads/2023/03/Supplier-Negotiation.jpg'
+        },
+        // Summary step
+        {
+          question: 'Summary of Your Request',
+          name: 'summary',
+          type: 'summary',
+          illustration: 'https://cdn3d.iconscout.com/3d/premium/thumb/summary-6333246-5227296.png?f=webp'
+        }
+      ];
+
+      // Example rates (replace with dynamic if needed)
+      const ratesHtml = `
+        <div class=\"mb-4\">
+          <h4 class=\"font-semibold mb-2 text-lg text-yellow-700\">Shipping Rates</h4>
+          <div class=\"flex items-center mb-2\"><img src=\"https://cdn3d.iconscout.com/3d/premium/thumb/airplane-6333247-5227297.png?f=webp\" class=\"w-8 h-8 mr-2\">Air Cargo: <span class=\"font-bold ml-2\">$5/kg</span></div>
+          <div class=\"flex items-center\"><img src=\"https://cdn3d.iconscout.com/3d/premium/thumb/ship-6333248-5227298.png?f=webp\" class=\"w-8 h-8 mr-2\">Sea Cargo: <span class=\"font-bold ml-2\">$2/kg</span></div>
+        </div>
+      `;
+
+      let currentStep = 0;
+      let answers = {};
+
+      const questionnaireSteps = document.getElementById('questionnaireSteps');
+      const prevStepBtn = document.getElementById('prevStep');
+      const nextStepBtn = document.getElementById('nextStep');
+      const submitBtn = document.getElementById('submitSchedule');
+      const scheduleForm = document.getElementById('scheduleForm');
+
+      function renderStep() {
+        // Handle conditional step
+        let step = steps[currentStep];
+        if (step.conditional) {
+          if (answers[step.conditional.field] !== step.conditional.value) {
+            // Skip this step
+            currentStep++;
+            renderStep();
+            return;
+          }
+        }
+
+        let html = '';
+        // Illustration for each step
+        if (step.illustration) {
+          html += `<div class=\"flex justify-center mb-4\"><img src=\"${step.illustration}\" alt=\"Step Illustration\" class=\"w-20 h-20\"></div>`;
+        }
+        if (step.type === 'summary') {
+          //summary not necessary
+          if (answers['has_supplier'] === 'Yes') {
+            html += ratesHtml;
+          } else {
+            html += `<div class=\"mb-4\"><span class=\"font-semibold text-yellow-700\">Shipping rates will be provided after supplier confirmation.</span></div>`;
+          }
+          html += '</div>';
+        } else {
+          html += `<div class=\"mb-4\"><label class=\"block font-semibold mb-2 text-lg text-gray-800\">${step.question}</label>`;
+          if (step.type === 'radio') {
+            step.options.forEach(opt => {
+              const checked = answers[step.name] === opt ? 'checked' : '';
+              html += `<label class=\"inline-flex items-center mr-4\"><input type=\"radio\" name=\"${step.name}\" value=\"${opt}\" ${checked} class=\"form-radio accent-yellow-500\"> <span class=\"ml-2\">${opt}</span></label>`;
+            });
+          } else if (step.type === 'text') {
+            html += `<input type=\"text\" name=\"${step.name}\" value=\"${answers[step.name]||''}\" class=\"form-input border-2 border-yellow-200 rounded-lg px-3 py-2 w-full focus:border-yellow-500 focus:ring-2 focus:ring-yellow-100 transition-all\">`;
+          }
+          html += '</div>';
+          // If "has_supplier" is Yes and this is the next step, show rates
+          if (step.name === 'has_supplier' && answers['has_supplier'] === 'Yes') {
+            html += ratesHtml;
+          }
+        }
+
+        questionnaireSteps.innerHTML = html;
+
+        // Show/hide navigation
+        prevStepBtn.style.display = currentStep > 0 ? '' : 'none';
+        nextStepBtn.style.display = currentStep < steps.length - 1 ? '' : 'none';
+        submitBtn.style.display = currentStep === steps.length - 1 ? '' : 'none';
+      }
+
+      function startQuestionnaire() {
+        currentStep = 0;
+        answers = {};
+        renderStep();
+      }
+
+      nextStepBtn.onclick = function() {
+        // Save answer
+        const step = steps[currentStep];
+        if (step.type === 'radio') {
+          const selected = scheduleForm.querySelector(`input[name='${step.name}']:checked`);
+          if (!selected) return alert('Please select an option.');
+          answers[step.name] = selected.value;
+        } else if (step.type === 'text') {
+          const input = scheduleForm.querySelector(`input[name='${step.name}']`);
+          if (!input.value.trim()) return alert('Please fill in this field.');
+          answers[step.name] = input.value.trim();
+        }
+        currentStep++;
+        renderStep();
+      };
+
+      prevStepBtn.onclick = function() {
+        if (currentStep > 0) currentStep--;
+        renderStep();
+      };
+
+      scheduleForm.onsubmit = function(e) {
+        e.preventDefault();
+        // Save last answer (should be summary step)
+        // No input to save, just submit
+        alert('Your request has been submitted! (Backend/email logic not yet implemented)');
+        scheduleModal.classList.add('hidden');
+      };
+    </script>

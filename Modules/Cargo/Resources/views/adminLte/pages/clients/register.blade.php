@@ -4,6 +4,145 @@
     {{ __('Sign In') }}
 @endsection
 @section('content')
+<style>
+  /* Page background image */
+  body {
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+  }
+  /* Overlay for the whole page */
+  body:before {
+    content: '';
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(33, 37, 41, 0.45);
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* Pre-questionnaire modal styles */
+  #preQuestionnaireModal {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #preQuestionnaireModal .modal-bg {
+    background: url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80') no-repeat center center;
+    background-size: cover;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    max-width: 420px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  #preQuestionnaireModal .modal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.92);
+    z-index: 1;
+  }
+  #preQuestionnaireModal .modal-content {
+    position: relative;
+    z-index: 2;
+    padding: 2.5rem 2rem 2rem 2rem;
+    text-align: center;
+  }
+  #preQuestionnaireModal h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+    color: #4158D0;
+    font-weight: 700;
+  }
+  #preQuestionnaireModal p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  #preQuestionnaireModal .btn-preq {
+    padding: 0.7rem 2.2rem;
+    margin: 0 0.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px rgba(65,88,208,0.08);
+  }
+  #preQuestionnaireModal .btn-yes {
+    background: #4158D0;
+    color: #fff;
+  }
+  #preQuestionnaireModal .btn-no {
+    background: #ffd000;
+    color: #222;
+  }
+  @media (max-width: 500px) {
+    #preQuestionnaireModal .modal-content {
+      padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+    }
+    #preQuestionnaireModal .modal-bg {
+      max-width: 98vw;
+    }
+  }
+  /* Registration card enhancements */
+  .login-box {
+    position: relative;
+    z-index: 2;
+  }
+  .login-box .card {
+    background: rgba(255,255,255,0.93);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(65,88,208,0.10);
+    backdrop-filter: blur(2px);
+    border: none;
+  }
+  .login-box .card-header {
+    background: transparent;
+    border-bottom: none;
+  }
+  .login-box .widget-title {
+    color: #4158D0;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  /* Enhanced password toggle */
+  .input-group .input-group-append .toggle-password {
+    display: flex;
+    align-items: center;
+    padding: 0 0.8rem;
+    font-size: 1.2rem;
+    color: #4158D0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .input-group .input-group-append .toggle-password:hover {
+    color: #ffd000;
+  }
+</style>
+
+<div id="preQuestionnaireModal">
+  <div class="modal-bg">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <h2>Welcome!</h2>
+      <p>Is this your first time using <b>Newworld Cargo Limited</b>?</p>
+      <button class="btn-preq btn-yes" id="preqYes">Yes</button>
+      <button class="btn-preq btn-no" id="preqNo">No</button>
+    </div>
+  </div>
+</div>
+
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
@@ -51,7 +190,7 @@
             <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" 
             required id="password" placeholder="Your new password" autocomplete="off" required>
             <div class="input-group-append">
-                <span class="input-group-text toggle-password" style="cursor: pointer;"><i class="fas fa-eye"></i></span>
+                <button type="button" class="input-group-text toggle-password" tabindex="0" aria-label="Show password" aria-pressed="false" title="Show/Hide Password"><i class="fas fa-eye"></i></button>
             </div>
             @error('password')
                 <div class="invalid-feedback">
@@ -142,25 +281,19 @@
   </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="{{ asset('assets/lte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.select-branch').select2({
-            placeholder: "{{ __('cargo::view.table.choose_branch') }}",
-            width: '100%',
-            dropdownParent: $('.select-branch').parent()
-        });
-        
-        $('.toggle-password').click(function() {
-            const input = $(this).parent().siblings('input');
-            const icon = $(this).find('i');
-            
-            if (input.attr('type') === 'password') {
-                input.attr('type', 'text');
-                icon.removeClass('fa-eye').addClass('fa-eye-slash');
-            } else {
-                input.attr('type', 'password');
-                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        $('.toggle-password').on('click keypress', function(e) {
+            if (e.type === 'click' || (e.type === 'keypress' && (e.which === 13 || e.which === 32))) {
+                e.preventDefault();
+                var $btn = $(this);
+                var $input = $btn.closest('.input-group').find('input[type="password"], input[type="text"]').first();
+                var $icon = $btn.find('i');
+                var isPassword = $input.attr('type') === 'password';
+                $input.attr('type', isPassword ? 'text' : 'password');
+                $icon.toggleClass('fa-eye fa-eye-slash');
+                $btn.attr('aria-label', isPassword ? 'Hide password' : 'Show password');
+                $btn.attr('aria-pressed', isPassword ? 'true' : 'false');
             }
         });
         
@@ -174,6 +307,22 @@
             $('.btn-register').html('<i class="fas fa-spinner fa-spin mr-2"></i> {{ __("cargo::view.register") }}');
         });
     });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('preQuestionnaireModal');
+    var formBox = document.querySelector('.login-box');
+    if (formBox) {
+      formBox.style.display = 'none';
+    }
+    function showForm() {
+      if (modal) modal.style.display = 'none';
+      if (formBox) formBox.style.display = '';
+    }
+    document.getElementById('preqYes').onclick = showForm;
+    document.getElementById('preqNo').onclick = showForm;
+  });
 </script>
 @endsection
 
