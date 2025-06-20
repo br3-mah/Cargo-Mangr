@@ -478,7 +478,7 @@ $user_role == $branch)
 
 <!-- Shipment -->
 <li class="nav-item">
-    <a href="{{ fr_route('shipments.index') }}" class="nav-link">
+    <a href="{{ route('shipments.overview') }}" class="nav-link">
         <i class="fas fa-shipping-fast fa-fw text-white"></i>
         <p class="text-white">&nbsp;Shipment</p>
     </a>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\OTPVerificationController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\TwoFactorAuthController;
 use Modules\Cargo\Http\Controllers\ClientController;
+use Modules\Cargo\Http\Controllers\ShipmentController;
 // use App\Http\Controllers\ConsignmentController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -101,6 +102,8 @@ Route::middleware(['auth'])->group(function () {
 
     // API Routes for tracking stages
     Route::get('/api/tracking-stages', [TrackingStageController::class, 'apiIndex']);
+    
+    Route::get('shipments/overview', [ShipmentController::class, 'overview'])->name('shipments.overview');
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

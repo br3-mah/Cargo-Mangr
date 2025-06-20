@@ -257,6 +257,8 @@ class ClientController extends Controller
                 // Store the registration data in session
                 session(['pending_registration' => $data]);
                 
+                // save $similarAccounts in users table with user as foregn key unary relation alter add a unary foreign attribute key called parent_id
+
                 // Redirect to claim accounts page
                 return redirect()->route('clients.claim-accounts')->with([
                     'similar_accounts' => $similarAccounts,
@@ -387,6 +389,18 @@ class ClientController extends Controller
             Auth::loginUsingId($user->id);
             // Clear the session
             session()->forget(['pending_registration', 'similar_accounts']);
+
+            // Update parent_id for all similar accounts' users
+            if (session()->has('similar_accounts')) {
+                foreach (session('similar_accounts') as $similarAccount) {
+                    $similarUser = \App\Models\User::find($similarAccount->user_id);
+                    if ($similarUser && $similarUser->id !== $user->id) {
+                        $similarUser->parent_id = $user->id;
+                        $similarUser->save();
+                    }
+                }
+            }
+
             return redirect()->route('admin.dashboard')
                 ->with('message_alert', __('cargo::messages.account_claimed'));
         } else {
@@ -995,6 +1009,49 @@ class ClientController extends Controller
 
     }
 
+    /**
+     * Handle AJAX shipment schedule request from client dashboard modal.
+     */
+    public function scheduleShipmentRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'client_type' => 'required|string',
+            'full_names' => 'required|string',
+            'route' => 'required|string',
+            'goods_type' => 'required|string',
+            'has_supplier' => 'required|string',
+            'need_supplier_help' => 'nullable|string',
+        ]);
 
+        // Compose email content
+        $mailData = [
+            'Client Type' => $validated['client_type'],
+            'Full Names' => $validated['full_names'],
+            'Route' => $validated['route'],
+            'Goods Type' => $validated['goods_type'],
+            'Has Supplier' => $validated['has_supplier'],
+        ];
+        if (isset($validated['need_supplier_help'])) {
+            $mailData['Needs Supplier Help'] = $validated['need_supplier_help'];
+        }
+        // Add shipping rates info if has_supplier is Yes
+        if ($validated['has_supplier'] === 'Yes') {
+            $mailData['Shipping Rates'] = "Air Cargo: $5/kg, Sea Cargo: $2/kg";
+        }
+
+        $adminEmail = env('MAIL_ADMIN', config('mail.from.address'));
+        $subject = 'New Shipment Schedule Request';
+        $body = "A new shipment schedule request has been submitted:\n\n";
+        foreach ($mailData as $key => $value) {
+            $body .= "$key: $value\n";
+        }
+
+        \Mail::raw($body, function($message) use ($adminEmail, $subject) {
+            $message->to($adminEmail)
+                    ->subject($subject);
+        });
+
+        return response()->json(['success' => true, 'message' => 'Request submitted and emailed to admin.']);
+    }
 
 }
