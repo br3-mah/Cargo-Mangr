@@ -7,7 +7,8 @@
     <div style="font-family: monospace; width: 58mm; padding: 10px;">
         <div style="text-align: center;">
             <img src="https://app.newworldcargo.com/assets/lte/cargo-logo.svg" alt="New World Cargo Logo" style="max-width: 100px; margin-bottom: 5px;">
-            <h3 style="margin: 0;">New World Cargo</h3>
+            <h3 style="margin: 0;">Newworld Cargo Limited </h3>
+            <p style="font-size: 11px; margin: 2px 0;">TPIN.: 2001344196</p>
             <p style="font-size: 11px; margin: 2px 0;">Shop 62/A, Carousel Shopping Centre</p>
             <p style="font-size: 11px; margin: 2px 0;">Lusaka, Zambia</p>
             <p style="font-size: 11px; margin: 2px 0;">+260 763 297 287 | +260 763 313 193</p>

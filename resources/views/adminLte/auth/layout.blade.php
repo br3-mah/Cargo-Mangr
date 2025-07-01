@@ -10,7 +10,7 @@
 <html lang="{{LaravelLocalization::getCurrentLocale()}}">
 @endif
     <head>
-        <title>{{ config('app.name') . ' | ' . ($pageTitle ?? 'Dashboard') }}</title>
+        <title>{{ config('app.name') . ' | ' . ($pageTitle ?? 'Signin') }}</title>
         <meta name="description" content="Algoriza - Framework" />
         <meta name="keywords" content="Algoriza - Framework" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

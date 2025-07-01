@@ -4,25 +4,7 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold mb-6 text-gray-800">Shipments Overview</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <!-- Air Consignments Stats -->
-        <div>
-            <h2 class="text-xl font-semibold mb-4 text-blue-700">Air Consignments</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ $airStats['total'] }}</div>
-                    <div class="text-gray-500">Total Air Consignments</div>
-                </div>
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <div class="text-2xl font-bold text-green-600">{{ $airStats['delivered'] }}</div>
-                    <div class="text-gray-500">Delivered</div>
-                </div>
-                <div class="bg-white shadow rounded-lg p-6 text-center">
-                    <div class="text-2xl font-bold text-yellow-600">{{ $airStats['in_transit'] }}</div>
-                    <div class="text-gray-500">In Transit</div>
-                </div>
-            </div>
-        </div>
+    <div class="mb-8">
         <!-- Sea Consignments Stats -->
         <div>
             <h2 class="text-xl font-semibold mb-4 text-blue-700">Sea Consignments</h2>
@@ -82,4 +64,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

@@ -1844,22 +1844,21 @@ class ShipmentController extends Controller
 
     public function overview()
     {
+        $shipmentsQuery = \Modules\Cargo\Entities\Shipment::with(['consignment', 'from_country', 'to_country', 'from_state', 'to_state', 'branch', 'client']);
+        $shipments = \Modules\Cargo\Entities\Shipment::getShipments($shipmentsQuery)->latest()->get();
 
-        $airConsignments = \App\Models\Consignment::with('shipments')->where('cargo_type', 'air')->get();
-        $seaConsignments = \App\Models\Consignment::with('shipments')->where('cargo_type', 'sea')->get();
-
-        $airStats = [
-            'total' => $airConsignments->count(),
-            'delivered' => $airConsignments->where('status', 'delivered')->count(),
-            'in_transit' => $airConsignments->where('status', 'in_transit')->count(),
-        ];
+        // Calculate statistics for sea consignments only
+        $seaShipments = $shipments->filter(function ($shipment) {
+            return $shipment->consignment && $shipment->consignment->cargo_type === 'sea';
+        });
+        
         $seaStats = [
-            'total' => $seaConsignments->count(),
-            'delivered' => $seaConsignments->where('status', 'delivered')->count(),
-            'in_transit' => $seaConsignments->where('status', 'in_transit')->count(),
+            'total' => $seaShipments->count(),
+            'delivered' => $seaShipments->where('status_id', \Modules\Cargo\Entities\Shipment::DELIVERED_STATUS)->count(),
+            'in_transit' => $seaShipments->where('status_id', \Modules\Cargo\Entities\Shipment::PENDING_STATUS)->count(),
         ];
 
-        $shipments = \Modules\Cargo\Entities\Shipment::all();
-        return view('cargo::adminLte.pages.shipments.overview', compact('shipments', 'airStats', 'seaStats'));
+        $adminTheme = env('ADMIN_THEME', 'adminLte');
+        return view('cargo::' . $adminTheme . '.pages.shipments.overview', compact('shipments', 'seaStats'));
     }
 }
