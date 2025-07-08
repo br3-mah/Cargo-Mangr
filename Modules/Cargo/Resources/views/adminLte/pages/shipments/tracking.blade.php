@@ -234,7 +234,7 @@
 
                         <!-- Tracking Timeline -->
                         <div class="space-y-6">
-                            @foreach($track_map as $index => $log)
+                            @foreach(array_reverse($track_map) as $index => $log)
                                 @php
                                     $isCompleted = $log[1] !== null;
                                     $date = $log[1];
