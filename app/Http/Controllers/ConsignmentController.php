@@ -597,6 +597,7 @@ class ConsignmentController extends Controller
                 }
             }
 
+            
             // if (!$mawbNum) {
             //     throw new \Exception("Mawb No. not found below 'Consignee' row.");
             // }
@@ -627,10 +628,14 @@ class ConsignmentController extends Controller
             }
 
             $consignmentCode = $jobNum;
-
-            $consignment = Consignment::orWhere('mawb_num', $mawbNum)
-                ->orWhere('consignment_code', $consignmentCode)
-                ->first();
+            $consignment = Consignment::where('consignment_code', $consignmentCode)
+            ->first();
+            // if(empty($consignment)){
+            //     $consignment = Consignment::where('mawb_num', $mawbNum)
+            //     ->first();
+            // }
+            
+            // dd($consignment);
             if (empty($consignment)) {
                 // Create a new record if it doesn't exist
                 $consignment = Consignment::create([
