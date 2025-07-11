@@ -116,7 +116,7 @@
             <div class="icon">
                 <i class="fas fa-box-open"></i>
             </div>
-            <a href="{{ route('shipments.index') }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('consignment.index') }}" class="small-box-footer">{{ __('cargo::view.more_info') }} <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 
