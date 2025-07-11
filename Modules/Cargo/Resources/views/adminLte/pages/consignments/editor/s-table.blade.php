@@ -163,70 +163,39 @@
             <div id="listView" class="view-container" style="display: none;">
                 <div class="list-group">
                     @foreach ($consignment->shipments as $shipment)
-                        <div class="list-group-item list-group-item-action p-3 mb-2 border rounded shipment-item" 
-                             id="shipment_list_{{ $shipment->id }}"
-                             data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
-                            <div class="d-flex w-100 justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h6 class="mb-1">
-                                                <span class="badge bg-info rounded-pill me-2">{{ $shipment->code }}</span>
-                                                {{ $shipment->client->name }}
-                                            </h6>
-                                            <p class="mb-1 text-muted small">
-                                                <i class="bi bi-person me-1"></i>{{ $shipment->salesman }} | 
-                                                <i class="bi bi-building me-1"></i>Lusaka
-                                            </p>
-                                            <p class="mb-1 text-muted small">
-                                                <i class="bi bi-telephone me-1"></i>{{ $shipment->client_phone ?? 'No phone' }}
-                                            </p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="text-end">
-                                                <div class="mb-2">
-                                                    <span class="text-dark fw-bold">
-                                                        K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}
-                                                    </span>
-                                                    <span class="text-warning small">(${{ $shipment->amount_to_be_collected }})</span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    @if ($shipment->paid)
-                                                        <span class="badge bg-success rounded-pill">PAID</span>
-                                                    @else
-                                                        <span class="badge bg-secondary rounded-pill">UNPAID</span>
-                                                    @endif
-                                                </div>
-                                                <small class="text-muted">{{ $shipment->created_at->toFormattedDateString() }}</small>
-                                            </div>
-                                        </div>
+                        <div class="modern-list-row d-flex align-items-center mb-3 shipment-item" id="shipment_list_{{ $shipment->id }}" data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
+                            <div class="accent-bar {{ $shipment->paid ? 'bg-success' : 'bg-secondary' }}"></div>
+                            <div class="flex-grow-1 d-flex flex-wrap align-items-center gap-3 px-3 py-2">
+                                <div class="shipment-main-info flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="shipment-code badge bg-info text-dark fs-5 px-3 py-2">{{ $shipment->code }}</span>
+                                        <span class="fw-semibold fs-6">{{ $shipment->client->name }}</span>
                                     </div>
-                                    <div class="mt-2">
-                                        <small class="text-muted">
-                                            <i class="bi bi-file me-1"></i>
-                                            @foreach (Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->get() as $package)
-                                                {{ $package->description }}
-                                            @endforeach
-                                        </small>
+                                    <div class="d-flex flex-wrap gap-3 text-muted small mb-1">
+                                        <span><i class="bi bi-person me-1"></i>{{ $shipment->salesman }}</span>
+                                        <span><i class="bi bi-telephone me-1"></i>{{ $shipment->client_phone ?? 'No phone' }}</span>
+                                    </div>
+                                    <div class="text-muted small mb-1">
+                                        <i class="bi bi-file me-1"></i>
+                                        @foreach (Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->get() as $package)
+                                            {{ $package->description }}
+                                        @endforeach
                                     </div>
                                 </div>
-                                <div class="ms-3">
-                                    <div class="d-flex flex-column gap-2">
-                                        @can('view-shipment-invoices')
-                                        <a href="{{ url('admin/shipments/shipments/' . $shipment->id) }}"
-                                            class="btn btn-light text-info btn-sm"
-                                            title="View Shipment Invoice">
-                                            <i class="bi bi-receipt"></i>
-                                        </a>
-                                        @endcan
-                                        @can('delete-shipment-invoices')
-                                        <button class="btn btn-light text-danger btn-sm"
-                                            data-shipment-id="{{ $shipment->id }}" data-bs-toggle="tooltip"
-                                            title="Remove Shipment">
-                                            <i class="bi bi-folder-minus"></i>
-                                        </button>
-                                        @endcan
-                                    </div>
+                                <div class="shipment-amount text-end pe-3">
+                                    <div class="fw-bold text-dark fs-6">K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}</div>
+                                    <div class="text-warning small">(${{ $shipment->amount_to_be_collected }})</div>
+                                    <span class="badge {{ $shipment->paid ? 'bg-success' : 'bg-secondary' }} rounded-pill px-2 py-1 mt-1">{{ $shipment->paid ? 'PAID' : 'UNPAID' }}</span>
+                                    <div class="text-muted small mt-1">{{ $shipment->created_at->toFormattedDateString() }}</div>
+                                </div>
+                                <div class="shipment-actions d-flex flex-column gap-1 align-items-end">
+                                    @can('view-shipment-invoices')
+                                    <a href="{{ url('admin/shipments/shipments/' . $shipment->id) }}" class="btn btn-outline-info btn-sm p-1" title="View Invoice"><i class="bi bi-receipt"></i></a>
+                                    @endcan
+                                    <a target="_blank" href="{{ url('en/shipments/tracking?code=' . $shipment->code) }}" class="btn btn-outline-primary btn-sm p-1" title="Track"><i class="bi bi-geo-alt"></i></a>
+                                    @can('delete-shipment-invoices')
+                                    <button class="btn btn-outline-danger btn-sm p-1" data-shipment-id="{{ $shipment->id }}" data-bs-toggle="tooltip" title="Remove"><i class="bi bi-folder-minus"></i></button>
+                                    @endcan
                                 </div>
                             </div>
                         </div>
@@ -238,36 +207,20 @@
             <div id="gridView" class="view-container" style="display: none;">
                 <div class="row">
                     @foreach ($consignment->shipments as $shipment)
-                        <div class="col-lg-4 col-md-6 mb-4 shipment-card" 
-                             id="shipment_grid_{{ $shipment->id }}"
-                             data-search-text="{{ strtolower($shipment->code . ' ' . $shipment->client->name . ' ' . $shipment->salesman . ' ' . ($shipment->client_phone ?? '')) }}">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-info rounded-pill">{{ $shipment->code }}</span>
-                                    @if ($shipment->paid)
-                                        <span class="badge bg-success rounded-pill">PAID</span>
-                                    @else
-                                        <span class="badge bg-secondary rounded-pill">UNPAID</span>
-                                    @endif
+                        <div class="col-lg-4 col-md-6 mb-4 shipment-card">
+                            <div class="card h-100 border-0 shadow modern-grid-card">
+                                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pb-1 pt-3 px-3">
+                                    <span class="badge bg-info text-dark rounded-pill px-3 py-2 fs-6">{{ $shipment->code }}</span>
+                                    <span class="badge {{ $shipment->paid ? 'bg-success' : 'bg-secondary' }} rounded-pill px-2 py-1">{{ $shipment->paid ? 'PAID' : 'UNPAID' }}</span>
                                 </div>
-                                <div class="card-body">
-                                    <h6 class="card-title">{{ $shipment->client->name }}</h6>
-                                    <div class="mb-2">
-                                        <small class="text-muted">
-                                            <i class="bi bi-person me-1"></i>{{ $shipment->salesman }}
-                                        </small>
+                                <div class="card-body pt-2 pb-2 px-3">
+                                    <div class="fw-semibold fs-6 mb-1">{{ $shipment->client->name }}</div>
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        <span class="text-muted small"><i class="bi bi-person me-1"></i>{{ $shipment->salesman }}</span>
+                                        <span class="text-muted small"><i class="bi bi-building me-1"></i>Lusaka</span>
+                                        <span class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ $shipment->client_phone ?? 'No phone' }}</span>
                                     </div>
                                     <div class="mb-2">
-                                        <small class="text-muted">
-                                            <i class="bi bi-building me-1"></i>Lusaka
-                                        </small>
-                                    </div>
-                                    <div class="mb-2">
-                                        <small class="text-muted">
-                                            <i class="bi bi-telephone me-1"></i>{{ $shipment->client_phone ?? 'No phone' }}
-                                        </small>
-                                    </div>
-                                    <div class="mb-3">
                                         <small class="text-muted">
                                             <i class="bi bi-file me-1"></i>
                                             @foreach (Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->get() as $package)
@@ -275,30 +228,19 @@
                                             @endforeach
                                         </small>
                                     </div>
-                                    <div class="text-center mb-3">
-                                        <div class="fw-bold text-dark">
-                                            K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}
-                                        </div>
-                                        <small class="text-warning">(${{ $shipment->amount_to_be_collected }})</small>
-                                    </div>
+                                    <div class="fw-bold text-dark fs-6 mb-1">K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) }}</div>
+                                    <small class="text-warning">(${{ $shipment->amount_to_be_collected }})</small>
                                 </div>
-                                <div class="card-footer bg-white border-top-0">
+                                <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-muted">{{ $shipment->created_at->toFormattedDateString() }}</small>
-                                        <div class="btn-group btn-group-sm">
+                                        <div class="btn-group btn-group-sm gap-1">
                                             @can('view-shipment-invoices')
-                                            <a href="{{ url('admin/shipments/shipments/' . $shipment->id) }}"
-                                                class="btn btn-outline-info"
-                                                title="View Shipment Invoice">
-                                                <i class="bi bi-receipt"></i>
-                                            </a>
+                                            <a href="{{ url('admin/shipments/shipments/' . $shipment->id) }}" class="btn btn-outline-info btn-sm p-1" title="View Invoice"><i class="bi bi-receipt"></i></a>
                                             @endcan
+                                            <a target="_blank" href="{{ url('en/shipments/tracking?code=' . $shipment->code) }}" class="btn btn-outline-primary btn-sm p-1" title="Track"><i class="bi bi-geo-alt"></i></a>
                                             @can('delete-shipment-invoices')
-                                            <button class="btn btn-outline-danger"
-                                                data-shipment-id="{{ $shipment->id }}" data-bs-toggle="tooltip"
-                                                title="Remove Shipment">
-                                                <i class="bi bi-folder-minus"></i>
-                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm p-1" data-shipment-id="{{ $shipment->id }}" data-bs-toggle="tooltip" title="Remove"><i class="bi bi-folder-minus"></i></button>
                                             @endcan
                                         </div>
                                     </div>
@@ -504,6 +446,97 @@
             .input-group {
                 max-width: 100% !important;
             }
+        }
+        .modern-list-item {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #f0f0f0;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .modern-list-item:hover {
+            box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+            transform: translateY(-2px) scale(1.01);
+        }
+        .modern-list-item .btn {
+            border-radius: 50%;
+            min-width: 32px;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modern-grid-card {
+            border-radius: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #f0f0f0;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .modern-grid-card:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            transform: translateY(-4px) scale(1.015);
+        }
+        .modern-grid-card .btn {
+            border-radius: 50%;
+            min-width: 32px;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fw-semibold { font-weight: 600; }
+        .min-w-120 { min-width: 120px; }
+        @media (max-width: 768px) {
+            .modern-list-item, .modern-grid-card { padding: 0.75rem 0.5rem; }
+            .modern-list-item .d-flex, .modern-grid-card .d-flex { flex-direction: column !important; gap: 0.5rem; }
+            .modern-list-item .btn, .modern-grid-card .btn { min-width: 28px; min-height: 28px; }
+        }
+        .modern-list-row {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #f0f0f0;
+            transition: box-shadow 0.2s, transform 0.2s;
+            position: relative;
+            min-height: 80px;
+        }
+        .modern-list-row:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            transform: translateY(-2px) scale(1.01);
+        }
+        .modern-list-row .accent-bar {
+            width: 6px;
+            height: 100%;
+            border-radius: 1rem 0 0 1rem;
+            min-height: 60px;
+        }
+        .modern-list-row .shipment-main-info {
+            min-width: 180px;
+        }
+        .modern-list-row .shipment-code {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        .modern-list-row .shipment-amount {
+            min-width: 120px;
+        }
+        .modern-list-row .shipment-actions .btn {
+            border-radius: 50%;
+            min-width: 32px;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 900px) {
+            .modern-list-row .shipment-amount, .modern-list-row .shipment-actions { min-width: 90px; }
+        }
+        @media (max-width: 768px) {
+            .modern-list-row { flex-direction: column !important; align-items: stretch !important; padding: 0.5rem 0.5rem; }
+            .modern-list-row .shipment-main-info, .modern-list-row .shipment-amount, .modern-list-row .shipment-actions { min-width: 0; }
+            .modern-list-row .shipment-actions { flex-direction: row !important; justify-content: flex-start !important; gap: 0.5rem; margin-top: 0.5rem; }
         }
     </style>
 </div>
