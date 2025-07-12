@@ -1,5 +1,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+    
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -16,6 +18,72 @@
             }
         }
     </script>
+
+    <!-- Modal for null consignment -->
+    @if(!$shipment->consignment)
+    <div id="consignmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-xl">
+            <div class="text-center">
+                <div class="text-red-500 text-6xl mb-4">⚠️</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Invalid Shipment</h2>
+                <p class="text-gray-600 mb-6">
+                    This shipment does not have an associated consignment. This may indicate that consignment does not exist.
+                </p>
+                <div class="flex flex-col space-y-3">
+                    {{-- <button onclick="deleteShipment()" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                        Delete Shipment
+                    </button> --}}
+                    <p class="text-sm text-gray-500">
+                        This action cannot be undone.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent modal from closing
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'consignmentModal') {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+        // Prevent escape key from closing modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+        function deleteShipment() {
+            if (confirm('Are you sure you want to delete this shipment? This action cannot be undone.')) {
+                // Create form and submit
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ fr_route("admin.shipments.destroy", $shipment->id) }}';
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                
+                form.appendChild(csrfToken);
+                form.appendChild(methodField);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+    @endif
+
     <div id="printable-invoice" class="hidden print:block max-w-4xl mx-auto my-5 bg-white shadow-md rounded-lg p-8 relative">
         <!-- Watermark -->
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-45 text-8xl text-gray-900/[0.03] pointer-events-none z-0 whitespace-nowrap">
@@ -59,7 +127,7 @@
             <div class="w-1/2 p-5 bg-gray-50 rounded-md border-l-4 border-primary">
                 <div class="text-base font-semibold mb-2 text-primary uppercase tracking-wider">Receiver Information</div>
                 <div class="leading-8">
-                    <div><span class="font-semibold inline-block w-24">Destination:</span> {{ $shipment->consignment->destination }}</div>
+                    <div><span class="font-semibold inline-block w-24">Destination:</span> {{ $shipment->consignment?->destination }}</div>
                     <div><span class="font-semibold inline-block w-24">Status:</span>
                         <span class="inline-block px-3 py-1 rounded-full text-sm font-medium uppercase bg-blue-100 text-blue-800">
                             {{ $shipment->getStatus() }}
@@ -78,7 +146,7 @@
             <div class="flex flex-wrap">
                 <div class="w-1/3 mb-3">
                     <div><span class="font-semibold inline-block w-24">Type:</span> {{ $shipment->type }}</div>
-                    <div><span class="font-semibold inline-block w-24">Cargo:</span> {{ $shipment->consignment->cargo_type ?? 'Sea' }} Freight</div>
+                    <div><span class="font-semibold inline-block w-24">Cargo:</span> {{ $shipment->consignment?->cargo_type ?? 'Sea' }} Freight</div>
                     <div><span class="font-semibold inline-block w-24">Branch:</span> {{ $shipment->branch->name ?? 'N/A' }}</div>
                     <div><span class="font-semibold inline-block w-24">Ship Date:</span>
                         @if(strpos($shipment->shipping_date, '/'))
@@ -99,17 +167,17 @@
                 </div>
 
                 <div class="w-1/3 mb-3">
-                    <div><span class="font-semibold inline-block w-24">Cargo Date:</span> {{ $shipment->consignment->cargo_date }}</div>
-                    <div><span class="font-semibold inline-block w-24">ETA:</span> {{ $shipment->consignment->eta }}</div>
-                    @if ($shipment->consignment->cargo_type == 'sea')
-                        <div><span class="font-semibold inline-block w-24">ETA DAR:</span> {{ $shipment->consignment->eta_dar }}</div>
-                        <div><span class="font-semibold inline-block w-24">ETA LUN:</span> {{ $shipment->consignment->eta_lun }}</div>
+                    <div><span class="font-semibold inline-block w-24">Cargo Date:</span> {{ $shipment->consignment?->cargo_date }}</div>
+                    <div><span class="font-semibold inline-block w-24">ETA:</span> {{ $shipment->consignment?->eta }}</div>
+                    @if ($shipment->consignment?->cargo_type == 'sea')
+                        <div><span class="font-semibold inline-block w-24">ETA DAR:</span> {{ $shipment->consignment?->eta_dar }}</div>
+                        <div><span class="font-semibold inline-block w-24">ETA LUN:</span> {{ $shipment->consignment?->eta_lun }}</div>
                     @endif
                 </div>
             </div>
 
             <div class="flex items-center mt-4">
-                @if ($shipment->consignment->cargo_type == 'air')
+                @if ($shipment->consignment?->cargo_type == 'air')
                     <div class="text-4xl text-primary">✈️</div>
                     <span class="ml-2 font-medium">Air Freight</span>
                 @else
