@@ -8,7 +8,7 @@
 
         <div>
             <p class="text-sm text-gray-500">Cargo</p>
-            <p class="font-medium">{{ ucfirst($shipment->consignment->cargo_type ?? 'sea') }} Freight</p>
+            <p class="font-medium">{{ ucfirst($shipment->consignment?->cargo_type ?? 'sea') }} Freight</p>
         </div>
 
         <div>
@@ -34,7 +34,7 @@
         <div>
             <p class="text-sm text-gray-500">{{ __('cargo::view.shipping_date') }}</p>
             <p class="font-medium">
-                {{ ucfirst($shipment->consignment->date) }}
+                {{ ucfirst($shipment->consignment?->date) }}
             </p>
         </div>
 
@@ -57,26 +57,26 @@
         <div>
             <p class="text-sm text-gray-500">Cargo Date</p>
             <p class="font-medium">
-                {{ ucfirst($shipment->consignment->date) }}
+                {{ ucfirst($shipment->consignment?->date) }}
             </p>
         </div>
         <div>
             <p class="text-sm text-gray-500">ETA</p>
             <p class="font-medium">
-                {{ ucfirst($shipment->consignment->eta ?? '--') }}
+                {{ ucfirst($shipment->consignment?->eta ?? '--') }}
             </p>
         </div>
-        @if ($shipment->consignment->cargo_type == 'sea')
+        @if ($shipment->consignment?->cargo_type == 'sea')
             <div>
                 <p class="text-sm text-gray-500">ETA DAR</p>
                 <p class="font-medium">
-                    {{ ucfirst($shipment->consignment->eta_dar ?? '--') }}
+                    {{ ucfirst($shipment->consignment?->eta_dar ?? '--') }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">ETA LUN</p>
                 <p class="font-medium">
-                    {{ $shipment->consignment->eta_lun ?? '--' }}
+                    {{ $shipment->consignment?->eta_lun ?? '--' }}
                 </p>
             </div>
             <div>
@@ -86,7 +86,7 @@
                 </p>
             </div>
         @endif
-        @if ($shipment->consignment->cargo_type == 'air')
+        @if ($shipment->consignment?->cargo_type == 'air')
             <div>
                 <img width="80" src="{{ asset('icon/plane.svg') }}" alt="">
             </div>

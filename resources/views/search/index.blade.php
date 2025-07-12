@@ -91,7 +91,7 @@
                                             </div>
                                             <div class="result-footer">
                                                 <span class="result-type result-type-{{ $section['color'] }}">{{ $item['type'] }}</span>
-                                                <span class="result-date">{{ $item['date'] }}</span>
+                                                <span class="result-date">Added {{ $item['date'] }}</span>
                                             </div>
                                         </div>
                                     </div>

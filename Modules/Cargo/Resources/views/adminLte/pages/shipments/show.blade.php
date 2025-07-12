@@ -52,8 +52,8 @@
                         @if($shipment->barcode != null)
                             <div class="mb-2 bg-white py-2 px-4 rounded-md inline-block"><?=$d->getBarcodeHTML($shipment->code, "C128");?></div>
                         @endif
-                        <p class="text-sm font-medium"><span class="opacity-80">{{ __('cargo::view.from') }}:</span> {{$shipment->consignment->source}}</p>
-                        <p class="text-sm font-medium"><span class="opacity-80">{{ __('cargo::view.to') }}:</span> {{$shipment->consignment->destination}}</p>
+                        <p class="text-sm font-medium"><span class="opacity-80">{{ __('cargo::view.from') }}:</span> {{$shipment->consignment?->source}}</p>
+                        <p class="text-sm font-medium"><span class="opacity-80">{{ __('cargo::view.to') }}:</span> {{$shipment->consignment?->destination}}</p>
                     </div>
                 </div>
             </div>

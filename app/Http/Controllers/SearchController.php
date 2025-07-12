@@ -281,31 +281,32 @@ class SearchController extends Controller
         // Filter shipments by user role and ID
         $user_role = $user->role;
         
-        if ($user_role == 3) { // User Branch
-            $branchId = \Modules\Cargo\Entities\Branch::where('user_id', $userId)->pluck('id')->first();
-            $query->where('branch_id', $branchId);
-        } elseif ($user_role == 4) { // User Client
-            $clientId = \Modules\Cargo\Entities\Client::where('user_id', $userId)->pluck('id')->first();
-            $query->where('client_id', $clientId);
-        } elseif ($user->can('manage-shipments') && $user_role == 0) { // User Staff
-            $branchId = \Modules\Cargo\Entities\Staff::where('user_id', $userId)->pluck('branch_id')->first();
-            $query->where('branch_id', $branchId);
-        }
+        // if ($user_role == 3) { // User Branch
+        //     $branchId = \Modules\Cargo\Entities\Branch::where('user_id', $userId)->pluck('id')->first();
+        //     $query->where('branch_id', $branchId);
+        // } elseif ($user_role == 4) { // User Client
+        $clientId = \Modules\Cargo\Entities\Client::where('user_id', $userId)->pluck('id')->first();
+        $query->where('client_id', $clientId);
+        // } elseif ($user->can('manage-shipments') && $user_role == 0) { // User Staff
+        //     $branchId = \Modules\Cargo\Entities\Staff::where('user_id', $userId)->pluck('branch_id')->first();
+        //     $query->where('branch_id', $branchId);
+        // }
 
         return $query->select([
-            'id',
-            'code',
-            'client_phone',
-            'client_address',
-            'shipping_date',
-            'shipping_cost',
-            'dest_port',
-            'salesman',
-            'volume',
-            'status_id',
-            'created_at'
+            'shipments.id',
+            'shipments.code',
+            'shipments.client_phone',
+            'shipments.client_address',
+            'shipments.shipping_date',
+            'shipments.shipping_cost',
+            'shipments.dest_port',
+            'shipments.salesman',
+            'shipments.volume',
+            'shipments.status_id',
+            'shipments.created_at'
         ])
-        ->orderBy('created_at', 'desc')
+        ->join('consignments', 'shipments.consignment_id', '=', 'consignments.id')
+        ->orderBy('shipments.created_at', 'desc')
         ->limit($limit)
         ->get()
         ->map(function($item) use ($user) {
