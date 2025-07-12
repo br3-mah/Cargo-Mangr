@@ -25,7 +25,7 @@
 
 <!-- Center Search Bar -->
 @auth
-<div class="navbar-nav mx-auto mt-3 flex-grow-1 d-lg-flex">
+<div class="navbar-nav mx-auto flex-grow-1 d-lg-flex">
     <div class="search-container w-100" style="max-width: 600px;">
         <div class="search-input-container">
             <input type="text" 
