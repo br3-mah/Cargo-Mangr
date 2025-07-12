@@ -11,9 +11,16 @@
                     <div class="d-flex align-items-center">
                         <i class="fas fa-search text-primary me-2"></i>
                         <h4 class="mb-0 text-muted">
-                            Search Results
-                            @if($query)
-                                <span class="text-dark">for "{{ $query }}"</span>
+                            @if(request('user_id'))
+                                User Shipments
+                                @if($query)
+                                    <span class="text-dark">for "{{ $query }}"</span>
+                                @endif
+                            @else
+                                Search Results
+                                @if($query)
+                                    <span class="text-dark">for "{{ $query }}"</span>
+                                @endif
                             @endif
                         </h4>
                     </div>
