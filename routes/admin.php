@@ -65,6 +65,10 @@ if(env('INSTALLATION', false) == true){
 
                     Route::post('/import-demo', 'ThemeSettingController@importDemo')->name('import.demo');
 
+                    // Global Search Routes
+                    Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+                    Route::get('/search/live', [App\Http\Controllers\SearchController::class, 'liveSearch'])->name('search.live');
+
                 });
 
                 if(env('INSTALLATION', false) == true){
@@ -127,6 +131,11 @@ if(env('INSTALLATION', false) == true){
                 Route::get('/system-support', 'SupportController@getSystemSupport')->name('system.support');
 
                 Route::post('/import-demo', 'ThemeSettingController@importDemo')->name('import.demo');
+                
+                // Global Search Routes
+                Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+                Route::get('/search/live', [App\Http\Controllers\SearchController::class, 'liveSearch'])->name('search.live');
+                
                 // Global routes
             });
 

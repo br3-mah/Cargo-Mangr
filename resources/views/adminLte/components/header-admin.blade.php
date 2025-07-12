@@ -23,6 +23,40 @@
     </li>
 </ul>
 
+<!-- Center Search Bar -->
+@auth
+<div class="navbar-nav mx-auto flex-grow-1 d-lg-flex">
+    <div class="search-container w-100" style="max-width: 600px;">
+        <div class="input-group">
+            <input type="text" 
+                   id="globalSearchInput"
+                   class="form-control search-input" 
+                   placeholder="Search consignments, shipments, users..."
+                   autocomplete="off">
+            <button class="btn btn-outline-secondary search-btn" type="button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        <!-- Live Search Results Dropdown -->
+        <div id="searchResults" class="search-results-dropdown" style="display: none;">
+            <div class="search-results-header">
+                <h6 class="mb-0">Search Results</h6>
+                <button type="button" class="btn-close" id="closeSearchResults"></button>
+            </div>
+            <div id="searchResultsContent" class="search-results-content">
+                <!-- Results will be populated here -->
+            </div>
+            <div class="search-results-footer">
+                <a href="#" id="viewAllResults" class="btn btn-primary btn-sm w-100">
+                    View All Results
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endauth
+
 <!-- Right navbar links -->
 <ul class="navbar-nav ml-auto">
     <!-- Currency Conversion Button -->
@@ -194,4 +228,269 @@
         </a>
     </li>
 </ul>
+
+<!-- Search Styles and Scripts -->
+<style>
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    border-radius: 20px 0 0 20px;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+.search-btn {
+    border-radius: 0 20px 20px 0;
+    border: 1px solid #ddd;
+    border-left: none;
+    background: white;
+}
+
+.search-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1050;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.search-results-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: #f8f9fa;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.search-result-content h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.search-result-content p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.search-results-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.search-category {
+    padding: 8px 16px;
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 12px;
+    color: #666;
+    border-bottom: 1px solid #eee;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.no-results {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+@media (max-width: 991.98px) {
+    .search-container {
+        display: none;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('globalSearchInput');
+    const searchResults = document.getElementById('searchResults');
+    const searchResultsContent = document.getElementById('searchResultsContent');
+    const closeSearchResults = document.getElementById('closeSearchResults');
+    const viewAllResults = document.getElementById('viewAllResults');
+    
+    // Only initialize search if elements exist (user is authenticated)
+    if (!searchInput || !searchResults) {
+        return;
+    }
+    
+    let searchTimeout;
+    let currentQuery = '';
+
+    // Search input event
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        currentQuery = query;
+        
+        clearTimeout(searchTimeout);
+        
+        if (query.length < 2) {
+            hideSearchResults();
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            performLiveSearch(query);
+        }, 300);
+    });
+
+    // Search button click
+    document.querySelector('.search-btn').addEventListener('click', function() {
+        const query = searchInput.value.trim();
+        if (query) {
+            window.location.href = `{{ route('search.index') }}?q=${encodeURIComponent(query)}`;
+        }
+    });
+
+    // Enter key press
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const query = this.value.trim();
+            if (query) {
+                window.location.href = `{{ route('search.index') }}?q=${encodeURIComponent(query)}`;
+            }
+        }
+    });
+
+    // Close search results
+    closeSearchResults.addEventListener('click', hideSearchResults);
+
+    // View all results
+    viewAllResults.addEventListener('click', function(e) {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (query) {
+            window.location.href = `{{ route('search.index') }}?q=${encodeURIComponent(query)}`;
+        }
+    });
+
+    // Hide results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            hideSearchResults();
+        }
+    });
+
+    function performLiveSearch(query) {
+        if (query !== currentQuery) return; // Prevent race conditions
+        
+        searchResultsContent.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+        showSearchResults();
+
+        fetch(`{{ route('search.live') }}?q=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (response.status === 401) {
+                    // User not authenticated, redirect to login
+                    window.location.href = '{{ route("signin") }}';
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (query !== currentQuery) return; // Prevent race conditions
+                
+                if (data && data.success) {
+                    displaySearchResults(data.results, query);
+                } else {
+                    searchResultsContent.innerHTML = '<div class="no-results">Error loading results</div>';
+                }
+            })
+            .catch(error => {
+                if (query !== currentQuery) return;
+                searchResultsContent.innerHTML = '<div class="no-results">Error loading results</div>';
+            });
+    }
+
+    function displaySearchResults(results, query) {
+        if (Object.keys(results).length === 0) {
+            searchResultsContent.innerHTML = '<div class="no-results">No results found</div>';
+            return;
+        }
+
+        let html = '';
+        
+        Object.keys(results).forEach(category => {
+            const section = results[category];
+            const items = section.data.slice(0, 3); // Show max 3 items per category
+            
+            html += `<div class="search-category">
+                <i class="${section.icon} me-1"></i> ${section.title} (${section.data.length})
+            </div>`;
+            
+            items.forEach(item => {
+                html += `
+                <div class="search-result-item" onclick="window.location.href='${item.url}'">
+                    <div class="d-flex align-items-center">
+                        <div class="search-result-icon bg-${section.color} bg-opacity-10">
+                            <i class="${item.icon} text-${section.color}"></i>
+                        </div>
+                        <div class="search-result-content flex-grow-1">
+                            <h6>${item.title}</h6>
+                            <p>${item.subtitle}</p>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        });
+
+        searchResultsContent.innerHTML = html;
+        viewAllResults.href = `{{ route('search.index') }}?q=${encodeURIComponent(query)}`;
+    }
+
+    function showSearchResults() {
+        searchResults.style.display = 'block';
+    }
+
+    function hideSearchResults() {
+        searchResults.style.display = 'none';
+    }
+});
+</script>
 

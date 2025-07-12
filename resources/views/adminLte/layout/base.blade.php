@@ -118,8 +118,6 @@
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
-
-
                 @if($user_role !== 4)
                     @include('adminLte.components.page-title')
                 @endif
