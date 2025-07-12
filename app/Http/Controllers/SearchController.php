@@ -1,0 +1,252 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Models\Consignment;
+use App\Models\User;
+use Modules\Cargo\Entities\Shipment;
+use Illuminate\Support\Facades\DB;
+
+class SearchController extends Controller
+{
+    /**
+     * Display the search page
+     */
+    public function index(Request $request)
+    {
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('signin');
+        }
+        
+        $query = $request->get('q', '');
+        $results = [];
+        
+        if ($query) {
+            $results = $this->performSearch($query);
+        }
+        
+        return view('search.index', compact('results', 'query'));
+    }
+
+    /**
+     * Perform live search via AJAX
+     */
+    public function liveSearch(Request $request): JsonResponse
+    {
+        try {
+            $query = trim($request->get('q', ''));
+
+            if (strlen($query) < 2) {
+                return response()->json([
+                    'success' => true,
+                    'results' => [],
+                    'total' => 0
+                ]);
+            }
+            $results = $this->performSearch($query, 10);
+            return response()->json([
+                'success' => true,
+                'results' => $results,
+                'total' => count($results),
+                'query' => $query
+            ]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    /**
+     * Perform comprehensive search across all models
+     */
+    private function performSearch(string $query, int $limit = 50): array
+    {
+        $results = [];
+        $searchTerms = explode(' ', $query);
+        
+        // Search Consignments
+        $consignments = $this->searchConsignments($searchTerms, $limit);
+        if (!empty($consignments)) {
+            $results['consignments'] = [
+                'title' => 'Consignments',
+                'icon' => 'fas fa-ship',
+                'color' => 'warning',
+                'data' => $consignments
+            ];
+        }
+
+        // Search Shipments
+        $shipments = $this->searchShipments($searchTerms, $limit);
+        if (!empty($shipments)) {
+            $results['shipments'] = [
+                'title' => 'Shipments',
+                'icon' => 'fas fa-box',
+                'color' => 'success',
+                'data' => $shipments
+            ];
+        }
+
+        // Search Users
+        $users = $this->searchUsers($searchTerms, $limit);
+        if (!empty($users)) {
+            $results['users'] = [
+                'title' => 'Users',
+                'icon' => 'fas fa-users',
+                'color' => 'info',
+                'data' => $users
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Search in Consignments table
+     */
+    private function searchConsignments(array $searchTerms, int $limit): array
+    {
+        $query = Consignment::query();
+        
+        foreach ($searchTerms as $term) {
+            $query->where(function($q) use ($term) {
+                $q->where('consignment_code', 'LIKE', "%{$term}%")
+                  ->orWhere('name', 'LIKE', "%{$term}%")
+                  ->orWhere('desc', 'LIKE', "%{$term}%")
+                  ->orWhere('source', 'LIKE', "%{$term}%")
+                  ->orWhere('destination', 'LIKE', "%{$term}%")
+                  ->orWhere('released_by', 'LIKE', "%{$term}%")
+                  ->orWhere('tracker', 'LIKE', "%{$term}%")
+                  ->orWhere('voyage_no', 'LIKE', "%{$term}%")
+                  ->orWhere('shipping_line', 'LIKE', "%{$term}%")
+                  ->orWhere('cargo_type', 'LIKE', "%{$term}%")
+                  ->orWhere('consignee', 'LIKE', "%{$term}%")
+                  ->orWhere('job_num', 'LIKE', "%{$term}%")
+                  ->orWhere('mawb_num', 'LIKE', "%{$term}%")
+                  ->orWhere('hawb_num', 'LIKE', "%{$term}%")
+                  ->orWhere('status', 'LIKE', "%{$term}%");
+            });
+        }
+
+        return $query->select([
+            'id',
+            'consignment_code',
+            'name',
+            'source',
+            'destination',
+            'status',
+            'cargo_type',
+            'created_at'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->limit($limit)
+        ->get()
+        ->map(function($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->name ?: $item->consignment_code,
+                'subtitle' => "Code: {$item->consignment_code}",
+                'description' => "From {$item->source} to {$item->destination}",
+                'status' => $item->status,
+                'type' => $item->cargo_type,
+                'date' => $item->created_at->format('M d, Y'),
+                'url' => route('consignment.show', $item->id),
+                'icon' => $item->cargo_type === 'sea' ? 'fas fa-ship' : 'fas fa-plane'
+            ];
+        })
+        ->toArray();
+    }
+
+    /**
+     * Search in Shipments table
+     */
+    private function searchShipments(array $searchTerms, int $limit): array
+    {
+        $query = Shipment::query();
+        
+        foreach ($searchTerms as $term) {
+            $query->where(function($q) use ($term) {
+                $q->where('code', 'LIKE', "%{$term}%") // tracking number
+                  ->orWhere('client_phone', 'LIKE', "%{$term}%")
+                  ->orWhere('client_address', 'LIKE', "%{$term}%")
+                  ->orWhere('shipping_date', 'LIKE', "%{$term}%")
+                  ->orWhere('shipping_cost', 'LIKE', "%{$term}%")
+                  ->orWhere('dest_port', 'LIKE', "%{$term}%")
+                  ->orWhere('salesman', 'LIKE', "%{$term}%")
+                  ->orWhere('volume', 'LIKE', "%{$term}%");
+            });
+        }
+
+        return $query->select([
+            'id',
+            'code',
+            'client_phone',
+            'client_address',
+            'shipping_date',
+            'shipping_cost',
+            'dest_port',
+            'salesman',
+            'volume',
+            'status_id',
+            'created_at'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->limit($limit)
+        ->get()
+        ->map(function($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->code ?: $item->code,
+                'subtitle' => "Ref: " . ($item->code ?: 'N/A'),
+                'description' => "Phone: {$item->client_phone} | Address: {$item->client_address} | Port: {$item->dest_port}",
+                'status' => $item->getStatus(),
+                'type' => $item->getTypeAttribute($item->type),
+                'date' => $item->created_at->format('M d, Y'),
+                'url' => url('admin/shipments/shipments/' . $item->id),
+                'icon' => 'fas fa-box'
+            ];
+        })
+        ->toArray();
+    }
+
+    /**
+     * Search in Users table
+     */
+    private function searchUsers(array $searchTerms, int $limit): array
+    {
+        $query = User::query();
+        
+        foreach ($searchTerms as $term) {
+            $query->where(function($q) use ($term) {
+                $q->where('name', 'LIKE', "%{$term}%")
+                  ->orWhere('email', 'LIKE', "%{$term}%");
+            });
+        }
+
+        return $query->select([
+            'id',
+            'name',
+            'email',
+            'role',
+            'created_at'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->limit($limit)
+        ->get()
+        ->map(function($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->name,
+                'subtitle' => $item->email,
+                'description' => "Phone: {$item->name} | Address: {$item->address}, {$item->city}",
+                'status' => $item->verified ? 'Verified' : 'Unverified',
+                'type' => $item->getUserRoleAttribute(),
+                'date' => $item->created_at->format('M d, Y'),
+                'url' => url('admin/shipments/shipments/' . $item->id),
+                'icon' => 'fas fa-user'
+            ];
+        })
+        ->toArray();
+    }
+} 

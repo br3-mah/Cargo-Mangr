@@ -20,6 +20,7 @@ use Auth;
 use Twilio\TwiML\Voice\Pay;
 use Storage;
 use Modules\Cargo\Entities\Shipment;
+use Illuminate\Routing\Controller;
 
 class PayhereController extends Controller
 {

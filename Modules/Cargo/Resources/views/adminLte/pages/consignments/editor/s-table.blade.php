@@ -52,11 +52,11 @@
             <!-- View Toggle Toolbar and Search -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="flex-grow-1 me-3">
-                    <div class="input-group" style="max-width: 400px;">
+                    <div class="input-group" id="shipmentSearchContainer" style="max-width: 400px; display: none;">
                         <span class="input-group-text">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="shipmentSearch" placeholder="Search shipments..." onkeyup="filterShipments()">
+                        <input type="text" class="form-control" id="shipmentSearch" placeholder="Search shipments...">
                         <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
                             <i class="bi bi-x"></i>
                         </button>
@@ -263,12 +263,12 @@
             document.getElementById('tableView').style.display = 'none';
             document.getElementById('listView').style.display = 'none';
             document.getElementById('gridView').style.display = 'none';
-            
             // Remove active class from all buttons
             document.getElementById('tableViewBtn').classList.remove('active');
             document.getElementById('listViewBtn').classList.remove('active');
             document.getElementById('gridViewBtn').classList.remove('active');
-            
+            // Hide search by default
+            document.getElementById('shipmentSearchContainer').style.display = 'none';
             // Show selected view and activate button
             switch(viewType) {
                 case 'table':
@@ -278,60 +278,58 @@
                 case 'list':
                     document.getElementById('listView').style.display = 'block';
                     document.getElementById('listViewBtn').classList.add('active');
+                    document.getElementById('shipmentSearchContainer').style.display = 'flex';
                     break;
                 case 'grid':
                     document.getElementById('gridView').style.display = 'block';
                     document.getElementById('gridViewBtn').classList.add('active');
+                    document.getElementById('shipmentSearchContainer').style.display = 'flex';
                     break;
             }
-            
-            // Apply current search filter to new view
-            const searchTerm = document.getElementById('shipmentSearch').value;
-            if (searchTerm.trim() !== '') {
+            // Clear search if switching to table view
+            if(viewType === 'table') {
+                document.getElementById('shipmentSearch').value = '';
                 filterShipments();
+            } else {
+                // Apply current search filter to new view
+                const searchTerm = document.getElementById('shipmentSearch').value;
+                if (searchTerm.trim() !== '') {
+                    filterShipments();
+                }
             }
         }
-
         function filterShipments() {
             const searchTerm = document.getElementById('shipmentSearch').value.toLowerCase();
-            
-            // Filter table rows
-            const tableRows = document.querySelectorAll('.shipment-row');
-            tableRows.forEach(row => {
-                const searchText = row.getAttribute('data-search-text');
-                if (searchText.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
+            // Only filter in List or Grid view
+            const listViewVisible = document.getElementById('listView').style.display !== 'none';
+            const gridViewVisible = document.getElementById('gridView').style.display !== 'none';
             // Filter list items
-            const listItems = document.querySelectorAll('.shipment-item');
-            listItems.forEach(item => {
-                const searchText = item.getAttribute('data-search-text');
-                if (searchText.includes(searchTerm)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
+            if(listViewVisible) {
+                const listItems = document.querySelectorAll('.shipment-item');
+                listItems.forEach(item => {
+                    const searchText = item.getAttribute('data-search-text');
+                    if (searchText.includes(searchTerm)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
             // Filter grid cards
-            const gridCards = document.querySelectorAll('.shipment-card');
-            gridCards.forEach(card => {
-                const searchText = card.getAttribute('data-search-text');
-                if (searchText.includes(searchTerm)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
+            if(gridViewVisible) {
+                const gridCards = document.querySelectorAll('.shipment-card');
+                gridCards.forEach(card => {
+                    const searchText = card.getAttribute('data-search-text');
+                    if (searchText.includes(searchTerm)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
             // Show/hide no results message
             updateNoResultsMessage();
         }
-
         function clearSearch() {
             document.getElementById('shipmentSearch').value = '';
             filterShipments();
