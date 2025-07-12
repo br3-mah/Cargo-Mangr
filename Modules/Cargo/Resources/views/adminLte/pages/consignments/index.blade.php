@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize DataTable
         $('.table').DataTable({
             "paging": true,
-            "searching": true,
+            "searching": false,
             "ordering": true,
             "info": true,
             "lengthMenu": [10, 25, 50, 100],

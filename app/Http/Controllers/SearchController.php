@@ -22,10 +22,11 @@ class SearchController extends Controller
         }
         
         $query = $request->get('q', '');
+        $userId = $request->get('user_id', null);
         $results = [];
         
-        if ($query) {
-            $results = $this->performSearch($query);
+        if ($query || $userId) {
+            $results = $this->performSearch($query, 50, $userId);
         }
         
         return view('search.index', compact('results', 'query'));
@@ -61,17 +62,31 @@ class SearchController extends Controller
     /**
      * Perform comprehensive search across all models
      */
-    private function performSearch(string $query, int $limit = 50): array
+    private function performSearch(string $query, int $limit = 50, $userId = null): array
     {
         $results = [];
-        $searchTerms = explode(' ', $query);
+        $searchTerms = $query ? explode(' ', $query) : [];
+        
+        // If userId is provided, only search shipments for that user
+        if ($userId) {
+            $shipments = $this->searchShipmentsByUser($userId, $limit);
+            if (!empty($shipments)) {
+                $results['shipments'] = [
+                    'title' => 'User Shipments',
+                    'icon' => 'fa fa-box',
+                    'color' => 'success',
+                    'data' => $shipments
+                ];
+            }
+            return $results;
+        }
         
         // Search Consignments
         $consignments = $this->searchConsignments($searchTerms, $limit);
         if (!empty($consignments)) {
             $results['consignments'] = [
                 'title' => 'Consignments',
-                'icon' => 'fas fa-ship',
+                'icon' => 'fa fa-ship',
                 'color' => 'warning',
                 'data' => $consignments
             ];
@@ -82,7 +97,7 @@ class SearchController extends Controller
         if (!empty($shipments)) {
             $results['shipments'] = [
                 'title' => 'Shipments',
-                'icon' => 'fas fa-box',
+                'icon' => 'fa fa-box',
                 'color' => 'success',
                 'data' => $shipments
             ];
@@ -93,7 +108,7 @@ class SearchController extends Controller
         if (!empty($users)) {
             $results['users'] = [
                 'title' => 'Users',
-                'icon' => 'fas fa-users',
+                'icon' => 'fa fa-users',
                 'color' => 'info',
                 'data' => $users
             ];
@@ -152,7 +167,7 @@ class SearchController extends Controller
                 'type' => $item->cargo_type,
                 'date' => $item->created_at->format('M d, Y'),
                 'url' => route('consignment.show', $item->id),
-                'icon' => $item->cargo_type === 'sea' ? 'fas fa-ship' : 'fas fa-plane'
+                'icon' => $item->cargo_type === 'sea' ? 'fa fa-ship' : 'fa fa-plane'
             ];
         })
         ->toArray();
@@ -243,8 +258,67 @@ class SearchController extends Controller
                 'status' => $item->verified ? 'Verified' : 'Unverified',
                 'type' => $item->getUserRoleAttribute(),
                 'date' => $item->created_at->format('M d, Y'),
-                'url' => url('admin/shipments/shipments/' . $item->id),
+                'url' => route('search.index', ['q' => $item->name, 'user_id' => $item->id]),
                 'icon' => 'fas fa-user'
+            ];
+        })
+        ->toArray();
+    }
+
+    /**
+     * Search shipments by user ID
+     */
+    private function searchShipmentsByUser($userId, int $limit): array
+    {
+        $query = Shipment::query();
+        
+        // Get user details
+        $user = User::find($userId);
+        if (!$user) {
+            return [];
+        }
+
+        // Filter shipments by user role and ID
+        $user_role = $user->role;
+        
+        if ($user_role == 3) { // User Branch
+            $branchId = \Modules\Cargo\Entities\Branch::where('user_id', $userId)->pluck('id')->first();
+            $query->where('branch_id', $branchId);
+        } elseif ($user_role == 4) { // User Client
+            $clientId = \Modules\Cargo\Entities\Client::where('user_id', $userId)->pluck('id')->first();
+            $query->where('client_id', $clientId);
+        } elseif ($user->can('manage-shipments') && $user_role == 0) { // User Staff
+            $branchId = \Modules\Cargo\Entities\Staff::where('user_id', $userId)->pluck('branch_id')->first();
+            $query->where('branch_id', $branchId);
+        }
+
+        return $query->select([
+            'id',
+            'code',
+            'client_phone',
+            'client_address',
+            'shipping_date',
+            'shipping_cost',
+            'dest_port',
+            'salesman',
+            'volume',
+            'status_id',
+            'created_at'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->limit($limit)
+        ->get()
+        ->map(function($item) use ($user) {
+            return [
+                'id' => $item->id,
+                'title' => $item->code ?: 'Shipment #' . $item->id,
+                'subtitle' => "Ref: " . ($item->code ?: 'N/A'),
+                'description' => "Phone: {$item->client_phone} | Address: {$item->client_address} | Port: {$item->dest_port}",
+                'status' => $item->getStatus(),
+                'type' => $item->getTypeAttribute($item->type),
+                'date' => $item->created_at->format('M d, Y'),
+                'url' => url('admin/shipments/shipments/' . $item->id),
+                'icon' => 'fas fa-box'
             ];
         })
         ->toArray();
