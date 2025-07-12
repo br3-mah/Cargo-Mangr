@@ -25,17 +25,14 @@
 
 <!-- Center Search Bar -->
 @auth
-<div class="navbar-nav mx-auto flex-grow-1 d-lg-flex">
+<div class="navbar-nav mx-auto mt-3 flex-grow-1 d-lg-flex">
     <div class="search-container w-100" style="max-width: 600px;">
-        <div class="input-group">
+        <div class="search-input-container">
             <input type="text" 
                    id="globalSearchInput"
                    class="form-control search-input" 
                    placeholder="Search consignments, shipments, users..."
                    autocomplete="off">
-            <button class="btn btn-outline-secondary search-btn" type="button">
-                <i class="fas fa-search"></i>
-            </button>
         </div>
         
         <!-- Live Search Results Dropdown -->
@@ -236,18 +233,26 @@
 }
 
 .search-input {
-    border-radius: 20px 0 0 20px;
+    border-radius: 25px;
     border: 1px solid #ddd;
-    padding: 8px 15px;
+    padding: 8px 20px;
     font-size: 14px;
+    height: 42px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.search-btn {
-    border-radius: 0 20px 20px 0;
-    border: 1px solid #ddd;
-    border-left: none;
-    background: white;
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+    outline: none;
 }
+
+.search-input-container {
+    position: relative;
+}
+
+
 
 .search-results-dropdown {
     position: absolute;
@@ -381,13 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     });
 
-    // Search button click
-    document.querySelector('.search-btn').addEventListener('click', function() {
-        const query = searchInput.value.trim();
-        if (query) {
-            window.location.href = `{{ route('search.index') }}?q=${encodeURIComponent(query)}`;
-        }
-    });
+
 
     // Enter key press
     searchInput.addEventListener('keypress', function(e) {
