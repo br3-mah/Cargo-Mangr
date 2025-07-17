@@ -27,3 +27,8 @@ Route::post('/submit-shipments', 'Api\ConsignmentController@addShipmentsToConsig
 Route::get('/search-consignments', 'Api\ConsignmentController@searchConsignments');
 Route::post('consignments/{consignmentId}/remove-shipment/{shipmentId}', 'Api\ConsignmentController@removeShipmentFromConsignment')->name('consignments.remove-shipment');
 Route::get('get-current-stage', [App\Http\Controllers\ConsignmentController::class, 'getCurrentStage']);
+// 🚚 CONSIGNMENT & PARCELS SYNC
+Route::get('/consignments/{consignment_id}', [App\Http\Controllers\Api\ConsignmentController::class, 'getConsignmentWithParcels'])->name('consignment.details');
+Route::get('/parcels/{tracking_number}', 'Api\ShipmentController@getParcelByTrackingNumber');
+Route::get('/parcels/status/{status}', 'Api\ShipmentController@getParcelsByStatus');
+Route::get('/parcels/updated-since', 'Api\ShipmentController@getParcelsUpdatedSince');

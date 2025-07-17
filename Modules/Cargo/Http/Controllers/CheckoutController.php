@@ -131,11 +131,11 @@ class CheckoutController extends Controller
                 $iyzico = new IyzicoController();
                 return $iyzico->pay($shipment);
             } elseif ($shipment->payment_method_id == 'nagad') {
-                $nagad = new NagadController;
-                return $nagad->getSession();
+                // $nagad = new NagadController;
+                // return $nagad->getSession();
             } elseif ($shipment->payment_method_id == 'bkash') {
-                $bkash = new BkashController;
-                return $bkash->pay();
+                // $bkash = new BkashController;
+                // return $bkash->pay();
             } elseif ($shipment->payment_method_id == 'flutterwave') {
                 $flutterwave = new FlutterwaveController();
                 return $flutterwave->pay();

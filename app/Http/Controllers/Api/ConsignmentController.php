@@ -79,4 +79,48 @@ class ConsignmentController extends Controller
         }
     }
 
+    /**
+     * Get consignment info and all parcels/shipments under it
+     * GET /api/consignments/{consignment_id}
+     */
+    public function getConsignmentWithParcels($id)
+    {
+        // dd($id);
+        $consignment = Consignment::with(['shipments.client', 'shipments' => function($q) {
+            $q->with('consignment');
+        }])->findOrFail($id);
+
+        // dd($consignment);
+        $shipments = $consignment->shipments->map(function ($shipment) {
+            return [
+                'id' => $shipment->id,
+                'tracking_number' => $shipment->code,
+                'customer_id' => $shipment->client_id,
+                'weight' => $shipment->total_weight,
+                'declared_value' => $shipment->amount_to_be_collected,
+                'status' => $shipment->status_id,
+                'customer' => $shipment->client ? [
+                    'id' => $shipment->client->id,
+                    'name' => $shipment->client->name ?? null,
+                    'email' => $shipment->client->email ?? null,
+                ] : null,
+                'consignment_id' => $shipment->consignment_id,
+                'created_at' => $shipment->created_at,
+                'updated_at' => $shipment->updated_at,
+            ];
+        });
+
+        return response()->json([
+            'consignment' => [
+                'id' => $consignment->id,
+                'code' => $consignment->consignment_code,
+                'name' => $consignment->name,
+                'status' => $consignment->status,
+                'cargo_type' => $consignment->cargo_type,
+                'created_at' => $consignment->created_at,
+                'updated_at' => $consignment->updated_at,
+            ],
+            'parcels' => $shipments,
+        ]);
+    }
 }
