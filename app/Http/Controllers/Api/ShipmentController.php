@@ -119,10 +119,12 @@ class ShipmentController extends Controller
      */
     public function getParcelByTrackingNumber($tracking_number)
     {
+        // dd($tracking_number);
         $shipment = Shipment::with(['client', 'consignment'])
             ->where('code', $tracking_number)
             ->firstOrFail();
 
+            // dd($shipment);
         return response()->json([
             'id' => $shipment->id,
             'tracking_number' => $shipment->code,
@@ -136,6 +138,8 @@ class ShipmentController extends Controller
             ] : null,
             'consignment_id' => $shipment->consignment_id,
             'status' => $shipment->status_id,
+            'consignment_current_status' => $shipment->consignment ? $shipment->consignment->current_status : null,
+            'consignment_current_stage_name' => $shipment->consignment ? $shipment->consignment->getCurrentStageName() : null,
             'created_at' => $shipment->created_at,
             'updated_at' => $shipment->updated_at,
         ]);
@@ -196,6 +200,166 @@ class ShipmentController extends Controller
             ];
         });
 
+        return response()->json($result);
+    }
+
+    /**
+     * Receive confirmation when a parcel is physically scanned into warehouse
+     * POST /api/parcels/received-confirmation
+     */
+    public function receivedConfirmation(Request $request)
+    {
+        $data = $request->validate([
+            'consignment_id' => 'required|integer|exists:consignments,id',
+            'tracking_numbers' => 'required|array',
+            'tracking_numbers.*' => 'required|string',
+            'received_at' => 'required|date',
+            'condition' => 'nullable|string',
+        ]);
+        $updated = [];
+        foreach ($data['tracking_numbers'] as $tracking_number) {
+            $shipment = \Modules\Cargo\Entities\Shipment::where('code', $tracking_number)
+                ->where('consignment_id', $data['consignment_id'])
+                ->first();
+            if ($shipment) {
+                $shipment->status_id = \Modules\Cargo\Entities\Shipment::RECIVED_STATUS;
+                $shipment->received_at = $data['received_at'];
+                $shipment->condition = $data['condition'] ?? null;
+                $shipment->save();
+                $updated[] = $shipment->id;
+            }
+        }
+        return response()->json(['success' => true, 'updated_shipments' => $updated]);
+    }
+
+    /**
+     * Receive confirmation when parcel leaves the warehouse
+     * POST /api/parcels/dispatch-confirmation
+     */
+    public function dispatchConfirmation(Request $request)
+    {
+        $data = $request->validate([
+            'tracking_numbers' => 'required|array',
+            'tracking_numbers.*' => 'required|string',
+            'dispatch_time' => 'required|date',
+            'next_destination' => 'nullable|string',
+            'dispatched_by' => 'nullable|string',
+        ]);
+        $updated = [];
+        foreach ($data['tracking_numbers'] as $tracking_number) {
+            $shipment = \Modules\Cargo\Entities\Shipment::where('code', $tracking_number)->first();
+            if ($shipment) {
+                $shipment->status_id = \Modules\Cargo\Entities\Shipment::IN_STOCK_STATUS;
+                $shipment->dispatch_time = $data['dispatch_time'];
+                $shipment->next_destination = $data['next_destination'] ?? null;
+                $shipment->dispatched_by = $data['dispatched_by'] ?? null;
+                $shipment->save();
+                $updated[] = $shipment->id;
+            }
+        }
+        return response()->json(['success' => true, 'updated_shipments' => $updated]);
+    }
+
+    /**
+     * Get invoice for a parcel by tracking number
+     * GET /api/invoices/{tracking_number}
+     */
+    public function getInvoiceByTrackingNumber($tracking_number)
+    {
+        $shipment = \Modules\Cargo\Entities\Shipment::where('code', $tracking_number)->firstOrFail();
+        $invoice = $shipment->receipt;
+        if (!$invoice) {
+            return response()->json(['error' => 'No invoice found for this parcel'], 404);
+        }
+        return response()->json([
+            'amount' => $invoice->total,
+            'paid' => $shipment->paid ?? false,
+            'currency' => 'USD', // Adjust as needed
+            'breakdown' => [
+                'discount_type' => $invoice->discount_type,
+                'discount_value' => $invoice->discount_value,
+                'receipt_number' => $invoice->receipt_number,
+            ],
+        ]);
+    }
+
+    /**
+     * Get customer details by customer_id
+     * GET /api/customers/{customer_id}
+     */
+    public function getCustomerById($customer_id)
+    {
+        $client = \Modules\Cargo\Entities\Client::findOrFail($customer_id);
+        return response()->json([
+            'id' => $client->id,
+            'name' => $client->name ?? null,
+            'email' => $client->email ?? null,
+            'addressess' => $client->addressess,
+        ]);
+    }
+
+    /**
+     * Receive alerts from WMS when parcel is damaged, missing, or incorrect
+     * POST /api/parcels/flag
+     */
+    public function flagParcel(Request $request)
+    {
+        $data = $request->validate([
+            'tracking_number' => 'required|string',
+            'reason' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+        $shipment = \Modules\Cargo\Entities\Shipment::where('code', $data['tracking_number'])->first();
+        if (!$shipment) {
+            return response()->json(['error' => 'Parcel not found'], 404);
+        }
+        // You may want to log this in a separate table; for now, add to logs or update a field
+        $shipment->flag_reason = $data['reason'];
+        $shipment->flag_notes = $data['notes'] ?? null;
+        $shipment->save();
+        return response()->json(['success' => true, 'flagged_shipment_id' => $shipment->id]);
+    }
+
+    /**
+     * Reconciliation endpoint: WMS sends scanned tracking numbers, LMS returns matched, missing, extras
+     * POST /api/reconcile
+     */
+    public function reconcile(Request $request)
+    {
+        $data = $request->validate([
+            'consignment_id' => 'required|integer|exists:consignments,id',
+            'scanned_tracking_numbers' => 'required|array',
+            'scanned_tracking_numbers.*' => 'required|string',
+        ]);
+        $consignment = Consignment::with('shipments')->findOrFail($data['consignment_id']);
+        $expected = $consignment->shipments->pluck('code')->toArray();
+        $scanned = $data['scanned_tracking_numbers'];
+        $matched = array_values(array_intersect($expected, $scanned));
+        $missing = array_values(array_diff($expected, $scanned));
+        $extras = array_values(array_diff($scanned, $expected));
+        return response()->json([
+            'matched' => $matched,
+            'missing' => $missing,
+            'extras' => $extras,
+        ]);
+    }
+
+    /**
+     * Get parcels/shipments that haven't been acknowledged by warehouse (unsynced)
+     * GET /api/parcels/unsynced
+     */
+    public function getUnsyncedParcels(Request $request)
+    {
+        // Example: filter by status_id or a custom 'synced' flag if available
+        $shipments = Shipment::whereNull('received_at')->with('consignment')->get();
+        $result = $shipments->map(function ($shipment) {
+            return [
+                'tracking_number' => $shipment->code,
+                'consignment_id' => $shipment->consignment_id,
+                'consignment_code' => $shipment->consignment ? $shipment->consignment->consignment_code : null,
+                'status' => $shipment->status_id,
+            ];
+        });
         return response()->json($result);
     }
 }

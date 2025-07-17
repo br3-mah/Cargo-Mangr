@@ -32,3 +32,16 @@ Route::get('/consignments/{consignment_id}', [App\Http\Controllers\Api\Consignme
 Route::get('/parcels/{tracking_number}', 'Api\ShipmentController@getParcelByTrackingNumber');
 Route::get('/parcels/status/{status}', 'Api\ShipmentController@getParcelsByStatus');
 Route::get('/parcels/updated-since', 'Api\ShipmentController@getParcelsUpdatedSince');
+// 📥 PARCEL RECEIPT & DISPATCH CONFIRMATIONS
+Route::post('/parcels/received-confirmation', [App\Http\Controllers\Api\ShipmentController::class, 'receivedConfirmation']);
+Route::post('/parcels/dispatch-confirmation', [App\Http\Controllers\Api\ShipmentController::class, 'dispatchConfirmation']);
+// 💸 INVOICING & CUSTOMER REFERENCE
+Route::get('/invoices/{tracking_number}', [App\Http\Controllers\Api\ShipmentController::class, 'getInvoiceByTrackingNumber']);
+Route::get('/customers/{customer_id}', [App\Http\Controllers\Api\ShipmentController::class, 'getCustomerById']);
+// ⚠️ ISSUE FLAGGING
+Route::post('/parcels/flag', [App\Http\Controllers\Api\ShipmentController::class, 'flagParcel']);
+// 🔄 RECONCILIATION
+Route::post('/reconcile', [App\Http\Controllers\Api\ShipmentController::class, 'reconcile']);
+// 📊 ADMIN DASHBOARDS / BULK SYNC SUPPORT
+Route::get('/consignments/latest', [App\Http\Controllers\Api\ConsignmentController::class, 'getLatestConsignment']);
+Route::get('/parcels/unsynced', [App\Http\Controllers\Api\ShipmentController::class, 'getUnsyncedParcels']);
