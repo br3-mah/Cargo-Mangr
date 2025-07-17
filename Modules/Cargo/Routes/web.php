@@ -127,12 +127,12 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
             Route::any('ngenius/seller_package_payment_callback', 'NgeniusController@seller_package_payment_callback')->name('ngenius.seller_package_payment_callback');
 
             //bKash
-            Route::post('/bkash/createpayment', 'BkashController@checkout')->name('bkash.checkout');
-            Route::post('/bkash/executepayment', 'BkashController@excecute')->name('bkash.excecute');
-            Route::get('/bkash/success', 'BkashController@success')->name('bkash.success');
+            // Route::post('/bkash/createpayment', 'BkashController@checkout')->name('bkash.checkout');
+            // Route::post('/bkash/executepayment', 'BkashController@excecute')->name('bkash.excecute');
+            // Route::get('/bkash/success', 'BkashController@success')->name('bkash.success');
 
             //Nagad
-            Route::get('/nagad/callback', 'NagadController@verify')->name('nagad.callback');
+            // Route::get('/nagad/callback', 'NagadController@verify')->name('nagad.callback');
 
             Route::prefix('shipment-team')->group(function() {
                 // Branch Routes
@@ -302,19 +302,19 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
             Route::get('shipments/settings/fees','ShipmentSettingController@feesSettings')->name('shipments.settings.fees');
             Route::post('shipments/settings/fees','ShipmentSettingController@storeFeesSettings')->name('shipments.settings.fees.store');
 
-            Route::get('/google-recaptcha', 'BusinessSettingsController@google_recaptcha')->name('google_recaptcha.index');
-            Route::post('/google_map', 'BusinessSettingsController@google_map_update')->name('google_map.update');
+            // Route::get('/google-recaptcha', 'BusinessSettingsController@google_recaptcha')->name('google_recaptcha.index');
+            // Route::post('/google_map', 'BusinessSettingsController@google_map_update')->name('google_map.update');
 
-            Route::get('/smtp-settings', 'BusinessSettingsController@smtp_settings')->name('email_settings.index');
-            Route::post('/newsletter/test/smtp', 'NewsletterController@testEmail')->name('test.smtp');
+            // Route::get('/smtp-settings', 'BusinessSettingsController@smtp_settings')->name('email_settings.index');
+            // Route::post('/newsletter/test/smtp', 'NewsletterController@testEmail')->name('test.smtp');
 
-            Route::post('/env_key_update', 'BusinessSettingsController@env_key_update')->name('env_key_update.update');
-            Route::get('/payment-method', 'BusinessSettingsController@payment_method')->name('payment_method.index');
-            Route::post('/payment_method_update', 'BusinessSettingsController@payment_method_update')->name('payment_method.update');
+            // Route::post('/env_key_update', 'BusinessSettingsController@env_key_update')->name('env_key_update.update');
+            // Route::get('/payment-method', 'BusinessSettingsController@payment_method')->name('payment_method.index');
+            // Route::post('/payment_method_update', 'BusinessSettingsController@payment_method_update')->name('payment_method.update');
 
-            Route::get('/social-login', 'BusinessSettingsController@social_login')->name('social_login.index');
+            // Route::get('/social-login', 'BusinessSettingsController@social_login')->name('social_login.index');
 
-            Route::get('/sms-gateways', 'BusinessSettingsController@sms_gateways')->name('sms_gateways.index');
+            // Route::get('/sms-gateways', 'BusinessSettingsController@sms_gateways')->name('sms_gateways.index');
 
            Route::prefix('receiver')->group(function() {
                 Route::get('receiver/index','ReceiversController@index')->name('receivers.index');
@@ -429,7 +429,7 @@ if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module
         Route::get('/bkash/success', 'BkashController@success')->name('bkash.success');
 
         //Nagad
-        Route::get('/nagad/callback', 'NagadController@verify')->name('nagad.callback');
+        // Route::get('/nagad/callback', 'NagadController@verify')->name('nagad.callback');
 
         Route::prefix('shipment-team')->group(function() {
             // Branch Routes

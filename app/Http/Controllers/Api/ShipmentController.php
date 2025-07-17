@@ -113,33 +113,89 @@ class ShipmentController extends Controller
         return response()->json(['success' => true, 'message' => 'Shipment removed successfully']);
     }
 
-//     public function getShipmentsForConsignment($consignmentId)
-// {
-//     try {
-//         $consignment = Consignment::with('shipments')
-//             ->findOrFail($consignmentId);
+    /**
+     * Get a single parcel/shipment by tracking number
+     * GET /api/parcels/{tracking_number}
+     */
+    public function getParcelByTrackingNumber($tracking_number)
+    {
+        $shipment = Shipment::with(['client', 'consignment'])
+            ->where('code', $tracking_number)
+            ->firstOrFail();
 
-//         return response()->json([
-//             'status' => 'success',
-//             'consignment_code' => $consignment->consignment_code,
-//             'shipments' => $consignment->shipments->map(function ($shipment) {
-//                 return [
-//                     'id' => $shipment->id,
-//                     'shipment_code' => $shipment->shipment_code,
-//                     'origin' => $shipment->origin,
-//                     'destination' => $shipment->destination,
-//                     'weight' => $shipment->weight,
-//                     'status' => $shipment->status,
-//                     'tracking_number' => $shipment->tracking_number
-//                 ];
-//             })
-//         ]);
-//     } catch (\Exception $e) {
-//         return response()->json([
-//             'status' => 'error',
-//             'message' => 'Unable to retrieve shipments',
-//             'error' => $e->getMessage()
-//         ], 404);
-//     }
-// }
+        return response()->json([
+            'id' => $shipment->id,
+            'tracking_number' => $shipment->code,
+            'product_name' => $shipment->description ?? null,
+            'weight' => $shipment->total_weight,
+            'declared_value' => $shipment->amount_to_be_collected,
+            'customer' => $shipment->client ? [
+                'id' => $shipment->client->id,
+                'name' => $shipment->client->name ?? null,
+                'email' => $shipment->client->email ?? null,
+            ] : null,
+            'consignment_id' => $shipment->consignment_id,
+            'status' => $shipment->status_id,
+            'created_at' => $shipment->created_at,
+            'updated_at' => $shipment->updated_at,
+        ]);
+    }
+
+    /**
+     * Get parcels/shipments by status
+     * GET /api/parcels/status/{status}
+     */
+    public function getParcelsByStatus($status)
+    {
+        $shipments = Shipment::where('status_id', $status)
+            ->with(['client', 'consignment'])
+            ->get();
+
+        $result = $shipments->map(function ($shipment) {
+            return [
+                'id' => $shipment->id,
+                'tracking_number' => $shipment->code,
+                'customer_id' => $shipment->client_id,
+                'weight' => $shipment->total_weight,
+                'declared_value' => $shipment->amount_to_be_collected,
+                'status' => $shipment->status_id,
+                'consignment_id' => $shipment->consignment_id,
+                'created_at' => $shipment->created_at,
+                'updated_at' => $shipment->updated_at,
+            ];
+        });
+
+        return response()->json($result);
+    }
+
+    /**
+     * Get parcels/shipments updated since a timestamp
+     * GET /api/parcels/updated-since?timestamp=YYYY-MM-DDTHH:mm:ssZ
+     */
+    public function getParcelsUpdatedSince(Request $request)
+    {
+        $timestamp = $request->query('timestamp');
+        if (!$timestamp) {
+            return response()->json(['error' => 'timestamp query param required'], 400);
+        }
+        $shipments = Shipment::where('updated_at', '>=', $timestamp)
+            ->with(['client', 'consignment'])
+            ->get();
+
+        $result = $shipments->map(function ($shipment) {
+            return [
+                'id' => $shipment->id,
+                'tracking_number' => $shipment->code,
+                'customer_id' => $shipment->client_id,
+                'weight' => $shipment->total_weight,
+                'declared_value' => $shipment->amount_to_be_collected,
+                'status' => $shipment->status_id,
+                'consignment_id' => $shipment->consignment_id,
+                'created_at' => $shipment->created_at,
+                'updated_at' => $shipment->updated_at,
+            ];
+        });
+
+        return response()->json($result);
+    }
 }
