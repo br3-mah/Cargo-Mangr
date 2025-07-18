@@ -202,30 +202,45 @@ class ShipmentController extends Controller
      */
     public function getParcelsUpdatedSince(Request $request)
     {
-        $timestamp = $request->query('timestamp');
-        if (!$timestamp) {
-            return response()->json(['error' => 'timestamp query param required'], 400);
+        try {
+            $timestamp = $request->input('timestamp');
+            if (!$timestamp) {
+                return response()->json(['error' => 'timestamp field required'], 400);
+            }
+            $shipments = Shipment::where('updated_at', '>=', $timestamp)
+                ->with(['client', 'consignment'])
+                ->get();
+
+            if ($shipments->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'No updated shipments found.'
+                ], 404);
+            }
+
+            $result = $shipments->map(function ($shipment) {
+                return [
+                    'id' => $shipment->id,
+                    'tracking_number' => $shipment->code,
+                    'customer_id' => $shipment->client_id,
+                    'customer_name' => $shipment->client->name,
+                    'customer_phone' => $shipment->client_phone ?? $shipment->client->phone,
+                    'weight' => $shipment->total_weight,
+                    'cost' => $shipment->shipping_cost,
+                    'status' => $shipment->status_id,
+                    'consignment' => $shipment->consignment,
+                    'created_at' => $shipment->created_at,
+                    'updated_at' => $shipment->updated_at,
+                ];
+            });
+
+            return response()->json($result);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        $shipments = Shipment::where('updated_at', '>=', $timestamp)
-            ->with(['client', 'consignment'])
-            ->get();
-
-        $result = $shipments->map(function ($shipment) {
-            return [
-                'id' => $shipment->id,
-                'tracking_number' => $shipment->code,
-                'customer_id' => $shipment->client_id,
-                'phone' => $shipment->client_phone ?? null,
-                'weight' => $shipment->total_weight,
-                'declared_value' => $shipment->amount_to_be_collected,
-                'status' => $shipment->status_id,
-                'consignment_id' => $shipment->consignment_id,
-                'created_at' => $shipment->created_at,
-                'updated_at' => $shipment->updated_at,
-            ];
-        });
-
-        return response()->json($result);
     }
 
     /**
@@ -421,22 +436,29 @@ class ShipmentController extends Controller
      */
     public function reconcile(Request $request)
     {
-        $data = $request->validate([
-            'consignment_id' => 'required|integer|exists:consignments,id',
-            'scanned_tracking_numbers' => 'required|array',
-            'scanned_tracking_numbers.*' => 'required|string',
-        ]);
-        $consignment = Consignment::with('shipments')->findOrFail($data['consignment_id']);
-        $expected = $consignment->shipments->pluck('code')->toArray();
-        $scanned = $data['scanned_tracking_numbers'];
-        $matched = array_values(array_intersect($expected, $scanned));
-        $missing = array_values(array_diff($expected, $scanned));
-        $extras = array_values(array_diff($scanned, $expected));
-        return response()->json([
-            'matched' => $matched,
-            'missing' => $missing,
-            'extras' => $extras,
-        ]);
+        try {
+            $data = $request->validate([
+                'consignment_id' => 'required|integer|exists:consignments,id',
+                'scanned_tracking_numbers' => 'required|array',
+                'scanned_tracking_numbers.*' => 'required|string',
+            ]);
+            $consignment = Consignment::with('shipments')->findOrFail($data['consignment_id']);
+            $expected = $consignment->shipments->pluck('code')->toArray();
+            $scanned = $data['scanned_tracking_numbers'];
+            $matched = array_values(array_intersect($expected, $scanned));
+            $missing = array_values(array_diff($expected, $scanned));
+            $extras = array_values(array_diff($scanned, $expected));
+            return response()->json([
+                'matched' => $matched,
+                'missing' => $missing,
+                'extras' => $extras,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
