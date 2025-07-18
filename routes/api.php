@@ -31,7 +31,8 @@ Route::get('get-current-stage', [App\Http\Controllers\ConsignmentController::cla
 Route::get('/consignments/{consignment_id}', [App\Http\Controllers\Api\ConsignmentController::class, 'getConsignmentWithParcels'])->name('consignment.details');
 Route::get('/parcels/{tracking_number}', 'Api\ShipmentController@getParcelByTrackingNumber');
 Route::get('/parcels/status/{status}', 'Api\ShipmentController@getParcelsByStatus');
-Route::get('/parcels/updated-since', 'Api\ShipmentController@getParcelsUpdatedSince');
+// Change updated-since from GET to POST
+Route::post('/parcels/updated-since', 'Api\ShipmentController@getParcelsUpdatedSince');
 // 📥 PARCEL RECEIPT & DISPATCH CONFIRMATIONS
 Route::post('/parcels/received-confirmation', [App\Http\Controllers\Api\ShipmentController::class, 'receivedConfirmation']);
 Route::post('/parcels/dispatch-confirmation', [App\Http\Controllers\Api\ShipmentController::class, 'dispatchConfirmation']);
