@@ -85,15 +85,13 @@ class ConsignmentController extends Controller
      */
     public function getConsignmentWithParcels($id)
     {
-        // dd($id);
         $consignment = Consignment::with(['shipments.client', 'shipments' => function($q) {
             $q->with('consignment');
         }])->findOrFail($id);
-
-        // dd($consignment);
+        
         $shipments = $consignment->shipments->map(function ($shipment) {
             return [
-                'id' => $shipment->id,
+                'shipment_id' => $shipment->id,
                 'tracking_number' => $shipment->code,
                 'customer_id' => $shipment->client_id,
                 'weight' => $shipment->total_weight,
@@ -102,7 +100,7 @@ class ConsignmentController extends Controller
                 'customer' => $shipment->client ? [
                     'id' => $shipment->client->id,
                     'name' => $shipment->client->name ?? null,
-                    'email' => $shipment->client->email ?? null,
+                    'phone' => $shipment->client_phone ?? $shipment->client->phone,
                 ] : null,
                 'consignment_id' => $shipment->consignment_id,
                 'created_at' => $shipment->created_at,
@@ -113,7 +111,7 @@ class ConsignmentController extends Controller
         return response()->json([
             'consignment' => [
                 'id' => $consignment->id,
-                'code' => $consignment->consignment_code,
+                'consignment_code' => $consignment->consignment_code,
                 'name' => $consignment->name,
                 'status' => $consignment->status,
                 'current_status' => $consignment->current_status,

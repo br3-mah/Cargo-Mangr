@@ -134,7 +134,7 @@ class ShipmentController extends Controller
             'customer' => $shipment->client ? [
                 'id' => $shipment->client->id,
                 'name' => $shipment->client->name ?? null,
-                'email' => $shipment->client->email ?? null,
+                'phone' => $shipment->client_phone ?? $shipment->client->phone,
             ] : null,
             'consignment_id' => $shipment->consignment_id,
             'status' => $shipment->status_id,
@@ -156,6 +156,11 @@ class ShipmentController extends Controller
             ->get();
 
         $result = $shipments->map(function ($shipment) {
+            // Determine tracker status using consignment's current_status or getCurrentStageName
+            $tracker_status = null;
+            if ($shipment->consignment) {
+                $tracker_status = $shipment->consignment->current_status ?? $shipment->consignment->getCurrentStageName();
+            }
             return [
                 'id' => $shipment->id,
                 'tracking_number' => $shipment->code,
@@ -164,6 +169,7 @@ class ShipmentController extends Controller
                 'declared_value' => $shipment->amount_to_be_collected,
                 'status' => $shipment->status_id,
                 'consignment_id' => $shipment->consignment_id,
+                'tracker_status' => $tracker_status,
                 'created_at' => $shipment->created_at,
                 'updated_at' => $shipment->updated_at,
             ];
@@ -191,6 +197,7 @@ class ShipmentController extends Controller
                 'id' => $shipment->id,
                 'tracking_number' => $shipment->code,
                 'customer_id' => $shipment->client_id,
+                'phone' => $shipment->client_phone ?? null,
                 'weight' => $shipment->total_weight,
                 'declared_value' => $shipment->amount_to_be_collected,
                 'status' => $shipment->status_id,
@@ -304,20 +311,42 @@ class ShipmentController extends Controller
      */
     public function getInvoiceByTrackingNumber($tracking_number)
     {
-        $shipment = Shipment::where('code', $tracking_number)->firstOrFail();
-        $invoice = $shipment->receipt;
-        if (!$invoice) {
-            return response()->json(['error' => 'No invoice found for this parcel'], 404);
-        }
+        $shipment = Shipment::with(['client', 'consignment'])->where('code', $tracking_number)->firstOrFail();
+
+        // Use only shipment fields for the invoice breakdown
+        $amount = $shipment->amount_to_be_collected;
+        $paid = $shipment->paid ?? false;
+        $currency = 'USD'; // Adjust as needed or fetch from shipment if available
+
+        $breakdown = [
+            'shipping_cost' => $shipment->shipping_cost,
+            'return_cost' => $shipment->return_cost,
+            'amount_to_be_collected' => $shipment->amount_to_be_collected,
+            'total_weight' => $shipment->total_weight,
+            'volume' => $shipment->volume,
+            'receipt_number' => null,
+            'status' => $shipment->status_id,
+            'paid' => $paid,
+            'client' => $shipment->client ? [
+                'id' => $shipment->client->id,
+                'name' => $shipment->client->name ?? null,
+                'phone' => $shipment->client_phone ?? null,
+            ] : null,
+            'consignment' => $shipment->consignment ? [
+                'id' => $shipment->consignment->id,
+                'code' => $shipment->consignment->consignment_code,
+                'name' => $shipment->consignment->name,
+            ] : null,
+            'created_at' => $shipment->created_at,
+            'updated_at' => $shipment->updated_at,
+        ];
+
         return response()->json([
-            'amount' => $invoice->total,
-            'paid' => $shipment->paid ?? false,
-            'currency' => 'USD', // Adjust as needed
-            'breakdown' => [
-                'discount_type' => $invoice->discount_type,
-                'discount_value' => $invoice->discount_value,
-                'receipt_number' => $invoice->receipt_number,
-            ],
+            'tracking_number' => $shipment->code,
+            'amount' => $amount,
+            'paid' => $paid,
+            'currency' => $currency,
+            'breakdown' => $breakdown,
         ]);
     }
 
@@ -327,13 +356,23 @@ class ShipmentController extends Controller
      */
     public function getCustomerById($customer_id)
     {
-        $client = \Modules\Cargo\Entities\Client::findOrFail($customer_id);
-        return response()->json([
-            'id' => $client->id,
-            'name' => $client->name ?? null,
-            'email' => $client->email ?? null,
-            'addressess' => $client->addressess,
-        ]);
+        try {
+            $client = \Modules\Cargo\Entities\Client::findOrFail($customer_id);
+            // Try to get the latest shipment for this client to fetch client_phone
+            $shipment = Shipment::where('client_id', $client->id)->whereNotNull('client_phone')->orderByDesc('created_at')->first();
+            $shipmentPhone = $shipment ? $shipment->client_phone : null;
+            return response()->json([
+                'id' => $client->id,
+                'name' => $client->name ?? null,
+                'phone' => $client->phone ?? $shipmentPhone,
+                'address' => $client->addressess,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Customer not found',
+            ], 404);
+        }
     }
 
     /**
