@@ -13,9 +13,9 @@ class CreateAlterUusersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('parent_id')->nullable()->after('id');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('parent_id')->nullable()->after('id');
+        // });
     }
 
     public function down()
