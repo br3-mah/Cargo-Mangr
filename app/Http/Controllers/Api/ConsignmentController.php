@@ -183,4 +183,46 @@ class ConsignmentController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all consignments paginated
+     * GET /api/consignments/all?per_page=10&page=1
+     */
+    public function getAllConsignments(Request $request)
+    {
+        try {
+            $perPage = (int) $request->query('per_page', 10);
+            $page = (int) $request->query('page', 1);
+            $query = Consignment::orderBy('created_at', 'desc');
+            $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+            $data = $paginator->items();
+            $result = collect($data)->map(function ($consignment) {
+                return [
+                    'id' => $consignment->id,
+                    'code' => $consignment->consignment_code,
+                    'name' => $consignment->name,
+                    'status' => $consignment->status,
+                    'current_status' => $consignment->current_status,
+                    'current_stage_name' => $consignment->getCurrentStageName(),
+                    'cargo_type' => $consignment->cargo_type,
+                    'created_at' => $consignment->created_at,
+                    'updated_at' => $consignment->updated_at,
+                ];
+            });
+            return response()->json([
+                'data' => $result,
+                'meta' => [
+                    'current_page' => $paginator->currentPage(),
+                    'per_page' => $paginator->perPage(),
+                    'total' => $paginator->total(),
+                    'last_page' => $paginator->lastPage(),
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
