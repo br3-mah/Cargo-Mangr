@@ -467,16 +467,58 @@ class ShipmentController extends Controller
      */
     public function getUnsyncedParcels(Request $request)
     {
-        // Example: filter by status_id or a custom 'synced' flag if available
-        $shipments = Shipment::whereNull('received_at')->with('consignment')->get();
-        $result = $shipments->map(function ($shipment) {
-            return [
-                'tracking_number' => $shipment->code,
-                'consignment_id' => $shipment->consignment_id,
-                'consignment_code' => $shipment->consignment ? $shipment->consignment->consignment_code : null,
-                'status' => $shipment->status_id,
-            ];
-        });
-        return response()->json($result);
+        try {
+            // Use a raw DB join to fetch unsynced shipments with consignment and client data
+            $shipments = \DB::table('shipments')
+                ->leftJoin('consignments', 'shipments.consignment_id', '=', 'consignments.id')
+                ->leftJoin('clients', 'shipments.client_id', '=', 'clients.id')
+                ->whereNull('shipments.received_at')
+                ->select(
+                    'shipments.id',
+                    'shipments.code as tracking_number',
+                    'shipments.consignment_id',
+                    'shipments.client_id',
+                    'shipments.client_phone as client_phone',
+                    'shipments.status_id',
+                    'shipments.created_at',
+                    'shipments.updated_at',
+                    'consignments.consignment_code',
+                    'consignments.name as consignment_name',
+                    'consignments.status as consignment_status',
+                    'consignments.cargo_type',
+                    'consignments.created_at as consignment_created_at',
+                    'consignments.updated_at as consignment_updated_at',
+                    'clients.name as client_name'
+                )
+                ->get();
+
+            $result = $shipments->map(function ($row) {
+                return [
+                    'id' => $row->id,
+                    'tracking_number' => $row->tracking_number,
+                    'consignment_id' => $row->consignment_id,
+                    'client_id' => $row->client_id,
+                    'client_name' => $row->client_name,
+                    'client_phone' => $row->client_phone,
+                    'status' => $row->status_id,
+                    'created_at' => $row->created_at,
+                    'updated_at' => $row->updated_at,
+                    'consignment' => [
+                        'code' => $row->consignment_code,
+                        'name' => $row->consignment_name,
+                        'status' => $row->consignment_status,
+                        'cargo_type' => $row->cargo_type,
+                        'created_at' => $row->consignment_created_at,
+                        'updated_at' => $row->consignment_updated_at,
+                    ],
+                ];
+            });
+            return response()->json($result->values());
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
