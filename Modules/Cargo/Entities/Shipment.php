@@ -26,6 +26,9 @@ class Shipment extends Model implements HasMedia
         'dispatch_time',
         'next_destination',
         'dispatched_by',
+        'is_flagged',
+        'flag_reason',
+        'flag_notes',
     ];
     protected $guarded = [];
     protected $table = 'shipments';

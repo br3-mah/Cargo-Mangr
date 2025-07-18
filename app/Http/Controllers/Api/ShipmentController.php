@@ -424,6 +424,7 @@ class ShipmentController extends Controller
             return response()->json(['error' => 'Parcel not found'], 404);
         }
         // You may want to log this in a separate table; for now, add to logs or update a field
+        $shipment->is_flagged = 1;
         $shipment->flag_reason = $data['reason'];
         $shipment->flag_notes = $data['notes'] ?? null;
         $shipment->save();
