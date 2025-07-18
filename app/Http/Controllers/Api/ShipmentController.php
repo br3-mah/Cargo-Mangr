@@ -151,31 +151,49 @@ class ShipmentController extends Controller
      */
     public function getParcelsByStatus($status)
     {
-        $shipments = Shipment::where('status_id', $status)
-            ->with(['client', 'consignment'])
-            ->get();
+        // Normalize the requested status for comparison
+        $normalizedStatus = strtolower($status);
 
-        $result = $shipments->map(function ($shipment) {
-            // Determine tracker status using consignment's current_status or getCurrentStageName
+        // Get all shipments with their consignments
+        $shipments = Shipment::with(['client', 'consignment'])->get();
+
+        // Filter shipments by consignment status
+        $filtered = $shipments->filter(function ($shipment) use ($normalizedStatus) {
+            return $shipment->consignment && strtolower($shipment->consignment->status) === $normalizedStatus;
+        });
+
+        $result = $filtered->map(function ($shipment) {
+            // Determine tracker status using consignment's status (pending, in_transit, delivered)
             $tracker_status = null;
-            if ($shipment->consignment) {
-                $tracker_status = $shipment->consignment->current_status ?? $shipment->consignment->getCurrentStageName();
+            if ($shipment->consignment && $shipment->consignment->status) {
+                $status = strtolower($shipment->consignment->status);
+                if ($status === 'pending') {
+                    $tracker_status = 'Pending';
+                } elseif ($status === 'in_transit') {
+                    $tracker_status = 'In Transit';
+                } elseif ($status === 'delivered') {
+                    $tracker_status = 'Delivered';
+                } else {
+                    $tracker_status = ucfirst($status);
+                }
             }
             return [
                 'id' => $shipment->id,
                 'tracking_number' => $shipment->code,
                 'customer_id' => $shipment->client_id,
+                'customer_name' => $shipment->client->name,
+                'customer_phone' => $shipment->client_phone ?? $shipment->client->phone,
                 'weight' => $shipment->total_weight,
-                'declared_value' => $shipment->amount_to_be_collected,
+                'cost' => $shipment->shipping_cost,
                 'status' => $shipment->status_id,
-                'consignment_id' => $shipment->consignment_id,
+                'consignment' => $shipment->consignment,
                 'tracker_status' => $tracker_status,
                 'created_at' => $shipment->created_at,
                 'updated_at' => $shipment->updated_at,
             ];
         });
 
-        return response()->json($result);
+        return response()->json($result->values());
     }
 
     /**
