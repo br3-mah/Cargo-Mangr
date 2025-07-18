@@ -20,7 +20,13 @@ class Shipment extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
-    protected $fillable = [];
+    protected $fillable = [
+        'received_at',
+        'condition',
+        'dispatch_time',
+        'next_destination',
+        'dispatched_by',
+    ];
     protected $guarded = [];
     protected $table = 'shipments';
 
