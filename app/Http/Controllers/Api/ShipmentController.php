@@ -212,21 +212,21 @@ class ShipmentController extends Controller
         try {
             $data = $request->validate([
                 'consignment_id' => 'required|integer|exists:consignments,id',
-                'tracking_number' => 'sometimes|string',
-                'tracking_numbers' => 'sometimes|array',
-                'tracking_numbers.*' => 'required_with:tracking_numbers|string',
+                'tracking_numbers' => 'required|array',
+                'tracking_numbers.*' => 'required|string',
                 'received_at' => 'nullable|date',
                 'condition' => 'nullable|string',
             ]);
 
             $receivedAt = $data['received_at'] ?? now();
+            $trackingNumbers = $data['tracking_numbers'];
 
-            // Gather all tracking numbers into an array
-            $trackingNumbers = [];
-            if (!empty($data['tracking_numbers'])) {
-                $trackingNumbers = $data['tracking_numbers'];
-            } elseif (!empty($data['tracking_number'])) {
-                $trackingNumbers = [$data['tracking_number']];
+            // If the first element is a stringified JSON array, decode it
+            if (count($trackingNumbers) === 1 && is_string($trackingNumbers[0]) && str_starts_with(trim($trackingNumbers[0]), '[')) {
+                $decoded = json_decode($trackingNumbers[0], true);
+                if (is_array($decoded)) {
+                    $trackingNumbers = $decoded;
+                }
             }
 
             $updated = [];
@@ -257,26 +257,45 @@ class ShipmentController extends Controller
      */
     public function dispatchConfirmation(Request $request)
     {
-        $data = $request->validate([
-            'tracking_numbers' => 'required|array',
-            'tracking_numbers.*' => 'required|string',
-            'dispatch_time' => 'required|date',
-            'next_destination' => 'nullable|string',
-            'dispatched_by' => 'nullable|string',
-        ]);
-        $updated = [];
-        foreach ($data['tracking_numbers'] as $tracking_number) {
-            $shipment = Shipment::where('code', $tracking_number)->first();
-            if ($shipment) {
-                $shipment->status_id = Shipment::IN_STOCK_STATUS;
-                $shipment->dispatch_time = $data['dispatch_time'];
-                $shipment->next_destination = $data['next_destination'] ?? null;
-                $shipment->dispatched_by = $data['dispatched_by'] ?? null;
-                $shipment->save();
-                $updated[] = $shipment->id;
+        try {
+            $data = $request->validate([
+                'tracking_numbers' => 'required|array',
+                'tracking_numbers.*' => 'required|string',
+                'dispatch_time' => 'required|date',
+                'next_destination' => 'nullable|string',
+                'dispatched_by' => 'nullable|string',
+            ]);
+
+            $dispatchTime = $data['dispatch_time'];
+            $trackingNumbers = $data['tracking_numbers'];
+
+            // If the first element is a stringified JSON array, decode it
+            if (count($trackingNumbers) === 1 && is_string($trackingNumbers[0]) && str_starts_with(trim($trackingNumbers[0]), '[')) {
+                $decoded = json_decode($trackingNumbers[0], true);
+                if (is_array($decoded)) {
+                    $trackingNumbers = $decoded;
+                }
             }
+
+            $updated = [];
+            foreach ($trackingNumbers as $tracking_number) {
+                $shipment = Shipment::where('code', $tracking_number)->first();
+                if ($shipment) {
+                    $shipment->status_id = Shipment::IN_STOCK_STATUS;
+                    $shipment->dispatch_time = $dispatchTime;
+                    $shipment->next_destination = $data['next_destination'] ?? null;
+                    $shipment->dispatched_by = $data['dispatched_by'] ?? null;
+                    $shipment->save();
+                    $updated[] = $shipment->id;
+                }
+            }
+            return response()->json(['success' => true, 'updated_shipments' => $updated]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        return response()->json(['success' => true, 'updated_shipments' => $updated]);
     }
 
     /**
