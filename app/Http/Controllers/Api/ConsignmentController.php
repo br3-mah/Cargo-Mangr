@@ -130,36 +130,46 @@ class ConsignmentController extends Controller
      */
     public function getLatestConsignment()
     {
-        $consignment = Consignment::orderBy('created_at', 'desc')->with('shipments')->first();
-        if (!$consignment) {
-            return response()->json(['error' => 'No consignments found'], 404);
+        try {
+            $consignment = Consignment::orderBy('created_at', 'desc')->with('shipments')->first();
+            if (!$consignment) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'No consignments found.'
+                ], 404);
+            }
+            $shipments = $consignment->shipments->map(function ($shipment) {
+                return [
+                    'id' => $shipment->id,
+                    'tracking_number' => $shipment->code,
+                    'customer_id' => $shipment->client_id,
+                    'weight' => $shipment->total_weight,
+                    'declared_value' => $shipment->amount_to_be_collected,
+                    'status' => $shipment->status_id,
+                    'consignment_id' => $shipment->consignment_id,
+                    'created_at' => $shipment->created_at,
+                    'updated_at' => $shipment->updated_at,
+                ];
+            });
+            return response()->json([
+                'consignment' => [
+                    'id' => $consignment->id,
+                    'code' => $consignment->consignment_code,
+                    'name' => $consignment->name,
+                    'status' => $consignment->status,
+                    'current_status' => $consignment->current_status,
+                    'current_stage_name' => $consignment->getCurrentStageName(),
+                    'cargo_type' => $consignment->cargo_type,
+                    'created_at' => $consignment->created_at,
+                    'updated_at' => $consignment->updated_at,
+                ],
+                'parcels' => $shipments,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        $shipments = $consignment->shipments->map(function ($shipment) {
-            return [
-                'id' => $shipment->id,
-                'tracking_number' => $shipment->code,
-                'customer_id' => $shipment->client_id,
-                'weight' => $shipment->total_weight,
-                'declared_value' => $shipment->amount_to_be_collected,
-                'status' => $shipment->status_id,
-                'consignment_id' => $shipment->consignment_id,
-                'created_at' => $shipment->created_at,
-                'updated_at' => $shipment->updated_at,
-            ];
-        });
-        return response()->json([
-            'consignment' => [
-                'id' => $consignment->id,
-                'code' => $consignment->consignment_code,
-                'name' => $consignment->name,
-                'status' => $consignment->status,
-                'current_status' => $consignment->current_status,
-                'current_stage_name' => $consignment->getCurrentStageName(),
-                'cargo_type' => $consignment->cargo_type,
-                'created_at' => $consignment->created_at,
-                'updated_at' => $consignment->updated_at,
-            ],
-            'parcels' => $shipments,
-        ]);
     }
 }
