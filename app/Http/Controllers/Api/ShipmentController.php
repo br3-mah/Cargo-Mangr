@@ -414,21 +414,38 @@ class ShipmentController extends Controller
      */
     public function flagParcel(Request $request)
     {
-        $data = $request->validate([
-            'tracking_number' => 'required|string',
-            'reason' => 'required|string',
-            'notes' => 'nullable|string',
-        ]);
-        $shipment = Shipment::where('code', $data['tracking_number'])->first();
-        if (!$shipment) {
-            return response()->json(['error' => 'Parcel not found'], 404);
+        try {
+            $data = $request->validate([
+                'tracking_number' => 'required|string',
+                'reason' => 'required|string',
+                'notes' => 'nullable|string',
+            ]);
+            $shipment = Shipment::where('code', $data['tracking_number'])->first();
+            if (!$shipment) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Parcel not found',
+                ], 404);
+            }
+            $shipment->is_flagged = 1;
+            $shipment->flag_reason = $data['reason'];
+            $shipment->flag_notes = $data['notes'] ?? null;
+            $shipment->save();
+            return response()->json([
+                'success' => true,
+                'flagged_shipment_id' => $shipment->id,
+                'tracking_number' => $shipment->code,
+                'is_flagged' => $shipment->is_flagged,
+                'flag_reason' => $shipment->flag_reason,
+                'flag_notes' => $shipment->flag_notes,
+                'updated_at' => $shipment->updated_at,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        // You may want to log this in a separate table; for now, add to logs or update a field
-        $shipment->is_flagged = 1;
-        $shipment->flag_reason = $data['reason'];
-        $shipment->flag_notes = $data['notes'] ?? null;
-        $shipment->save();
-        return response()->json(['success' => true, 'flagged_shipment_id' => $shipment->id]);
     }
 
     /**
