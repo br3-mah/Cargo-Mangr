@@ -50,20 +50,17 @@
             <div class="modal-body p-0">
                 <div class="row no-gutters">
                     <div class="col-md-4 bg-white d-flex flex-column align-items-center justify-content-center p-4">
+                        {{-- <div class="shipment-illustration mb-4">
+                            <img src="{{ asset('assets/anime/earth.gif') }}" alt="">
+                        </div> --}}
                         <div class="tracking-status text-center">
-                            <div class="shipment-illustration mb-4">
-                                <img src="{{ asset('assets/anime/earth.gif') }}" alt="">
-                            </div>
                             <span class="badge badge-pill badge-primary px-3 py-2">Tracking Active</span>
                             <p class="text-muted small mt-3 mb-0">Last updated: <span id="statusUpdateTime"></span></p>
                         </div>
-                        <!-- Current Stage Details with Loader -->
+                        <!-- Current Stage Details -->
                         <div class="current-stage-details mt-4 text-center">
                             <h6 class="font-weight-bold text-dark mb-1">Current Stage</h6>
                             <div class="mb-2">
-                                <div id="currentStageLoader" class="spinner-border spinner-border-sm text-primary d-none" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
                                 <span id="currentStageName" class="text-primary font-weight-bold"></span>
                             </div>
                             <div>
@@ -85,24 +82,24 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            {{-- <div class="detail-item mb-3">
+                                            <div class="detail-item mb-3">
                                                 <span class="text-muted small text-uppercase">Consignment Name</span>
                                                 <p class="font-weight-bold mb-1" id="conName"></p>
-                                            </div> --}}
+                                            </div>
                                             <div class="detail-item mb-3">
                                                 <span class="text-muted small text-uppercase">Tracking No</span>
                                                 <p class="font-weight-bold mb-1" id="modalTracking"></p>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            {{-- <div class="detail-item mb-3">
+                                            <div class="detail-item mb-3">
                                                 <span class="text-muted small text-uppercase">Source</span>
                                                 <p class="font-weight-bold mb-1" id="sourceDestination"></p>
                                             </div>
                                             <div class="detail-item mb-3">
                                                 <span class="text-muted small text-uppercase">Destination</span>
                                                 <p class="font-weight-bold mb-1" id="finalDestination"></p>
-                                            </div> --}}
+                                            </div>
                                             <div class="detail-item">
                                                 <span class="text-muted small text-uppercase">Last Update</span>
                                                 <p class="font-weight-bold mb-1" id="conLastUpdate"></p>
@@ -116,21 +113,16 @@
                                 <label for="trackerStatus" class="font-weight-bold">
                                     <i class="fas fa-map-marker-alt mr-2 text-primary"></i>Update Shipment Status
                                 </label>
-                                <div class="position-relative">
-                                    <div id="statusSelectLoader" class="spinner-border spinner-border-sm text-primary position-absolute d-none" style="right: 10px; top: 10px;">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
-                                    <select class="form-control custom-select border-0 shadow-sm" name="status" id="trackerStatus" required>
-                                        <option value="">Loading status options...</option>
-                                    </select>
-                                </div>
+                                <select class="form-control custom-select border-0 shadow-sm" name="status" id="trackerStatus" required>
+                                    <!-- Options will be populated dynamically via JavaScript -->
+                                </select>
                             </div>
 
                             <div class="modal-footer border-0 px-0 pt-4">
                                 <button type="button" class="btn btn-light border shadow-sm px-4" data-dismiss="modal">
                                     <i class="fas fa-times mr-2"></i>Cancel
                                 </button>
-                                <button type="submit" class="btn btn-primary shadow px-4 btnclicky" id="updateTrackerBtn">
+                                <button type="submit" class="btn btn-primary shadow px-4 btnclicky">
                                     <i class="fas fa-sync-alt mr-2"></i>Update Tracker
                                 </button>
                             </div>
@@ -187,10 +179,11 @@
         border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    /* Loader styles */
-    #updateTrackerModal .spinner-border {
-        width: 1.5rem;
-        height: 1.5rem;
+    /* Animation for the illustration */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
     }
 
     /* Update the status timestamp */
@@ -224,8 +217,8 @@
 
 <script>
     $(document).ready(function () {
-        // Initialize DataTable with state saving
-        const dataTable = $('.table').DataTable({
+        // Initialize DataTable
+        $('.table').DataTable({
             "paging": true,
             "searching": false,
             "ordering": true,
@@ -233,24 +226,15 @@
             "lengthMenu": [10, 25, 50, 100],
             "columnDefs": [
                 { "orderable": false, "targets": 8 }
-            ],
-            "stateSave": true, // Enable state saving
-            "stateDuration": -1 // Save state indefinitely
+            ]
         });
 
-        // Handle update tracker button click - works for dynamically loaded rows
-        $(document).on('click', '.update-tracker-btn', function() {
+        // Handle update tracker button click
+        $('.update-tracker-btn').on('click', function() {
             const consignmentId = $(this).data('id');
+            const currentCheckpoint = $(this).data('checkpoint');
             const cargoType = $(this).data('cargo_type') || 'air';
             
-            // Show loaders
-            $('#currentStageLoader').removeClass('d-none');
-            $('#statusSelectLoader').removeClass('d-none');
-            $('#currentStageName').text('');
-            $('#currentStageDescription').text('');
-            $('#trackerStatus').html('<option value="">Loading...</option>');
-            $('#updateTrackerBtn').prop('disabled', true);
-
             // Update form action
             $('#updateTrackerForm').attr('action', `/consignment/tracker/update/${consignmentId}`);
             
@@ -260,23 +244,15 @@
                 method: 'GET',
                 data: { cargo_type: cargoType },
                 success: function(stages) {
-                    // Populate the select dropdown
+                    // Clear and populate the select dropdown
                     const $select = $('#trackerStatus');
                     $select.empty();
-                    
-                    if (stages.length > 0) {
-                        stages.forEach((stage) => {
-                            const option = new Option(stage.description, stage.id);
-                            $select.append(option);
-                        });
-                    } else {
-                        $select.append(new Option('No stages available', ''));
-                    }
+                    stages.forEach((stage) => {
+                        const option = new Option(stage.description, stage.id);
+                        $select.append(option);
+                    });
 
-                    // Hide select loader
-                    $('#statusSelectLoader').addClass('d-none');
-                    
-                    // Fetch and display current stage details
+                    // Fetch and display current stage details using the new API
                     $.ajax({
                         url: '/api/get-current-stage',
                         method: 'GET',
@@ -284,35 +260,25 @@
                         success: function(data) {
                             $('#currentStageName').text(data.stage_name || 'Unknown');
                             $('#currentStageDescription').text(data.stage_description || 'No details available.');
-                            
-                            // Set the select dropdown to the current stage
-                            if (data.stage_id) {
-                                $select.val(data.stage_id);
-                            } else if (data.stage_description) {
+                            // Set the select dropdown to the current stage id if available
+                            if (data.stage_name && data.stage_description) {
+                                // Find the option with the same description and select it
                                 $select.find('option').each(function() {
                                     if ($(this).text() === data.stage_description) {
                                         $(this).prop('selected', true);
                                     }
                                 });
                             }
-                            
-                            // Hide stage loader
-                            $('#currentStageLoader').addClass('d-none');
-                            $('#updateTrackerBtn').prop('disabled', false);
                         },
                         error: function(error) {
-                            $('#currentStageName').text('Error loading stage');
-                            $('#currentStageDescription').text('Failed to load current stage details.');
-                            $('#currentStageLoader').addClass('d-none');
-                            $('#updateTrackerBtn').prop('disabled', false);
+                            $('#currentStageName').text('Unknown');
+                            $('#currentStageDescription').text('No details available.');
                         }
                     });
                 },
                 error: function(error) {
                     console.error('Error fetching tracking stages:', error);
-                    $('#trackerStatus').html('<option value="">Error loading stages</option>');
-                    $('#statusSelectLoader').addClass('d-none');
-                    $('#updateTrackerBtn').prop('disabled', false);
+                    alert('Failed to load tracking stages. Please try again.');
                 }
             });
 
@@ -321,6 +287,7 @@
             $('#modalTracking').text($(this).data('consignment_code') || '');
             $('#sourceDestination').text($(this).data('source') || '');
             $('#finalDestination').text($(this).data('destination') || '');
+            $('#conStatus').text($(this).data('status') || '');
             $('#conLastUpdate').text($(this).data('updated_at') || '');
             
             // Set consignment ID

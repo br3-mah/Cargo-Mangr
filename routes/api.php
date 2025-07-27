@@ -46,4 +46,5 @@ Route::post('/reconcile', [App\Http\Controllers\Api\ShipmentController::class, '
 // 📊 ADMIN DASHBOARDS / BULK SYNC SUPPORT
 Route::post('/consignments/latest', [App\Http\Controllers\Api\ConsignmentController::class, 'getLatestConsignment']);
 Route::post('/parcels/unsynced', [App\Http\Controllers\Api\ShipmentController::class, 'getUnsyncedParcels']);
-Route::get('/consignments/all', [App\Http\Controllers\Api\ConsignmentController::class, 'getAllConsignments']);
+
+Route::get('/consignments/all', 'Api\ConsignmentController@getAllConsignments');
