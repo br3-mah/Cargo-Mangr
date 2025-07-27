@@ -190,6 +190,7 @@ class ConsignmentController extends Controller
      */
     public function getAllConsignments(Request $request)
     {
+        dd($request);
         try {
             $perPage = (int) $request->query('per_page', 10);
             $page = (int) $request->query('page', 1);
