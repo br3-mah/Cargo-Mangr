@@ -38,7 +38,7 @@
         <div class="flex-1 flex flex-col justify-center px-8 py-12 lg:px-12">
             <!-- Logo -->
             <div class="flex justify-center mb-8">
-                @php 
+                @php
                     $model = App\Models\Settings::where('group', 'general')->where('name','login_page_logo')->first();
                     $system_logo = App\Models\Settings::where('group', 'general')->where('name','system_logo')->first();
                 @endphp
@@ -56,7 +56,7 @@
                     <div class="text-xs text-amber-700 mb-4 text-center">
                         {{ __('view.demo_details') }}
                     </div>
-                    
+
                     <div class="grid grid-cols-1 gap-3">
                         <!-- Admin -->
                         <div class="flex items-center justify-between p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-colors cursor-pointer" id="login_admin">
@@ -138,7 +138,7 @@
             <!-- Login Form -->
             <form method="POST" action="{{ route('login.request') }}" novalidate="novalidate" id="kt_sign_in_form" class="space-y-6">
                 @csrf
-                
+
                 <!-- Email Input -->
                 <div>
                     <div class="relative">
@@ -155,7 +155,7 @@
                             autofocus>
                     </div>
                 </div>
-                
+
                 <!-- Password Input -->
                 <div>
                     <div class="relative">
@@ -209,7 +209,7 @@
                                 {{ __('view.remember_me') }}
                             </label>
                         </div>
-                        
+
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
                                 {{ __('view.forgot_password') }}
@@ -218,10 +218,14 @@
                     </div>
 
                     <!-- Login Button -->
-                    <button type="submit" id="signin_submit" class="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5">
-                        <span>{{ __('view.login') }}</span>
-                        <svg class="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button type="submit" id="signin_submit" class="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 relative">
+                        <span class="login-btn-text">{{ __('view.login') }}</span>
+                        <svg class="ml-2 w-5 h-5 login-btn-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                        <svg class="animate-spin h-5 w-5 text-white absolute right-6 login-btn-spinner" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
                     </button>
                 </div>
@@ -258,37 +262,45 @@
         $('#password').val('123456');
     }
 
-    @if(env('DEMO_MODE') == 'On')
-      // Class Initialization
-      $(document).ready(function() {
-        autoFill();
+    $(document).ready(function() {
+        // Preloading state for login button
+        $('#kt_sign_in_form').on('submit', function(e) {
+            var btn = $('#signin_submit');
+            btn.prop('disabled', true);
+            btn.find('.login-btn-text').css('opacity', '0.5');
+            btn.find('.login-btn-arrow').hide();
+            btn.find('.login-btn-spinner').show();
+        });
 
-        $('body').on('click','#login_admin', function(e){
-          $('#email').val('admin@admin.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_employee', function(e){
-          $('#email').val('employee@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_driver', function(e){
-          $('#email').val('driver@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_branch', function(e){
-          $('#email').val('branch@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-        $('body').on('click','#login_client', function(e){
-          $('#email').val('client@cargo.com');
-          $('#password').val('123456');
-          $('#signin_submit').trigger('click');
-        });
-      });
-    @endif
+        @if(env('DEMO_MODE') == 'On')
+          autoFill();
+
+          $('body').on('click','#login_admin', function(e){
+            $('#email').val('admin@admin.com');
+            $('#password').val('123456');
+            $('#signin_submit').trigger('click');
+          });
+          $('body').on('click','#login_employee', function(e){
+            $('#email').val('employee@cargo.com');
+            $('#password').val('123456');
+            $('#signin_submit').trigger('click');
+          });
+          $('body').on('click','#login_driver', function(e){
+            $('#email').val('driver@cargo.com');
+            $('#password').val('123456');
+            $('#signin_submit').trigger('click');
+          });
+          $('body').on('click','#login_branch', function(e){
+            $('#email').val('branch@cargo.com');
+            $('#password').val('123456');
+            $('#signin_submit').trigger('click');
+          });
+          $('body').on('click','#login_client', function(e){
+            $('#email').val('client@cargo.com');
+            $('#password').val('123456');
+            $('#signin_submit').trigger('click');
+          });
+        @endif
+    });
 </script>
 @endsection

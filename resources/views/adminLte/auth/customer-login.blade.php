@@ -54,7 +54,8 @@
 
             <form method="POST" action="{{ route('login.request') }}" novalidate="novalidate" id="kt_sign_in_form">
                 @csrf
-                
+                <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+
                 <!-- Email Input - reduced height and margins -->
                 <div class="mb-4">
                     <div class="relative">
@@ -71,7 +72,7 @@
                             autofocus>
                     </div>
                 </div>
-                
+
                 <!-- Password Input - reduced height and margins -->
                 <div class="mb-4">
                     <div class="relative">
@@ -155,10 +156,14 @@
                     </div>
 
                     <!-- Login Button - more compact -->
-                    <button type="submit" class="w-full flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-sm font-semibold rounded-lg shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-1 transition-all duration-200">
-                        <span>{{ __('view.login') }}</span>
-                        <svg class="ml-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button type="submit" id="signin_submit" class="w-full flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-sm font-semibold rounded-lg shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-1 transition-all duration-200 relative">
+                        <span class="login-btn-text">{{ __('view.login') }}</span>
+                        <svg class="ml-2 w-4 h-4 login-btn-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                        <svg class="animate-spin h-4 w-4 text-white absolute right-4 login-btn-spinner" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
                     </button>
                 </div>
@@ -205,13 +210,33 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfVsJUrAAAAALtvBOOT2MggfSF1MPv1h-uNlYLj"></script>
 <script>
-    document.getElementById('google-login').addEventListener('click', function () {
-        window.location.href = "/auth/google";
-    });
+    // Preloading state for login button and reCAPTCHA Enterprise integration
+    $(document).ready(function() {
+        $('#kt_sign_in_form').on('submit', function(e) {
+            e.preventDefault();
+            var btn = $('#signin_submit');
+            btn.prop('disabled', true);
+            btn.find('.login-btn-text').css('opacity', '0.5');
+            btn.find('.login-btn-arrow').hide();
+            btn.find('.login-btn-spinner').show();
 
-    document.getElementById('facebook-login').addEventListener('click', function () {
-        window.location.href = "/auth/facebook";
+            grecaptcha.enterprise.ready(function() {
+                grecaptcha.enterprise.execute('6LfVsJUrAAAAALtvBOOT2MggfSF1MPv1h-uNlYLj', {action: 'LOGIN'}).then(function(token) {
+                    $('#recaptcha_token').val(token);
+                    $('#kt_sign_in_form')[0].submit();
+                });
+            });
+        });
+
+        document.getElementById('google-login').addEventListener('click', function () {
+            window.location.href = "/auth/google";
+        });
+
+        document.getElementById('facebook-login').addEventListener('click', function () {
+            window.location.href = "/auth/facebook";
+        });
     });
 </script>
 @endsection
