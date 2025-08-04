@@ -149,8 +149,11 @@ class ConsignmentController extends Controller
                     'tracking_number' => $shipment->code,
                     'customer_id' => $shipment->client_id,
                     'weight' => $shipment->total_weight,
-                    'declared_value' => $shipment->amount_to_be_collected,
+                    'cost' => $shipment->amount_to_be_collected ?? $shipment->shipping_cost,
                     'status' => $shipment->status_id,
+                    'paid' => $shipment->paid,
+                    'total_weight' => $shipment->total_weight ?? null,
+                    'volume' => $shipment->volume ?? null,
                     'customer' => $shipment->client ? [
                         'id' => $shipment->client->id,
                         'name' => $shipment->client->name ?? null,
