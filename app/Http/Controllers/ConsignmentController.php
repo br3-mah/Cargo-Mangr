@@ -51,6 +51,7 @@ class ConsignmentController extends Controller
             }
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Throwable $th) {
+            dd('Entry Error'.$th);
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
@@ -203,7 +204,7 @@ class ConsignmentController extends Controller
         $code = $rows[2][0] ?? null;
         // Debug the initial code value
         \Log::info('Initial consignment code value:', ['code' => $code, 'row_2' => $rows[2] ?? 'empty']);
-        
+
         // dd($code);
         foreach ($rows as $row) {
             foreach ($row as $cell) {
@@ -255,7 +256,7 @@ class ConsignmentController extends Controller
                 }
             }
         }
-        
+
         foreach ($rows as $row) {
             foreach ($row as $cell) {
                 if ($cell && str_starts_with($cell, 'Destination:')) {
@@ -280,7 +281,7 @@ class ConsignmentController extends Controller
 
         // Debug the $code value
         \Log::info('Consignment code value:', ['code' => $code]);
-        
+
         if (empty($code)) {
             throw new \Exception('Consignment code is required but was empty');
         }
@@ -297,8 +298,6 @@ class ConsignmentController extends Controller
             'destination' => $destination,
             'cargo_type' => 'sea',
         ]);
-        
-        // dd($consignment);
 
         for ($i = 9; $i < count($rows); $i++) {
             $row = $rows[$i];
@@ -379,7 +378,7 @@ class ConsignmentController extends Controller
         $code = $rows[2][0] ?? null;
         // Debug the initial code value
         \Log::info('Initial consignment code value:', ['code' => $code, 'row_2' => $rows[2] ?? 'empty']);
-        
+
         // dd($code);
         foreach ($rows as $row) {
             foreach ($row as $cell) {
@@ -431,7 +430,7 @@ class ConsignmentController extends Controller
                 }
             }
         }
-        
+
         foreach ($rows as $row) {
             foreach ($row as $cell) {
                 if ($cell && str_starts_with($cell, 'Destination:')) {
@@ -456,7 +455,7 @@ class ConsignmentController extends Controller
 
         // Debug the $code value
         \Log::info('Consignment code value:', ['code' => $code]);
-        
+
         if (empty($code)) {
             throw new \Exception('Consignment code is required but was empty');
         }
@@ -473,7 +472,7 @@ class ConsignmentController extends Controller
             'destination' => $destination,
             'cargo_type' => 'sea',
         ]);
-        
+
         // dd($consignment);
 
         for ($i = 9; $i < count($rows); $i++) {
@@ -577,6 +576,7 @@ class ConsignmentController extends Controller
                 }
             }
 
+
             if (is_null($consigneeRow)) {
                 throw new \Exception("Row with both 'Consignee' and 'Job No' not found.");
             }
@@ -597,7 +597,7 @@ class ConsignmentController extends Controller
                 }
             }
 
-            
+            // dd($mawbNum);
             // if (!$mawbNum) {
             //     throw new \Exception("Mawb No. not found below 'Consignee' row.");
             // }
@@ -622,20 +622,18 @@ class ConsignmentController extends Controller
                 }
             }
 
-
+            // dd($jobNum);
             if (!$jobNum) {
                 throw new \Exception("Job No. not found in the same row as 'Consignee'.");
             }
 
             $consignmentCode = $jobNum;
-            $consignment = Consignment::where('consignment_code', $consignmentCode)
-            ->first();
+            $consignment = Consignment::where('consignment_code', $consignmentCode)->first();
             // if(empty($consignment)){
             //     $consignment = Consignment::where('mawb_num', $mawbNum)
             //     ->first();
             // }
-            
-            // dd($consignment);
+
             if (empty($consignment)) {
                 // Create a new record if it doesn't exist
                 $consignment = Consignment::create([
@@ -648,6 +646,8 @@ class ConsignmentController extends Controller
                     'cargo_type' => 'air'
                 ]);
             }
+
+            // dd($consignment);
 
             // Step 4: Find the row with "Hawb No"
             foreach ($rows as $i => $row) {
@@ -667,16 +667,14 @@ class ConsignmentController extends Controller
             // Step 5: Loop through data starting after headerRow
             $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
 
-            // dd($res);
-            if (!$res) {
-                // dd('here');
+            // dd('loopCreateShipment: '.(boolean)$res);
+            if ($res !== 1) {
                 $res = $this->loopCreateShipmentII($headerRow, $rows, $consignment);
-            } 
-            // dd($res);
+            }
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            // dd($e);
+            dd('General Eroor '.$e);
             DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
@@ -686,6 +684,7 @@ class ConsignmentController extends Controller
     {
 
         try {
+            
             for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
                 $rowText = implode(' ', array_map('trim', $rows[$i]));
                 if (stripos($rowText, 'total') !== false) {
@@ -693,7 +692,7 @@ class ConsignmentController extends Controller
                 }
 
                 $data = $rows[$i];
-
+                
                 if (!empty($data[2])) {
                     $userName = $data[1] ?? 'customer' . rand(100000, 999999);
                     $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
@@ -728,11 +727,10 @@ class ConsignmentController extends Controller
                         ->where('consignment_id', $consignment->id)
                         ->first();
 
-                    // dd($clientPhone);
                     if (!$existingShipment) {
                         $shipment = Shipment::create([
                             'consignment_id' => $consignment->id,
-                            'code' => $data[0], // Hawb No
+                            'code' => $data[0], // job num
                             'client_id' => $client->id,
                             'branch_id' => 1,
                             'type' => 1,
@@ -765,10 +763,14 @@ class ConsignmentController extends Controller
                         ]);
                     }
                 }
+                
             }
+            
+            // dd('loopCreateShipment completed successfully');
+            DB::commit();
             return true;
         } catch (\Throwable $th) {
-            // dd($th);
+            dd('Loop Error'.$th->getMessage());
             return false;
         }
     }
@@ -777,6 +779,7 @@ class ConsignmentController extends Controller
         // dd($consignment);
         for ($i = 7 + 1; $i < count($rows) - 1; $i++) {
             $data = $rows[$i];
+            
             if (!empty($data[2])) {
                 // Extract user and client-related information
                 $userName = $data[3] ?? 'customer' . rand(100000, 999999); // Assuming Mark column represents user/client name
@@ -807,7 +810,7 @@ class ConsignmentController extends Controller
                 // Create Shipment
                 $shipment = Shipment::create([
                     'consignment_id' => $consignment->id,
-                    'code' => $data[2],
+                    'code' =>  $data[2],
                     'client_id' => $client->id,
                     'branch_id' => 1,
                     'type' => 1,
@@ -1102,7 +1105,7 @@ class ConsignmentController extends Controller
             ->orderByDesc('id')
             ->first();
 
-        
+
         if ($history) {
             $stage = \App\Models\TrackingStage::find($history->stage_id);
             return response()->json([
