@@ -65,7 +65,6 @@ class ConsignmentController extends Controller
             $rows = $worksheet->toArray();
 
             // Step 3: Extract and create shipments
-            // dd($rows[8]);
             $xlsSize = count($rows[8]);
             // dd($rows[8]);
             // dd($xlsSize);
@@ -566,6 +565,8 @@ class ConsignmentController extends Controller
             $mawbRow = null;
             $headerRow = null;
 
+
+
             // Step 1: Find the row containing both "Consignee" and "Job No"
             foreach ($rows as $rowIndex => $row) {
                 $rowText = implode(' ', array_map('trim', $row));
@@ -662,17 +663,47 @@ class ConsignmentController extends Controller
                 throw new \Exception("Header row containing 'Hawb No' not found.");
             }
 
-            // Step 5: Loop through data starting after headerRow
-            $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
+            //Different excel sheet having different size of array length / format
+            $xlsSize = count($rows[8]);
+            switch ($xlsSize) {
+                case 8:
+                        // Step 5: Loop through data starting after headerRow
+                        $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
 
-            // dd('loopCreateShipment: '.(boolean)$res);
-            if ($res !== 1) {
-                $res = $this->loopCreateShipmentII($headerRow, $rows, $consignment);
+                        // dd('loopCreateShipment: '.(boolean)$res);
+                        if ($res !== 1) {
+                            $res = $this->loopCreateShipmentII($headerRow, $rows, $consignment);
+                        }
+                    break;
+                case 9:
+                        // Step 5: Loop through data starting after headerRow
+                        $this->loopCreateShipmentSize9($headerRow, $rows, $consignment);
+                    break;
+                case 10:
+                        // Step 5: Loop through data starting after headerRow
+                        $this->loopCreateShipmentSize9($headerRow, $rows, $consignment);
+                    break;
+                case 12:
+                        // Step 5: Loop through data starting after headerRow
+                        $this->loopCreateShipmentSize9($headerRow, $rows, $consignment);
+                    break;
+
+                default:
+                        // Step 5: Loop through data starting after headerRow
+                        $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
+
+                        // dd('loopCreateShipment: '.(boolean)$res);
+                        if ($res !== 1) {
+                            $res = $this->loopCreateShipmentII($headerRow, $rows, $consignment);
+                        }
+                    break;
             }
+
+
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            dd('General Eroor '.$e);
+            dd('General Error '.$e);
             DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
         }
@@ -843,6 +874,100 @@ class ConsignmentController extends Controller
             }
         } catch (\Throwable $th) {
             dd($th);
+        }
+    }
+
+    public function loopCreateShipmentSize9($headerRow, $rows, $consignment)
+    {
+        try {
+
+            for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
+                $rowText = implode(' ', array_map('trim', $rows[$i]));
+                if (stripos($rowText, 'total') !== false) {
+                    break;
+                }
+
+                $data = $rows[$i];
+                // dd($data);
+
+                if (!empty($data[1])) {
+                    $userName = $data[1] ?? 'customer' . rand(100000, 999999);
+                    $userEmail = strtolower(str_replace(' ', '', $userName)) . '@mail.com';
+                    $clientCode = rand(100000, 999999);
+                    $clientPhone = preg_replace('/\D+/', '', (strlen($data[6] ?? '')));
+
+
+                    // Avoid duplicate User by email
+                    $user = User::firstOrCreate(
+                        ['email' => $userEmail],
+                        [
+                            'name' => $userName,
+                            'password' => bcrypt('password123'),
+                            'role' => 4,
+                            'verified' => 1
+                        ]
+                    );
+
+                    // Avoid duplicate Client by user_id (or use another unique key if better)
+                    $client = Client::firstOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'code' => $clientCode,
+                            'name' => $userName,
+                            'email' => $userEmail,
+                            'address' => preg_replace('/[0-9\+\s]+/', '', $clientPhone)
+                        ]
+                    );
+
+                    // Avoid duplicate Shipment by code + consignment
+                    $existingShipment = Shipment::where('code', $data[0])
+                        ->where('consignment_id', $consignment->id)
+                        ->first();
+
+                    if (!$existingShipment) {
+                        $shipment = Shipment::create([
+                            'consignment_id' => $consignment->id,
+                            'code' => $data[0], // job num
+                            'client_id' => $client->id,
+                            'branch_id' => 1,
+                            'type' => 1,
+                            'status_id' => 1,
+                            'client_status' => 1,
+                            'from_country_id' => 1,
+                            'from_state_id' => 1,
+                            'to_country_id' => 1,
+                            'to_state_id' => 1,
+
+                            'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
+                            'return_cost' => 0,
+                            'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
+
+                            'shipping_date' => Carbon::now(),
+                            'total_weight' => (float)($data[5] ?? 0),
+                            'client_address' => $userName.''.$clientPhone,
+                            'client_phone' => $clientPhone
+                        ]);
+
+                        PackageShipment::create([
+                            'package_id' => 1,
+                            'description' => $data[2].' '.$data[3],
+                            'shipment_id' => $shipment->id,
+                            'qty' => is_string($data[4]) ? ($data[4] ?? 1) : 1,
+                            'weight' => (strpos($data[5], '.') || is_numeric($data[5]) !== false) ? $data[5] : ($data[5] ?? 0),
+                            'length' => 1,
+                            'width' => 1,
+                            'height' => 1,
+                        ]);
+                    }
+                }
+
+            }
+            // dd('loopCreateShipment completed successfully');
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            dd('Loop Error'.$th->getMessage());
+            return false;
         }
     }
 
