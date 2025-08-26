@@ -72,19 +72,13 @@ class ConsignmentController extends Controller
                 case 12:
                     $this->manifest_sea($rows);
                     break;
-                case 14:
-                    $this->manifest_sea15($rows);
-                    break;
-                case 15:
-                    $this->manifest_sea15($rows);
-                    break;
-                case 16:
-                    $this->manifest_sea15($rows);
+                default: //14,15,16
+                    $this->manifest_sea_default($rows);
                     break;
             }
             return true;
         } catch (\Throwable $th) {
-            dd('Failed to Import this Excel Format'. $th->getMessage());
+            dd('Excel Format Error: '. $th->getMessage());
             return false;
         }
     }
@@ -373,7 +367,7 @@ class ConsignmentController extends Controller
 
 
     //Size 15
-    public function manifest_sea15($rows){
+    public function manifest_sea_default($rows){
         $code = $rows[2][0] ?? null;
         // Debug the initial code value
         \Log::info('Initial consignment code value:', ['code' => $code, 'row_2' => $rows[2] ?? 'empty']);
@@ -476,6 +470,7 @@ class ConsignmentController extends Controller
 
         for ($i = 9; $i < count($rows); $i++) {
             $row = $rows[$i];
+  
             if($row[2] !== null){
                 if (empty($row[0]) || Str::startsWith($row[0], 'HB')) {
                     continue; // Skip empty rows or header
@@ -537,7 +532,7 @@ class ConsignmentController extends Controller
                     'description' => $row[4],
                     'shipment_id' => $shipment->id,
                     'qty' => $row[6],
-                    'weight' => $row[8] ?? 0,
+                    'weight' => $row[8] == null ? 0 : (float)$row[8],
                     'length' => 1,
                     'width' => 1,
                     'height' => 1,
@@ -873,7 +868,7 @@ class ConsignmentController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            dd($th);
+            dd('Excel Format Error'.$th->getMessage());
         }
     }
 
