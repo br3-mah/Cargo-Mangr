@@ -7,16 +7,24 @@ use Illuminate\Http\Request;
 
 class TrackingStageController extends Controller
 {
-    public function index()
-    {
-        $airStages = TrackingStage::where('cargo_type', 'air')->orderBy('order')->get();
-        $seaStages = TrackingStage::where('cargo_type', 'sea')->orderBy('order')->get();
-        $lastStage = TrackingStage::orderByDesc('order')->first();
-        return view('cargo::adminLte.pages.tracking-stages.index', compact('airStages', 'seaStages', 'lastStage'));
-    }
+public function index()
+{
+    $airStages = TrackingStage::where('cargo_type', 'air')
+        ->orderByDesc('order')
+        ->get();
+
+    $seaStages = TrackingStage::where('cargo_type', 'sea')
+        ->orderByDesc('order')
+        ->get();
+
+    $lastStage = TrackingStage::orderByDesc('order')->first();
+
+    return view('cargo::adminLte.pages.tracking-stages.index', compact('airStages', 'seaStages', 'lastStage'));
+}
+
 
     public function create()
-    {        
+    {
         $lastStage = TrackingStage::orderByDesc('order')->first();
         return view('cargo::adminLte.pages.tracking-stages.create', compact('lastStage'));
     }
@@ -27,6 +35,7 @@ class TrackingStageController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'cargo_type' => 'required|in:air,sea',
+            'status' => 'required',
             'order' => 'required|integer|unique:tracking_stages,order',
             'is_active' => 'boolean'
         ]);
@@ -44,10 +53,12 @@ class TrackingStageController extends Controller
 
     public function update(Request $request, TrackingStage $trackingStage)
     {
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'cargo_type' => 'required|in:air,sea',
+            'status' => 'required',
             'order' => 'required|integer|unique:tracking_stages,order,' . $trackingStage->id,
             'is_active' => 'boolean'
         ]);
@@ -68,7 +79,7 @@ class TrackingStageController extends Controller
 
     // API endpoint for fetching stages by cargo type
     public function apiIndex(Request $request)
-    {   
+    {
         $cargoType = $request->input('cargo_type', 'air');
         $stages = TrackingStage::where('cargo_type', $cargoType)
             ->where('is_active', true)
@@ -77,4 +88,4 @@ class TrackingStageController extends Controller
 
         return response()->json($stages);
     }
-} 
+}

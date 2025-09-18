@@ -8,15 +8,36 @@
     {{-- Sea Table section 1 --}}
     <div class="row" id="seaTableSection">
         <div class="col-12">
+            <div class="px-4 py-2 bg-gray-50 border-t">
+                <p class="text-sm text-gray-700 leading-relaxed">
+                    <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                    The order of how these tracking stages are displayed in the table below
+                    (<span class="font-semibold">descending order</span>) is exactly how they will appear
+                    in the <span class="font-semibold">tracking UI page</span>.
+                    Please ensure the information entered for both
+                    <span class="font-semibold">Sea Cargo</span> and <span class="font-semibold">Air Cargo</span>
+                    is correct, and make sure to edit them carefully in the intended order.
+                </p>
+            </div>
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Sea Cargo Tracking Stages</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('tracking-stages.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> Add New Stage
+                <div class="card-header flex items-center justify-between">
+                    {{-- Title + Add button aligned left --}}
+                    <div class="flex items-center space-x-3">
+                        <h3 class="card-title text-lg font-semibold text-warning">
+                            Sea Cargo Tracking Stages
+                            <img width="44" src="{{ asset('icon/ship.svg') }}" alt="Sea Cargo" class="me-2">
+                        </h3>
+                    </div>
+                    <div class="py-6">
+                        <a href="{{ route('tracking-stages.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition">
+                            <i class="fas fa-plus mr-1"></i> Add New Stage
                         </a>
                     </div>
                 </div>
+
+                {{-- Informational Note (full width, aligned left) --}}
+
+
                 <div class="card-body">
                     <!-- Table View -->
                     <div id="seaTableView" class="view-container">
@@ -77,7 +98,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Air Cargo Tracking Stages</h3>
+                    <h3 class="card-title text-warning">
+                        Air Cargo Tracking Stages
+                        <img width="44" src="{{ asset('icon/plane.svg') }}" alt="Air Cargo" class="me-2">
+</h3>
                 </div>
                 <div class="card-body">
                     <!-- Table View -->
@@ -218,7 +242,7 @@ function filterStages(type) {
     if (!searchInput) return;
 
     const searchTerm = searchInput.value.toLowerCase();
-    
+
     // Get all elements to filter
     const elements = {
         table: document.querySelectorAll('#' + type + 'TableView .stage-row'),
@@ -279,7 +303,7 @@ function updateNoResultsMessage(type) {
     if (!hasVisibleResults) {
         // Get active view
         const activeView = document.querySelector('#' + type + 'TableView:not([style*="display: none"]), #' + type + 'ListView:not([style*="display: none"]), #' + type + 'GridView:not([style*="display: none"])');
-        
+
         if (activeView) {
             const noResultsDiv = document.createElement('div');
             noResultsDiv.className = 'no-results-message text-center py-5';
@@ -338,15 +362,15 @@ function updateNoResultsMessage(type) {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .btn-group {
         width: 100%;
     }
-    
+
     .btn-group .btn {
         flex: 1;
     }
-    
+
     .input-group {
         max-width: 100% !important;
     }
@@ -354,4 +378,4 @@ function updateNoResultsMessage(type) {
 </style>
 @endpush
 
-@endsection 
+@endsection

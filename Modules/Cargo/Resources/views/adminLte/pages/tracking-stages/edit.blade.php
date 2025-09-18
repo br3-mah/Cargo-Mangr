@@ -53,7 +53,7 @@
                                         <span class="input-group-text bg-warning text-white">
                                             <i class="fas fa-tag"></i>
                                         </span>
-                                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
                                             id="name" name="name" value="{{ old('name', $trackingStage->name) }}" required
                                             placeholder="Enter stage name">
                                         @error('name')
@@ -71,7 +71,7 @@
                                         <span class="input-group-text bg-warning text-white">
                                             <i class="fas fa-sort-numeric-down"></i>
                                         </span>
-                                        <input type="number" class="form-control @error('order') is-invalid @enderror" 
+                                        <input type="number" class="form-control @error('order') is-invalid @enderror"
                                             id="order" name="order" value="{{ old('order', $trackingStage->order) }}" required>
                                         @error('order')
                                             <span class="invalid-feedback">{{ $message }}</span>
@@ -89,8 +89,8 @@
                                 <span class="input-group-text bg-warning text-white">
                                     <i class="fas fa-info-circle"></i>
                                 </span>
-                                <textarea class="form-control @error('description') is-invalid @enderror" 
-                                    id="description" name="description" rows="3" 
+                                <textarea class="form-control @error('description') is-invalid @enderror"
+                                    id="description" name="description" rows="3"
                                     placeholder="Enter stage description">{{ old('description', $trackingStage->description) }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback">{{ $message }}</span>
@@ -106,7 +106,7 @@
                                 <span class="input-group-text bg-warning text-white">
                                     <i class="fas fa-box"></i>
                                 </span>
-                                <select class="form-control @error('cargo_type') is-invalid @enderror" 
+                                <select class="form-control @error('cargo_type') is-invalid @enderror"
                                     id="cargo_type" name="cargo_type" required>
                                     <option value="">Select cargo type</option>
                                     <option value="air" {{ old('cargo_type', $trackingStage->cargo_type) == 'air' ? 'selected' : '' }}>
@@ -127,25 +127,37 @@
                                 <i class="fas fa-flag text-warning me-2"></i>Status
                             </label>
                             <div class="input-group">
+                                {{-- @dd($trackingStage->status) --}}
                                 <span class="input-group-text bg-warning text-white">
                                     <i class="fas fa-flag"></i>
                                 </span>
-                                <select class="form-control @error('status') is-invalid @enderror" 
-                                    id="status" name="status" required>
-                                    <option value="">Select status</option>
-                                    <option value="PENDING" {{ old('status', $trackingStage->status) == 'PENDING' ? 'selected' : '' }}>
+                                <select class="form-control @error('status') is-invalid @enderror"
+                                        id="status" name="status" required>
+
+                                    {{-- Show current status --}}
+                                    @if(!empty($trackingStage->status))
+                                        <option value="{{ $trackingStage->status }}" selected disabled>
+                                            Current: {{ ucfirst(strtolower(str_replace('_', ' ', $trackingStage->status))) }}
+                                        </option>
+                                    @else
+                                        <option value="" selected disabled>Select status</option>
+                                    @endif
+
+                                    {{-- Available options --}}
+                                    <option value="PENDING" {{ $trackingStage->status == 'PENDING' ? 'selected' : '' }}>
                                         Pending
                                     </option>
-                                    <option value="IN_TRANSIT" {{ old('status', $trackingStage->status) == 'IN_TRANSIT' ? 'selected' : '' }}>
+                                    <option value="IN_TRANSIT" {{ $trackingStage->status == 'IN_TRANSIT' ? 'selected' : '' }}>
                                         In Transit
                                     </option>
-                                    <option value="DELIVERED" {{ old('status', $trackingStage->status) == 'DELIVERED' ? 'selected' : '' }}>
+                                    <option value="DELIVERED" {{ $trackingStage->status == 'DELIVERED' ? 'selected' : '' }}>
                                         Delivered
                                     </option>
-                                    <option value="DEFAULTED" {{ old('status', $trackingStage->status) == 'DEFAULTED' ? 'selected' : '' }}>
+                                    <option value="DEFAULTED" {{ $trackingStage->status == 'DEFAULTED' ? 'selected' : '' }}>
                                         Defaulted
                                     </option>
                                 </select>
+
                                 @error('status')
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
@@ -154,7 +166,7 @@
 
                         <div class="form-group mt-3">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="is_active" 
+                                <input type="checkbox" class="custom-control-input" id="is_active"
                                     name="is_active" value="1" {{ old('is_active', $trackingStage->is_active) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="is_active">
                                     <i class="fas fa-toggle-on text-warning me-2"></i>Active
@@ -245,4 +257,4 @@ select.form-control {
     /* Remove these styles as they're no longer needed */
 }
 </style>
-@endsection 
+@endsection

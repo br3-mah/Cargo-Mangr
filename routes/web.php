@@ -102,7 +102,7 @@ Route::middleware(['auth'])->group(function () {
 
     // API Routes for tracking stages
     Route::get('/api/tracking-stages', [TrackingStageController::class, 'apiIndex']);
-    
+
     Route::get('shipments/overview', [ShipmentController::class, 'overview'])->name('shipments.overview');
 });
 
