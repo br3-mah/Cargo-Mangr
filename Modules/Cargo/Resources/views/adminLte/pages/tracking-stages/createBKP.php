@@ -13,15 +13,20 @@
                     <i class="fas fa-home mr-1"></i> Dashboard
                 </a>
                 <svg class="h-4 w-4 mx-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"></path>
                 </svg>
             </li>
             <li class="flex items-center">
-                <a href="{{ fr_route('tracking-stages.index') }}" class="text-yellow-400 hover:text-yellow-500 transition-colors">
+                <a href="{{ fr_route('tracking-stages.index') }}"
+                    class="text-yellow-400 hover:text-yellow-500 transition-colors">
                     <i class="fas fa-list mr-1"></i> Tracking Stages
                 </a>
                 <svg class="h-4 w-4 mx-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"></path>
                 </svg>
             </li>
             <li class="text-gray-700 font-medium" aria-current="page">
@@ -53,15 +58,11 @@
                                             id="name" name="name" value="{{ old('name') }}" required
                                             placeholder="Enter stage name">
                                         @error('name')
-                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <small class="form-text text-muted">
-                                        Provide a short, clear name (e.g., "Customs Clearance, Offloaded at Sea Border"). This will be visible in the tracking flow for example all sea cargo types.
-                                    </small>
                                 </div>
                             </div>
-
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="order">
@@ -72,14 +73,13 @@
                                             <i class="fas fa-sort-numeric-down"></i>
                                         </span>
                                         <input type="number" class="form-control @error('order') is-invalid @enderror"
-                                            id="order" name="order" value="{{ old('order', isset($lastStage) ? $lastStage->order + 1 : 1) }}" required readonly>
+                                            id="order" name="order"
+                                            value="{{ old('order', isset($lastStage) ? $lastStage->order + 1 : 1) }}"
+                                            required readonly>
                                         @error('order')
-                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <small class="form-text text-muted">
-                                        The order defines the sequence in which stages appear in the tracker. It is auto-assigned. Don't modify this
-                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -96,12 +96,9 @@
                                     id="description" name="description" rows="3"
                                     placeholder="Enter stage description">{{ old('description') }}</textarea>
                                 @error('description')
-                                    <span class="invalid-feedback">{{ $message }}</span>
+                                <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <small class="form-text text-muted">
-                                Add a brief explanation of this stage (e.g., "Awaiting customs approval before release").
-                            </small>
                         </div>
 
                         <div class="form-group mt-3">
@@ -112,19 +109,20 @@
                                 <span class="input-group-text bg-warning text-white">
                                     <i class="fas fa-box"></i>
                                 </span>
-                                <select class="form-control @error('cargo_type') is-invalid @enderror"
-                                    id="cargo_type" name="cargo_type" required>
+                                <select class="form-control @error('cargo_type') is-invalid @enderror" id="cargo_type"
+                                    name="cargo_type" required>
                                     <option value="">Select cargo type</option>
-                                    <option value="air" {{ old('cargo_type') == 'air' ? 'selected' : '' }}>Air Cargo</option>
-                                    <option value="sea" {{ old('cargo_type') == 'sea' ? 'selected' : '' }}>Sea Cargo</option>
+                                    <option value="air" {{ old('cargo_type') == 'air' ? 'selected' : '' }}>
+                                        <i class="fas fa-plane"></i> Air Cargo
+                                    </option>
+                                    <option value="sea" {{ old('cargo_type') == 'sea' ? 'selected' : '' }}>
+                                        <i class="fas fa-ship"></i> Sea Cargo
+                                    </option>
                                 </select>
                                 @error('cargo_type')
-                                    <span class="invalid-feedback">{{ $message }}</span>
+                                <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <small class="form-text text-muted">
-                                Select whether this stage applies to Air Cargo or Sea Cargo shipments.
-                            </small>
                         </div>
 
                         <div class="form-group mt-3">
@@ -135,34 +133,36 @@
                                 <span class="input-group-text bg-warning text-white">
                                     <i class="fas fa-flag"></i>
                                 </span>
-                                <select class="form-control @error('status') is-invalid @enderror"
-                                    id="status" name="status" required>
+                                <select class="form-control @error('status') is-invalid @enderror" id="status"
+                                    name="status" required>
                                     <option value="">Select status</option>
-                                    <option value="PENDING" {{ old('status') == 'PENDING' ? 'selected' : '' }}>Pending</option>
-                                    <option value="IN_TRANSIT" {{ old('status') == 'IN_TRANSIT' ? 'selected' : '' }}>In Transit</option>
-                                    <option value="DELIVERED" {{ old('status') == 'DELIVERED' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="DEFAULTED" {{ old('status') == 'DEFAULTED' ? 'selected' : '' }}>Defaulted</option>
+                                    <option value="PENDING" {{ old('status') == 'PENDING' ? 'selected' : '' }}>
+                                        Pending
+                                    </option>
+                                    <option value="IN_TRANSIT" {{ old('status') == 'IN_TRANSIT' ? 'selected' : '' }}>
+                                        In Transit
+                                    </option>
+                                    <option value="DELIVERED" {{ old('status') == 'DELIVERED' ? 'selected' : '' }}>
+                                        Delivered
+                                    </option>
+                                    <option value="DEFAULTED" {{ old('status') == 'DEFAULTED' ? 'selected' : '' }}>
+                                        Defaulted
+                                    </option>
                                 </select>
                                 @error('status')
-                                    <span class="invalid-feedback">{{ $message }}</span>
+                                <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <small class="form-text text-muted">
-                                Choose the tracking status that represents the stage’s current progress.
-                            </small>
                         </div>
 
                         <div class="form-group mt-3">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="is_active"
-                                    name="is_active" value="1" checked>
+                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active"
+                                    value="1" checked>
                                 <label class="custom-control-label" for="is_active">
                                     <i class="fas fa-toggle-on text-warning me-2"></i>Active
                                 </label>
                             </div>
-                            <small class="form-text text-muted">
-                                Toggle ON to make this stage available in tracking. Inactive stages will not be shown.
-                            </small>
                         </div>
 
                         <div class="form-group mt-4">
@@ -174,7 +174,6 @@
                             </a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
@@ -191,7 +190,7 @@
     box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
 }
 
-.custom-control-input:checked ~ .custom-control-label::before {
+.custom-control-input:checked~.custom-control-label::before {
     background-color: #ffc107;
     border-color: #ffc107;
 }
@@ -242,7 +241,7 @@ select.form-control {
 /* Remove old breadcrumb styles since we're using Tailwind now */
 .breadcrumb,
 .breadcrumb-item,
-.breadcrumb-item + .breadcrumb-item::before,
+.breadcrumb-item+.breadcrumb-item::before,
 .breadcrumb-item a,
 .breadcrumb-item.active,
 .breadcrumb-item i {

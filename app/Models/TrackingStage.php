@@ -11,6 +11,7 @@ class TrackingStage extends Model
         'description',
         'cargo_type',
         'order',
+        'status',
         'is_active'
     ];
 
@@ -31,4 +32,4 @@ class TrackingStage extends Model
             ->orderBy('order')
             ->get();
     }
-} 
+}
