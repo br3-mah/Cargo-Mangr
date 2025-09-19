@@ -1603,6 +1603,7 @@ class ShipmentController extends Controller
                 ->with([
                     'model' => $shipment,
                     'track_map' => $track_map,
+                    'container' => $cons
                 ]);
 
         } catch (\Exception $e) {

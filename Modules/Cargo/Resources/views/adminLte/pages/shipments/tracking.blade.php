@@ -192,7 +192,7 @@
     </div>
 @else
     @php
-       
+
         // $allStages = [ ... ]; // Get all stages from DB or config
         $completedCount = 0;
         foreach ($track_map as $log) {
@@ -208,7 +208,7 @@
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-white mb-2">Tracking Information</h1>
                 <p class="text-xl text-white">#{{ $model->code ?? 'Unknown' }}</p>
-                
+
                 @if($model)
                     <div class="inline-flex items-center space-x-2 bg-green-50/90 backdrop-blur-sm px-4 py-2 rounded-full border border-green-200 mt-4">
                         <div class="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -251,20 +251,26 @@
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-white {{ $isCompleted ? 'bg-blue-900':'bg-gray-500' }} rounded-lg p-4">
-                                           
-                                            <p class="font-medium {{ $isCompleted ? 'text-yellow-600':'text-yellow-500' }} text-lg  mb-1">
-                                                {{ $model->code }}
-                                                {{ $log[0] }}</p>
-                                            @if($isCompleted)
-                                                <div class="flex items-center text-sm text-white-500">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
-                                                    {{ $formattedDate ?? 'Not Yet' }}
-                                                    <span class="mx-2">•</span>
-                                                    <span>{{ $timeAgo }}</span>
-                                                </div>
-                                            @endif
+
+                                                <p class="font-medium {{ $isCompleted ? 'text-yellow-500':'text-yellow-400' }} text-lg  mb-1">
+                                                    {{ $container->consignment_code }} Container, 
+                                                    {{ $log[0] }}
+                                                </p>
+
+                                                <small>Container: {{ $container->consignment_code }}</small>
+                                                <br>
+                                                <small>Shipment (Parcel) Code: {{$model->code}}</small>
+
+                                                @if($isCompleted)
+                                                    <div class="flex items-center text-sm text-white-500">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        {{ $formattedDate ?? 'Not Yet' }}
+                                                        <span class="mx-2">•</span>
+                                                        <span>{{ $timeAgo }}</span>
+                                                    </div>
+                                                @endif
                                         </div>
                                     </div>
                                 </div>
@@ -279,7 +285,7 @@
                             <h3 class="text-xl font-bold text-gray-800 mb-2">Track Another Shipment</h3>
                             <p class="text-gray-600">Enter a different tracking code to search</p>
                         </div>
-                        
+
                         <form action="{{ route('shipments.tracking') }}" method="GET" class="flex flex-col sm:flex-row gap-4">
                             <div class="flex-1 relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
