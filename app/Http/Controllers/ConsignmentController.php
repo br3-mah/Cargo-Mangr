@@ -470,7 +470,7 @@ class ConsignmentController extends Controller
 
         for ($i = 9; $i < count($rows); $i++) {
             $row = $rows[$i];
-  
+
             if($row[2] !== null){
                 if (empty($row[0]) || Str::startsWith($row[0], 'HB')) {
                     continue; // Skip empty rows or header
