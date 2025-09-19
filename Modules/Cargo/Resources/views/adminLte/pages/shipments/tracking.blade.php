@@ -252,7 +252,9 @@
                                     <div class="flex-1">
                                         <div class="text-white {{ $isCompleted ? 'bg-blue-900':'bg-gray-500' }} rounded-lg p-4">
                                            
-                                            <p class="font-medium {{ $isCompleted ? 'text-yellow-600':'text-yellow-500' }} text-lg  mb-1">{{ $log[0] }}</p>
+                                            <p class="font-medium {{ $isCompleted ? 'text-yellow-600':'text-yellow-500' }} text-lg  mb-1">
+                                                {{ $model->code }}
+                                                {{ $log[0] }}</p>
                                             @if($isCompleted)
                                                 <div class="flex items-center text-sm text-white-500">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
