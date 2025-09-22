@@ -356,7 +356,7 @@
                             foreach ($track_map as $log) {
                                 if ($log[1] !== null) $completedCount++;
                             }
-                            $stages = \App\Models\TrackingStage::where('cargo_type', $model->cargo_type)
+                            $stages = \App\Models\TrackingStage::where('cargo_type', $container->cargo_type)
                                 ->orderBy('order')
                                 ->get();
                         @endphp
@@ -369,7 +369,9 @@
                             @if($model)
                                 <div class="inline-flex items-center space-x-2 bg-green-50/90 backdrop-blur-sm px-4 py-2 rounded-full border border-green-200 mt-4">
                                     <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                                    <span class="text-green-700 font-medium">Tracking Active</span>
+                                    <span class="text-green-700 font-medium uppercase"> Active Tracking | {{ $container->cargo_type }} Cargo</span>
+                                    <span class="text-yellow-900"> * </small>
+                                    <span class="text-yellow-700"> {{ $model->client->name }}</small>
                                 </div>
                             @endif
                         </div>
@@ -387,7 +389,7 @@
                                         <div class="progress-bar-fill" style="width: {{ (count(array_filter($track_map, function($item) { return $item[1] !== null; })) / 6) * 100 }}%"></div>
                                     </div>
                                 </div>
-
+                                
                                 <!-- Tracking Timeline -->
                                 <div class="space-y-8">
                                     @foreach(array_reverse($track_map) as $index => $log)
@@ -403,13 +405,19 @@
                                             <div class="timeline-dot"></div>
                                             <div class="bg-blue-900 rounded-lg p-6  @if($loop->first) slow-pulse @endif">
                                                 <p class="font-medium text-yellow-500 text-lg mb-1">
-                                                    {{ $container->consignment_code }} Container, 
+                                                    {{ $container->consignment_code }} @if ($container->cargo_type == 'sea')
+                                                    Container
+                                                    @endif, 
                                                     {{ $log[0] }}
                                                 </p>
                                 
                                                 <div class="text-white text-sm mb-3">
-                                                    <div>Container: {{ $container->consignment_code }}</div>
-                                                    <div>Shipment (Parcel) Code: {{$model->code}}</div>
+                                                    @if ($container->cargo_type == 'sea')
+                                                        <div>Container: {{ $container->consignment_code }}</div>
+                                                        <div>Shipment (Parcel) Code: {{$model->code}}</div>
+                                                    @else
+                                                        <div>Shipment (Parcel) Code: {{$model->code}}</div>
+                                                    @endif
                                                 </div>
                                 
                                                 @if($isCompleted)
