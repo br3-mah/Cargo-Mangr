@@ -1,13 +1,4 @@
-@extends('cargo::adminLte.layouts.blank')
 
-@section('page-title', 'Tracking')
-@php
-     $pageTitle = __('cargo::view.tracking_shipment') . ' #' . (isset($model) ? $model->code : __('cargo::view.error'));
-@endphp
-@section('page-type',  $pageTitle)
-
-@section('styles')
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -85,9 +76,7 @@
             min-height: 100vh;
         }
     </style>
-@endsection
-
-@section('page-content')
+    
 @if(!isset($track_map))
     <div class="min-h-screen tracking-bg">
         <div class="container mx-auto px-4 py-16">
@@ -330,4 +319,3 @@
         </div>
     </div>
 @endif
-@endsection

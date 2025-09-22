@@ -1,8 +1,8 @@
 @php
-$user_role = auth()->user()->role;
-$admin = 1;
-$branch = 3;
-$client = 4;
+    $user_role = auth()->user()->role;
+    $admin = 1;
+    $branch = 3;
+    $client = 4;
 @endphp
 @extends('cargo::adminLte.layouts.master')
 @section('pageTitle', 'Consignments')
