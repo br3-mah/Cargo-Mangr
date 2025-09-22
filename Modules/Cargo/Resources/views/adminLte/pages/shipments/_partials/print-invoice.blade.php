@@ -98,7 +98,7 @@
                 </div>
                 <div class="leading-relaxed">
                     <div class="text-xl font-bold text-primary">NEWWORLD CARGO LIMITED</div>
-                    <div>Global Logistics Solutions</div>
+                    <div>Shipping Made Easy</div>
                     <div>+260 763 297 287 | info@newworldcargo.com</div>
                     <div>Shop 62/A, Carousel Shopping Centre, Lusaka, Zambia</div>
                 </div>
@@ -162,7 +162,7 @@
                         <div><span class="font-semibold inline-block w-24">Prev Branch:</span> {{ Modules\Cargo\Entities\Branch::find($shipment->prev_branch)->name ?? 'N/A' }}</div>
                     @endif
                     <div><span class="font-semibold inline-block w-24">Weight:</span> {{ $shipment->total_weight }} KG</div>
-                    <div><span class="font-semibold inline-block w-24">Tax:</span> {{ format_price($shipment->tax) }}</div>
+                    {{-- <div><span class="font-semibold inline-block w-24">Tax:</span> {{ format_price($shipment->tax) }}</div> --}}
                     {{-- <div><span class="font-semibold inline-block w-24">Collection:</span> {{ (number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2) ?? 0) }}</div> --}}
                 </div>
 
@@ -222,11 +222,11 @@
                 <div>Subtotal:</div>
                 <div>K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'),2)}}</div>
             </div>
-            <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+            {{-- <div class="flex justify-between px-4 py-2 border-b border-gray-200">
                 <div>Tax:</div>
                 <div>{{ format_price($shipment->tax) }}</div>
-            </div>
-            <div class="flex justify-between px-4 py-2 bg-primary text-white font-semibold">
+            </div> --}}
+            <div class="flex justify-between px-4 py-2 bg-primary text-dark font-bold">
                 <div>TOTAL:</div>
                 <div>K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'),2) ?? 0 }}</div>
             </div>

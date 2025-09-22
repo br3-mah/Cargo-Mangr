@@ -53,7 +53,7 @@
                         <div class="tracking-status text-center">
                             <div class="shipment-illustration mb-4">
                                 <img src="{{ asset('assets/anime/earth.gif') }}" alt="">
-                            </div
+                            </div>
                             <span class="badge badge-pill badge-primary px-3 py-2">Tracking Active</span>
                             <p class="text-muted small mt-3 mb-0">Last updated: <span id="statusUpdateTime"></span></p>
                         </div>
