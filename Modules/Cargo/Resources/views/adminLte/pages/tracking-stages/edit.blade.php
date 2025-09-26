@@ -150,6 +150,9 @@
                                     <option value="IN_TRANSIT" {{ $trackingStage->status == 'IN_TRANSIT' ? 'selected' : '' }}>
                                         In Transit
                                     </option>
+                                    <option value="ARRIVED" {{ $trackingStage->status == 'ARRIVED' ? 'selected' : '' }}>
+                                        Arrived
+                                    </option>
                                     <option value="DELIVERED" {{ $trackingStage->status == 'DELIVERED' ? 'selected' : '' }}>
                                         Delivered
                                     </option>
