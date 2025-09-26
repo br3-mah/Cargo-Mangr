@@ -140,6 +140,7 @@
                                     <option value="">Select status</option>
                                     <option value="PENDING" {{ old('status') == 'PENDING' ? 'selected' : '' }}>Pending</option>
                                     <option value="IN_TRANSIT" {{ old('status') == 'IN_TRANSIT' ? 'selected' : '' }}>In Transit</option>
+                                    <option value="ARRIVED" {{ old('status') == 'ARRIVED' ? 'selected' : '' }}>Arrived</option>
                                     <option value="DELIVERED" {{ old('status') == 'DELIVERED' ? 'selected' : '' }}>Delivered</option>
                                     <option value="DEFAULTED" {{ old('status') == 'DEFAULTED' ? 'selected' : '' }}>Defaulted</option>
                                 </select>
