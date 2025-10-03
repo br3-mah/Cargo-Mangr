@@ -221,7 +221,10 @@ class ClientController extends Controller
     public function registerStore(Request $request , $calc = false)
     {
         try {
-            $request->validate([
+            // Debug: Log all request data
+            //Log::info('Registration attempt - Request data:', $request->all());
+            
+            $validator = \Validator::make($request->all(), [
                 'name' => 'required|string|min:3|max:50',
                 'email' => 'required|max:50|email|unique:users,email',
                 'password' => 'required|string|min:6',
@@ -232,6 +235,11 @@ class ClientController extends Controller
                 'branch_id' => 'required',
                 'terms_conditions' => 'required',
             ]);
+            
+            if ($validator->fails()) {
+                \Log::error('Registration validation failed:', $validator->errors()->toArray());
+                return back()->withErrors($validator)->withInput();
+            }
 
             $data = $request->only(['name', 'email', 'password', 'responsible_mobile', 'country_code' , 'responsible_name','national_id','branch_id']);
 
