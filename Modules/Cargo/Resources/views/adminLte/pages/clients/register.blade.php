@@ -97,6 +97,9 @@
   .login-box {
     position: relative;
     z-index: 2;
+    max-width: 960px;
+    width: calc(100% - 40px);
+    margin: 0 auto;
   }
   .login-box .card {
     background: rgba(255,255,255,0.93);
@@ -113,6 +116,88 @@
     color: #4158D0;
     font-weight: 700;
     margin-bottom: 1.5rem;
+  }
+  .login-box .card-body {
+    padding: 2.5rem 2.75rem;
+  }
+  .register-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+  }
+  .register-form-grid .form-field {
+    display: flex;
+    flex-direction: column;
+  }
+  .register-form-grid .register-input-group {
+    width: 100%;
+  }
+  .register-form-grid .register-input-group .invalid-feedback {
+    display: block;
+  }
+  .register-form-grid .register-input-group .input-group-text {
+    border-right: 0;
+  }
+  .register-form-grid .register-input-group .input-group-prepend + .form-control {
+    border-left: 0;
+  }
+  .register-form-grid .register-input-group.phone-input-group {
+    flex-wrap: wrap;
+  }
+  .register-form-grid .register-input-group.phone-input-group .invalid-feedback {
+    width: 100%;
+  }
+  .register-form-grid .form-field .iti {
+    width: 100%;
+  }
+  .register-form-grid .form-field .phone_input {
+    width: 100%;
+    height: calc(2.4rem + 2px);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+  }
+  .register-form-grid .form-field .invalid-feedback {
+    display: block;
+    margin-top: 0.35rem;
+  }
+  .register-form-grid .form-field .input-helper {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+  .form-field--full {
+    grid-column: span 2;
+  }
+  .register-form-actions {
+    margin-top: 1.75rem;
+  }
+  .forgot-password {
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+  .forgot-password .login-link {
+    color: #4158D0;
+    font-weight: 600;
+  }
+  @media (max-width: 991.98px) {
+    .login-box {
+      width: calc(100% - 30px);
+    }
+  }
+  @media (max-width: 767.98px) {
+    .login-box .card-body {
+      padding: 2rem;
+    }
+    .register-form-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    .form-field--full {
+      grid-column: span 1;
+    }
   }
   /* Enhanced password toggle */
   .input-group .input-group-append .toggle-password {
@@ -156,107 +241,154 @@
     </div>
     <div class="card-body">
       <h3 class="widget-title text-lg">Create a new account today</h3>
-      <form method="POST" action="{{ route('register.request') }}" novalidate="novalidate" id="kt_sign_in_form">
+      <form method="POST" action="{{ route('register.request') }}" novalidate="novalidate" id="kt_sign_in_form" class="register-form">
         @csrf
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
+
+        @if (session('status'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('status') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required placeholder="Your full names" autocomplete="off" value="{{ old('name') }}" required autofocus>
-            @error('name')
-                <div class="invalid-feedback">
-                    {{ $message }} 
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if ($errors->has('general'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ $errors->first('general') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @elseif ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ __('Please review the highlighted fields and try again.') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        <div class="register-form-grid">
+          <div class="form-field">
+            <div class="input-group register-input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
-            @enderror
+                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required placeholder="Your full names" autocomplete="off" value="{{ old('name') }}" autofocus>
+                @error('name')
+                    <div class="invalid-feedback">
+                        {{ $message }} 
+                    </div>
+                @enderror
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="input-group register-input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                </div>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" required id="email" placeholder="Your email address" autocomplete="off" value="{{ old('email') }}">
+                @error('email')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="input-group register-input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                </div>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required id="password" placeholder="Your new password" autocomplete="off">
+                <div class="input-group-append">
+                    <button type="button" class="input-group-text toggle-password" tabindex="0" aria-label="Show password" aria-pressed="false" title="Show/Hide Password"><i class="fas fa-eye"></i></button>
+                </div>
+                @error('password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="input-group register-input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                </div>
+                <input type="text" class="form-control @error('national_id') is-invalid @enderror" name="national_id" required placeholder="Your National ID (NRC)" autocomplete="off" value="{{ old('national_id') }}">
+                @error('national_id')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <small class="input-helper">Ex. 123456/78/9</small>
+          </div>
+
+          <div class="form-field">
+            <div class="input-group register-input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                </div>
+                <input type="text" class="form-control @error('responsible_name') is-invalid @enderror" name="responsible_name" required placeholder="{{ __('cargo::view.table.owner_name') }}" autocomplete="off" value="{{ old('responsible_name') }}">
+                @error('responsible_name')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="input-group register-input-group phone-input-group">
+                <input type="tel" id="phone" dir="ltr" autocomplete="off" required class="phone_input number-only form-control inptFielsd @error('responsible_mobile') is-invalid @enderror" name="responsible_mobile" placeholder="{{ __('cargo::view.table.owner_phone') }}" value="">
+                <input type="hidden" class="country_code" name="country_code" value="" data-reflection="phone">
+                @error('responsible_mobile')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="input-group register-input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-building"></i></span>
+                </div>
+                <select class="form-control select-branch @error('branch_id') is-invalid @enderror" name="branch_id">
+                    <option selected value="1">
+                        Lusaka 
+                    </option>
+                </select>
+                @error('branch_id')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+          </div>
         </div>
 
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            </div>
-            <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" 
-            required id="email" placeholder="Your email address" autocomplete="off" value="{{ old('email') }}" required>
-            @error('email')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            </div>
-            <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" 
-            required id="password" placeholder="Your new password" autocomplete="off" required>
-            <div class="input-group-append">
-                <button type="button" class="input-group-text toggle-password" tabindex="0" aria-label="Show password" aria-pressed="false" title="Show/Hide Password"><i class="fas fa-eye"></i></button>
-            </div>
-            @error('password')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-            </div>
-            <input type="text" class="form-control @error('national_id') is-invalid @enderror" name="national_id" required placeholder="Your National ID" autocomplete="off" value="{{ old('national_id') }}" required autofocus>
-            @error('national_id')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-            </div>
-            <input type="text" class="form-control @error('responsible_name') is-invalid @enderror" name="responsible_name" required placeholder="{{ __('cargo::view.table.owner_name') }}" autocomplete="off" value="{{ old('responsible_name') }}" required autofocus>
-            @error('responsible_name')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-        
-        <div class="input-group mb-3">
-            {{-- <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            </div> --}}
-            <input type="tel" id="phone" dir="ltr" autocomplete="off" required class="phone_input number-only form-control inptFielsd @error('responsible_mobile') is-invalid @enderror" name="responsible_mobile" required placeholder="{{ __('cargo::view.table.owner_phone') }}" autocomplete="off" value="" required autofocus>
-            <input type="hidden" class="country_code" name="country_code" value="" data-reflection="phone">
-            @error('responsible_mobile')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-building"></i></span>
-            </div>
-            <select class="form-control select-branch @error('branch_id') is-invalid @enderror" name="branch_id">
-                <option selected value="1">
-                    Lusaka 
-                </option>
-            </select>
-            @error('branch_id')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-
-        <div class="row">
+        <div class="row align-items-center register-form-actions">
           <div class="col-8">
             <div class="icheck-primary">
               <input type="checkbox" name="terms_conditions" class="@error('terms_conditions') is-invalid @enderror" id="remember">
-              <label for="remember" style="font-size: 13px; font-weight: normal" required>
+              <label for="remember" style="font-size: 13px; font-weight: normal">
                 {{ __('cargo::view.terms_and_conditions') }}
               </label>
               @error('terms_conditions')
@@ -432,3 +564,4 @@
     });
 </script>
 @endsection
+

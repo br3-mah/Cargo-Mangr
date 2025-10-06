@@ -20,6 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
+        dd('here');
         $adminTheme = env('ADMIN_THEME', 'adminLte');
         return view($adminTheme.'.auth.register');
     }
@@ -35,6 +36,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        // dd('here');
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',

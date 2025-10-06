@@ -49,7 +49,7 @@
                                     <label for="name">
                                         <i class="fas fa-tag text-warning me-2"></i>Name
                                     </label>
-                                    <div class="input-group">
+                                    <div class="input-group">   
                                         <span class="input-group-text bg-warning text-white">
                                             <i class="fas fa-tag"></i>
                                         </span>

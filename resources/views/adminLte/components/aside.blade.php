@@ -180,7 +180,7 @@
                                 <ul class="nav nav-treeview">
 
                                     <!-- Branch list -->
-                                    @if (auth()->user()->can('view-users') || $user_role == $admin)
+                                    @if (auth()->user()->can('view-users') || $user_role == 1)
                                         <li class="nav-item">
                                             <a href="{{ fr_route('users.index') }}" class="nav-link {{ areActiveRoutes(['users.index']) }}">
                                                 <i class="fas fa-list fa-fw"></i>
@@ -190,7 +190,7 @@
                                     @endif
 
                                     <!-- Create new branch -->
-                                    @if (auth()->user()->can('create-users') || $user_role == $admin)
+                                    @if (auth()->user()->can('create-users') || $user_role == 1)
                                         <li class="nav-item">
                                             <a href="{{ fr_route('users.create') }}" class="nav-link {{ areActiveRoutes(['users.create']) }}">
                                                 <i class="fas fa-plus fa-fw"></i>
