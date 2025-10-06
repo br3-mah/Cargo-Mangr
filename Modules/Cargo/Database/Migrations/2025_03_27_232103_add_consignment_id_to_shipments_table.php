@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAlterShipmentTable extends Migration
+class AddConsignmentIdToShipmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -25,6 +25,9 @@ class CreateAlterShipmentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('alter_shipment');
+        Schema::table('shipments', function (Blueprint $table) {
+            $table->dropColumn('consignment_id');
+        });
     }
 }
+

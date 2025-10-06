@@ -287,7 +287,7 @@
                 <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required placeholder="Your full names" autocomplete="off" value="{{ old('name') }}" autofocus>
                 @error('name')
                     <div class="invalid-feedback">
-                        {{ $message }} 
+                        {{ $message }}
                     </div>
                 @enderror
             </div>
@@ -355,8 +355,8 @@
 
           <div class="form-field">
             <div class="input-group register-input-group phone-input-group">
-                <input type="tel" id="phone" dir="ltr" autocomplete="off" required class="phone_input number-only form-control inptFielsd @error('responsible_mobile') is-invalid @enderror" name="responsible_mobile" placeholder="{{ __('cargo::view.table.owner_phone') }}" value="">
-                <input type="hidden" class="country_code" name="country_code" value="" data-reflection="phone">
+                <input type="tel" id="phone" dir="ltr" autocomplete="off" required class="phone_input number-only form-control inptFielsd @error('responsible_mobile') is-invalid @enderror" name="responsible_mobile" placeholder="{{ __('cargo::view.table.owner_phone') }}" value="{{ old('responsible_mobile') }}">
+                <input type="hidden" class="country_code" name="country_code" value="{{ old('country_code') }}" data-reflection="phone">
                 @error('responsible_mobile')
                     <div class="invalid-feedback">
                         {{ $message }}
