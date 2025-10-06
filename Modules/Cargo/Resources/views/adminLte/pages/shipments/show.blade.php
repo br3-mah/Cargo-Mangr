@@ -96,13 +96,21 @@
                         @if ($user_role != $admin )
                             @if($shipment->paid == 0 && $shipment->payment_method_id != $cash_payment && $shipment->payment_method_id != $INVOICE_PAYMENT )
                                 <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" onclick="openCheckoutModal()">
-                                    {{ __('cargo::view.pay_now') }} <i class="ml-1 fas fa-credit-card"></i>
-                                </button>Packing (CTN)
+                                    {{ __('cargo::view.pay_now') }} 
+                                    <i class="ml-1 fas fa-credit-card"></i>
+                                </button>
                             @endif
                         @endif
                     </div>
 
                     <div class="flex items-center space-x-3">
+                    
+                        <button id="auditTrailBtn" 
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            <img width="20" style="background-color:#fff; padding:2px; border-radius:100%" src="{{ asset('feet.png') }}" />
+                            &nbsp;
+                            <span>Audit Trails</span>
+                        </button>
                         @can('print-shipment-invoice')
                         <button id="printBtn2" onclick="printInvoice()" class="btnclicky inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-dark bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                             <i class="fas fa-print mr-1"></i>
@@ -320,8 +328,75 @@
         </div>
     </div>
 </div>
+<div id="auditTrailModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 transition-opacity bg-gray-800 bg-opacity-50"></div>
+        
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-auto p-6 animate-fade-in">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="text-lg font-semibold text-gray-800">📜 Audit Logs</h2>
+                <button onclick="closeAuditModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
-<!-- Add this script at the end of your document -->
+            <!-- Modal Content -->
+            <div class="mt-4 max-h-80 overflow-y-auto">
+                <ul class="divide-y divide-gray-200 text-sm">
+                    <li class="py-3">
+                        <p class="font-medium text-gray-800">User John Doe updated shipment #123</p>
+                        <p class="text-xs text-gray-500">2025-09-26 14:32</p>
+                    </li>
+                    <li class="py-3">
+                        <p class="font-medium text-gray-800">System marked shipment #123 as Paid</p>
+                        <p class="text-xs text-gray-500">2025-09-25 09:47</p>
+                    </li>
+                    <li class="py-3">
+                        <p class="font-medium text-gray-800">User Admin created shipment #123</p>
+                        <p class="text-xs text-gray-500">2025-09-24 11:11</p>
+                    </li>
+                    <li class="py-3">
+                        <p class="font-medium text-gray-800">Client Jane Doe requested refund for shipment #123</p>
+                        <p class="text-xs text-gray-500">2025-09-23 16:05</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="mt-4 flex justify-end">
+                <button onclick="closeAuditModal()" 
+                    class="px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const auditBtn = document.getElementById("auditTrailBtn");
+    const auditModal = document.getElementById("auditTrailModal");
+
+    auditBtn.addEventListener("click", () => {
+        auditModal.classList.remove("hidden");
+    });
+
+    function closeAuditModal() {
+        auditModal.classList.add("hidden");
+    }
+</script>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.25s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const discountTypeEl = document.getElementById('discountType');

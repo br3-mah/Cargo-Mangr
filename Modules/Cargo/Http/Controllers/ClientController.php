@@ -243,24 +243,27 @@ class ClientController extends Controller
 
             $data = $request->only(['name', 'email', 'password', 'responsible_mobile', 'country_code' , 'responsible_name','national_id','branch_id']);
 
+            // dd($data);
+            // dd($request->all()); 
             // Check for similar accounts before proceeding with registration
             $nameParts = explode(' ', trim($data['name']));
-            $similarUsers = User::where(function($query) use ($nameParts) {
-                foreach ($nameParts as $part) {
-                    if (strlen($part) > 2) {
-                        $query->orWhere(function($q) use ($part) {
-                            $q->where('name', 'like', '%' . $part . '%')
-                              ->orWhere('name', 'like', $part . '%')
-                              ->orWhere('name', 'like', '%' . $part)
-                              ->orWhere('name', 'like', '% ' . $part . '%')
-                              ->orWhere('name', 'like', '%' . $part . ' %');
-                        });
-                    }
+            $email = $data['email'];
+            $similarUsers = User::where(function($query) use ($nameParts, $email) {
+                // foreach ($nameParts as $part) {
+                //     if (strlen($part) > 2) {
+                //         $query->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($part) . '%']);
+                //     }
+                // }
+            
+                if (!empty($email)) {
+                    $query->orWhereRaw('LOWER(email) = ?', [strtolower($email)]);
                 }
-            })->where('role', 4)->get();
+            })
+            ->where('role', 4)
+            ->get();
 
             $similarAccounts = Client::whereIn('user_id', $similarUsers->pluck('id'))->get();
-
+            // dd($similarAccounts);
             if (!$similarAccounts->isEmpty()) {
                 // Store the registration data in session
                 session(['pending_registration' => $data]);
@@ -301,47 +304,70 @@ class ClientController extends Controller
             if (!$client->save()){
                 throw new \Exception();
             }
-            event(new AddClient($client));
+            // event(new AddClient($client));
             Auth::loginUsingId($client->user_id);
 
+            // dd($client);
             // Send Welcome Email
-            Mail::to($client->email)->send(new WelcomeMail($client));
-            if($calc)
-            {
-                return $client;
-            }
+            // Mail::to($client->email)->send(new WelcomeMail($client));
+            // if($calc)
+            // {
+            //     return $client;
+            // }
 
             return redirect()->route('admin.dashboard');
         } catch (\Throwable $th) {
-            dd($th);
+            report($th);
+
+            $message = __('An unexpected error occurred while creating your account. Please try again.');
+            if (config('app.debug')) {
+                $message = $th->getMessage();
+            }
+
+            return redirect()->back()->withInput()->with('error', $message);
         }
     }
 
     public function claimExistingAccount($data){
+        // dd($data);
         // Split the name into parts
         $nameParts = explode(' ', trim($data['name']));
-        
+        $email = $data['email'];
 
         // dd($similarUsers);
         // Search for similar accounts by name in both User and Client tables
-        $similarUsers = User::where(function($query) use ($nameParts) {
+        $similarUsers = User::where(function($query) use ($nameParts, $email) {
             foreach ($nameParts as $part) {
-                if (strlen($part) > 2) { // Only search for parts longer than 2 characters
-                    $query->orWhere(function($q) use ($part) {
-                        // Search for exact part match
-                        $q->where('name', 'like', '%' . $part . '%')
-                          // Search for part at start of name
-                          ->orWhere('name', 'like', $part . '%')
-                          // Search for part at end of name
-                          ->orWhere('name', 'like', '%' . $part)
-                          // Search for part with space before
-                          ->orWhere('name', 'like', '% ' . $part . '%')
-                          // Search for part with space after
-                          ->orWhere('name', 'like', '%' . $part . ' %');
-                    });
+                if (strlen($part) > 2) {
+                    $query->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($part) . '%']);
                 }
             }
-        })->where('role', 4)->get();
+        
+            if (!empty($email)) {
+                $query->orWhereRaw('LOWER(email) = ?', [strtolower($email)]);
+            }
+        })
+        ->where('role', 4)
+        ->get();
+        
+        // $similarUsers = User::where(function($query) use ($nameParts) {
+        //     foreach ($nameParts as $part) {
+        //         if (strlen($part) > 2) { // Only search for parts longer than 2 characters
+        //             $query->orWhere(function($q) use ($part) {
+        //                 // Search for exact part match
+        //                 $q->where('name', 'like', '%' . $part . '%')
+        //                   // Search for part at start of name
+        //                   ->orWhere('name', 'like', $part . '%')
+        //                   // Search for part at end of name
+        //                   ->orWhere('name', 'like', '%' . $part)
+        //                   // Search for part with space before
+        //                   ->orWhere('name', 'like', '% ' . $part . '%')
+        //                   // Search for part with space after
+        //                   ->orWhere('name', 'like', '%' . $part . ' %');
+        //             });
+        //         }
+        //     }
+        // })->where('role', 4)->get();
 
         // Get the corresponding clients for these users
         $similarAccounts = Client::whereIn('user_id', $similarUsers->pluck('id'))->get();
@@ -452,7 +478,7 @@ class ClientController extends Controller
             Auth::loginUsingId($client->user_id);
 
             // Send Welcome Email
-            Mail::to($client->email)->send(new WelcomeMail($client));
+            // Mail::to($client->email)->send(new WelcomeMail($client));
 
             return redirect()->route('admin.dashboard')
                 ->with('message_alert', __('cargo::messages.created'));

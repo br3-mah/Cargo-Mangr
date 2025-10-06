@@ -50,6 +50,7 @@ use Auth;
 use Illuminate\Support\Facades\DB as FDB;
 use Modules\Cargo\Entities\Payment;
 use Modules\Cargo\Entities\ShipmentLog;
+use App\Services\AuditLogService;
 
 class ShipmentController extends Controller
 {
@@ -1789,7 +1790,7 @@ class ShipmentController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function markAsPaid(Request $request)
+    public function markAsPaid(Request $request, AuditLogService $auditLogService)
     {
         try {
             DB::beginTransaction();
@@ -1820,10 +1821,22 @@ class ShipmentController extends Controller
                 ], 400);
             }
 
+            // Keep old values for logging
+            $oldValues = $shipment->only(['paid']);
 
             // Update shipment status
             $shipment->paid = 1;
             $shipment->save();
+
+            // Log audit trail
+            $auditLogService->createLog(
+                'updated',
+                $shipment,
+                null,
+                $oldValues,
+                $shipment->only(['paid']),
+                'Shipment marked as paid by ' . auth()->user()->name
+            );
 
             DB::commit();
 
@@ -1833,7 +1846,7 @@ class ShipmentController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             \Log::error('Mark as Paid Error: ' . $e->getMessage());
             
             return response()->json([
@@ -1842,6 +1855,7 @@ class ShipmentController extends Controller
             ], 500);
         }
     }
+
 
     public function overview()
     {
