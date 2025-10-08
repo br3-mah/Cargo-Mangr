@@ -21,12 +21,13 @@ use Illuminate\Support\Facades\Route;
 // Get Google Map Settings Api Route
 Route::get('checkGoogleMap', 'Api\GoogleSettingsController@googleMapSettings');
 
-Route::post('/mark-as-paid', 'Api\ShipmentController@paid')->name('mark.paid');
+// Route::post('/mark-as-paid', 'Api\ShipmentController@paid')->name('mark.paid');
 Route::get('/search-shipments', 'Api\ShipmentController@search')->name('search.shipments');
 Route::post('/submit-shipments', 'Api\ConsignmentController@addShipmentsToConsignment')->name('submit.shipments');
 Route::get('/search-consignments', 'Api\ConsignmentController@searchConsignments');
 Route::post('consignments/{consignmentId}/remove-shipment/{shipmentId}', 'Api\ConsignmentController@removeShipmentFromConsignment')->name('consignments.remove-shipment');
 Route::get('get-current-stage', [App\Http\Controllers\ConsignmentController::class, 'getCurrentStage']);
+
 // 🚚 CONSIGNMENT & PARCELS SYNC
 Route::get('/consignments/all', 'Api\ConsignmentController@getAllConsignments');
 Route::get('/consignments/{consignment_id}', [App\Http\Controllers\Api\ConsignmentController::class, 'getConsignmentWithParcels'])->name('consignment.details');

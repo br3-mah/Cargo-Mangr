@@ -133,7 +133,6 @@
 
                     <ul class="nav nav-treeview">
                         {{-- Access Control --}}
-                        @admin
                         <li class="nav-item {{ areActiveRoutes(['roles.index' , 'roles.create'],'menu-is-opening menu-open active') }}">
                             <a href="#" class="nav-link  {{ areActiveRoutes(['roles.index' , 'roles.create'],'menu-is-opening menu-open active') }}">
                                 <i class="fas fa-universal-access fa-fw"></i>
@@ -161,7 +160,6 @@
                                 </li>
                             </ul>
                         </li>
-                        @endadmin
 
 
                         {{-- Users --}}

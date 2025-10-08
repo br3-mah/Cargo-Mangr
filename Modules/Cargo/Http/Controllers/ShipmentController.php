@@ -35,6 +35,7 @@ use Modules\Cargo\Http\Helpers\UserRegistrationHelper;
 use app\Http\Helpers\ApiHelper;
 use App\Models\Consignment;
 use App\Models\User;
+use App\Models\Transxn;
 use App\Traits\Tracker;
 use App\Traits\HandlesCurrencyExchange;
 use Modules\Cargo\Events\AddShipment;
@@ -1792,41 +1793,59 @@ class ShipmentController extends Controller
      */
     public function markAsPaid(Request $request, AuditLogService $auditLogService)
     {
+        $request->validate([
+            'shipment_id'    => 'required|exists:shipments,id',
+            'discount_type'  => 'nullable|in:percentage,fixed',
+            'discount_value' => 'nullable|numeric|min:0',
+            'final_total'    => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+
         try {
-            DB::beginTransaction();
-
-            // Validate request
-            if (!$request->has('shipment_id')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Shipment ID is required'
-                ], 400);
-            }
-
-            $shipment = Shipment::find($request->shipment_id);
-            
-            // Check if shipment exists
-            if (!$shipment) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Shipment not found'
-                ], 404);
-            }
-            
-            // Check if shipment is already paid
-            if ($shipment->paid) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This shipment is already marked as paid.'
-                ], 400);
-            }
-
-            // Keep old values for logging
+            $shipment = Shipment::findOrFail($request->shipment_id);
             $oldValues = $shipment->only(['paid']);
 
-            // Update shipment status
+            $baseAmount = (float) $request->final_total;
+            $discountAmount = 0.0;
+            $calculatedFinalTotal = $baseAmount;
+
+            // Only apply discount if both discount_type and discount_value are provided
+            if ($request->filled('discount_type') && $request->discount_value !== null) {
+                $discountType = $request->discount_type;
+                $discountValue = (float) $request->discount_value;
+
+                if ($discountType === 'percentage') {
+                    $discountAmount = ($baseAmount * $discountValue) / 100;
+                } elseif ($discountType === 'fixed') {
+                    $discountAmount = $discountValue;
+                }
+
+                $calculatedFinalTotal = max(0, $baseAmount - $discountAmount);
+            }
+
+            // Optional consistency check
+            if (abs($calculatedFinalTotal - (float) $request->final_total) > 0.01) {
+                throw new \RuntimeException('Final total mismatch with discount calculation.');
+            }
+
+            // Update shipment
             $shipment->paid = 1;
             $shipment->save();
+
+            // Generate receipt number
+            $lastTransaction = Transxn::orderByDesc('id')->first();
+            $lastId = $lastTransaction ? (int) $lastTransaction->id : 0;
+            $nextReceiptNumber = 'REC-' . str_pad((string) ($lastId + 1), 6, '0', STR_PAD_LEFT);
+
+            // Store transaction
+            $transaction = Transxn::create([
+                'shipment_id'    => $shipment->id,
+                'receipt_number' => $nextReceiptNumber,
+                'discount_type'  => $request->discount_type,
+                'discount_value' => $request->discount_value ?? 0,
+                'total'          => $calculatedFinalTotal,
+            ]);
 
             // Log audit trail
             $auditLogService->createLog(
@@ -1835,23 +1854,22 @@ class ShipmentController extends Controller
                 null,
                 $oldValues,
                 $shipment->only(['paid']),
-                'Shipment marked as paid by ' . auth()->user()->name
+                'Shipment marked as paid by ' . optional(auth()->user())->name
             );
 
             DB::commit();
 
             return response()->json([
-                'success' => true,
-                'message' => 'Payment marked as paid successfully'
-            ]);
-
-        } catch (\Exception $e) {
+                'message'     => 'Payment recorded successfully.',
+                'transaction' => $transaction,
+            ], 200);
+        } catch (\Throwable $th) {
             DB::rollBack();
-            \Log::error('Mark as Paid Error: ' . $e->getMessage());
-            
+            \Log::error('Mark as Paid Error: ' . $th->getMessage(), ['exception' => $th]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to mark as paid: ' . $e->getMessage()
+                'error'   => 'Payment failed.',
+                'message' => $th->getMessage(),
             ], 500);
         }
     }

@@ -54,13 +54,13 @@
 
 
 <!-- begin: Btn manage access -->
-@admin
-    <a
-        href="{{ fr_route('users.manage-access', $model->id) }}"
-        class="btn btn-sm btn-secondary btn-action-table"
-        data-toggle="tooltip" title="{{ __('view.manage_access') }}"
-        >
-        <i class="fas fa-universal-access fa-fw"></i>
-    </a>
-@endadmin
+{{-- @if (auth()->user()->role == 1) --}}
+<a
+    href="{{ fr_route('users.manage-access', $model->id) }}"
+    class="btn btn-sm btn-secondary btn-action-table"
+    data-toggle="tooltip" title="{{ __('view.manage_access') }}"
+    >
+    <i class="fas fa-universal-access fa-fw"></i>
+</a>
+{{-- @endif --}}
 <!-- end: Btn manage access -->
