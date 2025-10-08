@@ -110,7 +110,7 @@
             .then(response => response.json())
             .then(data => {
                 $('#markPaidModal').modal('hide');
-                if (data.success) {
+                if (data.transaction) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -125,6 +125,8 @@
                         icon: 'error',
                         title: 'Error!',
                         text: data.message
+                    }).then(() => {
+                        window.location.reload();
                     });
                 }
             })

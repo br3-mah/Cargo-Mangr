@@ -151,47 +151,42 @@ class ConsignmentController extends Controller
                     ]
                 );
 
-                $shipment = Shipment::updateOrCreate(
-                    [
-                        'consignment_id' => $consignment->id,
-                        'code' => $row[0], // hbl No
-                    ],
-                    [
-                        'client_id' => $client->id,
-                        'branch_id' => 1,
-                        'type' => 1,
-                        'status_id' => 1,
-                        'client_status' => 1,
-                        'from_country_id' => 1,
-                        'from_state_id' => 1,
-                        'to_country_id' => 1,
-                        'to_state_id' => 1,
-                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
-                        'return_cost' => 0,
-                        'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
-                        'shipping_date' => Carbon::now(),
-                        'total_weight' => (float)($row[6] ?? 0),
-                        'client_address' => $username,
-                        'client_phone' => $clientPhone,
-                        'salesman' => $row[9],
-                        'dest_port' => $row[8],
-                    ]
-                );
+                $shipment = Shipment::create([
+                    'consignment_id' => $consignment->id,
+                    'code' => $row[0], // hbl No
+                    'client_id' => $client->id,
+                    'branch_id' => 1,
+                    'type' => 1,
+                    'status_id' => 1,
+                    'client_status' => 1,
+                    'from_country_id' => 1,
+                    'from_state_id' => 1,
+                    'to_country_id' => 1,
+                    'to_state_id' => 1,
 
-                PackageShipment::updateOrCreate(
-                    [
-                        'shipment_id' => $shipment->id,
-                        'package_id' => 1,
-                    ],
-                    [
-                        'description' => $row[3],
-                        'qty' => $row[5],
-                        'weight' => $row[6],
-                        'length' => 1,
-                        'width' => 1,
-                        'height' => 1,
-                    ]
-                );
+                    'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
+                    'return_cost' => 0,
+                    'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[10])),
+
+                    'shipping_date' => Carbon::now(),
+                    'total_weight' => (float)($row[6] ?? 0),
+                    'client_address' => $username,
+                    'client_phone' => $clientPhone,
+
+                    'salesman' => $row[9],
+                    'dest_port' => $row[8]
+                ]);
+
+                PackageShipment::create([
+                    'package_id' => 1,
+                    'description' => $row[3],
+                    'shipment_id' => $shipment->id,
+                    'qty' => $row[5],
+                    'weight' => $row[6],
+                    'length' => 1,
+                    'width' => 1,
+                    'height' => 1,
+                ]);
 
             }
         }
@@ -328,48 +323,43 @@ class ConsignmentController extends Controller
                     ]
                 );
 
-                $shipment = Shipment::updateOrCreate(
-                    [
-                        'consignment_id' => $consignment->id,
-                        'code' => $row[0], // hbl No
-                    ],
-                    [
-                        'client_id' => $client->id,
-                        'branch_id' => 1,
-                        'type' => 1,
-                        'status_id' => 1,
-                        'client_status' => 1,
-                        'from_country_id' => 1,
-                        'from_state_id' => 1,
-                        'to_country_id' => 1,
-                        'to_state_id' => 1,
-                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
-                        'return_cost' => 0,
-                        'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
-                        'shipping_date' => Carbon::now(),
-                        'volume' => (float)$row[7],
-                        'total_weight' => (float)($row[8] ?? 0),
-                        'client_address' => $username,
-                        'client_phone' => $clientPhone,
-                        'salesman' => $row[11],
-                        'dest_port' => $row[10],
-                    ]
-                );
+                $shipment = Shipment::create([
+                    'consignment_id' => $consignment->id,
+                    'code' => $row[0], // hbl No
+                    'client_id' => $client->id,
+                    'branch_id' => 1,
+                    'type' => 1,
+                    'status_id' => 1,
+                    'client_status' => 1,
+                    'from_country_id' => 1,
+                    'from_state_id' => 1,
+                    'to_country_id' => 1,
+                    'to_state_id' => 1,
 
-                PackageShipment::updateOrCreate(
-                    [
-                        'shipment_id' => $shipment->id,
-                        'package_id' => 1,
-                    ],
-                    [
-                        'description' => $row[4],
-                        'qty' => $row[6],
-                        'weight' => $row[8] ?? 0,
-                        'length' => 1,
-                        'width' => 1,
-                        'height' => 1,
-                    ]
-                );
+                    'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
+                    'return_cost' => 0,
+                    'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
+
+                    'shipping_date' => Carbon::now(),
+                    'volume' => (float)$row[7],
+                    'total_weight' => (float)($row[8] ?? 0),
+                    'client_address' => $username,
+                    'client_phone' => $clientPhone,
+
+                    'salesman' => $row[11],
+                    'dest_port' => $row[10]
+                ]);
+
+                PackageShipment::create([
+                    'package_id' => 1,
+                    'description' => $row[4],
+                    'shipment_id' => $shipment->id,
+                    'qty' => $row[6],
+                    'weight' => $row[8] ?? 0,
+                    'length' => 1,
+                    'width' => 1,
+                    'height' => 1,
+                ]);
 
             }
         }
@@ -510,48 +500,43 @@ class ConsignmentController extends Controller
                     ]
                 );
 
-                $shipment = Shipment::updateOrCreate(
-                    [
-                        'consignment_id' => $consignment->id,
-                        'code' => $row[0], // hbl No
-                    ],
-                    [
-                        'client_id' => $client->id,
-                        'branch_id' => 1,
-                        'type' => 1,
-                        'status_id' => 1,
-                        'client_status' => 1,
-                        'from_country_id' => 1,
-                        'from_state_id' => 1,
-                        'to_country_id' => 1,
-                        'to_state_id' => 1,
-                        'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
-                        'return_cost' => 0,
-                        'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
-                        'shipping_date' => Carbon::now(),
-                        'volume' => (float)$row[7],
-                        'total_weight' => (float)($row[8] ?? 0),
-                        'client_address' => $username,
-                        'client_phone' => $clientPhone,
-                        'salesman' => $row[11],
-                        'dest_port' => $row[10],
-                    ]
-                );
+                $shipment = Shipment::create([
+                    'consignment_id' => $consignment->id,
+                    'code' => $row[0], // hbl No
+                    'client_id' => $client->id,
+                    'branch_id' => 1,
+                    'type' => 1,
+                    'status_id' => 1,
+                    'client_status' => 1,
+                    'from_country_id' => 1,
+                    'from_state_id' => 1,
+                    'to_country_id' => 1,
+                    'to_state_id' => 1,
 
-                PackageShipment::updateOrCreate(
-                    [
-                        'shipment_id' => $shipment->id,
-                        'package_id' => 1,
-                    ],
-                    [
-                        'description' => $row[4],
-                        'qty' => $row[6],
-                        'weight' => $row[8] == null ? 0 : (float)$row[8],
-                        'length' => 1,
-                        'width' => 1,
-                        'height' => 1,
-                    ]
-                );
+                    'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
+                    'return_cost' => 0,
+                    'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $row[13])),
+
+                    'shipping_date' => Carbon::now(),
+                    'volume' => (float)$row[7],
+                    'total_weight' => (float)($row[8] ?? 0),
+                    'client_address' => $username,
+                    'client_phone' => $clientPhone,
+
+                    'salesman' => $row[11],
+                    'dest_port' => $row[10]
+                ]);
+
+                PackageShipment::create([
+                    'package_id' => 1,
+                    'description' => $row[4],
+                    'shipment_id' => $shipment->id,
+                    'qty' => $row[6],
+                    'weight' => $row[8] == null ? 0 : (float)$row[8],
+                    'length' => 1,
+                    'width' => 1,
+                    'height' => 1,
+                ]);
 
             }
         }
@@ -675,7 +660,6 @@ class ConsignmentController extends Controller
 
             //Different excel sheet having different size of array length / format
             $xlsSize = count($rows[8]);
-            // dd($xlsSize);
             switch ($xlsSize) {
                 case 8:
                         // Step 5: Loop through data starting after headerRow
@@ -714,7 +698,6 @@ class ConsignmentController extends Controller
             DB::commit();
             return redirect()->back()->with('success', 'Excel data imported successfully!');
         } catch (\Exception $e) {
-            dd('Oops');
             dd('General Error '.$e);
             DB::rollback();
             return redirect()->back()->with('error', 'Error importing file: ' . $e->getMessage());
@@ -762,12 +745,15 @@ class ConsignmentController extends Controller
                         ]
                     );
 
-                    $shipment = Shipment::updateOrCreate(
-                        [
+                    // Avoid duplicate Shipment by code + consignment
+                    $existingShipment = Shipment::where('code', $data[0])
+                        ->where('consignment_id', $consignment->id)
+                        ->first();
+
+                    if (!$existingShipment) {
+                        $shipment = Shipment::create([
                             'consignment_id' => $consignment->id,
                             'code' => $data[0], // job num
-                        ],
-                        [
                             'client_id' => $client->id,
                             'branch_id' => 1,
                             'type' => 1,
@@ -777,30 +763,28 @@ class ConsignmentController extends Controller
                             'from_state_id' => 1,
                             'to_country_id' => 1,
                             'to_state_id' => 1,
+
                             'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
                             'return_cost' => 0,
                             'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
+
                             'shipping_date' => Carbon::now(),
                             'total_weight' => (float)($data[4] ?? 0),
                             'client_address' => $userName.''.$clientPhone,
-                            'client_phone' => $clientPhone,
-                        ]
-                    );
+                            'client_phone' => $clientPhone
+                        ]);
 
-                    PackageShipment::updateOrCreate(
-                        [
-                            'shipment_id' => $shipment->id,
+                        PackageShipment::create([
                             'package_id' => 1,
-                        ],
-                        [
                             'description' => $data[2].' '.$data[3],
+                            'shipment_id' => $shipment->id,
                             'qty' => is_string($data[3]) ? ($data[4] ?? 1) : 1,
                             'weight' => (strpos($data[5], '.') || is_numeric($data[5]) !== false) ? $data[5] : ($data[4] ?? 0),
                             'length' => 1,
                             'width' => 1,
                             'height' => 1,
-                        ]
-                    );
+                        ]);
+                    }
                 }
 
             }
@@ -845,12 +829,20 @@ class ConsignmentController extends Controller
                         $client->save();
                     }
 
-                    $shipmentPayload = [
+                    // Create Shipment
+                    $shipment = Shipment::create([
+                        'consignment_id' => $consignment->id,
+                        'code' =>  $data[2],
                         'client_id' => $client->id,
                         'branch_id' => 1,
                         'type' => 1,
                         'status_id' => 1,
                         'client_status' => 1,
+                        ...(!empty($data[10]) ? [
+                            'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[10])),
+                            'return_cost' => 0,
+                            'amount_to_be_collected' => (float)preg_replace('/\D+/', '', $data[10]),
+                        ] : []),
                         'from_country_id' => 1,
                         'from_state_id' => 1,
                         'to_country_id' => 1,
@@ -858,27 +850,7 @@ class ConsignmentController extends Controller
                         'shipping_date' => Carbon::now(),
                         'total_weight' => (float)($data[6] ?? 0),
                         'client_phone' => preg_replace('/\D+/', '', $clientContact),
-                    ];
-
-                    if (!empty($data[10])) {
-                        $shipmentPayload = array_merge(
-                            $shipmentPayload,
-                            [
-                                'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[10])),
-                                'return_cost' => 0,
-                                'amount_to_be_collected' => (float)preg_replace('/\D+/', '', $data[10]),
-                            ]
-                        );
-                    }
-
-                    // Create or update Shipment
-                    $shipment = Shipment::updateOrCreate(
-                        [
-                            'consignment_id' => $consignment->id,
-                            'code' => $data[2],
-                        ],
-                        $shipmentPayload
-                    );
+                    ]);
 
 
                     $package['description'] = $data[4].'. Parcel items including: ('.preg_replace('/[0-9\+\s]+/', '', $data[5]) .')';
@@ -942,12 +914,15 @@ class ConsignmentController extends Controller
                         ]
                     );
 
-                    $shipment = Shipment::updateOrCreate(
-                        [
+                    // Avoid duplicate Shipment by code + consignment
+                    $existingShipment = Shipment::where('code', $data[0])
+                        ->where('consignment_id', $consignment->id)
+                        ->first();
+
+                    if (!$existingShipment) {
+                        $shipment = Shipment::create([
                             'consignment_id' => $consignment->id,
                             'code' => $data[0], // job num
-                        ],
-                        [
                             'client_id' => $client->id,
                             'branch_id' => 1,
                             'type' => 1,
@@ -957,30 +932,28 @@ class ConsignmentController extends Controller
                             'from_state_id' => 1,
                             'to_country_id' => 1,
                             'to_state_id' => 1,
+
                             'shipping_cost' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
                             'return_cost' => 0,
                             'amount_to_be_collected' => (float)str_replace(',', '', preg_replace('/[^0-9.,]/', '', $data[8])),
+
                             'shipping_date' => Carbon::now(),
                             'total_weight' => (float)($data[5] ?? 0),
                             'client_address' => $userName.''.$clientPhone,
-                            'client_phone' => $clientPhone,
-                        ]
-                    );
+                            'client_phone' => $clientPhone
+                        ]);
 
-                    PackageShipment::updateOrCreate(
-                        [
-                            'shipment_id' => $shipment->id,
+                        PackageShipment::create([
                             'package_id' => 1,
-                        ],
-                        [
                             'description' => $data[2].' '.$data[3],
+                            'shipment_id' => $shipment->id,
                             'qty' => is_string($data[4]) ? ($data[4] ?? 1) : 1,
                             'weight' => (strpos($data[5], '.') || is_numeric($data[5]) !== false) ? $data[5] : ($data[5] ?? 0),
                             'length' => 1,
                             'width' => 1,
                             'height' => 1,
-                        ]
-                    );
+                        ]);
+                    }
                 }
 
             }
