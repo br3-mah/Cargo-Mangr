@@ -1871,7 +1871,7 @@ class ShipmentController extends Controller
             $existingReceipt = $shipment->nwcReceipt;
             $oldReceiptValues = $existingReceipt ? $existingReceipt->only($receiptAttributeKeys) : [];
 
-            $exchangeRate = CurrencyExchangeRate::first()->;
+            $exchangeRate = CurrencyExchangeRate::first()->exchange_rate ?? 0;
 
             $receiptData = [
                 'receipt_number'    => $nextReceiptNumber,

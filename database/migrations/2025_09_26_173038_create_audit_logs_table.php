@@ -13,21 +13,23 @@ class CreateAuditLogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('audit_logs', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('auditable_id'); // Model ID
-            $table->unsignedBigInteger('user_id')->nullable(); // who did the action
-            $table->unsignedBigInteger('shipment_id')->nullable(); // who did the action
-            $table->unsignedBigInteger('consignment_id')->nullable(); // who did the action
-            $table->string('event')->nullable(); // e.g., created, updated, deleted
-            $table->string('auditable_type'); // Model class name (e.g., Shipment)
-            $table->text('description')->nullable(); // details about the action
-            $table->json('old_values')->nullable(); // before changes
-            $table->json('new_values')->nullable(); // after changes
-            $table->ipAddress('ip_address')->nullable(); // user IP
-            $table->string('user_agent')->nullable(); // browser/device
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('audit_logs')) {
+            Schema::create('audit_logs', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->unsignedBigInteger('auditable_id'); // Model ID
+                $table->unsignedBigInteger('user_id')->nullable(); // who did the action
+                $table->unsignedBigInteger('shipment_id')->nullable();
+                $table->unsignedBigInteger('consignment_id')->nullable();
+                $table->string('event')->nullable(); // e.g., created, updated, deleted
+                $table->string('auditable_type'); // Model class name (e.g., Shipment)
+                $table->text('description')->nullable(); // details about the action
+                $table->json('old_values')->nullable(); // before changes
+                $table->json('new_values')->nullable(); // after changes
+                $table->ipAddress('ip_address')->nullable(); // user IP
+                $table->string('user_agent')->nullable(); // browser/device
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -39,4 +41,5 @@ class CreateAuditLogsTable extends Migration
     {
         Schema::dropIfExists('audit_logs');
     }
+
 }
