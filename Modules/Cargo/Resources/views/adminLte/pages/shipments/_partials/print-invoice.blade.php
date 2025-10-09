@@ -19,6 +19,22 @@
         }
     </script>
 
+    @php
+        $storedReceipt = $receipt ?? $shipment->nwcReceipt;
+        $defaultKwacha = convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw') ?? 0;
+        $billKwacha = $storedReceipt?->bill_kwacha ?? $defaultKwacha;
+        $billUsd = $storedReceipt?->bill_usd ?? (float) $shipment->amount_to_be_collected;
+        $rate = $storedReceipt?->rate;
+        if (!$rate && $billUsd > 0) {
+            $rate = round($billKwacha / $billUsd, 6);
+        }
+        $receiptNumber = $storedReceipt?->receipt_number;
+        $methodOfPayment = $storedReceipt?->method_of_payment ?? $shipment->payment_method_id;
+        $paymentMethodLabel = $methodOfPayment ? ucwords(str_replace('_', ' ', $methodOfPayment)) : 'N/A';
+        $generatedAt = $storedReceipt?->updated_at ?? $storedReceipt?->created_at;
+        $generatedOn = $generatedAt ? $generatedAt->format('F j, Y, g:i a') : now()->format('F j, Y, g:i a');
+    @endphp
+
     <!-- Modal for null consignment -->
     @if(!$shipment->consignment)
     <div id="consignmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -102,14 +118,19 @@
                     <div>+260 763 297 287 | info@newworldcargo.com</div>
                     <div>Shop 62/A, Carousel Shopping Centre, Lusaka, Zambia</div>
                 </div>
-            </div>
-            <div class="text-right">
-                <div class="text-2xl font-bold text-primary mb-1">SHIPMENT INVOICE</div>
-                <div class="inline-block px-3 py-1 bg-gray-200 rounded text-gray-600 font-medium">
-                    {{ $shipment->code }}
-                </div>
-            </div>
         </div>
+        <div class="text-right">
+            <div class="text-2xl font-bold text-primary mb-1">SHIPMENT INVOICE</div>
+            <div class="inline-block px-3 py-1 bg-gray-200 rounded text-gray-600 font-medium">
+                {{ $shipment->code }}
+            </div>
+            @if ($receiptNumber)
+                <div class="mt-2 text-sm text-gray-500">
+                    Receipt #: {{ $receiptNumber }}
+                </div>
+            @endif
+        </div>
+    </div>
 
         <!-- Info Container -->
         <div class="flex justify-between gap-4 mb-6">
@@ -218,17 +239,27 @@
 
         <!-- Totals -->
         <div class="w-80 ml-auto border border-gray-200 rounded-md overflow-hidden mb-6">
+            @if ($receiptNumber)
+                <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+                    <div>Receipt #:</div>
+                    <div>{{ $receiptNumber }}</div>
+                </div>
+            @endif
             <div class="flex justify-between px-4 py-2 border-b border-gray-200">
-                <div>Subtotal:</div>
-                <div>K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'),2)}}</div>
+                <div>Bill (USD):</div>
+                <div>${{ number_format($billUsd, 2) }}</div>
             </div>
-            {{-- <div class="flex justify-between px-4 py-2 border-b border-gray-200">
-                <div>Tax:</div>
-                <div>{{ format_price($shipment->tax) }}</div>
-            </div> --}}
+            <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+                <div>Rate (USD -> ZMW):</div>
+                <div>{{ $rate ? number_format($rate, 4) : 'N/A' }}</div>
+            </div>
+            <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+                <div>Payment Method:</div>
+                <div>{{ $paymentMethodLabel }}</div>
+            </div>
             <div class="flex justify-between px-4 py-2 bg-primary text-dark font-bold">
-                <div>TOTAL:</div>
-                <div>K{{ number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'),2) ?? 0 }}</div>
+                <div>Bill (ZMW):</div>
+                <div>K{{ number_format($billKwacha, 2) }}</div>
             </div>
         </div>
 
@@ -253,7 +284,7 @@
                 Our Location: Shop 62/A, Carousel Shopping Centre, Lusaka, Zambia
             </p>
             <p class="font-semibold mt-2">
-                Generated on: {{ now()->format('F j, Y, g:i a') }}
+                Generated on: {{ $generatedOn }}
             </p>
         </div>
 

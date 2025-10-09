@@ -55,16 +55,30 @@
         const discountTypeEl = document.getElementById('discountType');
         const discountValueEl = document.getElementById('discountValue');
         const finalTotalEl = document.getElementById('finalTotal');
+        const methodOfPaymentEl = document.getElementById('methodOfPayment');
+        let methodOfPaymentDefault = methodOfPaymentEl ? methodOfPaymentEl.dataset.default || '' : '';
 
         function openMarkPaidModal(shipmentId) {
             selectedShipmentId = shipmentId;
-            document.getElementById('discountType').value = '';
-            document.getElementById('discountValue').value = 0;
-            finalTotalEl.textContent = originalTotal.toFixed(2);
+            if (discountTypeEl) {
+                discountTypeEl.value = '';
+            }
+            if (discountValueEl) {
+                discountValueEl.value = 0;
+            }
+            if (finalTotalEl) {
+                finalTotalEl.textContent = originalTotal.toFixed(2);
+            }
+            if (methodOfPaymentEl) {
+                methodOfPaymentEl.value = methodOfPaymentDefault || '';
+            }
             $('#markPaidModal').modal('show');
         }
 
         function computeFinalTotal() {
+            if (!discountTypeEl || !discountValueEl || !finalTotalEl) {
+                return;
+            }
             const type = discountTypeEl.value;
             const discountVal = parseFloat(discountValueEl.value) || 0;
             let finalTotal = originalTotal;
@@ -80,19 +94,35 @@
             finalTotalEl.textContent = finalTotal.toFixed(2);
         }
 
-        discountTypeEl.addEventListener('change', computeFinalTotal);
-        discountValueEl.addEventListener('input', computeFinalTotal);
+        if (discountTypeEl) {
+            discountTypeEl.addEventListener('change', computeFinalTotal);
+        }
+        if (discountValueEl) {
+            discountValueEl.addEventListener('input', computeFinalTotal);
+        }
 
         document.getElementById('confirmMarkPaidBtn').addEventListener('click', function () {
             const btn = this;
-            btn.classList.add('btn-loading');
-            btn.innerHTML = '<div class="spinner-border spinner-border-sm text-white" role="status"></div>';
+            const originalButtonHtml = btn.dataset.originalHtml || btn.innerHTML;
+            btn.dataset.originalHtml = originalButtonHtml;
 
             const url = `{{ route('api.mark-as-paid') }}`;
-
             const discountType = discountTypeEl.value;
             const discountValue = parseFloat(discountValueEl.value) || 0;
-            const finalTotal = parseFloat(finalTotalEl.textContent);
+            const finalTotal = finalTotalEl ? parseFloat(finalTotalEl.textContent) : originalTotal;
+            const methodOfPayment = methodOfPaymentEl ? methodOfPaymentEl.value : '';
+
+            if (methodOfPaymentEl && !methodOfPayment) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Method',
+                    text: 'Please select a method of payment before confirming.',
+                });
+                return;
+            }
+
+            btn.classList.add('btn-loading');
+            btn.innerHTML = '<div class="spinner-border spinner-border-sm text-white" role="status"></div>';
 
             fetch(url, {
                 method: 'POST',
@@ -105,12 +135,17 @@
                     discount_type: discountType,
                     discount_value: discountValue,
                     final_total: finalTotal,
+                    method_of_payment: methodOfPayment,
                 }),
             })
             .then(response => response.json())
             .then(data => {
                 $('#markPaidModal').modal('hide');
                 if (data.transaction) {
+                    if (methodOfPaymentEl) {
+                        methodOfPaymentEl.dataset.default = methodOfPayment;
+                        methodOfPaymentDefault = methodOfPayment;
+                    }
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -140,7 +175,9 @@
             })
             .finally(() => {
                 btn.classList.remove('btn-loading');
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg><span>Confirm Payment</span>';
+                if (btn.dataset.originalHtml) {
+                    btn.innerHTML = btn.dataset.originalHtml;
+                }
             });
         });
 

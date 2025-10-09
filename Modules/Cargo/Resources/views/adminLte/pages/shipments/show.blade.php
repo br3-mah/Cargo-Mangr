@@ -151,6 +151,21 @@
         <!-- Modal for Confirm Payment -->
 @php
     $totalAmount = convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw');
+    $receipt = $shipment->nwcReceipt;
+    $paymentMethodOptions = [
+        'cash_payment'     => 'Cash Payment',
+        'invoice_payment'  => 'Invoice Payment',
+        'bank_transfer'    => 'Bank Transfer',
+        'card_payment'     => 'Card Payment',
+        'airtel'           => 'Airtel Mobile Money',
+        'mtn'              => 'MTN Mobile Money',
+        'zamtel'           => 'Zamtel Mobile Money',
+        'other'            => 'Other',
+    ];
+    $selectedPaymentMethod = $receipt?->method_of_payment ?? $shipment->payment_method_id ?? '';
+    if ($selectedPaymentMethod && !array_key_exists($selectedPaymentMethod, $paymentMethodOptions)) {
+        $paymentMethodOptions[$selectedPaymentMethod] = ucwords(str_replace('_', ' ', $selectedPaymentMethod));
+    }
 @endphp
 <div class="modal fade" id="markPaidModal" tabindex="-1" role="dialog" aria-labelledby="markPaidLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -214,6 +229,36 @@
                                         <span class="input-group-text border-0 d-none" id="percentSymbol" style="background-color: #f8fafc; border-radius: 0 8px 8px 0;">%</span>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-3 p-4 mb-4" style="background-color: white;">
+                        <h6 class="mb-3 text-uppercase" style="color: #0a2463; font-size: 0.85rem; letter-spacing: 0.5px;">Payment Method</h6>
+                        <div class="form-group">
+                            <label for="methodOfPayment" class="form-label fw-medium mb-2" style="color: #475569; font-size: 0.9rem;">
+                                Method of Payment
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text border-0" style="background-color: #f8fafc; border-radius: 8px 0 0 8px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0a2463" viewBox="0 0 16 16">
+                                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/>
+                                        <path d="M3 10a1 1 0 0 1 1-1h1v2H4a1 1 0 0 1-1-1m5 0h3a1 1 0 0 1 0 2H8z"/>
+                                    </svg>
+                                </span>
+                                <select
+                                    class="form-select form-control-lg border-0"
+                                    id="methodOfPayment"
+                                    name="method_of_payment"
+                                    data-default="{{ $selectedPaymentMethod }}"
+                                    style="background-color: #f8fafc; border-radius: 0 8px 8px 0; height: 48px; font-size: 0.95rem;"
+                                    required
+                                >
+                                    <option value="" {{ $selectedPaymentMethod === '' ? 'selected' : '' }}>Select payment method</option>
+                                    @foreach ($paymentMethodOptions as $value => $label)
+                                        <option value="{{ $value }}" {{ $selectedPaymentMethod === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,7 @@
 namespace Modules\Cargo\Entities;
 
 use App\Models\Consignment;
+use App\Models\NwcReceipt;
 use App\Models\Transxn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -493,4 +494,8 @@ class Shipment extends Model implements HasMedia
         return $this->hasOne(Transxn::class);
     }
 
+    public function nwcReceipt()
+    {
+        return $this->hasOne(NwcReceipt::class);
+    }
 }

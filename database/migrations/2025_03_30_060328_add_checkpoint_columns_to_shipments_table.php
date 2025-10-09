@@ -13,10 +13,10 @@ class AddCheckpointColumnsToShipmentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('shipments', function (Blueprint $table) {
-            $table->integer('checkpoint')->default(1);
-            $table->json('checkpoint_date')->nullable();
-        });
+        // Schema::table('shipments', function (Blueprint $table) {
+        //     $table->integer('checkpoint')->default(1);
+        //     $table->json('checkpoint_date')->nullable();
+        // });
     }
 
     /**
@@ -26,9 +26,9 @@ class AddCheckpointColumnsToShipmentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('shipments', function (Blueprint $table) {
-            $table->dropColumn(['checkpoint', 'checkpoint_date']);
-        });
+        // Schema::table('shipments', function (Blueprint $table) {
+        //     $table->dropColumn(['checkpoint', 'checkpoint_date']);
+        // });
     }
 }
 

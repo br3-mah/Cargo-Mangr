@@ -34,6 +34,8 @@ use DB;
 use Modules\Cargo\Http\Helpers\UserRegistrationHelper;
 use app\Http\Helpers\ApiHelper;
 use App\Models\Consignment;
+use App\Models\CurrencyExchangeRate;
+use App\Models\NwcReceipt;
 use App\Models\User;
 use App\Models\Transxn;
 use App\Traits\Tracker;
@@ -1341,7 +1343,7 @@ class ShipmentController extends Controller
 
     public function print($shipment, $type = 'invoice')
     {
-        $shipment = Shipment::find($shipment);
+        $shipment = Shipment::with('nwcReceipt')->find($shipment);
         if ($type == 'label') {
             $adminTheme = env('ADMIN_THEME', 'adminLte');
             return view('cargo::' . $adminTheme . '.pages.shipments.print-label', compact('shipment'));
@@ -1364,7 +1366,13 @@ class ShipmentController extends Controller
                 ],
             ]);
             $adminTheme = env('ADMIN_THEME', 'adminLte');
-            return view('cargo::' . $adminTheme . '.pages.shipments.print-invoice', compact('shipment'));
+            return view(
+                'cargo::' . $adminTheme . '.pages.shipments.print-invoice',
+                [
+                    'shipment' => $shipment,
+                    'receipt'  => $shipment?->nwcReceipt,
+                ]
+            );
         }
     }
 
@@ -1794,60 +1802,120 @@ class ShipmentController extends Controller
     public function markAsPaid(Request $request, AuditLogService $auditLogService)
     {
         $request->validate([
-            'shipment_id'    => 'required|exists:shipments,id',
-            'discount_type'  => 'nullable|in:percentage,fixed',
-            'discount_value' => 'nullable|numeric|min:0',
-            'final_total'    => 'required|numeric|min:0',
+            'shipment_id'       => 'required|exists:shipments,id',
+            'discount_type'     => 'nullable|in:percent,percentage,fixed',
+            'discount_value'    => 'nullable|numeric|min:0',
+            'final_total'       => 'required|numeric|min:0',
+            'method_of_payment' => 'required|string|max:255',
         ]);
 
         DB::beginTransaction();
 
         try {
-            $shipment = Shipment::findOrFail($request->shipment_id);
+            $shipment = Shipment::with('nwcReceipt')->findOrFail($request->shipment_id);
             $oldValues = $shipment->only(['paid']);
+
+            $discountType = $request->filled('discount_type') ? $request->discount_type : null;
+            if ($discountType === 'percentage') {
+                $discountType = 'percent';
+            }
+            $discountValue = $request->discount_value !== null ? (float) $request->discount_value : 0.0;
+            $methodOfPayment = trim((string) $request->method_of_payment);
 
             $baseAmount = (float) $request->final_total;
             $discountAmount = 0.0;
             $calculatedFinalTotal = $baseAmount;
 
-            // Only apply discount if both discount_type and discount_value are provided
-            if ($request->filled('discount_type') && $request->discount_value !== null) {
-                $discountType = $request->discount_type;
-                $discountValue = (float) $request->discount_value;
-
-                if ($discountType === 'percentage') {
+            if ($discountType && $discountValue > 0) {
+                if ($discountType === 'percent') {
                     $discountAmount = ($baseAmount * $discountValue) / 100;
                 } elseif ($discountType === 'fixed') {
                     $discountAmount = $discountValue;
                 }
 
                 $calculatedFinalTotal = max(0, $baseAmount - $discountAmount);
+            } else {
+                $discountType = null;
+                $discountValue = 0.0;
             }
 
-            // Optional consistency check
             if (abs($calculatedFinalTotal - (float) $request->final_total) > 0.01) {
                 throw new \RuntimeException('Final total mismatch with discount calculation.');
             }
 
-            // Update shipment
             $shipment->paid = 1;
             $shipment->save();
 
-            // Generate receipt number
             $lastTransaction = Transxn::orderByDesc('id')->first();
             $lastId = $lastTransaction ? (int) $lastTransaction->id : 0;
             $nextReceiptNumber = 'REC-' . str_pad((string) ($lastId + 1), 6, '0', STR_PAD_LEFT);
 
-            // Store transaction
             $transaction = Transxn::create([
                 'shipment_id'    => $shipment->id,
                 'receipt_number' => $nextReceiptNumber,
-                'discount_type'  => $request->discount_type,
-                'discount_value' => $request->discount_value ?? 0,
+                'discount_type'  => $discountType,
+                'discount_value' => $discountValue,
                 'total'          => $calculatedFinalTotal,
             ]);
 
-            // Log audit trail
+            $receiptAttributeKeys = [
+                'receipt_number',
+                'rate',
+                'bill_usd',
+                'bill_kwacha',
+                'method_of_payment',
+                'discount_type',
+                'discount_value',
+            ];
+
+            $existingReceipt = $shipment->nwcReceipt;
+            $oldReceiptValues = $existingReceipt ? $existingReceipt->only($receiptAttributeKeys) : [];
+
+            $exchangeRate = CurrencyExchangeRate::where('from_currency', 'usd')
+                ->where('to_currency', 'zmw')
+                ->value('exchange_rate');
+            $exchangeRate = $exchangeRate !== null ? (float) $exchangeRate : null;
+
+            $billKwacha = round($calculatedFinalTotal, 2);
+            $billKwacha = max($billKwacha, 0);
+            $billUsd = null;
+
+            if ($exchangeRate && $exchangeRate > 0) {
+                $billUsd = round($billKwacha / $exchangeRate, 2);
+            } else {
+                $billUsd = round((float) $shipment->amount_to_be_collected, 2);
+                if ($billUsd > 0 && $billKwacha > 0) {
+                    $exchangeRate = round($billKwacha / $billUsd, 6);
+                } else {
+                    $exchangeRate = $exchangeRate ?: null;
+                }
+            }
+
+            $receiptData = [
+                'receipt_number'    => $nextReceiptNumber,
+                'rate'              => $exchangeRate,
+                'bill_usd'          => $billUsd,
+                'bill_kwacha'       => $billKwacha,
+                'method_of_payment' => $methodOfPayment,
+                'discount_type'     => $discountType,
+                'discount_value'    => $discountValue,
+            ];
+
+            $receipt = NwcReceipt::updateOrCreate(
+                ['shipment_id' => $shipment->id],
+                $receiptData
+            );
+            $shipment->setRelation('nwcReceipt', $receipt);
+
+            $auditLogService->createLog(
+                $existingReceipt ? 'updated' : 'created',
+                $receipt,
+                null,
+                $oldReceiptValues,
+                $receipt->only($receiptAttributeKeys),
+                ($existingReceipt ? 'Receipt updated' : 'Receipt recorded') . ' for shipment ' . $shipment->code
+            );
+
             $auditLogService->createLog(
                 'updated',
                 $shipment,
@@ -1862,6 +1930,7 @@ class ShipmentController extends Controller
             return response()->json([
                 'message'     => 'Payment recorded successfully.',
                 'transaction' => $transaction,
+                'receipt'     => $receipt->only($receiptAttributeKeys),
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
