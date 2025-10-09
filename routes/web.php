@@ -14,6 +14,7 @@ use Modules\Cargo\Http\Controllers\ShipmentController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\TrackingStageController;
+use App\Http\Controllers\NwcReportController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -91,6 +92,21 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/currency/delete', 'CurrencyExchangeController@reset')->name('currency-reset');
 
     Route::get('/transactions', 'TransxnController@index')->name('transxn.index');
+
+    Route::prefix('reports/nwc')->name('reports.nwc.')->group(function () {
+        Route::get('/', [NwcReportController::class, 'index'])
+            ->name('index')
+            ->middleware('permission:view-nwc-reports');
+        Route::get('/export', [NwcReportController::class, 'export'])
+            ->name('export')
+            ->middleware('permission:export-nwc-reports');
+        Route::post('/share/email', [NwcReportController::class, 'shareEmail'])
+            ->name('share-email')
+            ->middleware('permission:share-nwc-reports-email');
+        Route::post('/share/whatsapp', [NwcReportController::class, 'shareWhatsapp'])
+            ->name('share-whatsapp')
+            ->middleware('permission:share-nwc-reports-whatsapp');
+    });
 
     // Tracking Stages Routes
     Route::get('/tracking-stages', [TrackingStageController::class, 'index'])->name('tracking-stages.index');

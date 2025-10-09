@@ -97,6 +97,16 @@
                 </li>
                 @endcan
 
+                @can('view-nwc-reports')
+                <li class="nav-item {{ areActiveRoutes(['reports.nwc.index'],'menu-is-opening menu-open active') }}">
+                    <a href="{{ route('reports.nwc.index') }}"
+                       class="nav-link {{ areActiveRoutes(['reports.nwc.index'],'menu-is-opening menu-open active') }}">
+                        <i class="fas fa-chart-line fa-fw"></i>
+                        <p>NWC Reports</p>
+                    </a>
+                </li>
+                @endcan
+
                 {{-- <li
                     class="nav-item {{ areActiveRoutes(['shipments.report','missions.report','clients.report','drivers.report','branches.report','transactions.report'],'menu-is-opening menu-open active') }}">
                     <a href="#"

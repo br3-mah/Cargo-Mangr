@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Cargo\Entities\Shipment;
+use App\Models\NwcReceipt;
 
 class Transxn extends Model
 {
@@ -20,5 +21,10 @@ class Transxn extends Model
     public function shipment()
     {
         return $this->belongsTo(Shipment::class);
+    }
+
+    public function nwcReceipt()
+    {
+        return $this->hasOne(NwcReceipt::class, 'shipment_id', 'shipment_id');
     }
 }
