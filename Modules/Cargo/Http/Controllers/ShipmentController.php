@@ -1871,7 +1871,20 @@ class ShipmentController extends Controller
             $existingReceipt = $shipment->nwcReceipt;
             $oldReceiptValues = $existingReceipt ? $existingReceipt->only($receiptAttributeKeys) : [];
 
-            $exchangeRate = CurrencyExchangeRate::first()->exchange_rate ?? 0;
+            $exchangeRate = CurrencyExchangeRate::first()->exchange_rate;
+            $billKwacha = number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2);
+            $billUsd = number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2);
+
+            // if ($exchangeRate && $exchangeRate > 0) {
+            //     $billUsd = round($billKwacha / $exchangeRate, 2);
+            // } else {
+            //     $billUsd = round((float) $shipment->amount_to_be_collected, 2);
+            //     if ($billUsd > 0 && $billKwacha > 0) {
+            //         $exchangeRate = round($billKwacha / $billUsd, 6);
+            //     } else {
+            //         $exchangeRate = $exchangeRate ?: null;
+            //     }
+            // }
 
             $receiptData = [
                 'receipt_number'    => $nextReceiptNumber,
