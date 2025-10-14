@@ -84,6 +84,7 @@
                             <th><i class="bi bi-box me-1"></i>Salesman</th>
                             <th><i class="bi bi-cube me-1"></i>Volume</th>
                             <th><i class="bi bi-person me-1"></i> Client</th>
+                            <th><i class="bi bi-cube me-1"></i> Package CTN</th>
                             <th><i class="bi bi-file me-1"></i> Package Information</th>
                             <th><i class="bi bi-telephone me-1"></i> Client Phone</th>
                             <th><i class="bi bi-currency-dollar me-1"></i> Cost</th>
@@ -101,6 +102,9 @@
                                 <td>{{ $shipment->salesman ?? 'No Salesman' }}</td>
                                 <td>{{ $shipment->volume ?? 'No Volume' }}</td>
                                 <td>{{ $shipment->client->name  }}</td>
+                                <td style="background-color: #F5A905;">
+                                    <b>{{ Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->sum('qty') }}</b>
+                                </td>
                                 <td>
                                     @foreach (Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->get() as $package)
                                         {{ $package->description }}

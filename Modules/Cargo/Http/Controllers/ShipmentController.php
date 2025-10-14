@@ -1871,20 +1871,26 @@ class ShipmentController extends Controller
             $existingReceipt = $shipment->nwcReceipt;
             $oldReceiptValues = $existingReceipt ? $existingReceipt->only($receiptAttributeKeys) : [];
 
-            $exchangeRate = CurrencyExchangeRate::first()->exchange_rate;
-            $billKwacha = number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2);
-            $billUsd = number_format(convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw'), 2);
+            $exchangeRateRecord = CurrencyExchangeRate::query()->first();
+            $exchangeRate = $exchangeRateRecord ? (float) $exchangeRateRecord->exchange_rate : null;
 
-            // if ($exchangeRate && $exchangeRate > 0) {
-            //     $billUsd = round($billKwacha / $exchangeRate, 2);
-            // } else {
-            //     $billUsd = round((float) $shipment->amount_to_be_collected, 2);
-            //     if ($billUsd > 0 && $billKwacha > 0) {
-            //         $exchangeRate = round($billKwacha / $billUsd, 6);
-            //     } else {
-            //         $exchangeRate = $exchangeRate ?: null;
-            //     }
-            // }
+            $billKwachaValue = convert_currency($shipment->amount_to_be_collected, 'usd', 'zmw');
+            if (!is_numeric($billKwachaValue)) {
+                $sanitizedKwacha = preg_replace('/[^0-9.\-]/', '', (string) $billKwachaValue);
+                $billKwachaValue = $sanitizedKwacha === '' ? null : $sanitizedKwacha;
+            }
+            $billKwacha = is_numeric($billKwachaValue) ? (float) $billKwachaValue : 0.0;
+            $billKwacha = round($billKwacha, 2);
+
+            $billUsd = round((float) $shipment->amount_to_be_collected, 2);
+
+            if ($exchangeRate && $exchangeRate > 0) {
+                $billUsd = round($billKwacha / $exchangeRate, 2);
+            } elseif ($billUsd > 0 && $billKwacha > 0) {
+                $exchangeRate = round($billKwacha / $billUsd, 6);
+            } else {
+                $exchangeRate = null;
+            }
 
             $receiptData = [
                 'receipt_number'    => $nextReceiptNumber,
