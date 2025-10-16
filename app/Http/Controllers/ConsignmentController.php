@@ -38,6 +38,7 @@ class ConsignmentController extends Controller
 
     public function import(Request $request)
     {
+        // dd('here');
         try {
             switch ($request->shipment_type) {
                 case 'sea':
@@ -566,6 +567,7 @@ class ConsignmentController extends Controller
     }
 
     public function importAir($request){
+        // dd('here');
         try {
             $file = $request->file('excel_file');
             $spreadsheet = IOFactory::load($file->getPathname());
@@ -680,8 +682,6 @@ class ConsignmentController extends Controller
                 case 8:
                         // Step 5: Loop through data starting after headerRow
                         $res = $this->loopCreateShipment($headerRow, $rows, $consignment);
-
-                        // dd('loopCreateShipment: '.(boolean)$res);
                         if ($res !== 1) {
                             $res = $this->loopCreateShipmentII($headerRow, $rows, $consignment);
                         }
@@ -726,10 +726,10 @@ class ConsignmentController extends Controller
         try {
 
             for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
-                $rowText = implode(' ', array_map('trim', $rows[$i]));
-                if (stripos($rowText, 'total') !== false) {
-                    break;
-                }
+                // $rowText = implode(' ', array_map('trim', $rows[$i]));
+                // if (stripos($rowText, 'total') !== false) {
+                //     break;
+                // }
 
                 $data = $rows[$i];
 
@@ -818,6 +818,7 @@ class ConsignmentController extends Controller
             for ($i = 7 + 1; $i < count($rows) - 1; $i++) {
                 $data = $rows[$i];
 
+                // dd($data);
                 if (!empty($data[2])) {
                     // Extract user and client-related information
                     $userName = $data[3] ?? 'customer' . rand(100000, 999999); // Assuming Mark column represents user/client name
@@ -905,13 +906,8 @@ class ConsignmentController extends Controller
         try {
 
             for ($i = $headerRow + 1; $i < count($rows) - 1; $i++) {
-                $rowText = implode(' ', array_map('trim', $rows[$i]));
-                if (stripos($rowText, 'total') !== false) {
-                    break;
-                }
-
                 $data = $rows[$i];
-                // dd($data);
+                // dd($rows);
 
                 if (!empty($data[1])) {
                     $userName = $data[1] ?? 'customer' . rand(100000, 999999);
@@ -981,6 +977,8 @@ class ConsignmentController extends Controller
                             'height' => 1,
                         ]
                     );
+                }else{
+                    dd($data);
                 }
 
             }
