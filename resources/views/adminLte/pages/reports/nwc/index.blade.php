@@ -166,9 +166,9 @@
                                 <th>Bill (USD)</th>
                                 <th>Bill (ZMW)</th>
                                 <th>Method</th>
-                                <th>Airtel</th>
-                                <th>MTN</th>
-                                <th>Zamtel</th>
+                                <th class="bg-danger text-white">Airtel</th>
+                                <th class="bg-warning text-dark">MTN</th>
+                                <th class="bg-success text-white">Cash Payments</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -183,9 +183,14 @@
                                 <td>{{ $row['bill_usd'] !== null ? number_format($row['bill_usd'], 2) : '—' }}</td>
                                 <td>{{ $row['bill_kwacha'] !== null ? number_format($row['bill_kwacha'], 2) : '—' }}</td>
                                 <td>{{ $row['method_of_payment'] }}</td>
-                                <td>{{ $row['airtel'] > 0 ? number_format($row['airtel'], 2) : '—' }}</td>
-                                <td>{{ $row['mtn'] > 0 ? number_format($row['mtn'], 2) : '—' }}</td>
-                                <td>{{ $row['zamtel'] > 0 ? number_format($row['zamtel'], 2) : '—' }}</td>
+                                @php
+                                    $airtelAmount = $row['airtel'] ?? 0;
+                                    $mtnAmount = $row['mtn'] ?? 0;
+                                    $cashPaymentsAmount = $row['cash_payments'] ?? 0;
+                                @endphp
+                                <td class="bg-danger text-dark">{{ $airtelAmount > 0 ? number_format($airtelAmount, 2) : '-' }}</td>
+                                <td class="bg-warning text-dark">{{ $mtnAmount > 0 ? number_format($mtnAmount, 2) : '-' }}</td>
+                                <td class="bg-success text-dark">{{ $cashPaymentsAmount > 0 ? number_format($cashPaymentsAmount, 2) : '-' }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -199,13 +204,13 @@
                             <tfoot class="table-light">
                                 <tr>
                                     <th colspan="5" class="text-end">Totals:</th>
-                                    <th>{{ number_format($summary['total_rate'] ?? 0, 4) }}</th>
-                                    <th>{{ number_format($summary['total_bill_usd'] ?? 0, 2) }}</th>
-                                    <th>{{ number_format($summary['total_bill_kwacha'] ?? 0, 2) }}</th>
+                                    <th><b>{{ number_format($summary['total_rate'] ?? 0, 4) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_bill_usd'] ?? 0, 2) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_bill_kwacha'] ?? 0, 2) }}</b></th>
                                     <th></th>
-                                    <th>{{ number_format($summary['total_airtel'] ?? 0, 2) }}</th>
-                                    <th>{{ number_format($summary['total_mtn'] ?? 0, 2) }}</th>
-                                    <th>{{ number_format($summary['total_zamtel'] ?? 0, 2) }}</th>
+                                    <th><b>{{ number_format($summary['total_airtel'] ?? 0, 2) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_mtn'] ?? 0, 2) }}</b></th>
+                                    <th> <b>{{ number_format($summary['total_cash_payments'] ?? ($summary['total_zamtel'] ?? 0), 2) }}</b> </th>
                                 </tr>
                             </tfoot>
                         @endif
@@ -215,3 +220,6 @@
         </div>
     </div>
 @endsection
+
+
+

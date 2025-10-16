@@ -254,6 +254,14 @@
                         Learn More
                     </button>
                 </div>
+                <div class="ad-container mb-4 relative overflow-hidden" style="background: linear-gradient(rgba(255, 255, 255, 0), rgba(1, 28, 51, 0.21)), url('{{ asset('parcel.png') }}'); background-size: cover; background-position: center;">
+                    <div class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">NEW</div>
+                    <h3 class="text-lg font-bold mb-2 text-white pt-8">Warehouse Solutions</h3>
+                    <p class="text-sm mb-4 text-white/90">Secure storage with automated inventory management</p>
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-semibold transition-all transform hover:scale-105">
+                        Learn More
+                    </button>
+                </div>
             </div>
 
             <!-- Middle Column - Tracking Content (Scrollable) -->
@@ -508,6 +516,15 @@
             <div class="lg:col-span-2 sticky-sidebar">
                 <!-- Ads -->
                 
+
+                <div class="ad-container" id="adBox" 
+                        style="background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), 
+                            url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqQmuGK9v5W6wXMkK0PwIvfxtBK6yI3AW2aQ&s'); 
+                            background-size: cover; 
+                            background-position: center;">
+                    <div style="height:30vh"></div>
+                </div>
+
                 <div class="ad-container mb-4" style="background: #f7c600; border-left: 4px solid #012642;">
                     <div class="absolute top-3 right-3 bg-white text-yellow-700 text-xs font-bold px-2 py-1 rounded-full shadow">NEW</div>
                     <h3 class="text-lg font-bold mb-2 text-gray-900">Download Our App</h3>
@@ -525,14 +542,6 @@
                 <div class="ad-container mb-2" style="background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url('https://www.bringeraircargo.com/wp-content/uploads/2020/05/ezgif.com-video-to-gif-3.gif'); background-size: cover; background-position: center;">
                     <div style="height:24vh">
                     </div>
-                </div>
-
-                <div class="ad-container" id="adBox" 
-                        style="background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), 
-                            url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqQmuGK9v5W6wXMkK0PwIvfxtBK6yI3AW2aQ&s'); 
-                            background-size: cover; 
-                            background-position: center;">
-                    <div style="height:24vh"></div>
                 </div>
                 
                 <script>

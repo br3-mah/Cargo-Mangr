@@ -22,10 +22,10 @@
         <p>Receipt No.: {{ $shipment?->receipt?->receipt_number ?? '-' }}</p>
 
         <hr />
-        <p><strong>Items:</strong></p>
+        <p><strong>Description:</strong></p>
         @foreach(Modules\Cargo\Entities\PackageShipment::where('shipment_id',$shipment->id)->get() as $package)
             <p>
-                {{ $package->description }} x{{ $package->qty }}<br>
+                {{ $package->description }}<br>
                 @if(isset($package->package->name))
                     {{ json_decode($package->package->name, true)[app()->getLocale()] ?? '-' }}
                 @else
@@ -33,21 +33,20 @@
                 @endif
             </p>
         @endforeach
-
         <hr />
-        <p><strong>Shipment Logs:</strong></p>
-        @foreach($shipment->logs()->orderBy('id','desc')->get() as $log)
-            <p>
-                {{ $log->created_at->format('Y-m-d H:i') }}<br>
-                {{ __('cargo::view.changed_from') }}:
-                "{{ Modules\Cargo\Entities\Shipment::getStatusByStatusId($log->from) }}"
-                {{ __('cargo::view.to') }}:
-                "{{ Modules\Cargo\Entities\Shipment::getStatusByStatusId($log->to) }}"
-            </p>
-        @endforeach
-
+        <p style="display:flex; justify-content:space-between;">
+            <strong>No. Pkg:</strong>
+            <span>{{ Modules\Cargo\Entities\PackageShipment::where('shipment_id', $shipment->id)->sum('qty') }}</span>
+        </p>
         <hr />
-        <p>Total: <strong>{{ format_price($shipment?->receipt?->total ) }}</strong></p>
+        <p style="display:flex; justify-content:space-between;">
+            <strong>{{ $shipment->consignment?->cargo_type === 'air' ? 'Total Weight' : 'Volume' }}:</strong>
+            <span>{{ $shipment->consignment?->cargo_type === 'air' ? ($shipment->total_weight ?? '-') : ($shipment->volume ?? '-') }}</span>
+        </p>
+        <hr />
+        <br />
+        <p>Total: <strong>{{ number_format($shipment?->receipt?->total ?? 0, 2) }}</strong></p>
+
         <p style="text-align:center;">Thank you!</p>
     </div>
 </div>
