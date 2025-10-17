@@ -77,7 +77,7 @@ class NwcReportService
 
             $airtel = $method === 'airtel' ? (float) ($billKwacha ?? 0) : 0.0;
             $mtn = $method === 'mtn' ? (float) ($billKwacha ?? 0) : 0.0;
-            $zamtel = $method === 'zamtel' ? (float) ($billKwacha ?? 0) : 0.0;
+            $cashPayments = $method === 'cash' ? (float) ($billKwacha ?? 0) : 0.0;
 
             return [
                 'date' => $transaction->created_at ?? now(),
@@ -91,7 +91,7 @@ class NwcReportService
                 'method_of_payment' => $methodLabel,
                 'airtel' => $airtel,
                 'mtn' => $mtn,
-                'zamtel' => $zamtel,
+                'cash_payments' => $cashPayments,
                 'shipment' => $shipment,
                 'consignment' => $consignment,
                 'client' => $client,
@@ -112,7 +112,7 @@ class NwcReportService
             'total_bill_kwacha' => $rows->filter(fn ($row) => $row['bill_kwacha'] !== null)->sum('bill_kwacha'),
             'total_airtel' => $rows->sum('airtel'),
             'total_mtn' => $rows->sum('mtn'),
-            'total_zamtel' => $rows->sum('zamtel'),
+            'total_cash_payments' => $rows->sum('cash_payments'),
         ];
 
         $totals['average_rate'] = $totals['total_rows'] > 0
@@ -145,7 +145,7 @@ class NwcReportService
             'I1' => 'Method of Payment',
             'J1' => 'Airtel',
             'K1' => 'MTN',
-            'L1' => 'Zamtel',
+            'L1' => 'Cash Payments',
         ];
 
         foreach ($headers as $cell => $value) {
@@ -165,7 +165,7 @@ class NwcReportService
             $sheet->setCellValue("I{$rowPointer}", $row['method_of_payment']);
             $sheet->setCellValue("J{$rowPointer}", $row['airtel']);
             $sheet->setCellValue("K{$rowPointer}", $row['mtn']);
-            $sheet->setCellValue("L{$rowPointer}", $row['zamtel']);
+            $sheet->setCellValue("L{$rowPointer}", $row['cash_payments']);
             $rowPointer++;
         }
 
@@ -176,7 +176,7 @@ class NwcReportService
         $sheet->setCellValue("H{$summaryStartRow}", $summary['total_bill_kwacha']);
         $sheet->setCellValue("J{$summaryStartRow}", $summary['total_airtel']);
         $sheet->setCellValue("K{$summaryStartRow}", $summary['total_mtn']);
-        $sheet->setCellValue("L{$summaryStartRow}", $summary['total_zamtel']);
+        $sheet->setCellValue("L{$summaryStartRow}", $summary['total_cash_payments']);
 
         $sheet->setCellValue("E" . ($summaryStartRow + 1), 'Average Rate');
         $sheet->setCellValue("F" . ($summaryStartRow + 1), $summary['average_rate']);
@@ -214,8 +214,8 @@ class NwcReportService
         if ($slug->contains('mtn')) {
             return 'mtn';
         }
-        if ($slug->contains('zamtel')) {
-            return 'zamtel';
+        if ($slug->contains('cash')) {
+            return 'cash';
         }
 
         return (string) $slug;

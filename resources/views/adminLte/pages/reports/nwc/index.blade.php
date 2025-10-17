@@ -210,7 +210,7 @@
                                     <th></th>
                                     <th><b>{{ number_format($summary['total_airtel'] ?? 0, 2) }}</b></th>
                                     <th><b>{{ number_format($summary['total_mtn'] ?? 0, 2) }}</b></th>
-                                    <th> <b>{{ number_format($summary['total_cash_payments'] ?? ($summary['total_zamtel'] ?? 0), 2) }}</b> </th>
+                                    <th> <b>{{ number_format($summary['total_cash_payments'] ?? 0, 2) }}</b> </th>
                                 </tr>
                             </tfoot>
                         @endif

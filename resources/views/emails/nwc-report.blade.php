@@ -13,7 +13,7 @@
     <li>Total Bill (ZMW): <strong>{{ number_format($summary['total_bill_kwacha'] ?? 0, 2) }}</strong></li>
     <li>Total Airtel: <strong>{{ number_format($summary['total_airtel'] ?? 0, 2) }}</strong></li>
     <li>Total MTN: <strong>{{ number_format($summary['total_mtn'] ?? 0, 2) }}</strong></li>
-    <li>Total Zamtel: <strong>{{ number_format($summary['total_zamtel'] ?? 0, 2) }}</strong></li>
+    <li>Total Cash Payments: <strong>{{ number_format($summary['total_cash_payments'] ?? 0, 2) }}</strong></li>
     <li>Average Rate: <strong>{{ number_format($summary['average_rate'] ?? 0, 4) }}</strong></li>
 </ul>
 
