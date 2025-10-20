@@ -19,6 +19,9 @@
         <p>Date: {{ now()->format('Y-m-d H:i') }}</p>
         <p>Shipment ID: {{ $shipment->code }}</p>
         <p>Customer: {{ $shipment->client->name ?? '-' }}</p>
+        @auth
+            <p>Cashier: {{ auth()->user()->name }}</p>
+        @endauth
         <p>Receipt No.: {{ $shipment?->receipt?->receipt_number ?? '-' }}</p>
 
         <hr />
