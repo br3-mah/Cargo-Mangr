@@ -421,7 +421,7 @@ class ShipmentController extends Controller
 
     public function show($id)
     {
-        $shipment = Shipment::find($id);
+        $shipment = Shipment::with(['nwcReceipt.user'])->find($id);
         if (!$shipment) {
             abort(404, 'Shipment not found');
         }
@@ -438,8 +438,10 @@ class ShipmentController extends Controller
                 'name' => __('cargo::view.shipment') . ' | ' . $shipment->code,
             ],
         ]);
+        $auditLogService = app(AuditLogService::class);
+        $auditLogs = $auditLogService->getLogsFor($shipment);
         $adminTheme = env('ADMIN_THEME', 'adminLte');
-        return view('cargo::' . $adminTheme . '.pages.shipments.show', compact('shipment'));
+        return view('cargo::' . $adminTheme . '.pages.shipments.show', compact('shipment', 'auditLogs'));
     }
 
     public function edit($id)

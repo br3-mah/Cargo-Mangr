@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\TrackingStageController;
 use App\Http\Controllers\NwcReportController;
+use App\Http\Controllers\AuditLogController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -120,6 +121,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/tracking-stages', [TrackingStageController::class, 'apiIndex']);
 
     Route::get('shipments/overview', [ShipmentController::class, 'overview'])->name('shipments.overview');
+    Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
 });
 
 // if (\Illuminate\Support\Facades\Schema::hasTable('translations') && check_module('localization')) {

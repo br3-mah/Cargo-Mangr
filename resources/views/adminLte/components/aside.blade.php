@@ -97,6 +97,14 @@
                 </li>
                 @endcan
 
+                <li class="nav-item">
+                    <a href="{{ route('audit-logs.index') }}"
+                        class="nav-link {{ request()->routeIs('audit-logs.index') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-check fa-fw"></i>
+                        <p>Audit Logs</p>
+                    </a>
+                </li>
+
                 @can('view-nwc-reports')
                 <li class="nav-item {{ areActiveRoutes(['reports.nwc.index'],'menu-is-opening menu-open active') }}">
                     <a href="{{ route('reports.nwc.index') }}"

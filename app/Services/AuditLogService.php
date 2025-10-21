@@ -51,7 +51,8 @@ class AuditLogService
      */
     public function getLogsFor($auditable, ?string $auditableType = null)
     {
-        return AuditLog::where('auditable_type', $auditableType ?? get_class($auditable))
+        return AuditLog::with('user')
+            ->where('auditable_type', $auditableType ?? get_class($auditable))
             ->where('auditable_id', is_object($auditable) ? $auditable->id : $auditable)
             ->latest()
             ->get();

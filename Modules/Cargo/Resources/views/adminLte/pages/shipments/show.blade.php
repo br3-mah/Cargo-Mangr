@@ -1,9 +1,11 @@
 @php
     use \Milon\Barcode\DNS1D;
     use Carbon\Carbon;
+    use Illuminate\Support\Str;
     $d = new DNS1D();
     $user_role = auth()->user()->role;
     $admin  = 1;
+    $auditLogs = $auditLogs ?? collect();
 @endphp
 
 @extends('cargo::adminLte.layouts.master')
@@ -95,10 +97,10 @@
 
                         @if ($user_role != $admin )
                             @if($shipment->paid == 0 && $shipment->payment_method_id != $cash_payment && $shipment->payment_method_id != $INVOICE_PAYMENT )
-                                <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" onclick="openCheckoutModal()">
+                                {{-- <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" onclick="openCheckoutModal()">
                                     {{ __('cargo::view.pay_now') }} 
                                     <i class="ml-1 fas fa-credit-card"></i>
-                                </button>
+                                </button> --}}
                             @endif
                         @endif
                     </div>
@@ -139,9 +141,9 @@
                         @endif
 
                         @if($user_role == $admin || auth()->user()->can('edit-shipments'))
-                            <a href="{{ route('shipments.edit', $shipment->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{-- <a href="{{ route('shipments.edit', $shipment->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 <i class="fas fa-pen mr-1"></i> {{ __('cargo::view.edit_shipment') }}
-                            </a>
+                            </a> --}}
                         @endif
                     </div>
                 </div>
@@ -380,7 +382,15 @@
         <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-auto p-6 animate-fade-in">
             <!-- Modal Header -->
             <div class="flex justify-between items-center border-b pb-3">
-                <h2 class="text-lg font-semibold text-gray-800">📜 Audit Logs</h2>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-clipboard-list text-yellow-500"></i>
+                        Audit Trail
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-1">
+                        {{ $auditLogs->count() }} {{ Str::plural('entry', $auditLogs->count()) }} recorded for this shipment
+                    </p>
+                </div>
                 <button onclick="closeAuditModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times"></i>
                 </button>
@@ -389,22 +399,93 @@
             <!-- Modal Content -->
             <div class="mt-4 max-h-80 overflow-y-auto">
                 <ul class="divide-y divide-gray-200 text-sm">
-                    <li class="py-3">
-                        <p class="font-medium text-gray-800">User John Doe updated shipment #123</p>
-                        <p class="text-xs text-gray-500">2025-09-26 14:32</p>
-                    </li>
-                    <li class="py-3">
-                        <p class="font-medium text-gray-800">System marked shipment #123 as Paid</p>
-                        <p class="text-xs text-gray-500">2025-09-25 09:47</p>
-                    </li>
-                    <li class="py-3">
-                        <p class="font-medium text-gray-800">User Admin created shipment #123</p>
-                        <p class="text-xs text-gray-500">2025-09-24 11:11</p>
-                    </li>
-                    <li class="py-3">
-                        <p class="font-medium text-gray-800">Client Jane Doe requested refund for shipment #123</p>
-                        <p class="text-xs text-gray-500">2025-09-23 16:05</p>
-                    </li>
+                    @forelse($auditLogs as $log)
+                        @php
+                            $event = $log->event ? Str::headline($log->event) : 'Activity';
+                            $eventTone = match (strtolower($log->event)) {
+                                'created', 'create', 'recorded' => 'bg-green-100 text-green-700',
+                                'updated', 'update', 'modified' => 'bg-blue-100 text-blue-700',
+                                'deleted', 'delete', 'removed' => 'bg-red-100 text-red-700',
+                                'restored' => 'bg-purple-100 text-purple-700',
+                                default => 'bg-gray-100 text-gray-700',
+                            };
+                            $changes = collect($log->new_values ?? [])
+                                ->keys()
+                                ->merge(array_keys($log->old_values ?? []))
+                                ->unique()
+                                ->filter();
+                            $issuedBy = $log->user?->name ?? 'System';
+                        @endphp
+                        <li class="py-3">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between items-start gap-3">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $eventTone }}">
+                                                {{ $event }}
+                                            </span>
+                                            <span class="text-sm font-semibold text-gray-800">
+                                                {{ $issuedBy }}
+                                            </span>
+                                        </div>
+                                        @if($log->description)
+                                            <p class="text-xs text-gray-600 leading-snug">{{ $log->description }}</p>
+                                        @endif
+                                    </div>
+                                    <span class="text-xs text-gray-500 whitespace-nowrap">
+                                        {{ optional($log->created_at)->format('Y-m-d H:i') }}
+                                    </span>
+                                </div>
+
+                                @if($changes->isNotEmpty())
+                                    <div class="mt-2 space-y-1">
+                                        @foreach($changes as $field)
+                                            @php
+                                                $oldValue = data_get($log->old_values, $field);
+                                                $newValue = data_get($log->new_values, $field);
+                                                $formattedField = Str::headline($field);
+                                                $formattedOld = is_array($oldValue) ? json_encode($oldValue, JSON_UNESCAPED_UNICODE) : (is_null($oldValue) ? 'null' : (string) $oldValue);
+                                                $formattedNew = is_array($newValue) ? json_encode($newValue, JSON_UNESCAPED_UNICODE) : (is_null($newValue) ? 'null' : (string) $newValue);
+                                            @endphp
+                                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                                <span class="font-semibold text-gray-600">{{ $formattedField }}:</span>
+                                                @if($formattedOld !== $formattedNew && $formattedOld !== 'null')
+                                                    <span class="text-red-500 line-through">{{ $formattedOld }}</span>
+                                                    <i class="fas fa-arrow-right text-gray-300 text-[10px]"></i>
+                                                @endif
+                                                <span class="text-green-600 font-semibold">{{ $formattedNew }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <div class="flex flex-wrap items-center gap-2 text-[11px] text-gray-400 mt-2">
+                                    @if($log->auditable_type)
+                                        <span class="inline-flex items-center gap-1">
+                                            <i class="fas fa-cube"></i>
+                                            {{ class_basename($log->auditable_type) }}#{{ $log->auditable_id }}
+                                        </span>
+                                    @endif
+                                    @if($log->ip_address)
+                                        <span class="inline-flex items-center gap-1">
+                                            <i class="fas fa-network-wired"></i>
+                                            {{ $log->ip_address }}
+                                        </span>
+                                    @endif
+                                    @if($log->user_agent)
+                                        <span class="inline-flex items-center gap-1">
+                                            <i class="fas fa-desktop"></i>
+                                            {{ Str::limit($log->user_agent, 60) }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </li>
+                    @empty
+                        <li class="py-6 text-center text-sm text-gray-500">
+                            No audit activity has been recorded for this shipment yet.
+                        </li>
+                    @endforelse
                 </ul>
             </div>
 

@@ -19,6 +19,7 @@ class NwcReceipt extends Model
         'method_of_payment',
         'discount_type',
         'discount_value',
+        'user_id',
     ];
 
     protected $casts = [
@@ -31,5 +32,10 @@ class NwcReceipt extends Model
     public function shipment()
     {
         return $this->belongsTo(Shipment::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

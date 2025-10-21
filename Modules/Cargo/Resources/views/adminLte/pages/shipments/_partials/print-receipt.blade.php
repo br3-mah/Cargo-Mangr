@@ -3,6 +3,10 @@
     <span id="printBtnText">Print Receipt</span>
     <span id="printSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
 </button>
+@php
+    $nwcReceipt = $shipment->nwcReceipt;
+    $receiptUser = optional($nwcReceipt?->user)->name ?? optional(auth()->user())->name ?? 'System';
+@endphp
 <div id="receiptContent" style="display:none;">
     <div style="font-family: monospace; width: 58mm; padding: 10px;">
         <div style="text-align: center;">
@@ -19,9 +23,7 @@
         <p>Date: {{ now()->format('Y-m-d H:i') }}</p>
         <p>Shipment ID: {{ $shipment->code }}</p>
         <p>Customer: {{ $shipment->client->name ?? '-' }}</p>
-        @auth
-            <p>Cashier: {{ auth()->user()->name }}</p>
-        @endauth
+        <p>Cashier: {{ $receiptUser }}</p>
         <p>Receipt No.: {{ $shipment?->receipt?->receipt_number ?? '-' }}</p>
 
         <hr />

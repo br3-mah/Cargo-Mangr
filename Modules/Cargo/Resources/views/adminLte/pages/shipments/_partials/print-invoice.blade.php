@@ -33,6 +33,7 @@
         $paymentMethodLabel = $methodOfPayment ? ucwords(str_replace('_', ' ', $methodOfPayment)) : 'N/A';
         $generatedAt = $storedReceipt?->updated_at ?? $storedReceipt?->created_at;
         $generatedOn = $generatedAt ? $generatedAt->format('F j, Y, g:i a') : now()->format('F j, Y, g:i a');
+        $processedBy = $storedReceipt?->user?->name ?? optional(auth()->user())->name ?? 'System';
     @endphp
 
     <!-- Modal for null consignment -->
@@ -256,6 +257,10 @@
             <div class="flex justify-between px-4 py-2 border-b border-gray-200">
                 <div>Payment Method:</div>
                 <div>{{ $paymentMethodLabel }}</div>
+            </div>
+            <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+                <div>Processed By:</div>
+                <div>{{ $processedBy }}</div>
             </div>
             <div class="flex justify-between px-4 py-2 bg-primary text-dark font-bold">
                 <div>Bill (ZMW):</div>
