@@ -1,4 +1,40 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+@php
+    $consignmentCollection = $consignments instanceof \Illuminate\Support\Collection
+        ? $consignments
+        : (method_exists($consignments, 'items') ? collect($consignments->items()) : collect($consignments));
+    $normalize = function ($value) {
+        if (is_null($value) || $value === '') {
+            return null;
+        }
+        $value = trim($value);
+        return function_exists('mb_strtolower') ? mb_strtolower($value) : strtolower($value);
+    };
+    $statusOptions = $consignmentCollection->map(function ($item) use ($normalize) {
+        $statusValue = $item->status ?? $item->current_status ?? null;
+        $normalized = $normalize($statusValue);
+        return $normalized ? [
+            'value' => $normalized,
+            'label' => strtoupper($statusValue),
+        ] : null;
+    })->filter()->unique('value')->values();
+    $sourceOptions = $consignmentCollection->map(function ($item) use ($normalize) {
+        $sourceValue = $item->source ?? 'China';
+        $normalized = $normalize($sourceValue);
+        return $normalized ? [
+            'value' => $normalized,
+            'label' => $sourceValue,
+        ] : null;
+    })->filter()->unique('value')->values();
+    $destinationOptions = $consignmentCollection->map(function ($item) use ($normalize) {
+        $destinationValue = $item->destination ?? 'Zambia';
+        $normalized = $normalize($destinationValue);
+        return $normalized ? [
+            'value' => $normalized,
+            'label' => $destinationValue,
+        ] : null;
+    })->filter()->unique('value')->values();
+@endphp
 <div class="w-full bg-white px-3 shadow-sm rounded-lg overflow-hidden">
   <div class="bg-gradient-to-r text-dark py-4 flex justify-between items-center">
     {{-- <h2 class="text-lg font-bold text-primary tracking-tight">Consignment Tracking System</h2> --}}
@@ -16,15 +52,67 @@
     </div>
   </div>
 
+  <div class="px-3 py-4 bg-gray-50 border-b border-gray-200 flex flex-wrap gap-4 items-end justify-between">
+    <div class="flex items-center space-x-2">
+      <span class="text-sm font-medium text-gray-600">View:</span>
+      <button type="button" data-view="table"
+        class="view-toggle inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-sky-500 text-sky-600 bg-white hover:bg-sky-500 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1"
+        aria-pressed="true">
+        Table
+      </button>
+      <button type="button" data-view="list"
+        class="view-toggle inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1"
+        aria-pressed="false">
+        List
+      </button>
+      <button type="button" data-view="grid"
+        class="view-toggle inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1"
+        aria-pressed="false">
+        Grid
+      </button>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <div>
+        <label for="filter-status" class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Status</label>
+        <select id="filter-status" class="consignment-filter block w-40 text-sm border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+          <option value="all">All Statuses</option>
+          @foreach($statusOptions as $statusOption)
+            <option value="{{ $statusOption['value'] }}">{{ $statusOption['label'] }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div>
+        <label for="filter-source" class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Source</label>
+        <select id="filter-source" class="consignment-filter block w-40 text-sm border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+          <option value="all">All Sources</option>
+          @foreach($sourceOptions as $sourceOption)
+            <option value="{{ $sourceOption['value'] }}">{{ $sourceOption['label'] }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div>
+        <label for="filter-destination" class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Destination</label>
+        <select id="filter-destination" class="consignment-filter block w-44 text-sm border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+          <option value="all">All Destinations</option>
+          @foreach($destinationOptions as $destinationOption)
+            <option value="{{ $destinationOption['value'] }}">{{ $destinationOption['label'] }}</option>
+          @endforeach
+        </select>
+      </div>
+    </div>
+  </div>
+
   <!-- Table Container -->
-  <div class="overflow-x-auto">
-    <table class="w-full table-auto">
+  <div id="table-view-container" class="overflow-x-auto">
+    <table id="consignments-table" class="w-full table-auto">
       <thead>
         <tr class="bg-gray-100 text-gray-700 uppercase text-xs border-b border-gray-200">
             <th class="px-6 py-3">
                 <input type="checkbox" class="bulk-checkbox" id="select-all">
             </th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">CODE</th>
+            <th class="px-6 py-3 font-semibold tracking-wider text-left">TYPE</th>
         <th class="px-6 py-3 font-semibold tracking-wider text-left">SHIPMENT PARCELS</th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">CONSIGNEE</th>
             <th class="px-6 py-3 font-semibold tracking-wider text-left">SOURCE</th>
@@ -36,12 +124,50 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         @forelse($consignments as $consignment)
-        <tr class="hover:bg-gray-50 transition-colors duration-150">
+        @php
+            $statusValue = $normalize($consignment->status ?? $consignment->current_status ?? '');
+            $sourceDisplay = $consignment->source ?? 'China';
+            $destinationDisplay = $consignment->destination ?? 'Zambia';
+            $sourceValue = $normalize($sourceDisplay);
+            $destinationValue = $normalize($destinationDisplay);
+            $cargoType = $normalize($consignment->cargo_type ?? '');
+        @endphp
+        <tr class="hover:bg-gray-50 transition-colors duration-150"
+            data-status="{{ $statusValue }}"
+            data-source="{{ $sourceValue }}"
+            data-destination="{{ $destinationValue }}"
+            data-cargo-type="{{ $cargoType }}">
             <td class="px-6 py-4 text-sm">
                 <input type="checkbox" class="row-checkbox" value="{{ $consignment->id }}">
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {{ $consignment->consignment_code ?? 'Unspecified' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full
+                        @if($cargoType === 'air') bg-sky-100 text-sky-600
+                        @elseif($cargoType === 'sea') bg-indigo-100 text-indigo-600
+                        @else bg-gray-100 text-gray-500 @endif">
+                        @if($cargoType === 'air')
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                                <path d="M21 14.5a1 1 0 0 1-1.32.95L13 13.8v3.45l1.62 1.62a1 1 0 0 1-1.41 1.41l-1.21-1.21-1.21 1.21a1 1 0 0 1-1.41-1.41L11 17.25V13.8l-6.68 1.65A1 1 0 0 1 3 14.5V13a1 1 0 0 1 .68-.95L11 9.8V5.41a1 1 0 0 1 2 0V9.8l7.32 2.25a1 1 0 0 1 .68.95z"/>
+                            </svg>
+                        @elseif($cargoType === 'sea')
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                                <path d="M4 15v-4a1 1 0 0 1 .74-.97l7-2a1 1 0 0 1 .52 0l7 2A1 1 0 0 1 20 11v4c0 3.19-2.34 5-8 5s-8-1.81-8-5zm2 0c0 1.56 1.4 3 6 3s6-1.44 6-3v-3.19l-6-1.72-6 1.72z"/>
+                                <path d="M5 18.5a1 1 0 0 1 .76-.45 1 1 0 0 1 .82.25C7.35 18.8 8.74 19.5 12 19.5s4.65-.7 5.42-1.2a1 1 0 0 1 .82-.25A1 1 0 0 1 19 18.5c0 1.09-1.02 2.09-2.58 2.86-1.11.57-2.55.89-4.42.89s-3.31-.32-4.42-.89C6.02 20.59 5 19.59 5 18.5z"/>
+                            </svg>
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                                <path d="M12 3a1 1 0 0 1 1 1v4l6.6 2.2A1 1 0 0 1 20 11v4c0 3.19-2.34 5-8 5s-8-1.81-8-5v-4a1 1 0 0 1 .68-.95L11 8V4a1 1 0 0 1 1-1z"/>
+                            </svg>
+                        @endif
+                    </span>
+                    <span class="text-xs font-semibold uppercase tracking-wide">
+                        {{ $cargoType ? strtoupper($cargoType) : 'N/A' }}
+                    </span>
+                </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                 {{ $consignment->shipment_count ?? 'Unspecified' }}
@@ -50,10 +176,10 @@
                 {{ $consignment->name }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                {{ $consignment->source ?? 'China' }}
+                {{ $sourceDisplay }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                {{ $consignment->destination ?? 'Zambia' }}
+                {{ $destinationDisplay }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                 {{ $consignment->updated_at->toFormattedDateString() }}
@@ -135,76 +261,399 @@
     </table>
   </div>
 
+  <div id="consignment-list-view" class="hidden divide-y divide-gray-200">
+    @forelse($consignments as $consignment)
+      @php
+          $statusValue = $normalize($consignment->status ?? $consignment->current_status ?? '');
+          $sourceDisplay = $consignment->source ?? 'China';
+          $destinationDisplay = $consignment->destination ?? 'Zambia';
+          $sourceValue = $normalize($sourceDisplay);
+          $destinationValue = $normalize($destinationDisplay);
+          $cargoType = $normalize($consignment->cargo_type ?? '');
+          $updatedAtFormatted = $consignment->updated_at ? $consignment->updated_at->toFormattedDateString() : 'N/A';
+      @endphp
+      <div class="consignment-visual-item flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4 px-2"
+        data-status="{{ $statusValue }}"
+        data-source="{{ $sourceValue }}"
+        data-destination="{{ $destinationValue }}"
+        data-cargo-type="{{ $cargoType }}">
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-sm font-semibold text-gray-900">{{ $consignment->consignment_code ?? 'Unspecified' }}</span>
+            <span class="inline-flex items-center space-x-2 text-xs font-semibold uppercase tracking-wide">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-full
+                @if($cargoType === 'air') bg-sky-100 text-sky-600
+                @elseif($cargoType === 'sea') bg-indigo-100 text-indigo-600
+                @else bg-gray-100 text-gray-500 @endif">
+                @if($cargoType === 'air')
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                    <path d="M21 14.5a1 1 0 0 1-1.32.95L13 13.8v3.45l1.62 1.62a1 1 0 0 1-1.41 1.41l-1.21-1.21-1.21 1.21a1 1 0 0 1-1.41-1.41L11 17.25V13.8l-6.68 1.65A1 1 0 0 1 3 14.5V13a1 1 0 0 1 .68-.95L11 9.8V5.41a1 1 0 0 1 2 0V9.8l7.32 2.25a1 1 0 0 1 .68.95z"/>
+                  </svg>
+                @elseif($cargoType === 'sea')
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                    <path d="M4 15v-4a1 1 0 0 1 .74-.97l7-2a1 1 0 0 1 .52 0l7 2A1 1 0 0 1 20 11v4c0 3.19-2.34 5-8 5s-8-1.81-8-5zm2 0c0 1.56 1.4 3 6 3s6-1.44 6-3v-3.19l-6-1.72-6 1.72z"/>
+                    <path d="M5 18.5a1 1 0 0 1 .76-.45 1 1 0 0 1 .82.25C7.35 18.8 8.74 19.5 12 19.5s4.65-.7 5.42-1.2a1 1 0 0 1 .82-.25A1 1 0 0 1 19 18.5c0 1.09-1.02 2.09-2.58 2.86-1.11.57-2.55.89-4.42.89s-3.31-.32-4.42-.89C6.02 20.59 5 19.59 5 18.5z"/>
+                  </svg>
+                @else
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                    <path d="M12 3a1 1 0 0 1 1 1v4l6.6 2.2A1 1 0 0 1 20 11v4c0 3.19-2.34 5-8 5s-8-1.81-8-5v-4a1 1 0 0 1 .68-.95L11 8V4a1 1 0 0 1 1-1z"/>
+                  </svg>
+                @endif
+              </span>
+              <span>{{ $cargoType ? strtoupper($cargoType) : 'N/A' }}</span>
+            </span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-gray-600">
+            <div><span class="font-semibold">Consignee:</span> {{ $consignment->name }}</div>
+            <div><span class="font-semibold">Parcels:</span> {{ $consignment->shipment_count ?? 'Unspecified' }}</div>
+            <div><span class="font-semibold">Updated:</span> {{ $updatedAtFormatted }}</div>
+            <div><span class="font-semibold">Source:</span> {{ $sourceDisplay }}</div>
+            <div><span class="font-semibold">Destination:</span> {{ $destinationDisplay }}</div>
+          </div>
+        </div>
+        <div class="flex flex-col sm:items-end gap-2">
+          <div>
+            @if($consignment->status == 'delivered')
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">DELIVERED</span>
+            @elseif($consignment->status == 'in_transit')
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">IN TRANSIT</span>
+            @else
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ strtoupper($consignment->current_status) }}</span>
+            @endif
+          </div>
+          <div class="text-xs text-gray-400">Code: {{ $consignment->consignment_code ?? 'N/A' }}</div>
+          <div class="flex flex-wrap gap-2 justify-end">
+            @can('edit-consignments')
+              <a href="{{ route('consignment.edit', $consignment->id) }}"
+                class="p-1.5 bg-yellow-500 text-white rounded-md shadow-sm hover:bg-yellow-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 4h4a2 2 0 0 1 2 2v2M5 19h14M5 11L16 4l4 4-11 7-4 4 1-5z" />
+                </svg>
+              </a>
+            @endcan
+            <a href="{{ route('consignment.show', $consignment->id) }}"
+                class="p-1.5 bg-sky-500 text-white rounded-md shadow-sm hover:bg-sky-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+            </a>
+            @can('delete-consignments')
+              <button type="button"
+                data-action="{{ route('consignment.destroy', $consignment->id) }}"
+                class="delete-consignment p-1.5 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            @endcan
+          </div>
+        </div>
+      </div>
+    @empty
+      <div class="py-6 text-center text-sm text-gray-500">No consignments available.</div>
+    @endforelse
+    @if($consignmentCollection->count())
+      <div id="list-view-empty" class="hidden py-6 text-center text-sm text-gray-500">No consignments match the selected filters.</div>
+    @endif
+  </div>
+
+  <div id="consignment-grid-view" class="hidden px-2 pb-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      @forelse($consignments as $consignment)
+        @php
+            $statusValue = $normalize($consignment->status ?? $consignment->current_status ?? '');
+            $sourceDisplay = $consignment->source ?? 'China';
+            $destinationDisplay = $consignment->destination ?? 'Zambia';
+            $sourceValue = $normalize($sourceDisplay);
+            $destinationValue = $normalize($destinationDisplay);
+            $cargoType = $normalize($consignment->cargo_type ?? '');
+            $updatedAtFormatted = $consignment->updated_at ? $consignment->updated_at->toFormattedDateString() : 'N/A';
+        @endphp
+        <div class="consignment-visual-item consignment-grid-card border border-gray-200 rounded-lg shadow-sm p-4 bg-white"
+          data-status="{{ $statusValue }}"
+          data-source="{{ $sourceValue }}"
+          data-destination="{{ $destinationValue }}"
+          data-cargo-type="{{ $cargoType }}">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold text-gray-900">{{ $consignment->consignment_code ?? 'Unspecified' }}</div>
+              <div class="flex items-center gap-2 mt-2 text-xs font-semibold uppercase tracking-wide">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full
+                  @if($cargoType === 'air') bg-sky-100 text-sky-600
+                  @elseif($cargoType === 'sea') bg-indigo-100 text-indigo-600
+                  @else bg-gray-100 text-gray-500 @endif">
+                  @if($cargoType === 'air')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                      <path d="M21 14.5a1 1 0 0 1-1.32.95L13 13.8v3.45l1.62 1.62a1 1 0 0 1-1.41 1.41l-1.21-1.21-1.21 1.21a1 1 0 0 1-1.41-1.41L11 17.25V13.8l-6.68 1.65A1 1 0 0 1 3 14.5V13a1 1 0 0 1 .68-.95L11 9.8V5.41a1 1 0 0 1 2 0V9.8l7.32 2.25a1 1 0 0 1 .68.95z"/>
+                    </svg>
+                  @elseif($cargoType === 'sea')
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                      <path d="M4 15v-4a1 1 0 0 1 .74-.97l7-2a1 1 0 0 1 .52 0l7 2A1 1 0 0 1 20 11v4c0 3.19-2.34 5-8 5s-8-1.81-8-5zm2 0c0 1.56 1.4 3 6 3s6-1.44 6-3v-3.19l-6-1.72-6 1.72z"/>
+                      <path d="M5 18.5a1 1 0 0 1 .76-.45 1 1 0 0 1 .82.25C7.35 18.8 8.74 19.5 12 19.5s4.65-.7 5.42-1.2a1 1 0 0 1 .82-.25A1 1 0 0 1 19 18.5c0 1.09-1.02 2.09-2.58 2.86-1.11.57-2.55.89-4.42.89s-3.31-.32-4.42-.89C6.02 20.59 5 19.59 5 18.5z"/>
+                    </svg>
+                  @else
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                      <path d="M12 3a1 1 0 0 1 1 1v4l6.6 2.2A1 1 0 0 1 20 11v4c0 3.19-2.34 5-8 5s-8-1.81-8-5v-4a1 1 0 0 1 .68-.95L11 8V4a1 1 0 0 1 1-1z"/>
+                    </svg>
+                  @endif
+                </span>
+                <span>{{ $cargoType ? strtoupper($cargoType) : 'N/A' }}</span>
+              </div>
+            </div>
+            <div>
+              @if($consignment->status == 'delivered')
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">DELIVERED</span>
+              @elseif($consignment->status == 'in_transit')
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">IN TRANSIT</span>
+              @else
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ strtoupper($consignment->current_status) }}</span>
+              @endif
+            </div>
+          </div>
+          <div class="mt-4 space-y-2 text-sm text-gray-600">
+            <div class="flex justify-between"><span class="font-semibold">Consignee:</span><span>{{ $consignment->name }}</span></div>
+            <div class="flex justify-between"><span class="font-semibold">Parcels:</span><span>{{ $consignment->shipment_count ?? 'Unspecified' }}</span></div>
+            <div class="flex justify-between"><span class="font-semibold">Source:</span><span>{{ $sourceDisplay }}</span></div>
+            <div class="flex justify-between"><span class="font-semibold">Destination:</span><span>{{ $destinationDisplay }}</span></div>
+            <div class="flex justify-between"><span class="font-semibold">Updated:</span><span>{{ $updatedAtFormatted }}</span></div>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            @can('edit-consignments')
+              <a href="{{ route('consignment.edit', $consignment->id) }}"
+                class="px-3 py-1.5 bg-yellow-500 text-white rounded-md text-xs font-medium hover:bg-yellow-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                Edit
+              </a>
+            @endcan
+            <a href="{{ route('consignment.show', $consignment->id) }}"
+                class="px-3 py-1.5 bg-sky-500 text-white rounded-md text-xs font-medium hover:bg-sky-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                View
+            </a>
+            @can('delete-consignments')
+              <button type="button"
+                data-action="{{ route('consignment.destroy', $consignment->id) }}"
+                class="delete-consignment px-3 py-1.5 bg-red-500 text-white rounded-md text-xs font-medium hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Delete
+              </button>
+            @endcan
+          </div>
+        </div>
+      @empty
+        <div class="col-span-full py-6 text-center text-sm text-gray-500">No consignments available.</div>
+      @endforelse
+    </div>
+    @if($consignmentCollection->count())
+      <div id="grid-view-empty" class="hidden py-6 text-center text-sm text-gray-500">No consignments match the selected filters.</div>
+    @endif
+  </div>
+
 </div>
 <script>
-    $(document).ready(function () {
-      const table = $('table').DataTable();
+  $(function () {
+    const tableElement = $('#consignments-table');
+    const table = tableElement.length ? tableElement.DataTable() : null;
 
-      // Select All Checkbox
-      $('#select-all').on('click', function () {
-        const checked = this.checked;
-        $('.row-checkbox').each(function () {
-          this.checked = checked;
-        });
-        toggleBulkDelete();
-      });
+    const tableContainer = $('#table-view-container');
+    const listView = $('#consignment-list-view');
+    const gridView = $('#consignment-grid-view');
 
-      // Enable/Disable bulk delete
-      $(document).on('change', '.row-checkbox', function () {
-        toggleBulkDelete();
-      });
+    const filterSelectors = {
+      status: $('#filter-status'),
+      source: $('#filter-source'),
+      destination: $('#filter-destination')
+    };
 
-      function toggleBulkDelete() {
-        const selected = $('.row-checkbox:checked').length;
-        $('#bulk-delete-btn').prop('disabled', selected === 0);
+    const viewButtons = $('.view-toggle');
+    const bulkDeleteBtn = $('#bulk-delete-btn');
+    const selectAll = $('#select-all');
+    const rowCheckboxSelector = '.row-checkbox';
+
+    function getActiveFilters() {
+      return {
+        status: (filterSelectors.status.val() || 'all'),
+        source: (filterSelectors.source.val() || 'all'),
+        destination: (filterSelectors.destination.val() || 'all')
+      };
+    }
+
+    function matchesFilter(value, filter) {
+      if (!filter || filter === 'all') {
+        return true;
       }
+      return (value || '') === filter;
+    }
 
-      // Bulk Delete Logic
-      $('#bulk-delete-btn').on('click', function () {
-        const ids = $('.row-checkbox:checked').map(function () {
+    function matchesAllFilters(data) {
+      const filters = getActiveFilters();
+      return matchesFilter(data.status, filters.status) &&
+        matchesFilter(data.source, filters.source) &&
+        matchesFilter(data.destination, filters.destination);
+    }
+
+    function toggleEmptyState(container, messageSelector) {
+      if (!container.length) {
+        return;
+      }
+      const messageEl = $(messageSelector);
+      if (!messageEl.length) {
+        return;
+      }
+      const visibleItems = container.find('.consignment-visual-item').filter(function () {
+        return !$(this).hasClass('hidden');
+      }).length;
+      messageEl.toggleClass('hidden', visibleItems !== 0);
+    }
+
+    function filterAlternateViews() {
+      const items = $('.consignment-visual-item');
+      items.each(function () {
+        const $item = $(this);
+        const rowData = {
+          status: ($item.data('status') || '').toString(),
+          source: ($item.data('source') || '').toString(),
+          destination: ($item.data('destination') || '').toString()
+        };
+        const shouldShow = matchesAllFilters(rowData);
+        $item.toggleClass('hidden', !shouldShow);
+      });
+      toggleEmptyState(listView, '#list-view-empty');
+      toggleEmptyState(gridView, '#grid-view-empty');
+    }
+
+    function applyFilters() {
+      if (table) {
+        table.draw();
+      }
+      filterAlternateViews();
+    }
+
+    const filterFunction = function (settings, data, dataIndex) {
+      if (!table || settings.nTable !== tableElement.get(0)) {
+        return true;
+      }
+      const rowNode = table.row(dataIndex).node();
+      if (!rowNode) {
+        return true;
+      }
+      const $row = $(rowNode);
+      const rowData = {
+        status: ($row.data('status') || '').toString(),
+        source: ($row.data('source') || '').toString(),
+        destination: ($row.data('destination') || '').toString()
+      };
+      return matchesAllFilters(rowData);
+    };
+
+    if ($.fn && $.fn.dataTable && $.fn.dataTable.ext) {
+      $.fn.dataTable.ext.search.push(filterFunction);
+    }
+
+    $('.consignment-filter').on('change', applyFilters);
+
+    function updateBulkDeleteState() {
+      if (!bulkDeleteBtn.length) {
+        return;
+      }
+      const selected = $(rowCheckboxSelector + ':checked').length;
+      bulkDeleteBtn.prop('disabled', selected === 0);
+    }
+
+    if (selectAll.length) {
+      selectAll.on('click', function () {
+        const isChecked = this.checked;
+        $(rowCheckboxSelector).each(function () {
+          this.checked = isChecked;
+        });
+        updateBulkDeleteState();
+      });
+    }
+
+    $(document).on('change', rowCheckboxSelector, updateBulkDeleteState);
+
+    if (bulkDeleteBtn.length) {
+      bulkDeleteBtn.on('click', function () {
+        const ids = $(rowCheckboxSelector + ':checked').map(function () {
           return this.value;
         }).get();
-
-        if (confirm(`Delete ${ids.length} selected consignments?`)) {
-          $.ajax({
-            url: "{{ route('consignment.bulkDelete') }}", // Create this route in Laravel
-            method: 'POST',
-            data: {
-              _token: "{{ csrf_token() }}",
-              ids: ids
-            },
-            success: function (response) {
-              location.reload(); // Reload the page
-            },
-            error: function (err) {
-              alert('An error occurred while deleting.');
-            }
-          });
+        if (!ids.length) {
+          return;
         }
-      });
-    });
-
-
-  document.addEventListener('DOMContentLoaded', function () {
-    const checkboxes = document.querySelectorAll('.bulk-checkbox:not(#select-all)');
-    const selectAll = document.getElementById('select-all');
-    const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
-
-    function updateButtonState() {
-      const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-      bulkDeleteBtn.disabled = !anyChecked;
-    }
-
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', updateButtonState);
-    });
-
-    // Optional: Handle "Select All" toggle
-    if (selectAll) {
-      selectAll.addEventListener('change', function () {
-        checkboxes.forEach(cb => cb.checked = selectAll.checked);
-        updateButtonState();
+        if (!confirm(`Delete ${ids.length} selected consignments?`)) {
+          return;
+        }
+        $.ajax({
+          url: "{{ route('consignment.bulkDelete') }}",
+          method: 'POST',
+          data: {
+            _token: "{{ csrf_token() }}",
+            ids: ids
+          },
+          success: function () {
+            location.reload();
+          },
+          error: function () {
+            alert('An error occurred while deleting.');
+          }
+        });
       });
     }
+
+    function resetTableSelection() {
+      if (selectAll.length) {
+        selectAll.prop('checked', false);
+      }
+      $(rowCheckboxSelector).prop('checked', false);
+      updateBulkDeleteState();
+    }
+
+    let currentView = 'table';
+    function setView(view) {
+      currentView = view;
+      viewButtons.each(function () {
+        const $button = $(this);
+        const isActive = $button.data('view') === view;
+        if (isActive) {
+          $button.removeClass('border-gray-300 text-gray-600 text-sky-600 bg-white')
+            .addClass('border-sky-500 bg-sky-500 text-white');
+        } else {
+          $button.removeClass('border-sky-500 bg-sky-500 text-white')
+            .addClass('border-gray-300 text-gray-600 bg-white');
+        }
+        $button.attr('aria-pressed', isActive);
+      });
+
+      tableContainer.toggleClass('hidden', view !== 'table');
+      listView.toggleClass('hidden', view !== 'list');
+      gridView.toggleClass('hidden', view !== 'grid');
+
+      if (view === 'table') {
+        if (table) {
+          table.columns.adjust().draw(false);
+        }
+      } else {
+        resetTableSelection();
+        filterAlternateViews();
+      }
+
+      if (bulkDeleteBtn.length) {
+        const selected = $(rowCheckboxSelector + ':checked').length;
+        bulkDeleteBtn.prop('disabled', view !== 'table' || selected === 0);
+      }
+    }
+
+    viewButtons.on('click', function () {
+      const targetView = $(this).data('view');
+      if (targetView && targetView !== currentView) {
+        setView(targetView);
+      }
+    });
+
+    applyFilters();
+    setView('table');
+    updateBulkDeleteState();
   });
 </script>
