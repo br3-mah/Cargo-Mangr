@@ -188,6 +188,74 @@ class ConsignmentController extends Controller
 
 
     /**
+     * Get shipments for a consignment including package details.
+     * GET /api/consignments/{consignmentId}/shipments
+     */
+    public function getShipmentsWithPackages($consignmentId)
+    {
+        try {
+            $consignment = Consignment::with(['shipments.packageShipments.package'])->find($consignmentId);
+
+            if (!$consignment) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Consignment not found.',
+                ], 404);
+            }
+
+            $shipments = $consignment->shipments->map(function (Shipment $shipment) {
+                return [
+                    'id' => $shipment->id,
+                    'tracking_number' => $shipment->code,
+                    'status' => $shipment->status_id,
+                    'client_id' => $shipment->client_id,
+                    'paid' => (bool) $shipment->paid,
+                    'total_weight' => $shipment->total_weight,
+                    'volume' => $shipment->volume,
+                    'packages' => $shipment->packageShipments->map(function ($packageShipment) {
+                        return [
+                            'id' => $packageShipment->id,
+                            'package_id' => $packageShipment->package_id,
+                            'package_name' => optional($packageShipment->package)->name ?? null,
+                            'description' => $packageShipment->description,
+                            'weight' => $packageShipment->weight,
+                            'length' => $packageShipment->length,
+                            'width' => $packageShipment->width,
+                            'height' => $packageShipment->height,
+                            'quantity' => $packageShipment->qty,
+                            'created_at' => $packageShipment->created_at,
+                            'updated_at' => $packageShipment->updated_at,
+                        ];
+                    })->values(),
+                    'created_at' => $shipment->created_at,
+                    'updated_at' => $shipment->updated_at,
+                ];
+            })->values();
+
+            return response()->json([
+                'success' => true,
+                'consignment' => [
+                    'id' => $consignment->id,
+                    'code' => $consignment->consignment_code,
+                    'name' => $consignment->name,
+                    'status' => $consignment->status,
+                    'current_status' => $consignment->current_status,
+                    'current_stage_name' => $consignment->getCurrentStageName(),
+                    'cargo_type' => $consignment->cargo_type,
+                    'created_at' => $consignment->created_at,
+                    'updated_at' => $consignment->updated_at,
+                ],
+                'shipments' => $shipments,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Get all consignments paginated
      * GET /api/consignments/all?per_page=10&page=1
      */

@@ -11,6 +11,8 @@ use Modules\Cargo\Entities\Client;
 use Modules\Cargo\Entities\Branch;
 use Modules\Cargo\Entities\Staff;
 use Modules\Cargo\Entities\Mission;
+use Modules\Cargo\Entities\Package;
+use Modules\Cargo\Entities\PackageShipment;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -489,6 +491,19 @@ class Shipment extends Model implements HasMedia
     {
         return $this->belongsTo(Consignment::class);
     }
+
+    public function packageShipments()
+    {
+        return $this->hasMany(PackageShipment::class, 'shipment_id');
+    }
+
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class, 'package_shipment', 'shipment_id', 'package_id')
+            ->withPivot(['description', 'weight', 'length', 'width', 'height', 'qty'])
+            ->withTimestamps();
+    }
+
     public function receipt()
     {
         return $this->hasOne(Transxn::class);

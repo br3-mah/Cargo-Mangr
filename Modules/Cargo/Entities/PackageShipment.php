@@ -19,7 +19,7 @@ class PackageShipment extends Model
     }
     
     public function package(){
-      return $this->hasOne('Modules\Cargo\Entities\Package', 'id' , 'package_id');
+      return $this->belongsTo('Modules\Cargo\Entities\Package', 'package_id');
     }
     
 }
