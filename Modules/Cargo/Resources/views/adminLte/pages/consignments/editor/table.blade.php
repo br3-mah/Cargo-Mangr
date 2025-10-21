@@ -1,4 +1,10 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    .filter-hidden,
+    .page-hidden {
+        display: none !important;
+    }
+</style>
 @php
     $consignmentCollection = $consignments instanceof \Illuminate\Support\Collection
         ? $consignments
@@ -56,7 +62,7 @@
     <div class="flex items-center space-x-2">
       <span class="text-sm font-medium text-gray-600">View:</span>
       <button type="button" data-view="table"
-        class="view-toggle inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-sky-500 text-sky-600 bg-white hover:bg-sky-500 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1"
+        class="view-toggle inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1"
         aria-pressed="true">
         Table
       </button>
@@ -333,7 +339,7 @@
               </a>
             @endcan
             <a href="{{ route('consignment.show', $consignment->id) }}"
-                class="p-1.5 bg-sky-500 text-white rounded-md shadow-sm hover:bg-sky-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                class="p-1.5 bg-sky-500 text-muted rounded-md shadow-sm hover:bg-sky-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
@@ -341,6 +347,26 @@
                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
             </a>
+            @can('update-consignment-tracker')
+              <button type="button"
+                class="p-1.5 bg-orange-500 text-white rounded-md shadow-sm hover:bg-orange-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 update-tracker-btn"
+                data-toggle="modal"
+                data-target="#updateTrackerModal"
+                data-id="{{ $consignment->id }}"
+                data-checkpoint="{{ $consignment->checkpoint }}"
+                data-cargo_type="{{ $consignment->cargo_type }}"
+                data-consignee_name="{{ $consignment->consignee_name }}"
+                data-consignment_code="{{ $consignment->consignment_code }}"
+                data-source="{{ $consignment->source }}"
+                data-destination="{{ $consignment->destination }}"
+                data-status="{{ $consignment->status }}"
+                data-updated_at="{{ $consignment->updated_at }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 8h18M3 16h18M5 12h14M9 4l-2 4m8-4l2 4m-8 12l-2-4m8 4l2-4" />
+                </svg>
+              </button>
+            @endcan
             @can('delete-consignments')
               <button type="button"
                 data-action="{{ route('consignment.destroy', $consignment->id) }}"
@@ -361,6 +387,15 @@
       <div id="list-view-empty" class="hidden py-6 text-center text-sm text-gray-500">No consignments match the selected filters.</div>
     @endif
   </div>
+
+  {{-- @if($consignmentCollection->count())
+    <div id="list-pagination" data-pagination-view="list" class="consignment-pagination hidden pt-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3">
+        <div class="pagination-summary text-sm text-gray-600"></div>
+        <div class="pagination-buttons flex items-center gap-1"></div>
+      </div>
+    </div>
+  @endif --}}
 
   <div id="consignment-grid-view" class="hidden px-2 pb-4">
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -430,9 +465,26 @@
               </a>
             @endcan
             <a href="{{ route('consignment.show', $consignment->id) }}"
-                class="px-3 py-1.5 bg-sky-500 text-white rounded-md text-xs font-medium hover:bg-sky-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                class="px-3 py-1.5 bg-sky-500 text-muted rounded-md text-xs font-medium hover:bg-sky-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                 View
             </a>
+            @can('update-consignment-tracker')
+              <button type="button"
+                class="px-3 py-1.5 bg-orange-500 text-white rounded-md text-xs font-medium hover:bg-orange-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 update-tracker-btn"
+                data-toggle="modal"
+                data-target="#updateTrackerModal"
+                data-id="{{ $consignment->id }}"
+                data-checkpoint="{{ $consignment->checkpoint }}"
+                data-cargo_type="{{ $consignment->cargo_type }}"
+                data-consignee_name="{{ $consignment->consignee_name }}"
+                data-consignment_code="{{ $consignment->consignment_code }}"
+                data-source="{{ $consignment->source }}"
+                data-destination="{{ $consignment->destination }}"
+                data-status="{{ $consignment->status }}"
+                data-updated_at="{{ $consignment->updated_at }}">
+                Update Tracker
+              </button>
+            @endcan
             @can('delete-consignments')
               <button type="button"
                 data-action="{{ route('consignment.destroy', $consignment->id) }}"
@@ -451,6 +503,15 @@
     @endif
   </div>
 
+  {{-- @if($consignmentCollection->count())
+    <div id="grid-pagination" data-pagination-view="grid" class="consignment-pagination hidden pt-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3">
+        <div class="pagination-summary text-sm text-gray-600"></div>
+        <div class="pagination-buttons flex items-center gap-1"></div>
+      </div>
+    </div>
+  @endif --}}
+
 </div>
 <script>
   $(function () {
@@ -461,10 +522,36 @@
     const listView = $('#consignment-list-view');
     const gridView = $('#consignment-grid-view');
 
+    const paginationElements = {
+      list: {
+        container: listView,
+        emptyMessage: $('#list-view-empty'),
+        paginationBox: $('#list-pagination'),
+        summary: $('#list-pagination .pagination-summary'),
+        buttons: $('#list-pagination .pagination-buttons'),
+      },
+      grid: {
+        container: gridView,
+        emptyMessage: $('#grid-view-empty'),
+        paginationBox: $('#grid-pagination'),
+        summary: $('#grid-pagination .pagination-summary'),
+        buttons: $('#grid-pagination .pagination-buttons'),
+      },
+    };
+
+    const paginationState = {
+      list: { currentPage: 1 },
+      grid: { currentPage: 1 },
+    };
+
+    const FILTER_HIDDEN_CLASS = 'filter-hidden';
+    const PAGE_HIDDEN_CLASS = 'page-hidden';
+    const ITEMS_PER_PAGE = 10;
+
     const filterSelectors = {
       status: $('#filter-status'),
       source: $('#filter-source'),
-      destination: $('#filter-destination')
+      destination: $('#filter-destination'),
     };
 
     const viewButtons = $('.view-toggle');
@@ -476,7 +563,7 @@
       return {
         status: (filterSelectors.status.val() || 'all'),
         source: (filterSelectors.source.val() || 'all'),
-        destination: (filterSelectors.destination.val() || 'all')
+        destination: (filterSelectors.destination.val() || 'all'),
       };
     }
 
@@ -489,46 +576,205 @@
 
     function matchesAllFilters(data) {
       const filters = getActiveFilters();
-      return matchesFilter(data.status, filters.status) &&
+      return (
+        matchesFilter(data.status, filters.status) &&
         matchesFilter(data.source, filters.source) &&
-        matchesFilter(data.destination, filters.destination);
+        matchesFilter(data.destination, filters.destination)
+      );
     }
 
-    function toggleEmptyState(container, messageSelector) {
-      if (!container.length) {
+    function applyViewPagination(view, resetPage = false) {
+      const config = paginationElements[view];
+      if (!config || !config.container.length) {
         return;
       }
-      const messageEl = $(messageSelector);
-      if (!messageEl.length) {
+
+      const state = paginationState[view];
+      const items = config.container.find('.consignment-visual-item');
+      const filteredItems = items.filter(function () {
+        return !$(this).hasClass(FILTER_HIDDEN_CLASS);
+      });
+
+      if (resetPage) {
+        state.currentPage = 1;
+      }
+
+      const totalItems = filteredItems.length;
+      const totalPages = totalItems > 0 ? Math.ceil(totalItems / ITEMS_PER_PAGE) : 1;
+
+      if (state.currentPage > totalPages) {
+        state.currentPage = totalPages;
+      }
+      if (state.currentPage < 1) {
+        state.currentPage = 1;
+      }
+
+      items.each(function () {
+        const $el = $(this);
+        if ($el.hasClass(FILTER_HIDDEN_CLASS)) {
+          $el.addClass(PAGE_HIDDEN_CLASS);
+        } else {
+          $el.removeClass(PAGE_HIDDEN_CLASS);
+        }
+      });
+
+      const startIndex = (state.currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+
+      filteredItems.each(function (index, element) {
+        const shouldShow = index >= startIndex && index < endIndex;
+        $(element).toggleClass(PAGE_HIDDEN_CLASS, !shouldShow);
+      });
+
+      const hasItems = totalItems > 0;
+      if (config.emptyMessage.length) {
+        config.emptyMessage.toggleClass('hidden', hasItems);
+      }
+
+      if (!config.paginationBox.length) {
         return;
       }
-      const visibleItems = container.find('.consignment-visual-item').filter(function () {
-        return !$(this).hasClass('hidden');
-      }).length;
-      messageEl.toggleClass('hidden', visibleItems !== 0);
+
+      if (!hasItems) {
+        config.paginationBox.addClass('hidden');
+        if (config.summary.length) {
+          config.summary.text('');
+        }
+        if (config.buttons.length) {
+          config.buttons.empty();
+        }
+        return;
+      }
+
+      const displayStart = startIndex + 1;
+      const displayEnd = Math.min(endIndex, totalItems);
+
+      if (config.summary.length) {
+        config.summary.text(`Showing ${displayStart} to ${displayEnd} of ${totalItems} consignments`);
+      }
+
+      if (totalPages <= 1) {
+        config.paginationBox.removeClass('hidden');
+        if (config.buttons.length) {
+          config.buttons.empty();
+        }
+        return;
+      }
+
+      config.paginationBox.removeClass('hidden');
+      renderPaginationButtons(view, totalPages, state.currentPage);
     }
 
-    function filterAlternateViews() {
+    function buildPageList(totalPages, currentPage) {
+      if (totalPages <= 5) {
+        return Array.from({ length: totalPages }, (_, idx) => idx + 1);
+      }
+
+      const pages = [1];
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      if (start > 2) {
+        pages.push('ellipsis');
+      }
+
+      for (let page = start; page <= end; page += 1) {
+        pages.push(page);
+      }
+
+      if (end < totalPages - 1) {
+        pages.push('ellipsis');
+      }
+
+      pages.push(totalPages);
+      return pages;
+    }
+
+    function renderPaginationButtons(view, totalPages, currentPage) {
+      const config = paginationElements[view];
+      if (!config || !config.buttons.length) {
+        return;
+      }
+
+      const buttonsContainer = config.buttons;
+      buttonsContainer.empty();
+
+      const createNavButton = (label, targetPage, disabled, ariaLabel) => {
+        const button = $('<button type="button"></button>')
+          .addClass('px-3 py-1.5 text-sm font-medium rounded-md border focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1 transition');
+        button.attr('aria-label', ariaLabel || label);
+        if (disabled) {
+          button
+            .addClass('border-gray-200 text-gray-400 bg-gray-100 cursor-not-allowed')
+            .prop('disabled', true);
+        } else {
+          button
+            .addClass('border-gray-300 text-gray-600 bg-white hover:bg-sky-50 hover:border-sky-400')
+            .attr('data-page', targetPage);
+        }
+        button.text(label);
+        return button;
+      };
+
+      const createPageButton = (page, isActive) => {
+        const button = $('<button type="button"></button>')
+          .addClass('px-3 py-1.5 text-sm font-medium rounded-md border focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1 transition');
+        if (isActive) {
+          button
+            .addClass('border-sky-500 bg-sky-500 text-white shadow cursor-default')
+            .prop('disabled', true);
+        } else {
+          button
+            .addClass('border-gray-300 text-gray-600 bg-white hover:bg-sky-50 hover:border-sky-400')
+            .attr('data-page', page);
+        }
+        button.text(page);
+        return button;
+      };
+
+      const createEllipsis = () =>
+        $('<span class="px-2 text-gray-400 select-none">…</span>');
+
+      buttonsContainer.append(
+        createNavButton('Prev', currentPage - 1, currentPage === 1, 'Previous page')
+      );
+
+      const pageList = buildPageList(totalPages, currentPage);
+      pageList.forEach((page) => {
+        if (page === 'ellipsis') {
+          buttonsContainer.append(createEllipsis());
+        } else {
+          buttonsContainer.append(createPageButton(page, page === currentPage));
+        }
+      });
+
+      buttonsContainer.append(
+        createNavButton('Next', currentPage + 1, currentPage === totalPages, 'Next page')
+      );
+    }
+
+    function filterAlternateViews(resetPagination = true) {
       const items = $('.consignment-visual-item');
       items.each(function () {
         const $item = $(this);
         const rowData = {
           status: ($item.data('status') || '').toString(),
           source: ($item.data('source') || '').toString(),
-          destination: ($item.data('destination') || '').toString()
+          destination: ($item.data('destination') || '').toString(),
         };
         const shouldShow = matchesAllFilters(rowData);
-        $item.toggleClass('hidden', !shouldShow);
+        $item.toggleClass(FILTER_HIDDEN_CLASS, !shouldShow);
       });
-      toggleEmptyState(listView, '#list-view-empty');
-      toggleEmptyState(gridView, '#grid-view-empty');
+
+      applyViewPagination('list', resetPagination);
+      applyViewPagination('grid', resetPagination);
     }
 
     function applyFilters() {
       if (table) {
         table.draw();
       }
-      filterAlternateViews();
+      filterAlternateViews(true);
     }
 
     const filterFunction = function (settings, data, dataIndex) {
@@ -543,7 +789,7 @@
       const rowData = {
         status: ($row.data('status') || '').toString(),
         source: ($row.data('source') || '').toString(),
-        destination: ($row.data('destination') || '').toString()
+        destination: ($row.data('destination') || '').toString(),
       };
       return matchesAllFilters(rowData);
     };
@@ -576,9 +822,11 @@
 
     if (bulkDeleteBtn.length) {
       bulkDeleteBtn.on('click', function () {
-        const ids = $(rowCheckboxSelector + ':checked').map(function () {
-          return this.value;
-        }).get();
+        const ids = $(rowCheckboxSelector + ':checked')
+          .map(function () {
+            return this.value;
+          })
+          .get();
         if (!ids.length) {
           return;
         }
@@ -590,14 +838,14 @@
           method: 'POST',
           data: {
             _token: "{{ csrf_token() }}",
-            ids: ids
+            ids: ids,
           },
           success: function () {
             location.reload();
           },
           error: function () {
             alert('An error occurred while deleting.');
-          }
+          },
         });
       });
     }
@@ -610,6 +858,24 @@
       updateBulkDeleteState();
     }
 
+    $('.consignment-pagination').on('click', 'button[data-page]', function () {
+      const $button = $(this);
+      if ($button.prop('disabled')) {
+        return;
+      }
+      const host = $button.closest('.consignment-pagination');
+      const view = host.data('pagination-view');
+      if (!view || !paginationState[view]) {
+        return;
+      }
+      const targetPage = parseInt($button.data('page'), 10);
+      if (!Number.isInteger(targetPage) || targetPage === paginationState[view].currentPage) {
+        return;
+      }
+      paginationState[view].currentPage = targetPage;
+      applyViewPagination(view);
+    });
+
     let currentView = 'table';
     function setView(view) {
       currentView = view;
@@ -617,11 +883,13 @@
         const $button = $(this);
         const isActive = $button.data('view') === view;
         if (isActive) {
-          $button.removeClass('border-gray-300 text-gray-600 text-sky-600 bg-white')
-            .addClass('border-sky-500 bg-sky-500 text-white');
+          $button
+            .removeClass('border-gray-300 text-gray-600 bg-white hover:bg-gray-100')
+            .addClass('border-sky-500 bg-sky-100 text-gray-900 hover:bg-sky-200 hover:text-gray-900');
         } else {
-          $button.removeClass('border-sky-500 bg-sky-500 text-white')
-            .addClass('border-gray-300 text-gray-600 bg-white');
+          $button
+            .removeClass('border-sky-500 bg-sky-100 text-gray-900 hover:bg-sky-200 hover:text-gray-900')
+            .addClass('border-gray-300 text-gray-600 bg-white hover:bg-gray-100');
         }
         $button.attr('aria-pressed', isActive);
       });
@@ -636,7 +904,8 @@
         }
       } else {
         resetTableSelection();
-        filterAlternateViews();
+        filterAlternateViews(false);
+        applyViewPagination(view);
       }
 
       if (bulkDeleteBtn.length) {
