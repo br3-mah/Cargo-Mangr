@@ -157,18 +157,18 @@
                     <table class="table table-condensed">
                         <thead class="table-light">
                             <tr>
-                                <th>Date</th>
-                                <th>HAWB No</th>
-                                <th>Receipt #</th>
-                                <th>Consignee</th>
-                                <th>Client</th>
-                                <th>Rate</th>
-                                <th>Bill (USD)</th>
-                                <th>Bill (ZMW)</th>
-                                <th>Method</th>
-                                <th class="bg-danger text-dark">Airtel</th>
-                                <th class="bg-warning text-dark font-lg">MTN</th>
-                                <th class="bg-success text-dark font-lg">Cash Payments</th>
+                                <th class="fw-bold">Date</th>
+                                <th class="fw-bold">HAWB No</th>
+                                <th class="fw-bold">Receipt #</th>
+                                <th class="fw-bold">Consignee</th>
+                                <th class="fw-bold">Client</th>
+                                <th class="fw-bold">Rate</th>
+                                <th class="fw-bold">Bill (USD)</th>
+                                <th class="fw-bold">Bill (ZMW)</th>
+                                <th class="fw-bold">Method</th>
+                                <th class="bg-danger text-dark fw-bold">Airtel</th>
+                                <th class="bg-warning text-dark font-lg fw-bold">MTN</th>
+                                <th class="bg-success text-dark font-lg fw-bold">Cash Payments</th>
                             </tr>
                         </thead>
                         <tbody>
