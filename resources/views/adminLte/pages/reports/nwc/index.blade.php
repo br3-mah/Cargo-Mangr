@@ -154,7 +154,7 @@
                 @endcan
 
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-condensed">
                         <thead class="table-light">
                             <tr>
                                 <th>Date</th>
