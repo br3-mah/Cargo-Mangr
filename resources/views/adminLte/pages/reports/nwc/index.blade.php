@@ -154,7 +154,7 @@
                 @endcan
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped">
                         <thead class="table-light">
                             <tr>
                                 <th>Date</th>
@@ -166,9 +166,9 @@
                                 <th>Bill (USD)</th>
                                 <th>Bill (ZMW)</th>
                                 <th>Method</th>
-                                <th class="bg-danger text-white">Airtel</th>
-                                <th class="bg-warning text-dark">MTN</th>
-                                <th class="bg-success text-white">Cash Payments</th>
+                                <th class="bg-danger text-dark">Airtel</th>
+                                <th class="bg-warning text-dark font-lg">MTN</th>
+                                <th class="bg-success text-dark font-lg">Cash Payments</th>
                             </tr>
                         </thead>
                         <tbody>
