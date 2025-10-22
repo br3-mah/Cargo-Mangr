@@ -188,9 +188,9 @@
                                     $mtnAmount = $row['mtn'] ?? 0;
                                     $cashPaymentsAmount = $row['cash_payments'] ?? 0;
                                 @endphp
-                                <td class="bg-danger text-dark" style="color:#000">{{ $airtelAmount > 0 ? number_format($airtelAmount, 2) : '-' }}</td>
-                                <td class="bg-warning text-dark" style="color:#000">{{ $mtnAmount > 0 ? number_format($mtnAmount, 2) : '-' }}</td>
-                                <td class="bg-success text-dark" style="color:#000">{{ $cashPaymentsAmount > 0 ? number_format($cashPaymentsAmount, 2) : '-' }}</td>
+                                <td class="bg-danger text-dark" style="color:#000 !important;font-weight:bold;">{{ $airtelAmount > 0 ? number_format($airtelAmount, 2) : '-' }}</td>
+                                <td class="bg-warning text-dark" style="color:#000 !important;font-weight:bold;">{{ $mtnAmount > 0 ? number_format($mtnAmount, 2) : '-' }}</td>
+                                <td class="bg-success text-dark" style="color:#000 !important;font-weight:bold;">{{ $cashPaymentsAmount > 0 ? number_format($cashPaymentsAmount, 2) : '-' }}</td>
                             </tr>
                         @empty
                             <tr>
