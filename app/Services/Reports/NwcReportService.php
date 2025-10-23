@@ -38,8 +38,8 @@ class NwcReportService
             ->with([
                 'shipment.client',
                 'shipment.consignment',
-                'shipment.nwcReceipt',
-                'nwcReceipt',
+                'shipment.nwcReceipt.auditLogs.user',
+                'nwcReceipt.auditLogs.user',
             ])
             ->whereBetween('created_at', [$start, $end])
             ->orderByDesc('created_at')
@@ -79,6 +79,8 @@ class NwcReportService
             $mtn = $method === 'mtn' ? (float) ($billKwacha ?? 0) : 0.0;
             $cashPayments = $method === 'cash' ? (float) ($billKwacha ?? 0) : 0.0;
 
+            $cashierName = $this->resolveCashierName($receipt);
+
             return [
                 'date' => $transaction->created_at ?? now(),
                 'receipt_number' => $transaction->receipt_number,
@@ -92,6 +94,7 @@ class NwcReportService
                 'airtel' => $airtel,
                 'mtn' => $mtn,
                 'cash_payments' => $cashPayments,
+                'cashier_name' => $cashierName,
                 'shipment' => $shipment,
                 'consignment' => $consignment,
                 'client' => $client,
@@ -143,9 +146,10 @@ class NwcReportService
             'G1' => 'Bill (USD)',
             'H1' => 'Bill (ZMW)',
             'I1' => 'Method of Payment',
-            'J1' => 'Airtel',
-            'K1' => 'MTN',
-            'L1' => 'Cash Payments',
+            'J1' => 'Cashier',
+            'K1' => 'Airtel',
+            'L1' => 'MTN',
+            'M1' => 'Cash Payments',
         ];
 
         foreach ($headers as $cell => $value) {
@@ -163,9 +167,10 @@ class NwcReportService
             $sheet->setCellValue("G{$rowPointer}", $row['bill_usd']);
             $sheet->setCellValue("H{$rowPointer}", $row['bill_kwacha']);
             $sheet->setCellValue("I{$rowPointer}", $row['method_of_payment']);
-            $sheet->setCellValue("J{$rowPointer}", $row['airtel']);
-            $sheet->setCellValue("K{$rowPointer}", $row['mtn']);
-            $sheet->setCellValue("L{$rowPointer}", $row['cash_payments']);
+            $sheet->setCellValue("J{$rowPointer}", $row['cashier_name'] ?? 'N/A');
+            $sheet->setCellValue("K{$rowPointer}", $row['airtel']);
+            $sheet->setCellValue("L{$rowPointer}", $row['mtn']);
+            $sheet->setCellValue("M{$rowPointer}", $row['cash_payments']);
             $rowPointer++;
         }
 
@@ -174,15 +179,15 @@ class NwcReportService
         $sheet->setCellValue("F{$summaryStartRow}", $summary['total_rate']);
         $sheet->setCellValue("G{$summaryStartRow}", $summary['total_bill_usd']);
         $sheet->setCellValue("H{$summaryStartRow}", $summary['total_bill_kwacha']);
-        $sheet->setCellValue("J{$summaryStartRow}", $summary['total_airtel']);
-        $sheet->setCellValue("K{$summaryStartRow}", $summary['total_mtn']);
-        $sheet->setCellValue("L{$summaryStartRow}", $summary['total_cash_payments']);
+        $sheet->setCellValue("K{$summaryStartRow}", $summary['total_airtel']);
+        $sheet->setCellValue("L{$summaryStartRow}", $summary['total_mtn']);
+        $sheet->setCellValue("M{$summaryStartRow}", $summary['total_cash_payments']);
 
         $sheet->setCellValue("E" . ($summaryStartRow + 1), 'Average Rate');
         $sheet->setCellValue("F" . ($summaryStartRow + 1), $summary['average_rate']);
 
         $sheet->setAutoFilter($sheet->calculateWorksheetDimension());
-        foreach (range('A', 'L') as $columnID) {
+        foreach (range('A', 'M') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
@@ -231,5 +236,27 @@ class NwcReportService
             ->replace('_', ' ')
             ->replace('-', ' ')
             ->title();
+    }
+
+    protected function resolveCashierName(?\App\Models\NwcReceipt $receipt): ?string
+    {
+        if (!$receipt) {
+            return null;
+        }
+
+        $auditLogs = $receipt->relationLoaded('auditLogs')
+            ? $receipt->auditLogs
+            : $receipt->auditLogs()->with('user')->get();
+
+        if ($auditLogs->isEmpty()) {
+            return null;
+        }
+
+        $createdLog = $auditLogs->firstWhere('event', 'created');
+        if (!$createdLog) {
+            $createdLog = $auditLogs->sortBy('created_at')->first();
+        }
+
+        return $createdLog?->user?->name;
     }
 }

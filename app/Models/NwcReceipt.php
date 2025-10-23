@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Cargo\Entities\Shipment;
 
 class NwcReceipt extends Model
@@ -37,5 +38,10 @@ class NwcReceipt extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function auditLogs(): MorphMany
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

@@ -166,6 +166,7 @@
                                 <th class="fw-bold">Bill (USD)</th>
                                 <th class="fw-bold">Bill (ZMW)</th>
                                 <th class="fw-bold">Method</th>
+                                <th class="fw-bold">Cashier</th>
                                 <th class="bg-danger text-dark fw-bold">Airtel</th>
                                 <th class="bg-warning text-dark font-lg fw-bold">MTN</th>
                                 <th class="bg-success text-dark font-lg fw-bold">Cash Payments</th>
@@ -183,6 +184,7 @@
                                 <td>{{ $row['bill_usd'] !== null ? number_format($row['bill_usd'], 2) : '—' }}</td>
                                 <td>{{ $row['bill_kwacha'] !== null ? number_format($row['bill_kwacha'], 2) : '—' }}</td>
                                 <td>{{ $row['method_of_payment'] }}</td>
+                                <td>{{ $row['cashier_name'] ?? 'N/A' }}</td>
                                 @php
                                     $airtelAmount = $row['airtel'] ?? 0;
                                     $mtnAmount = $row['mtn'] ?? 0;
@@ -194,7 +196,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="12" class="text-center text-muted">
+                                <td colspan="13" class="text-center text-muted">
                                     No transactions found for the selected period.
                                 </td>
                             </tr>
@@ -207,6 +209,7 @@
                                     <th><b>{{ number_format($summary['total_rate'] ?? 0, 4) }}</b></th>
                                     <th><b>{{ number_format($summary['total_bill_usd'] ?? 0, 2) }}</b></th>
                                     <th><b>{{ number_format($summary['total_bill_kwacha'] ?? 0, 2) }}</b></th>
+                                    <th></th>
                                     <th></th>
                                     <th><b>{{ number_format($summary['total_airtel'] ?? 0, 2) }}</b></th>
                                     <th><b>{{ number_format($summary['total_mtn'] ?? 0, 2) }}</b></th>
