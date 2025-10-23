@@ -20,6 +20,7 @@ class NwcReceipt extends Model
         'method_of_payment',
         'discount_type',
         'discount_value',
+        'cashier_name',
         'user_id',
     ];
 

@@ -27,15 +27,54 @@ class NwcReportController extends Controller
         $filters = [
             'start_date' => $start->toDateString(),
             'end_date' => $end->toDateString(),
+            'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
+            'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
+            'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
+            'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
         ];
 
-        $rows = $this->reportService->getReportData($filters);
+        $baseRows = $this->reportService->getReportData([
+            'start_date' => $filters['start_date'],
+            'end_date' => $filters['end_date'],
+        ]);
+        $availableFilters = $this->reportService->availableFilterOptions($baseRows);
+
+        if (!empty($filters['cashier']) && !in_array($filters['cashier'], $availableFilters['cashiers'], true)) {
+            $availableFilters['cashiers'][] = $filters['cashier'];
+            sort($availableFilters['cashiers']);
+        }
+
+        if (!empty($filters['hawb_number']) && !in_array($filters['hawb_number'], $availableFilters['hawb_numbers'], true)) {
+            $availableFilters['hawb_numbers'][] = $filters['hawb_number'];
+            sort($availableFilters['hawb_numbers']);
+        }
+
+        if (!empty($filters['method'])) {
+            $hasMethod = collect($availableFilters['methods'])
+                ->contains(fn (array $method) => $method['value'] === $filters['method']);
+
+            if (!$hasMethod) {
+                $availableFilters['methods'][] = [
+                    'value' => $filters['method'],
+                    'label' => Str::of($filters['method'])->replace('_', ' ')->replace('-', ' ')->title(),
+                ];
+
+                $availableFilters['methods'] = collect($availableFilters['methods'])
+                    ->sortBy('label')
+                    ->values()
+                    ->all();
+            }
+        }
+
+        $rows = $this->reportService->applyFilters($baseRows, $filters);
         $summary = $this->reportService->summarize($rows, $start, $end);
 
         return view('adminLte.pages.reports.nwc.index', [
             'reportRows' => $rows,
             'summary' => $summary,
             'filters' => $filters,
+            'availableFilters' => $availableFilters,
         ]);
     }
 
@@ -52,6 +91,13 @@ class NwcReportController extends Controller
         ];
 
         $rows = $this->reportService->getReportData($filters);
+        $rows = $this->reportService->applyFilters($rows, [
+            'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
+            'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
+            'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
+            'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
+        ] + $filters);
 
         if ($rows->isEmpty()) {
             return redirect()
@@ -85,6 +131,13 @@ class NwcReportController extends Controller
         ];
 
         $rows = $this->reportService->getReportData($filters);
+        $rows = $this->reportService->applyFilters($rows, [
+            'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
+            'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
+            'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
+            'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
+        ] + $filters);
 
         if ($rows->isEmpty()) {
             return redirect()
@@ -131,6 +184,13 @@ class NwcReportController extends Controller
         ];
 
         $rows = $this->reportService->getReportData($filters);
+        $rows = $this->reportService->applyFilters($rows, [
+            'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
+            'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
+            'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
+            'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
+        ] + $filters);
 
         if ($rows->isEmpty()) {
             return redirect()

@@ -5,6 +5,33 @@
 @endsection
 
 @section('content')
+    @php
+        $filters = array_merge([
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->toDateString(),
+            'cashier' => null,
+            'method' => null,
+            'hawb_number' => null,
+            'date' => null,
+            'bill_order' => null,
+        ], $filters ?? []);
+
+        $availableFilters = $availableFilters ?? [
+            'methods' => [],
+            'cashiers' => [],
+            'hawb_numbers' => [],
+        ];
+
+        $exportQuery = array_filter([
+            'start_date' => $filters['start_date'],
+            'end_date' => $filters['end_date'],
+            'cashier' => $filters['cashier'],
+            'method' => $filters['method'],
+            'hawb_number' => $filters['hawb_number'],
+            'date' => $filters['date'],
+            'bill_order' => $filters['bill_order'],
+        ], fn ($value) => $value !== null && $value !== '');
+    @endphp
     <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-12">
@@ -16,7 +43,7 @@
                                 <input type="date"
                                        id="start_date"
                                        name="start_date"
-                                       value="{{ $filters['start_date'] ?? now()->toDateString() }}"
+                                       value="{{ $filters['start_date'] }}"
                                        class="form-control">
                             </div>
                             <div class="col-md-3">
@@ -24,19 +51,75 @@
                                 <input type="date"
                                        id="end_date"
                                        name="end_date"
-                                       value="{{ $filters['end_date'] ?? now()->toDateString() }}"
+                                       value="{{ $filters['end_date'] }}"
                                        class="form-control">
                             </div>
-                            <div class="col-md-6 d-flex gap-2 flex-wrap">
+                            <div class="col-md-3">
+                                <label for="date" class="form-label fw-semibold text-muted">Transaction Date</label>
+                                <input type="date"
+                                       id="date"
+                                       name="date"
+                                       value="{{ $filters['date'] }}"
+                                       class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="bill_order" class="form-label fw-semibold text-muted">Bill Order</label>
+                                <select id="bill_order" name="bill_order" class="form-control">
+                                    <option value="">Default</option>
+                                    <option value="bill_usd_asc" @selected($filters['bill_order'] === 'bill_usd_asc')>Bill (USD): Low to High</option>
+                                    <option value="bill_usd_desc" @selected($filters['bill_order'] === 'bill_usd_desc')>Bill (USD): High to Low</option>
+                                    <option value="bill_kwacha_asc" @selected($filters['bill_order'] === 'bill_kwacha_asc')>Bill (ZMW): Low to High</option>
+                                    <option value="bill_kwacha_desc" @selected($filters['bill_order'] === 'bill_kwacha_desc')>Bill (ZMW): High to Low</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="cashier" class="form-label fw-semibold text-muted">Cashier</label>
+                                <select id="cashier" name="cashier" class="form-control">
+                                    <option value="">All Cashiers</option>
+                                    @foreach($availableFilters['cashiers'] as $cashier)
+                                        <option value="{{ $cashier }}" @selected($filters['cashier'] === $cashier)>{{ $cashier }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="method" class="form-label fw-semibold text-muted">Method</label>
+                                <select id="method" name="method" class="form-control">
+                                    <option value="">All Methods</option>
+                                    @foreach($availableFilters['methods'] as $methodOption)
+                                        <option value="{{ $methodOption['value'] }}" @selected($filters['method'] === $methodOption['value'])>
+                                            {{ $methodOption['label'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="hawb_number" class="form-label fw-semibold text-muted">HAWB Number</label>
+                                <input type="text"
+                                       id="hawb_number"
+                                       name="hawb_number"
+                                       value="{{ $filters['hawb_number'] }}"
+                                       class="form-control"
+                                       list="hawbNumbers"
+                                       placeholder="e.g. HAWB12345">
+                                <datalist id="hawbNumbers">
+                                    @foreach($availableFilters['hawb_numbers'] as $hawbNumber)
+                                        <option value="{{ $hawbNumber }}"></option>
+                                    @endforeach
+                                </datalist>
+                            </div>
+                            <div class="col-12 d-flex gap-2 flex-wrap">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-filter me-1"></i>Apply Filters
                                 </button>
                                 @can('export-nwc-reports')
-                                    <a href="{{ route('reports.nwc.export', ['start_date' => $filters['start_date'], 'end_date' => $filters['end_date']]) }}"
+                                    <a href="{{ route('reports.nwc.export', $exportQuery) }}"
                                        class="btn btn-success">
                                         <i class="fas fa-file-excel me-1"></i>Export Excel
                                     </a>
                                 @endcan
+                                <a href="{{ route('reports.nwc.index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-undo me-1"></i>Reset
+                                </a>
                             </div>
                         </form>
                     </div>
@@ -119,8 +202,9 @@
                     <div id="shareEmailForm" class="collapse mb-3">
                         <form class="row g-2 align-items-end" method="POST" action="{{ route('reports.nwc.share-email') }}">
                             @csrf
-                            <input type="hidden" name="start_date" value="{{ $filters['start_date'] }}">
-                            <input type="hidden" name="end_date" value="{{ $filters['end_date'] }}">
+                            @foreach(['start_date', 'end_date', 'cashier', 'method', 'hawb_number', 'date', 'bill_order'] as $hiddenField)
+                                <input type="hidden" name="{{ $hiddenField }}" value="{{ $filters[$hiddenField] }}">
+                            @endforeach
                             <div class="col-md-4">
                                 <label for="email" class="form-label">Recipient Email</label>
                                 <input type="email" id="email" name="email" class="form-control" required placeholder="example@domain.com">
@@ -138,8 +222,9 @@
                     <div id="shareWhatsappForm" class="collapse mb-3">
                         <form class="row g-2 align-items-end" method="POST" action="{{ route('reports.nwc.share-whatsapp') }}">
                             @csrf
-                            <input type="hidden" name="start_date" value="{{ $filters['start_date'] }}">
-                            <input type="hidden" name="end_date" value="{{ $filters['end_date'] }}">
+                            @foreach(['start_date', 'end_date', 'cashier', 'method', 'hawb_number', 'date', 'bill_order'] as $hiddenField)
+                                <input type="hidden" name="{{ $hiddenField }}" value="{{ $filters[$hiddenField] }}">
+                            @endforeach
                             <div class="col-md-4">
                                 <label for="phone" class="form-label">WhatsApp Number</label>
                                 <input type="text" id="phone" name="phone" class="form-control" required placeholder="+2607XXXXXXX">
@@ -157,16 +242,16 @@
                     <table class="table table-condensed">
                         <thead class="table-light">
                             <tr>
-                                <th class="fw-bold">Date</th>
-                                <th class="fw-bold">HAWB No</th>
-                                <th class="fw-bold">Receipt #</th>
-                                <th class="fw-bold">Consignee</th>
-                                <th class="fw-bold">Client</th>
-                                <th class="fw-bold">Rate</th>
-                                <th class="fw-bold">Bill (USD)</th>
-                                <th class="fw-bold">Bill (ZMW)</th>
-                                <th class="fw-bold">Method</th>
-                                <th class="fw-bold">Cashier</th>
+                                <th class="fw-bold"><b>Date</b></th>
+                                <th class="fw-bold"><b>HAWB No</b></th>
+                                <th class="fw-bold"><b>Receipt #</b></th>
+                                <th class="fw-bold"><b>Consignee</b></th>
+                                <th class="fw-bold"><b>Client</b></th>
+                                <th class="fw-bold"><b>Rate</b></th>
+                                <th class="fw-bold"><b>Bill (USD)</b></th>
+                                <th class="fw-bold"><b>Bill (ZMW)</b></th>
+                                <th class="fw-bold"><b>Method</b></th>
+                                <th class="fw-bold"><b>Cashier</b></th>
                                 <th class="bg-danger text-dark fw-bold">Airtel</th>
                                 <th class="bg-warning text-dark font-lg fw-bold">MTN</th>
                                 <th class="bg-success text-dark font-lg fw-bold">Cash Payments</th>

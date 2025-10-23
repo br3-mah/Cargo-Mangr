@@ -91,6 +91,7 @@ class NwcReportService
                 'bill_usd' => $billUsd !== null ? (float) $billUsd : null,
                 'bill_kwacha' => $billKwacha !== null ? (float) $billKwacha : null,
                 'method_of_payment' => $methodLabel,
+                'method_slug' => $method,
                 'airtel' => $airtel,
                 'mtn' => $mtn,
                 'cash_payments' => $cashPayments,
@@ -101,6 +102,118 @@ class NwcReportService
                 'receipt' => $receipt,
             ];
         });
+    }
+
+    /**
+     * Apply additional filters to an existing set of report rows.
+     */
+    public function applyFilters(Collection $rows, array $filters = []): Collection
+    {
+        $filtered = $rows;
+
+        if (!empty($filters['cashier'])) {
+            $cashier = Str::lower($filters['cashier']);
+            $filtered = $filtered->filter(function (array $row) use ($cashier) {
+                if (empty($row['cashier_name'])) {
+                    return false;
+                }
+
+                return Str::contains(Str::lower($row['cashier_name']), $cashier);
+            });
+        }
+
+        if (!empty($filters['method'])) {
+            $method = Str::lower($filters['method']);
+            $filtered = $filtered->filter(function (array $row) use ($method) {
+                if (empty($row['method_slug'])) {
+                    return false;
+                }
+
+                return Str::lower($row['method_slug']) === $method;
+            });
+        }
+
+        if (!empty($filters['hawb_number'])) {
+            $hawb = Str::lower($filters['hawb_number']);
+            $filtered = $filtered->filter(function (array $row) use ($hawb) {
+                if (!$row['hawb_number']) {
+                    return false;
+                }
+
+                return Str::contains(Str::lower($row['hawb_number']), $hawb);
+            });
+        }
+
+        if (!empty($filters['date'])) {
+            try {
+                $targetDate = Carbon::parse($filters['date'])->toDateString();
+                $filtered = $filtered->filter(function (array $row) use ($targetDate) {
+                    if (empty($row['date'])) {
+                        return false;
+                    }
+
+                    return optional($row['date'])->toDateString() === $targetDate;
+                });
+            } catch (\Throwable $th) {
+                // Ignore invalid dates silently.
+            }
+        }
+
+        $order = $filters['bill_order'] ?? null;
+        if (is_string($order) && Str::contains($order, '_')) {
+            [$field, $direction] = array_pad(explode('_', $order, 2), 2, 'asc');
+            $direction = Str::lower($direction) === 'desc' ? 'desc' : 'asc';
+
+            if (in_array($field, ['bill_usd', 'bill_kwacha'], true)) {
+                $filtered = $filtered->sortBy(function (array $row) use ($field, $direction) {
+                    $value = $row[$field];
+
+                    if ($value === null) {
+                        return $direction === 'asc' ? INF : -INF;
+                    }
+
+                    return (float) $value;
+                }, SORT_REGULAR, $direction === 'desc');
+            }
+        }
+
+        return $filtered->values();
+    }
+
+    /**
+     * Build filter option lists from the provided rows.
+     */
+    public function availableFilterOptions(Collection $rows): array
+    {
+        $methods = $rows
+            ->filter(fn (array $row) => !empty($row['method_slug']) && !empty($row['method_of_payment']))
+            ->map(fn (array $row) => [
+                'value' => Str::lower($row['method_slug']),
+                'label' => $row['method_of_payment'],
+            ])
+            ->unique('value')
+            ->sortBy('label')
+            ->values();
+
+        $cashiers = $rows
+            ->pluck('cashier_name')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+
+        $hawbNumbers = $rows
+            ->pluck('hawb_number')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+
+        return [
+            'methods' => $methods->all(),
+            'cashiers' => $cashiers->all(),
+            'hawb_numbers' => $hawbNumbers->all(),
+        ];
     }
 
     /**
@@ -242,6 +355,10 @@ class NwcReportService
     {
         if (!$receipt) {
             return null;
+        }
+
+        if ($receipt->cashier_name) {
+            return $receipt->cashier_name;
         }
 
         $auditLogs = $receipt->relationLoaded('auditLogs')

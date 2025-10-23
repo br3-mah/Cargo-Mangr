@@ -1868,6 +1868,7 @@ class ShipmentController extends Controller
                 'method_of_payment',
                 'discount_type',
                 'discount_value',
+                'cashier_name',
             ];
 
             $existingReceipt = $shipment->nwcReceipt;
@@ -1902,6 +1903,7 @@ class ShipmentController extends Controller
                 'method_of_payment' => $methodOfPayment,
                 'discount_type'     => $discountType,
                 'discount_value'    => $discountValue,
+                'cashier_name'      => Auth::user()?->name,
             ];
 
             $receipt = NwcReceipt::updateOrCreate(
