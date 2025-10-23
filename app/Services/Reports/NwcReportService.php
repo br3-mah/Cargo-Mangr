@@ -39,7 +39,9 @@ class NwcReportService
                 'shipment.client',
                 'shipment.consignment',
                 'shipment.nwcReceipt.auditLogs.user',
+                'shipment.nwcReceipt.user',
                 'nwcReceipt.auditLogs.user',
+                'nwcReceipt.user',
             ])
             ->whereBetween('created_at', [$start, $end])
             ->orderByDesc('created_at')
@@ -359,6 +361,16 @@ class NwcReportService
 
         if ($receipt->cashier_name) {
             return $receipt->cashier_name;
+        }
+
+        if ($receipt->relationLoaded('user')) {
+            $user = $receipt->getRelation('user');
+        } else {
+            $user = $receipt->user()->first();
+        }
+
+        if ($user && $user->name) {
+            return $user->name;
         }
 
         $auditLogs = $receipt->relationLoaded('auditLogs')
