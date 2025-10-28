@@ -3,6 +3,7 @@
 namespace App\Services\Reports;
 
 use App\Models\Transxn;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -197,12 +198,10 @@ class NwcReportService
             ->sortBy('label')
             ->values();
 
-        $cashiers = $rows
-            ->pluck('cashier_name')
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values();
+        // Fetch users with 'cashier' or 'cashiers' roles
+        $cashierUsers = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['cashier', 'cashiers']);
+        })->pluck('name')->sort()->values();
 
         $hawbNumbers = $rows
             ->pluck('hawb_number')
@@ -213,7 +212,7 @@ class NwcReportService
 
         return [
             'methods' => $methods->all(),
-            'cashiers' => $cashiers->all(),
+            'cashiers' => $cashierUsers->all(),
             'hawb_numbers' => $hawbNumbers->all(),
         ];
     }

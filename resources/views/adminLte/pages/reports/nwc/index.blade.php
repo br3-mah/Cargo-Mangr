@@ -33,57 +33,61 @@
         ], fn ($value) => $value !== null && $value !== '');
     @endphp
     <div class="container-fluid">
-        <div class="row mb-4">
+        <div class="row mb-3">
             <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-body">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-filter text-primary me-2"></i>
+                            <h6 class="card-title mb-0 fw-bold text-dark">Filter Reports</h6>
+                        </div>
                         <form class="row g-3 align-items-end" method="GET" action="{{ route('reports.nwc.index') }}">
-                            <div class="col-md-3">
-                                <label for="start_date" class="form-label fw-semibold text-muted">Start Date</label>
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="start_date" class="form-label fw-semibold text-muted small">Start Date</label>
                                 <input type="date"
                                        id="start_date"
                                        name="start_date"
                                        value="{{ $filters['start_date'] }}"
-                                       class="form-control">
+                                       class="form-control form-control-sm border-0 bg-light">
                             </div>
-                            <div class="col-md-3">
-                                <label for="end_date" class="form-label fw-semibold text-muted">End Date</label>
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="end_date" class="form-label fw-semibold text-muted small">End Date</label>
                                 <input type="date"
                                        id="end_date"
                                        name="end_date"
                                        value="{{ $filters['end_date'] }}"
-                                       class="form-control">
+                                       class="form-control form-control-sm border-0 bg-light">
                             </div>
-                            <div class="col-md-3">
-                                <label for="date" class="form-label fw-semibold text-muted">Transaction Date</label>
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="date" class="form-label fw-semibold text-muted small">Transaction Date</label>
                                 <input type="date"
                                        id="date"
                                        name="date"
                                        value="{{ $filters['date'] }}"
-                                       class="form-control">
+                                       class="form-control form-control-sm border-0 bg-light">
                             </div>
-                            <div class="col-md-3">
-                                <label for="bill_order" class="form-label fw-semibold text-muted">Bill Order</label>
-                                <select id="bill_order" name="bill_order" class="form-control">
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="bill_order" class="form-label fw-semibold text-muted small">Bill Order</label>
+                                <select id="bill_order" name="bill_order" class="form-select form-select-sm border-0 bg-light">
                                     <option value="">Default</option>
-                                    <option value="bill_usd_asc" @selected($filters['bill_order'] === 'bill_usd_asc')>Bill (USD): Low to High</option>
-                                    <option value="bill_usd_desc" @selected($filters['bill_order'] === 'bill_usd_desc')>Bill (USD): High to Low</option>
-                                    <option value="bill_kwacha_asc" @selected($filters['bill_order'] === 'bill_kwacha_asc')>Bill (ZMW): Low to High</option>
-                                    <option value="bill_kwacha_desc" @selected($filters['bill_order'] === 'bill_kwacha_desc')>Bill (ZMW): High to Low</option>
+                                    <option value="bill_usd_asc" @selected($filters['bill_order'] === 'bill_usd_asc')>USD: Low to High</option>
+                                    <option value="bill_usd_desc" @selected($filters['bill_order'] === 'bill_usd_desc')>USD: High to Low</option>
+                                    <option value="bill_kwacha_asc" @selected($filters['bill_order'] === 'bill_kwacha_asc')>ZMW: Low to High</option>
+                                    <option value="bill_kwacha_desc" @selected($filters['bill_order'] === 'bill_kwacha_desc')>ZMW: High to Low</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label for="cashier" class="form-label fw-semibold text-muted">Cashier</label>
-                                <select id="cashier" name="cashier" class="form-control">
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="cashier" class="form-label fw-semibold text-muted small">Cashier</label>
+                                <select id="cashier" name="cashier" class="form-select form-select-sm border-0 bg-light">
                                     <option value="">All Cashiers</option>
                                     @foreach($availableFilters['cashiers'] as $cashier)
                                         <option value="{{ $cashier }}" @selected($filters['cashier'] === $cashier)>{{ $cashier }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label for="method" class="form-label fw-semibold text-muted">Method</label>
-                                <select id="method" name="method" class="form-control">
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="method" class="form-label fw-semibold text-muted small">Payment Method</label>
+                                <select id="method" name="method" class="form-select form-select-sm border-0 bg-light">
                                     <option value="">All Methods</option>
                                     @foreach($availableFilters['methods'] as $methodOption)
                                         <option value="{{ $methodOption['value'] }}" @selected($filters['method'] === $methodOption['value'])>
@@ -92,13 +96,13 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label for="hawb_number" class="form-label fw-semibold text-muted">HAWB Number</label>
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <label for="hawb_number" class="form-label fw-semibold text-muted small">HAWB Number</label>
                                 <input type="text"
                                        id="hawb_number"
                                        name="hawb_number"
                                        value="{{ $filters['hawb_number'] }}"
-                                       class="form-control"
+                                       class="form-control form-control-sm border-0 bg-light"
                                        list="hawbNumbers"
                                        placeholder="e.g. HAWB12345">
                                 <datalist id="hawbNumbers">
@@ -107,17 +111,17 @@
                                     @endforeach
                                 </datalist>
                             </div>
-                            <div class="col-12 d-flex gap-2 flex-wrap">
-                                <button type="submit" class="btn btn-primary">
+                            <div class="col-lg-4 col-md-6 col-sm-12 d-flex gap-2 align-items-end">
+                                <button type="submit" class="btn btn-primary btn-sm px-3">
                                     <i class="fas fa-filter me-1"></i>Apply Filters
                                 </button>
                                 @can('export-nwc-reports')
                                     <a href="{{ route('reports.nwc.export', $exportQuery) }}"
-                                       class="btn btn-success">
-                                        <i class="fas fa-file-excel me-1"></i>Export Excel
+                                       class="btn btn-success btn-sm px-3">
+                                        <i class="fas fa-file-excel me-1"></i>Export
                                     </a>
                                 @endcan
-                                <a href="{{ route('reports.nwc.index') }}" class="btn btn-outline-secondary">
+                                <a href="{{ route('reports.nwc.index') }}" class="btn btn-outline-secondary btn-sm px-3">
                                     <i class="fas fa-undo me-1"></i>Reset
                                 </a>
                             </div>
@@ -146,35 +150,63 @@
         @endif
 
         <div class="row g-3 mb-4">
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-muted mb-1">Total Transactions</p>
-                        <h4 class="fw-bold mb-0">{{ number_format($summary['total_rows'] ?? 0) }}</h4>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="card-body text-white p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <p class="mb-1 opacity-75 small fw-semibold">Total Transactions</p>
+                                <h4 class="fw-bold mb-0">{{ number_format($summary['total_rows'] ?? 0) }}</h4>
+                            </div>
+                            <div class="opacity-75">
+                                <i class="fas fa-receipt fa-2x"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-muted mb-1">Total Bill (USD)</p>
-                        <h4 class="fw-bold mb-0">${{ number_format($summary['total_bill_usd'] ?? 0, 2) }}</h4>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="card-body text-white p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <p class="mb-1 opacity-75 small fw-semibold">Total Bill (USD)</p>
+                                <h4 class="fw-bold mb-0">${{ number_format($summary['total_bill_usd'] ?? 0, 2) }}</h4>
+                            </div>
+                            <div class="opacity-75">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-muted mb-1">Total Bill (ZMW)</p>
-                        <h4 class="fw-bold mb-0">K{{ number_format($summary['total_bill_kwacha'] ?? 0, 2) }}</h4>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="card-body text-white p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <p class="mb-1 opacity-75 small fw-semibold">Total Bill (ZMW)</p>
+                                <h4 class="fw-bold mb-0">K{{ number_format($summary['total_bill_kwacha'] ?? 0, 2) }}</h4>
+                            </div>
+                            <div class="opacity-75">
+                                <i class="fas fa-coins fa-2x"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-muted mb-1">Average Rate</p>
-                        <h4 class="fw-bold mb-0">{{ number_format($summary['average_rate'] ?? 0, 4) }}</h4>
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="card-body text-white p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <p class="mb-1 opacity-75 small fw-semibold">Average Rate</p>
+                                <h4 class="fw-bold mb-0">{{ number_format($summary['average_rate'] ?? 0, 4) }}</h4>
+                            </div>
+                            <div class="opacity-75">
+                                <i class="fas fa-chart-line fa-2x"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
