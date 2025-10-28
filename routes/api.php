@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('checkGoogleMap', 'Api\GoogleSettingsController@googleMapSettings');
 
 
-// Route::post('/mark-as-paid', 'Api\ShipmentController@paid')->name('mark.paid');
 Route::get('/search-shipments', 'Api\ShipmentController@search')->name('search.shipments');
 Route::post('/submit-shipments', 'Api\ConsignmentController@addShipmentsToConsignment')->name('submit.shipments');
 Route::get('/search-consignments', 'Api\ConsignmentController@searchConsignments');
@@ -58,3 +57,7 @@ Route::post('/reconcile', [App\Http\Controllers\Api\ShipmentController::class, '
 // 📊 ADMIN DASHBOARDS / BULK SYNC SUPPORT
 Route::get('/consignments/latest', [App\Http\Controllers\Api\ConsignmentController::class, 'getLatestConsignments']);
 Route::post('/parcels/unsynced', [App\Http\Controllers\Api\ShipmentController::class, 'getUnsyncedParcels']);
+
+// Payment APIs
+Route::post('/mark-as-paid', [\Modules\Cargo\Http\Controllers\ShipmentController::class, 'markAsPaid'])->name('api.mark-as-paid');
+Route::post('/refund-payment', [\Modules\Cargo\Http\Controllers\ShipmentController::class, 'refundPayment'])->name('api.refund-payment');

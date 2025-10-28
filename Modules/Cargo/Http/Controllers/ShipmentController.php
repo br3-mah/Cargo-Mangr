@@ -1809,6 +1809,7 @@ class ShipmentController extends Controller
             'discount_value'    => 'nullable|numeric|min:0',
             'final_total'       => 'required|numeric|min:0',
             'method_of_payment' => 'required|string|max:255',
+            'current_user'      => 'nullable|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -1895,6 +1896,7 @@ class ShipmentController extends Controller
                 $exchangeRate = null;
             }
 
+            
             $receiptData = [
                 'receipt_number'    => $nextReceiptNumber,
                 'rate'              => $exchangeRate,
@@ -1903,8 +1905,8 @@ class ShipmentController extends Controller
                 'method_of_payment' => $methodOfPayment,
                 'discount_type'     => $discountType,
                 'discount_value'    => $discountValue,
-                'cashier_name'      => auth()->user()?->name,
-                'user_id'           => auth()->id(),
+                'cashier_name'      => $request->current_user ?: (Auth::user()?->name ?? 'System'),
+                'user_id'           => Auth::user()?->id,
             ];
 
             $receipt = NwcReceipt::updateOrCreate(
@@ -1922,13 +1924,14 @@ class ShipmentController extends Controller
                 ($existingReceipt ? 'Receipt updated' : 'Receipt recorded') . ' for shipment ' . $shipment->code
             );
 
+            $cashierName = $request->current_user ?: (Auth::user()?->name ?? 'System');
             $auditLogService->createLog(
                 'updated',
                 $shipment,
                 null,
                 $oldValues,
                 $shipment->only(['paid']),
-                'Shipment marked as paid by ' . optional(auth()->user())->name
+                'Shipment marked as paid by ' . $cashierName
             );
 
             DB::commit();

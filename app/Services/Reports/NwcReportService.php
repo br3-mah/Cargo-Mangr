@@ -83,6 +83,7 @@ class NwcReportService
             $cashPayments = $method === 'cash' ? (float) ($billKwacha ?? 0) : 0.0;
 
             $cashierName = $this->resolveCashierName($receipt);
+            $cargoType = $consignment?->cargo_type ?? 'unknown';
 
             return [
                 'date' => $transaction->created_at ?? now(),
@@ -99,6 +100,7 @@ class NwcReportService
                 'mtn' => $mtn,
                 'cash_payments' => $cashPayments,
                 'cashier_name' => $cashierName,
+                'cargo_type' => $cargoType,
                 'shipment' => $shipment,
                 'consignment' => $consignment,
                 'client' => $client,
@@ -133,6 +135,17 @@ class NwcReportService
                 }
 
                 return Str::lower($row['method_slug']) === $method;
+            });
+        }
+
+        if (!empty($filters['cargo_type'])) {
+            $cargoType = Str::lower($filters['cargo_type']);
+            $filtered = $filtered->filter(function (array $row) use ($cargoType) {
+                if (empty($row['cargo_type'])) {
+                    return false;
+                }
+
+                return Str::lower($row['cargo_type']) === $cargoType;
             });
         }
 
@@ -203,6 +216,13 @@ class NwcReportService
             $query->whereIn('name', ['cashier', 'cashiers']);
         })->pluck('name')->sort()->values();
 
+        $cargoTypes = $rows
+            ->pluck('cargo_type')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+
         $hawbNumbers = $rows
             ->pluck('hawb_number')
             ->filter()
@@ -213,6 +233,7 @@ class NwcReportService
         return [
             'methods' => $methods->all(),
             'cashiers' => $cashierUsers->all(),
+            'cargo_types' => $cargoTypes->all(),
             'hawb_numbers' => $hawbNumbers->all(),
         ];
     }
@@ -231,6 +252,18 @@ class NwcReportService
             'total_mtn' => $rows->sum('mtn'),
             'total_cash_payments' => $rows->sum('cash_payments'),
         ];
+
+        // Calculate SEA and AIR totals
+        $seaRows = $rows->filter(fn ($row) => $row['cargo_type'] === 'sea');
+        $airRows = $rows->filter(fn ($row) => $row['cargo_type'] === 'air');
+
+        $totals['total_sea_receipts'] = $seaRows->count();
+        $totals['total_sea_bill_usd'] = $seaRows->filter(fn ($row) => $row['bill_usd'] !== null)->sum('bill_usd');
+        $totals['total_sea_bill_kwacha'] = $seaRows->filter(fn ($row) => $row['bill_kwacha'] !== null)->sum('bill_kwacha');
+
+        $totals['total_air_receipts'] = $airRows->count();
+        $totals['total_air_bill_usd'] = $airRows->filter(fn ($row) => $row['bill_usd'] !== null)->sum('bill_usd');
+        $totals['total_air_bill_kwacha'] = $airRows->filter(fn ($row) => $row['bill_kwacha'] !== null)->sum('bill_kwacha');
 
         $totals['average_rate'] = $totals['total_rows'] > 0
             ? round($rows->filter(fn ($row) => $row['rate'] !== null)->avg('rate'), 4)

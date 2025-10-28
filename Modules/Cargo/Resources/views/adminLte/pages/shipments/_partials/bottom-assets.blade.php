@@ -136,6 +136,7 @@
                     discount_value: discountValue,
                     final_total: finalTotal,
                     method_of_payment: methodOfPayment,
+                    current_user: '{{ auth()->user()->name }}',
                 }),
             })
             .then(response => response.json())

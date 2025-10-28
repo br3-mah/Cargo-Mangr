@@ -29,6 +29,7 @@ class NwcReportController extends Controller
             'end_date' => $end->toDateString(),
             'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
             'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'cargo_type' => $request->filled('cargo_type') ? Str::lower(trim((string) $request->input('cargo_type'))) : null,
             'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
             'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
             'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
@@ -94,6 +95,7 @@ class NwcReportController extends Controller
         $rows = $this->reportService->applyFilters($rows, [
             'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
             'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'cargo_type' => $request->filled('cargo_type') ? Str::lower(trim((string) $request->input('cargo_type'))) : null,
             'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
             'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
             'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
@@ -134,6 +136,7 @@ class NwcReportController extends Controller
         $rows = $this->reportService->applyFilters($rows, [
             'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
             'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'cargo_type' => $request->filled('cargo_type') ? Str::lower(trim((string) $request->input('cargo_type'))) : null,
             'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
             'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
             'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
@@ -187,6 +190,7 @@ class NwcReportController extends Controller
         $rows = $this->reportService->applyFilters($rows, [
             'cashier' => $request->filled('cashier') ? trim((string) $request->input('cashier')) : null,
             'method' => $request->filled('method') ? Str::lower(trim((string) $request->input('method'))) : null,
+            'cargo_type' => $request->filled('cargo_type') ? Str::lower(trim((string) $request->input('cargo_type'))) : null,
             'hawb_number' => $request->filled('hawb_number') ? trim((string) $request->input('hawb_number')) : null,
             'date' => $request->filled('date') ? trim((string) $request->input('date')) : null,
             'bill_order' => $request->filled('bill_order') ? trim((string) $request->input('bill_order')) : null,
