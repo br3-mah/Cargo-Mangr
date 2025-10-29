@@ -139,7 +139,7 @@
                                 $hasPermission = $user->can('confirm-shipment-payment');
                             @endphp
 
-                            @if($hasCashierRole)
+                            @if($hasPermission)
                             {{-- @if($hasCashierRole || $hasPermission) --}}
                                 <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400" onclick="openMarkPaidModal({{ $shipment->id }})">
                                 <i class="fas fa-check-circle mr-1"></i> Mark as Paid
