@@ -28,8 +28,21 @@ class TransxnController extends Controller
             'this_week' => $transactions->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()])->sum('total'),
             'this_month' => $transactions->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()])->sum('total'),
         ];
+        
+        $refundedTransactions = $transactions->filter(function($transaction) {
+            return $transaction->isRefunded();
+        });
+        
+        $refundedTotals = [
+            'todate' => $refundedTransactions->sum('total'),
+            'today' => $refundedTransactions->whereBetween('created_at', [Carbon::today(), Carbon::now()])->sum('total'),
+            'yesterday' => $refundedTransactions->whereBetween('created_at', [Carbon::yesterday(), Carbon::today()])->sum('total'),
+            'this_week' => $refundedTransactions->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()])->sum('total'),
+            'this_month' => $refundedTransactions->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()])->sum('total'),
+        ];
+        
         $adminTheme = env('ADMIN_THEME', 'adminLte');
-        return view('cargo::' . $adminTheme . '.pages.transxns.index', compact('transactions','totals'));
+        return view('cargo::' . $adminTheme . '.pages.transxns.index', compact('transactions','totals', 'refundedTotals'));
     }
 
 }

@@ -16,6 +16,13 @@ class Transxn extends Model
         'discount_type',
         'discount_value',
         'total',
+        'status',
+        'refunded_at',
+        'refund_reason',
+    ];
+
+    protected $casts = [
+        'refunded_at' => 'datetime',
     ];
 
     public function shipment()
@@ -26,5 +33,15 @@ class Transxn extends Model
     public function nwcReceipt()
     {
         return $this->hasOne(NwcReceipt::class, 'shipment_id', 'shipment_id');
+    }
+
+    public function isRefunded()
+    {
+        return $this->status === 'refunded';
+    }
+
+    public function isCompleted()
+    {
+        return $this->status === 'completed';
     }
 }

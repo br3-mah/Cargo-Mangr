@@ -5,6 +5,7 @@ namespace Modules\Cargo\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+
 use Modules\Cargo\Http\DataTables\ShipmentsDataTable;
 use Modules\Cargo\Http\Requests\ShipmentRequest;
 use Modules\Cargo\Entities\Shipment;
@@ -36,6 +37,7 @@ use app\Http\Helpers\ApiHelper;
 use App\Models\Consignment;
 use App\Models\CurrencyExchangeRate;
 use App\Models\NwcReceipt;
+use App\Models\ShipmentPaymentReceipt;
 use App\Models\User;
 use App\Models\Transxn;
 use App\Traits\Tracker;
@@ -1761,7 +1763,7 @@ class ShipmentController extends Controller
         try {
             DB::beginTransaction();
 
-            $shipment = Shipment::findOrFail($request->shipment_id);
+            $shipment = Shipment::with(['nwcReceipt', 'paymentReceipts', 'receipt'])->findOrFail($request->shipment_id);
             
             // Check if shipment is actually paid
             if (!$shipment->paid) {
@@ -1771,12 +1773,44 @@ class ShipmentController extends Controller
                 ], 400);
             }
 
+            // Check if there are multiple payment receipts to refund
+            $paymentReceipts = $shipment->paymentReceipts;
+            
+            if ($paymentReceipts->count() > 0) {
+                // Check if the refunded columns exist in the table
+                $tableHasRefundedColumns = \Illuminate\Support\Facades\Schema::hasColumn('shipment_payment_receipts', 'refunded');
+                
+                if ($tableHasRefundedColumns) {
+                    // Mark multiple payment receipts as refunded instead of deleting
+                    foreach ($paymentReceipts as $paymentReceipt) {
+                        $paymentReceipt->update([
+                            'refunded' => true,
+                            'refunded_at' => now(),
+                            'refund_reason' => $request->reason ?? 'Manual refund'
+                        ]);
+                    }
+                } else {
+                    // If columns don't exist, delete the records (legacy behavior)
+                    foreach ($paymentReceipts as $paymentReceipt) {
+                        $paymentReceipt->delete();
+                    }
+                }
+            }
+
+            // Update the main transaction record to mark as refunded
+            $transaction = $shipment->receipt; // This will get the Transxn record via the 'receipt' relationship
+            if ($transaction) {
+                $transaction->update([
+                    'status' => 'refunded',
+                    'refunded_at' => now(),
+                    'refund_reason' => $request->reason ?? 'Manual refund'
+                ]);
+            }
 
             // Update shipment status
             $shipment->paid = 0;
             $shipment->save();
 
-    
             DB::commit();
 
             return response()->json([
@@ -1808,9 +1842,31 @@ class ShipmentController extends Controller
             'discount_type'     => 'nullable|in:percent,percentage,fixed',
             'discount_value'    => 'nullable|numeric|min:0',
             'final_total'       => 'required|numeric|min:0',
-            'method_of_payment' => 'required|string|max:255',
+            'method_of_payment' => 'required|array',
+            'method_of_payment.*' => 'string|max:255',
+            'payment_amount'    => 'required|array',
+            'payment_amount.*'  => 'numeric|min:0',
             'current_user'      => 'nullable|string|max:255',
         ]);
+
+        // Validate that the arrays have the same length
+        if (count($request->method_of_payment) !== count($request->payment_amount)) {
+            return response()->json([
+                'error'   => 'Payment arrays mismatch.',
+                'message' => 'The number of payment methods must match the number of payment amounts.'
+            ], 400);
+        }
+
+        // Calculate total payment amount
+        $totalPayment = array_sum($request->payment_amount);
+        $finalTotal = (float) $request->final_total;
+
+        if (abs($totalPayment - $finalTotal) > 0.01) {
+            return response()->json([
+                'error'   => 'Payment mismatch.',
+                'message' => 'The sum of payment amounts does not match the final total.'
+            ], 400);
+        }
 
         DB::beginTransaction();
 
@@ -1823,7 +1879,6 @@ class ShipmentController extends Controller
                 $discountType = 'percent';
             }
             $discountValue = $request->discount_value !== null ? (float) $request->discount_value : 0.0;
-            $methodOfPayment = trim((string) $request->method_of_payment);
 
             $baseAmount = (float) $request->final_total;
             $discountAmount = 0.0;
@@ -1859,7 +1914,30 @@ class ShipmentController extends Controller
                 'discount_type'  => $discountType,
                 'discount_value' => $discountValue,
                 'total'          => $calculatedFinalTotal,
+                'status'         => 'completed',
             ]);
+
+            // Create multiple payment receipt records
+            $paymentReceipts = [];
+            $user = Auth::user();
+            $cashierName = $request->current_user ?: ($user?->name ?? 'System');
+            
+            foreach ($request->method_of_payment as $index => $method) {
+                if (!empty($method) && isset($request->payment_amount[$index]) && $request->payment_amount[$index] > 0) {
+                    $receiptNumber = $nextReceiptNumber . '-' . ($index + 1); // Create unique receipt numbers for each payment
+                    
+                    $paymentReceipt = ShipmentPaymentReceipt::create([
+                        'shipment_id' => $shipment->id,
+                        'method_of_payment' => trim($method),
+                        'amount' => (float) $request->payment_amount[$index],
+                        'receipt_number' => $receiptNumber,
+                        'cashier_name' => $cashierName,
+                        'user_id' => $user?->id,
+                    ]);
+                    
+                    $paymentReceipts[] = $paymentReceipt;
+                }
+            }
 
             $receiptAttributeKeys = [
                 'receipt_number',
@@ -1896,17 +1974,19 @@ class ShipmentController extends Controller
                 $exchangeRate = null;
             }
 
-            
+            // For backward compatibility, we'll use the first payment method in the main receipt record
+            $firstPaymentMethod = !empty($request->method_of_payment) ? trim($request->method_of_payment[0]) : '';
+
             $receiptData = [
                 'receipt_number'    => $nextReceiptNumber,
                 'rate'              => $exchangeRate,
                 'bill_usd'          => $billUsd,
                 'bill_kwacha'       => $billKwacha,
-                'method_of_payment' => $methodOfPayment,
+                'method_of_payment' => $firstPaymentMethod,
                 'discount_type'     => $discountType,
                 'discount_value'    => $discountValue,
-                'cashier_name'      => $request->current_user ?: (Auth::user()?->name ?? 'System'),
-                'user_id'           => Auth::user()?->id,
+                'cashier_name'      => $cashierName,
+                'user_id'           => $user?->id,
             ];
 
             $receipt = NwcReceipt::updateOrCreate(
@@ -1924,7 +2004,6 @@ class ShipmentController extends Controller
                 ($existingReceipt ? 'Receipt updated' : 'Receipt recorded') . ' for shipment ' . $shipment->code
             );
 
-            $cashierName = $request->current_user ?: (Auth::user()?->name ?? 'System');
             $auditLogService->createLog(
                 'updated',
                 $shipment,
@@ -1934,12 +2013,25 @@ class ShipmentController extends Controller
                 'Shipment marked as paid by ' . $cashierName
             );
 
+            // Create audit logs for each payment method
+            foreach ($paymentReceipts as $paymentReceipt) {
+                $auditLogService->createLog(
+                    'created',
+                    $paymentReceipt,
+                    null,
+                    [],
+                    $paymentReceipt->only(['method_of_payment', 'amount', 'receipt_number']),
+                    'Payment receipt recorded for shipment ' . $shipment->code . ' - ' . $paymentReceipt->method_of_payment . ': ' . $paymentReceipt->amount
+                );
+            }
+
             DB::commit();
 
             return response()->json([
-                'message'     => 'Payment recorded successfully.',
-                'transaction' => $transaction,
-                'receipt'     => $receipt->only($receiptAttributeKeys),
+                'message'         => 'Payment recorded successfully.',
+                'transaction'     => $transaction,
+                'receipt'         => $receipt->only($receiptAttributeKeys),
+                'payment_receipts' => $paymentReceipts
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -26,37 +26,70 @@ $client = 4;
     </ol>
 </nav>
 <!-- Transaction Summary Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-6">
     @can('view-total-to-date-transactions')
     <div class="bg-white border-l-4 border-yellow-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">Total To Date</div>
-        <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['todate'], 2) }}</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($totals['todate'], 2) }}</div>
     </div>
     @endcan
     @can('view-total-today-transactions')
     <div class="bg-white border-l-4 border-green-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">Today</div>
-        <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['today'], 2) }}</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($totals['today'], 2) }}</div>
     </div>
     @endcan
     @can('view-total-yesterday-transactions')
     <div class="bg-white border-l-4 border-blue-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">Yesterday</div>
-        <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['yesterday'], 2) }}</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($totals['yesterday'], 2) }}</div>
     </div>
     @endcan
     @can('view-total-this-week-transactions')
     <div class="bg-white border-l-4 border-purple-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">This Week</div>
-        <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['this_week'], 2) }}</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($totals['this_week'], 2) }}</div>
     </div>
     @endcan
     @can('view-total-this-month-transactions')
     <div class="bg-white border-l-4 border-red-400 shadow rounded-lg p-4">
         <div class="text-sm text-gray-500">This Month</div>
-        <div class="text-xl font-bold text-gray-800">K{{ number_format($totals['this_month'], 2) }}</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($totals['this_month'], 2) }}</div>
     </div>
     @endcan
+    <!-- Refunded Transaction Totals -->
+    <div class="bg-white border-l-4 border-red-500 shadow rounded-lg p-4">
+        <div class="text-sm text-gray-500">Refunded To Date</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($refundedTotals['todate'], 2) }}</div>
+    </div>
+</div>
+
+<!-- Additional Refunded and Net Statistics -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+    <div class="bg-white border-l-4 border-red-400 shadow rounded-lg p-4">
+        <div class="text-sm text-gray-500">Refunded Today</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($refundedTotals['today'], 2) }}</div>
+    </div>
+    
+    <div class="bg-white border-l-4 border-red-300 shadow rounded-lg p-4">
+        <div class="text-sm text-gray-500">Refunded Yesterday</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($refundedTotals['yesterday'], 2) }}</div>
+    </div>
+    
+    <div class="bg-white border-l-4 border-red-600 shadow rounded-lg p-4">
+        <div class="text-sm text-gray-500">Refunded This Week</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($refundedTotals['this_week'], 2) }}</div>
+    </div>
+    
+    <div class="bg-white border-l-4 border-red-700 shadow rounded-lg p-4">
+        <div class="text-sm text-gray-500">Refunded This Month</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($refundedTotals['this_month'], 2) }}</div>
+    </div>
+    
+    <div class="bg-white border-l-4 border-indigo-600 shadow rounded-lg p-4">
+        <div class="text-sm text-gray-500">Net Total</div>
+        <div class="text-lg font-bold text-gray-800">K{{ number_format($totals['todate'] - $refundedTotals['todate'], 2) }}</div>
+    </div>
 </div>
 
 <!-- Transactions Table Card -->
@@ -91,7 +124,13 @@ $client = 4;
                     <td class="px-4 py-2">{{ $txn?->shipment?->client_phone ?? 'Not placed' }}</td>
                     <td class="px-4 py-2 text-green-600 font-semibold">K{{ number_format($txn->total, 2) }}</td>
                     <td class="px-4 py-2">
-                        <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">Completed</span>
+                        @if($txn->isRefunded())
+                            <span class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700">Refunded</span>
+                        @elseif($txn->isCompleted())
+                            <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">Completed</span>
+                        @else
+                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">{{ ucfirst($txn->status) }}</span>
+                        @endif
                     </td>
                     <td class="px-4 py-2">{{ $txn->created_at->format('d M Y') }}</td>
                 </tr>

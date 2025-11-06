@@ -43,70 +43,184 @@ class NwcReportService
                 'shipment.nwcReceipt.user',
                 'nwcReceipt.auditLogs.user',
                 'nwcReceipt.user',
+                'shipment.paymentReceipts' // Include payment receipts for multiple payment support
             ])
             ->whereBetween('created_at', [$start, $end])
+            // Only include transactions for shipments that are currently marked as paid
+            ->whereHas('shipment', function($query) {
+                $query->where('paid', 1);
+            })
             ->orderByDesc('created_at')
             ->get();
 
-        return $transactions->map(function (Transxn $transaction) {
+        $results = collect();
+
+        foreach ($transactions as $transaction) {
             $shipment = $transaction->shipment;
             $receipt = $transaction->nwcReceipt ?: optional($shipment)->nwcReceipt;
 
-            $consignment = optional($shipment)->consignment;
-            $client = optional($shipment)->client;
+            // Check if there are multiple payment receipts for this shipment
+            $multiplePaymentReceipts = $shipment->paymentReceipts ?? collect();
+            // Filter out refunded payments
+            $multiplePaymentReceipts = $multiplePaymentReceipts->where('refunded', false);
+            
+            if ($multiplePaymentReceipts->count() > 0) {
+                // For multiple payments, aggregate them into a single row
+                $totalBillUsd = $multiplePaymentReceipts->sum('amount');
+                $totalBillKwacha = $multiplePaymentReceipts->sum('amount');
+                
+                // Combine all payment methods into a single string
+                $paymentMethods = $multiplePaymentReceipts->pluck('method_of_payment')->unique()->filter()->implode(', ');
+                
+                // Calculate total amounts by method type for all payment methods
+                $totalAirtel = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'airtel';
+                })->sum('amount');
+                
+                $totalMtn = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'mtn';
+                })->sum('amount');
+                
+                $totalCash = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'cash';
+                })->sum('amount');
+                
+                $totalInvoice = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'invoice';
+                })->sum('amount');
+                
+                $totalBankTransfer = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'bank_transfer' || $method === 'bank';
+                })->sum('amount');
+                
+                $totalCard = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'card' || $method === 'card_payment';
+                })->sum('amount');
+                
+                $totalZamtel = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return $method === 'zamtel';
+                })->sum('amount');
+                
+                $totalOther = $multiplePaymentReceipts->filter(function($payment) {
+                    $method = $this->normalizeMethod($payment->method_of_payment);
+                    return in_array($method, ['other', 'others']);
+                })->sum('amount');
 
-            $billUsd = $receipt?->bill_usd;
-            $billKwacha = $receipt?->bill_kwacha;
+                $consignment = optional($shipment)->consignment;
+                $client = optional($shipment)->client;
 
-            if ($billUsd === null && $shipment) {
-                $billUsd = (float) $shipment->amount_to_be_collected;
-            }
-
-            if ($billKwacha === null && $billUsd !== null && function_exists('convert_currency')) {
-                try {
-                    $billKwacha = convert_currency($billUsd, 'usd', 'zmw');
-                } catch (\Throwable $th) {
-                    $billKwacha = null;
+                // Get rate from main receipt if available
+                $rate = $receipt?->rate;
+                if (($rate === null || $rate == 0.0) && $totalBillUsd && $totalBillUsd != 0 && $totalBillKwacha) {
+                    $rate = round($totalBillKwacha / $totalBillUsd, 6);
                 }
+
+                $cashierName = $multiplePaymentReceipts->first()?->cashier_name ?: $this->resolveCashierName($receipt);
+                $cargoType = $consignment?->cargo_type ?? 'unknown';
+
+                $results->push([
+                    'date' => $transaction->created_at ?? now(),
+                    'receipt_number' => $transaction->receipt_number,
+                    'hawb_number' => optional($shipment)->code,
+                    'consignee_name' => $consignment?->consignee ?? $consignment?->name,
+                    'client_name' => $client?->name,
+                    'rate' => $rate !== null ? (float) $rate : null,
+                    'bill_usd' => $totalBillUsd,
+                    'bill_kwacha' => $totalBillKwacha,
+                    'method_of_payment' => $paymentMethods ?: $this->formatMethodLabel($receipt?->method_of_payment),
+                    'method_slug' => $this->normalizeMethod($receipt?->method_of_payment),
+                    'airtel' => $totalAirtel,
+                    'mtn' => $totalMtn,
+                    'cash_payments' => $totalCash,
+                    'invoice_payment' => $totalInvoice,
+                    'bank_transfer' => $totalBankTransfer,
+                    'card_payment' => $totalCard,
+                    'zamtel' => $totalZamtel,
+                    'other_payment' => $totalOther,
+                    'cashier_name' => $cashierName,
+                    'cargo_type' => $cargoType,
+                    'shipment' => $shipment,
+                    'consignment' => $consignment,
+                    'client' => $client,
+                    'receipt' => $receipt,
+                ]);
+            } else {
+                // When no multiple payments exist (legacy behavior), use original logic
+                $consignment = optional($shipment)->consignment;
+                $client = optional($shipment)->client;
+
+                $billUsd = $receipt?->bill_usd;
+                $billKwacha = $receipt?->bill_kwacha;
+
+                if ($billUsd === null && $shipment) {
+                    $billUsd = (float) $shipment->amount_to_be_collected;
+                }
+
+                if ($billKwacha === null && $billUsd !== null && function_exists('convert_currency')) {
+                    try {
+                        $billKwacha = convert_currency($billUsd, 'usd', 'zmw');
+                    } catch (\Throwable $th) {
+                        $billKwacha = null;
+                    }
+                }
+
+                $rate = $receipt?->rate;
+                if (($rate === null || $rate == 0.0) && $billUsd && $billUsd != 0 && $billKwacha) {
+                    $rate = round($billKwacha / $billUsd, 6);
+                }
+
+                $method = $this->normalizeMethod($receipt?->method_of_payment);
+                $methodLabel = $this->formatMethodLabel($receipt?->method_of_payment);
+
+                $airtel = $method === 'airtel' ? (float) ($billKwacha ?? 0) : 0.0;
+                $mtn = $method === 'mtn' ? (float) ($billKwacha ?? 0) : 0.0;
+                $cashPayments = $method === 'cash' ? (float) ($billKwacha ?? 0) : 0.0;
+                $invoicePayment = $method === 'invoice' ? (float) ($billKwacha ?? 0) : 0.0;
+                $bankTransfer = ($method === 'bank_transfer' || $method === 'bank') ? (float) ($billKwacha ?? 0) : 0.0;
+                $cardPayment = ($method === 'card' || $method === 'card_payment') ? (float) ($billKwacha ?? 0) : 0.0;
+                $zamtel = $method === 'zamtel' ? (float) ($billKwacha ?? 0) : 0.0;
+                $otherPayment = in_array($method, ['other', 'others']) ? (float) ($billKwacha ?? 0) : 0.0;
+
+                $cashierName = $this->resolveCashierName($receipt);
+                $cargoType = $consignment?->cargo_type ?? 'unknown';
+
+                $results->push([
+                    'date' => $transaction->created_at ?? now(),
+                    'receipt_number' => $transaction->receipt_number,
+                    'hawb_number' => optional($shipment)->code,
+                    'consignee_name' => $consignment?->consignee ?? $consignment?->name,
+                    'client_name' => $client?->name,
+                    'rate' => $rate !== null ? (float) $rate : null,
+                    'bill_usd' => $billUsd !== null ? (float) $billUsd : null,
+                    'bill_kwacha' => $billKwacha !== null ? (float) $billKwacha : null,
+                    'method_of_payment' => $methodLabel,
+                    'method_slug' => $method,
+                    'airtel' => $airtel,
+                    'mtn' => $mtn,
+                    'cash_payments' => $cashPayments,
+                    'invoice_payment' => $invoicePayment,
+                    'bank_transfer' => $bankTransfer,
+                    'card_payment' => $cardPayment,
+                    'zamtel' => $zamtel,
+                    'other_payment' => $otherPayment,
+                    'cashier_name' => $cashierName,
+                    'cargo_type' => $cargoType,
+                    'shipment' => $shipment,
+                    'consignment' => $consignment,
+                    'client' => $client,
+                    'receipt' => $receipt,
+                ]);
             }
+        }
 
-            $rate = $receipt?->rate;
-            if (($rate === null || $rate == 0.0) && $billUsd && $billUsd != 0 && $billKwacha) {
-                $rate = round($billKwacha / $billUsd, 6);
-            }
-
-            $method = $this->normalizeMethod($receipt?->method_of_payment);
-            $methodLabel = $this->formatMethodLabel($receipt?->method_of_payment);
-
-            $airtel = $method === 'airtel' ? (float) ($billKwacha ?? 0) : 0.0;
-            $mtn = $method === 'mtn' ? (float) ($billKwacha ?? 0) : 0.0;
-            $cashPayments = $method === 'cash' ? (float) ($billKwacha ?? 0) : 0.0;
-
-            $cashierName = $this->resolveCashierName($receipt);
-            $cargoType = $consignment?->cargo_type ?? 'unknown';
-
-            return [
-                'date' => $transaction->created_at ?? now(),
-                'receipt_number' => $transaction->receipt_number,
-                'hawb_number' => optional($shipment)->code,
-                'consignee_name' => $consignment?->consignee ?? $consignment?->name,
-                'client_name' => $client?->name,
-                'rate' => $rate !== null ? (float) $rate : null,
-                'bill_usd' => $billUsd !== null ? (float) $billUsd : null,
-                'bill_kwacha' => $billKwacha !== null ? (float) $billKwacha : null,
-                'method_of_payment' => $methodLabel,
-                'method_slug' => $method,
-                'airtel' => $airtel,
-                'mtn' => $mtn,
-                'cash_payments' => $cashPayments,
-                'cashier_name' => $cashierName,
-                'cargo_type' => $cargoType,
-                'shipment' => $shipment,
-                'consignment' => $consignment,
-                'client' => $client,
-                'receipt' => $receipt,
-            ];
-        });
+        return $results;
     }
 
     /**
@@ -251,6 +365,11 @@ class NwcReportService
             'total_airtel' => $rows->sum('airtel'),
             'total_mtn' => $rows->sum('mtn'),
             'total_cash_payments' => $rows->sum('cash_payments'),
+            'total_invoice_payment' => $rows->sum('invoice_payment'),
+            'total_bank_transfer' => $rows->sum('bank_transfer'),
+            'total_card_payment' => $rows->sum('card_payment'),
+            'total_zamtel' => $rows->sum('zamtel'),
+            'total_other_payment' => $rows->sum('other_payment'),
         ];
 
         // Calculate SEA and AIR totals
@@ -297,6 +416,11 @@ class NwcReportService
             'K1' => 'Airtel',
             'L1' => 'MTN',
             'M1' => 'Cash Payments',
+            'N1' => 'Invoice Payment',
+            'O1' => 'Bank Transfer',
+            'P1' => 'Card Payment',
+            'Q1' => 'Zamtel',
+            'R1' => 'Other',
         ];
 
         foreach ($headers as $cell => $value) {
@@ -318,6 +442,11 @@ class NwcReportService
             $sheet->setCellValue("K{$rowPointer}", $row['airtel']);
             $sheet->setCellValue("L{$rowPointer}", $row['mtn']);
             $sheet->setCellValue("M{$rowPointer}", $row['cash_payments']);
+            $sheet->setCellValue("N{$rowPointer}", $row['invoice_payment']);
+            $sheet->setCellValue("O{$rowPointer}", $row['bank_transfer']);
+            $sheet->setCellValue("P{$rowPointer}", $row['card_payment']);
+            $sheet->setCellValue("Q{$rowPointer}", $row['zamtel']);
+            $sheet->setCellValue("R{$rowPointer}", $row['other_payment']);
             $rowPointer++;
         }
 
@@ -329,12 +458,17 @@ class NwcReportService
         $sheet->setCellValue("K{$summaryStartRow}", $summary['total_airtel']);
         $sheet->setCellValue("L{$summaryStartRow}", $summary['total_mtn']);
         $sheet->setCellValue("M{$summaryStartRow}", $summary['total_cash_payments']);
+        $sheet->setCellValue("N{$summaryStartRow}", $summary['total_invoice_payment']);
+        $sheet->setCellValue("O{$summaryStartRow}", $summary['total_bank_transfer']);
+        $sheet->setCellValue("P{$summaryStartRow}", $summary['total_card_payment']);
+        $sheet->setCellValue("Q{$summaryStartRow}", $summary['total_zamtel']);
+        $sheet->setCellValue("R{$summaryStartRow}", $summary['total_other_payment']);
 
         $sheet->setCellValue("E" . ($summaryStartRow + 1), 'Average Rate');
         $sheet->setCellValue("F" . ($summaryStartRow + 1), $summary['average_rate']);
 
         $sheet->setAutoFilter($sheet->calculateWorksheetDimension());
-        foreach (range('A', 'M') as $columnID) {
+        foreach (range('A', 'R') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
@@ -368,6 +502,21 @@ class NwcReportService
         }
         if ($slug->contains('cash')) {
             return 'cash';
+        }
+        if ($slug->contains('invoice')) {
+            return 'invoice';
+        }
+        if ($slug->contains('bank_transfer') || $slug->contains('bank')) {
+            return 'bank_transfer';
+        }
+        if ($slug->contains('card')) {
+            return 'card';
+        }
+        if ($slug->contains('zamtel')) {
+            return 'zamtel';
+        }
+        if ($slug->contains('other')) {
+            return 'other';
         }
 
         return (string) $slug;

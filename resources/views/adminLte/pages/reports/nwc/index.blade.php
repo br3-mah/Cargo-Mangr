@@ -58,7 +58,7 @@
 
         <div class="row g-3 mb-4">
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card border-0 shadow-sm h-100 rounded-2xl" style="border-radius: 1rem; background: linear-gradient(135deg, #f7c600 0%, #f7c600 100%);">
                     <div class="card-body text-white p-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 1rem; background: linear-gradient(135deg, #f7c600 0%, #f7c600 100%);">
                     <div class="card-body text-white p-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 1rem; background: linear-gradient(135deg, #f7c600 0%, #f7c600 100%);">
                     <div class="card-body text-white p-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 1rem; background: linear-gradient(135deg, #f7c600 0%, #f7c600 100%);">
                     <div class="card-body text-white p-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
@@ -118,7 +118,7 @@
                 </div>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 1rem; background: linear-gradient(135deg, #f7c600 0%, #f7c600 100%);">
                     <div class="card-body text-white p-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                <div class="card border-0 shadow-sm h-100" style="border-radius: 1rem; background: linear-gradient(135deg, #f7c600 0%, #f7c600 100%);">
                     <div class="card-body text-white p-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
@@ -150,7 +150,7 @@
         </div>
 <div class="row mb-3">
             <div class="col-12">
-                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card border-0 shadow-sm" style="border-radius: 1rem;">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <i class="fas fa-filter text-primary me-2"></i>
@@ -352,6 +352,11 @@
                                 <th class="bg-danger text-dark fw-bold">Airtel</th>
                                 <th class="bg-warning text-dark font-lg fw-bold">MTN</th>
                                 <th class="bg-success text-dark font-lg fw-bold">Cash Payments</th>
+                                <th class="bg-info text-dark font-lg fw-bold">Invoice</th>
+                                <th class="bg-primary text-dark font-lg fw-bold">Bank Transfer</th>
+                                <th class="bg-secondary text-dark font-lg fw-bold">Card</th>
+                                <th class="bg-info text-white font-lg fw-bold" style="background-color: #FF66C4 !important;">Zamtel</th>
+                                <th class="bg-dark text-white font-lg fw-bold">Other</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -371,14 +376,24 @@
                                     $airtelAmount = $row['airtel'] ?? 0;
                                     $mtnAmount = $row['mtn'] ?? 0;
                                     $cashPaymentsAmount = $row['cash_payments'] ?? 0;
+                                    $invoiceAmount = $row['invoice_payment'] ?? 0;
+                                    $bankTransferAmount = $row['bank_transfer'] ?? 0;
+                                    $cardAmount = $row['card_payment'] ?? 0;
+                                    $zamtelAmount = $row['zamtel'] ?? 0;
+                                    $otherAmount = $row['other_payment'] ?? 0;
                                 @endphp
                                 <td class="bg-danger text-dark" style="color:#000 !important;font-weight:bold;">{{ $airtelAmount > 0 ? number_format($airtelAmount, 2) : '-' }}</td>
                                 <td class="bg-warning text-dark" style="color:#000 !important;font-weight:bold;">{{ $mtnAmount > 0 ? number_format($mtnAmount, 2) : '-' }}</td>
                                 <td class="bg-success text-dark" style="color:#000 !important;font-weight:bold;">{{ $cashPaymentsAmount > 0 ? number_format($cashPaymentsAmount, 2) : '-' }}</td>
+                                <td class="bg-info text-dark" style="color:#000 !important;font-weight:bold;">{{ $invoiceAmount > 0 ? number_format($invoiceAmount, 2) : '-' }}</td>
+                                <td class="bg-primary text-dark" style="color:#000 !important;font-weight:bold;">{{ $bankTransferAmount > 0 ? number_format($bankTransferAmount, 2) : '-' }}</td>
+                                <td class="bg-secondary text-dark" style="color:#000 !important;font-weight:bold;">{{ $cardAmount > 0 ? number_format($cardAmount, 2) : '-' }}</td>
+                                <td class="bg-info text-white" style="background-color: #FF66C4 !important;font-weight:bold;">{{ $zamtelAmount > 0 ? number_format($zamtelAmount, 2) : '-' }}</td>
+                                <td class="bg-dark text-white" style="font-weight:bold;">{{ $otherAmount > 0 ? number_format($otherAmount, 2) : '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="text-center text-muted">
+                                <td colspan="18" class="text-center text-muted">
                                     No transactions found for the selected period.
                                 </td>
                             </tr>
@@ -396,6 +411,11 @@
                                     <th><b>{{ number_format($summary['total_airtel'] ?? 0, 2) }}</b></th>
                                     <th><b>{{ number_format($summary['total_mtn'] ?? 0, 2) }}</b></th>
                                     <th> <b>{{ number_format($summary['total_cash_payments'] ?? 0, 2) }}</b> </th>
+                                    <th><b>{{ number_format($summary['total_invoice_payment'] ?? 0, 2) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_bank_transfer'] ?? 0, 2) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_card_payment'] ?? 0, 2) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_zamtel'] ?? 0, 2) }}</b></th>
+                                    <th><b>{{ number_format($summary['total_other_payment'] ?? 0, 2) }}</b></th>
                                 </tr>
                             </tfoot>
                         @endif
