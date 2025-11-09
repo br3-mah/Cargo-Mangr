@@ -66,52 +66,123 @@ class NwcReportService
             
             if ($multiplePaymentReceipts->count() > 0) {
                 // For multiple payments, aggregate them into a single row
-                $totalBillUsd = $multiplePaymentReceipts->sum('amount');
-                $totalBillKwacha = $multiplePaymentReceipts->sum('amount');
+                $totalBillKwacha = $multiplePaymentReceipts->sum('amount'); // This is the actual Kwacha amount paid
+                
+                // Calculate the USD amount by using the rate from the receipt if available
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalBillUsd = round($totalBillKwacha / $receipt->rate, 2);
+                } else {
+                    // Fallback: if no rate available, try to calculate from receipt if it has both bill values
+                    if ($receipt && $receipt->bill_usd && $receipt->bill_kwacha && $receipt->bill_kwacha > 0) {
+                        $calculatedRate = $receipt->bill_kwacha / $receipt->bill_usd;
+                        $totalBillUsd = round($totalBillKwacha / $calculatedRate, 2);
+                    } else {
+                        // If no rate is available, we can't convert - so show Kwacha value in both as fallback
+                        // Though this isn't ideal, it maintains backward compatibility
+                        $totalBillUsd = $totalBillKwacha;
+                    }
+                }
                 
                 // Combine all payment methods into a single string
                 $paymentMethods = $multiplePaymentReceipts->pluck('method_of_payment')->unique()->filter()->implode(', ');
                 
                 // Calculate total amounts by method type for all payment methods
-                $totalAirtel = $multiplePaymentReceipts->filter(function($payment) {
+                // These are in Kwacha, so convert back to USD using the rate
+                $totalAirtel = 0;
+                $airtelPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'airtel';
-                })->sum('amount');
+                });
+                $totalAirtelKwacha = $airtelPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalAirtel = round($totalAirtelKwacha / $receipt->rate, 2);
+                } else {
+                    $totalAirtel = $totalAirtelKwacha; // Fallback if no rate
+                }
                 
-                $totalMtn = $multiplePaymentReceipts->filter(function($payment) {
+                $totalMtn = 0;
+                $mtnPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'mtn';
-                })->sum('amount');
+                });
+                $totalMtnKwacha = $mtnPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalMtn = round($totalMtnKwacha / $receipt->rate, 2);
+                } else {
+                    $totalMtn = $totalMtnKwacha; // Fallback if no rate
+                }
                 
-                $totalCash = $multiplePaymentReceipts->filter(function($payment) {
+                $totalCash = 0;
+                $cashPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'cash';
-                })->sum('amount');
+                });
+                $totalCashKwacha = $cashPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalCash = round($totalCashKwacha / $receipt->rate, 2);
+                } else {
+                    $totalCash = $totalCashKwacha; // Fallback if no rate
+                }
                 
-                $totalInvoice = $multiplePaymentReceipts->filter(function($payment) {
+                $totalInvoice = 0;
+                $invoicePayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'invoice';
-                })->sum('amount');
+                });
+                $totalInvoiceKwacha = $invoicePayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalInvoice = round($totalInvoiceKwacha / $receipt->rate, 2);
+                } else {
+                    $totalInvoice = $totalInvoiceKwacha; // Fallback if no rate
+                }
                 
-                $totalBankTransfer = $multiplePaymentReceipts->filter(function($payment) {
+                $totalBankTransfer = 0;
+                $bankTransferPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'bank_transfer' || $method === 'bank';
-                })->sum('amount');
+                });
+                $totalBankTransferKwacha = $bankTransferPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalBankTransfer = round($totalBankTransferKwacha / $receipt->rate, 2);
+                } else {
+                    $totalBankTransfer = $totalBankTransferKwacha; // Fallback if no rate
+                }
                 
-                $totalCard = $multiplePaymentReceipts->filter(function($payment) {
+                $totalCard = 0;
+                $cardPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'card' || $method === 'card_payment';
-                })->sum('amount');
+                });
+                $totalCardKwacha = $cardPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalCard = round($totalCardKwacha / $receipt->rate, 2);
+                } else {
+                    $totalCard = $totalCardKwacha; // Fallback if no rate
+                }
                 
-                $totalZamtel = $multiplePaymentReceipts->filter(function($payment) {
+                $totalZamtel = 0;
+                $zamtelPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'zamtel';
-                })->sum('amount');
+                });
+                $totalZamtelKwacha = $zamtelPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalZamtel = round($totalZamtelKwacha / $receipt->rate, 2);
+                } else {
+                    $totalZamtel = $totalZamtelKwacha; // Fallback if no rate
+                }
                 
-                $totalOther = $multiplePaymentReceipts->filter(function($payment) {
+                $totalOther = 0;
+                $otherPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return in_array($method, ['other', 'others']);
-                })->sum('amount');
+                });
+                $totalOtherKwacha = $otherPayments->sum('amount');
+                if ($receipt && $receipt->rate && $receipt->rate > 0) {
+                    $totalOther = round($totalOtherKwacha / $receipt->rate, 2);
+                } else {
+                    $totalOther = $totalOtherKwacha; // Fallback if no rate
+                }
 
                 $consignment = optional($shipment)->consignment;
                 $client = optional($shipment)->client;
