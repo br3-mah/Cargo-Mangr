@@ -86,6 +86,7 @@
         label {
             font-weight: bold !important;
         }
+        
     </style>
 @endsection
 
