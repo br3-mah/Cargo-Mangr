@@ -85,104 +85,72 @@ class NwcReportService
                 
                 // Combine all payment methods into a single string
                 $paymentMethods = $multiplePaymentReceipts->pluck('method_of_payment')->unique()->filter()->implode(', ');
-                
-                // Calculate total amounts by method type for all payment methods
-                // These are in Kwacha, so convert back to USD using the rate
-                $totalAirtel = 0;
+
                 $airtelPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'airtel';
                 });
-                $totalAirtelKwacha = $airtelPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalAirtel = round($totalAirtelKwacha / $receipt->rate, 2);
-                } else {
-                    $totalAirtel = $totalAirtelKwacha; // Fallback if no rate
-                }
-                
-                $totalMtn = 0;
+
                 $mtnPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'mtn';
                 });
-                $totalMtnKwacha = $mtnPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalMtn = round($totalMtnKwacha / $receipt->rate, 2);
-                } else {
-                    $totalMtn = $totalMtnKwacha; // Fallback if no rate
-                }
-                
-                $totalCash = 0;
+
                 $cashPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'cash';
                 });
-                $totalCashKwacha = $cashPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalCash = round($totalCashKwacha / $receipt->rate, 2);
-                } else {
-                    $totalCash = $totalCashKwacha; // Fallback if no rate
-                }
-                
-                $totalInvoice = 0;
+
                 $invoicePayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'invoice';
                 });
-                $totalInvoiceKwacha = $invoicePayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalInvoice = round($totalInvoiceKwacha / $receipt->rate, 2);
-                } else {
-                    $totalInvoice = $totalInvoiceKwacha; // Fallback if no rate
-                }
-                
-                $totalBankTransfer = 0;
+
                 $bankTransferPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'bank_transfer' || $method === 'bank';
                 });
-                $totalBankTransferKwacha = $bankTransferPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalBankTransfer = round($totalBankTransferKwacha / $receipt->rate, 2);
-                } else {
-                    $totalBankTransfer = $totalBankTransferKwacha; // Fallback if no rate
-                }
-                
-                $totalCard = 0;
+
                 $cardPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'card' || $method === 'card_payment';
                 });
-                $totalCardKwacha = $cardPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalCard = round($totalCardKwacha / $receipt->rate, 2);
-                } else {
-                    $totalCard = $totalCardKwacha; // Fallback if no rate
-                }
-                
-                $totalZamtel = 0;
+
                 $zamtelPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return $method === 'zamtel';
                 });
-                $totalZamtelKwacha = $zamtelPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalZamtel = round($totalZamtelKwacha / $receipt->rate, 2);
-                } else {
-                    $totalZamtel = $totalZamtelKwacha; // Fallback if no rate
-                }
-                
-                $totalOther = 0;
+
                 $otherPayments = $multiplePaymentReceipts->filter(function($payment) {
                     $method = $this->normalizeMethod($payment->method_of_payment);
                     return in_array($method, ['other', 'others']);
                 });
+
+                // Calculate total amounts by method type for all payment methods
+                // These amounts are recorded in Kwacha
+                $totalAirtelKwacha = $airtelPayments->sum('amount');
+                $totalAirtel = round($totalAirtelKwacha, 2);
+
+                $totalMtnKwacha = $mtnPayments->sum('amount');
+                $totalMtn = round($totalMtnKwacha, 2);
+
+                $totalCashKwacha = $cashPayments->sum('amount');
+                $totalCash = round($totalCashKwacha, 2);
+
+                $totalInvoiceKwacha = $invoicePayments->sum('amount');
+                $totalInvoice = round($totalInvoiceKwacha, 2);
+
+                $totalBankTransferKwacha = $bankTransferPayments->sum('amount');
+                $totalBankTransfer = round($totalBankTransferKwacha, 2);
+
+                $totalCardKwacha = $cardPayments->sum('amount');
+                $totalCard = round($totalCardKwacha, 2);
+
+                $totalZamtelKwacha = $zamtelPayments->sum('amount');
+                $totalZamtel = round($totalZamtelKwacha, 2);
+
                 $totalOtherKwacha = $otherPayments->sum('amount');
-                if ($receipt && $receipt->rate && $receipt->rate > 0) {
-                    $totalOther = round($totalOtherKwacha / $receipt->rate, 2);
-                } else {
-                    $totalOther = $totalOtherKwacha; // Fallback if no rate
-                }
+                $totalOther = round($totalOtherKwacha, 2);
 
                 $consignment = optional($shipment)->consignment;
                 $client = optional($shipment)->client;
