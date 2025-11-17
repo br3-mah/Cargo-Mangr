@@ -46,6 +46,7 @@ class NwcReportService
                 'shipment.paymentReceipts' // Include payment receipts for multiple payment support
             ])
             ->whereBetween('created_at', [$start, $end])
+            ->where('status', 'completed')
             // Only include transactions for shipments that are currently marked as paid
             ->whereHas('shipment', function($query) {
                 $query->where('paid', 1);
@@ -86,71 +87,30 @@ class NwcReportService
                 // Combine all payment methods into a single string
                 $paymentMethods = $multiplePaymentReceipts->pluck('method_of_payment')->unique()->filter()->implode(', ');
 
-                $airtelPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'airtel';
-                });
+                $paymentMethodGroups = [
+                    'airtel' => ['airtel'],
+                    'mtn' => ['mtn'],
+                    'cash_payments' => ['cash'],
+                    'invoice_payment' => ['invoice'],
+                    'bank_transfer' => ['bank_transfer', 'bank'],
+                    'card_payment' => ['card', 'card_payment'],
+                    'zamtel' => ['zamtel'],
+                    'other_payment' => ['other', 'others'],
+                ];
 
-                $mtnPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'mtn';
-                });
+                $methodTotals = [];
+                foreach ($paymentMethodGroups as $key => $matches) {
+                    $methodTotals[$key] = $this->sumPaymentAmounts($multiplePaymentReceipts, $matches);
+                }
 
-                $cashPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'cash';
-                });
-
-                $invoicePayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'invoice';
-                });
-
-                $bankTransferPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'bank_transfer' || $method === 'bank';
-                });
-
-                $cardPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'card' || $method === 'card_payment';
-                });
-
-                $zamtelPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return $method === 'zamtel';
-                });
-
-                $otherPayments = $multiplePaymentReceipts->filter(function($payment) {
-                    $method = $this->normalizeMethod($payment->method_of_payment);
-                    return in_array($method, ['other', 'others']);
-                });
-
-                // Calculate total amounts by method type for all payment methods
-                // These amounts are recorded in Kwacha
-                $totalAirtelKwacha = $airtelPayments->sum('amount');
-                $totalAirtel = round($totalAirtelKwacha, 2);
-
-                $totalMtnKwacha = $mtnPayments->sum('amount');
-                $totalMtn = round($totalMtnKwacha, 2);
-
-                $totalCashKwacha = $cashPayments->sum('amount');
-                $totalCash = round($totalCashKwacha, 2);
-
-                $totalInvoiceKwacha = $invoicePayments->sum('amount');
-                $totalInvoice = round($totalInvoiceKwacha, 2);
-
-                $totalBankTransferKwacha = $bankTransferPayments->sum('amount');
-                $totalBankTransfer = round($totalBankTransferKwacha, 2);
-
-                $totalCardKwacha = $cardPayments->sum('amount');
-                $totalCard = round($totalCardKwacha, 2);
-
-                $totalZamtelKwacha = $zamtelPayments->sum('amount');
-                $totalZamtel = round($totalZamtelKwacha, 2);
-
-                $totalOtherKwacha = $otherPayments->sum('amount');
-                $totalOther = round($totalOtherKwacha, 2);
+                $totalAirtel = $methodTotals['airtel'];
+                $totalMtn = $methodTotals['mtn'];
+                $totalCash = $methodTotals['cash_payments'];
+                $totalInvoice = $methodTotals['invoice_payment'];
+                $totalBankTransfer = $methodTotals['bank_transfer'];
+                $totalCard = $methodTotals['card_payment'];
+                $totalZamtel = $methodTotals['zamtel'];
+                $totalOther = $methodTotals['other_payment'];
 
                 $consignment = optional($shipment)->consignment;
                 $client = optional($shipment)->client;
@@ -523,6 +483,33 @@ class NwcReportService
             'path' => $relativePath,
             'filename' => $filename,
         ];
+    }
+
+    protected function sumPaymentAmounts(Collection $payments, array $methodMatches): float
+    {
+        $normalizedTargets = collect($methodMatches)
+            ->filter()
+            ->map(fn ($method) => Str::lower((string) $method))
+            ->values()
+            ->all();
+
+        if (empty($normalizedTargets)) {
+            return 0.0;
+        }
+
+        $totalKwacha = $payments
+            ->filter(function ($payment) use ($normalizedTargets) {
+                $method = $this->normalizeMethod($payment->method_of_payment);
+
+                if (!$method) {
+                    return false;
+                }
+
+                return in_array(Str::lower($method), $normalizedTargets, true);
+            })
+            ->sum('amount');
+
+        return round($totalKwacha, 2);
     }
 
     protected function normalizeMethod(?string $method): ?string

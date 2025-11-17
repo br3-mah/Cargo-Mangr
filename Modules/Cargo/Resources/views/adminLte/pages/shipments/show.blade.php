@@ -792,6 +792,8 @@
                     // If the page already has paymentsTotal/remaining, we'll reuse them.
                     let paymentsTotalEl = document.getElementById('paymentsTotal');
                     let remainingEl = document.getElementById('remainingTotal');
+                    let remainingHintEl = document.getElementById('remainingHint');
+                    let fillRemainingBtnEl = document.getElementById('fillRemainingBtn');
                     let statusEl = document.getElementById('paymentsStatus');
 
                     // Try to place them under the finalTotal if not present
@@ -818,9 +820,21 @@
                             statusRow.innerHTML = `<small id="paymentsStatus" class="text-muted"></small>`;
                             summaryCard.appendChild(statusRow);
 
+                            const helperRow = document.createElement('div');
+                            helperRow.className = 'd-flex justify-content-between align-items-center mt-2 gap-2 flex-wrap';
+                            helperRow.innerHTML = `
+                                <small class="text-muted">Outstanding due: <strong id="remainingHint">0.00</strong></small>
+                                <button type="button" id="fillRemainingBtn" class="btn btn-sm btn-outline-primary px-3 py-1">
+                                    Auto-fill Remaining
+                                </button>
+                            `;
+                            summaryCard.appendChild(helperRow);
+
                             // reassign handles
                             paymentsTotalEl = document.getElementById('paymentsTotal');
                             remainingEl = document.getElementById('remainingTotal');
+                            remainingHintEl = document.getElementById('remainingHint');
+                            fillRemainingBtnEl = document.getElementById('fillRemainingBtn');
                             statusEl = document.getElementById('paymentsStatus');
                         }
                     }
@@ -882,6 +896,9 @@
                             } else {
                                 remainingEl.style.color = 'crimson';
                             }
+                        }
+                        if (remainingHintEl) {
+                            remainingHintEl.textContent = fmt(Math.max(remaining, 0));
                         }
 
                         // Validation: payments must equal final exactly (within tolerance) to enable confirm
@@ -1115,6 +1132,30 @@
                             confirmBtn.innerHTML = originalButtonHtml;
                         });
                     });
+
+                    if (fillRemainingBtnEl) {
+                        fillRemainingBtnEl.addEventListener('click', function () {
+                            const { remaining } = updateRemainingAndValidation();
+                            if (remaining <= 0) {
+                                return;
+                            }
+
+                            const amountInputs = Array.from(paymentsContainer.querySelectorAll('input[name="payment_amount[]"]'));
+                            if (amountInputs.length === 0) {
+                                return;
+                            }
+
+                            let target = amountInputs.find((input) => {
+                                const value = parseFloat(input.value);
+                                return !input.value || isNaN(value) || value === 0;
+                            }) || amountInputs[0];
+
+                            const current = parseFloat(target.value) || 0;
+                            target.value = (current + remaining).toFixed(2);
+                            target.dispatchEvent(new Event('input', { bubbles: true }));
+                            target.focus();
+                        });
+                    }
 
                     // Initialize
                     ensureAtLeastOneRow();
